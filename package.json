@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "node scripts/build-static.mjs",
+    "validate": "node scripts/validate-site.mjs",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint app",
     "format": "oxfmt"
