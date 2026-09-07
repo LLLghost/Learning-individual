@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Самостоятельный университетский курс по серверной инфраструктуре с лабораторными работами и автоматической проверкой знаний.">
+    <meta name="theme-color" content="#071722">
+    <title>Серверная инфраструктура — университетский курс</title>
+    <style>
+      :root { color-scheme: light; background: #071722; }
+      * { box-sizing: border-box; }
+      html, body, main { width: 100%; min-height: 100%; margin: 0; }
+      body { min-height: 100vh; overflow: hidden; background: #071722; }
+      main { height: 100vh; }
+      iframe { display: block; width: 100%; height: 100%; border: 0; background: #f7f2e8; }
+      noscript p { max-width: 48rem; margin: 4rem auto; padding: 2rem; color: white; font: 16px/1.6 system-ui, sans-serif; }
+      noscript a { color: #42d3c7; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <iframe id="course-frame" src="/course.html" title="Серверная инфраструктура — университетский курс" allow="clipboard-write"></iframe>
+      <noscript><p>Для автоматической проверки заданий нужен JavaScript. Сам учебник можно <a href="/course.html">открыть отдельной страницей</a>.</p></noscript>
+    </main>
+    <script>
+      (() => {
+        'use strict';
+        const context = document.modelContext;
+        if (!context?.registerTool) return;
+        const frame = document.getElementById('course-frame');
+        const progressKey = 'server-infrastructure-selfstudy-v6';
+        const lifecycle = new AbortController();
+        const courseWindow = () => {
+          if (!frame.contentWindow) throw new Error('Курс ещё не загружен.');
+          return frame.contentWindow;
+        };
+        const readProgress = () => {
+          const raw = courseWindow().localStorage.getItem(progressKey);
+          const saved = raw ? JSON.parse(raw) : null;
+          const records = saved?.records && typeof saved.records === 'object' ? saved.records : {};
+          const history = Array.isArray(saved?.history) ? saved.history : [];
+          return {
+            schema: saved?.schema ?? 'course-study-progress',
+            answeredChecks: Object.keys(records).length,
+            correctChecks: Object.values(records).filter((record) => Boolean(record?.correct)).length,
+            programmingTestsPassed: Number(saved?.practice?.passed ?? 0),
+            bestFinalExam: Math.max(0, ...history.map((attempt) => Number(attempt.correct ?? 0))),
+          };
+        };
+        const register = (tool) => {
+          try {
+            Promise.resolve(context.registerTool(tool, { signal: lifecycle.signal })).catch(() => undefined);
+          } catch {}
+        };
+        register({
+          name: 'get_course_progress',
+          title: 'Показать прогресс курса',
+          description: 'Возвращает краткое состояние самостоятельного обучения, сохранённое в этом браузере.',
+          inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+          annotations: { readOnlyHint: true, untrustedContentHint: false },
+          execute: () => readProgress(),
+        });
+        register({
+          name: 'open_course_module',
+          title: 'Открыть модуль курса',
+          description: 'Переходит к одному из 28 учебных модулей в видимом интерфейсе курса.',
+          inputSchema: {
+            type: 'object',
+            properties: { module: { type: 'integer', minimum: 0, maximum: 27 } },
+            required: ['module'],
+            additionalProperties: false,
+          },
+          annotations: { readOnlyHint: false, untrustedContentHint: false },
+          execute: (input) => {
+            const value = input?.module;
+            if (!Number.isInteger(value) || value < 0 || value > 27) {
+              throw new Error('Номер модуля должен быть целым числом от 0 до 27.');
+            }
+            const anchor = `ch${String(value).padStart(2, '0')}`;
+            courseWindow().location.hash = anchor;
+            frame.focus();
+            return { openedModule: value, anchor };
+          },
+        });
+      })();
+    </script>
+  </body>
+</html>
