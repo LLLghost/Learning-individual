@@ -3,7 +3,7 @@ import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const root = process.cwd();
-const output = resolve(root, 'dist', 'site');
+const output = resolve(root, 'build');
 const indexSource = resolve(root, 'static-src', 'index.html');
 const courseSource = resolve(root, 'public', 'course.html');
 
