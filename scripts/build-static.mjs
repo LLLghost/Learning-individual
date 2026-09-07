@@ -113,7 +113,7 @@ const globalNav = `
   </nav>`;
 
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><title>${escape(title)} · Серверная инфраструктура</title><link rel="stylesheet" href="/assets/site.css"></head>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
 <body><header class="topbar">${globalNav}<details class="mobile-menu"><summary>Разделы</summary><div>${globalNav}</div></details></header>
 <div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main"><p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 <script src="/assets/site.js"></script></body></html>`;
@@ -198,6 +198,7 @@ await Promise.all([
   writeFile(resolve(output, 'curriculum', 'index.html'), curriculum).catch(async (error) => { await mkdir(resolve(output, 'curriculum'), { recursive: true }); await writeFile(resolve(output, 'curriculum', 'index.html'), curriculum); }),
   writeFile(resolve(output, 'assets', 'site.css'), css),
   writeFile(resolve(output, 'assets', 'site.js'), js),
+  cp(resolve(root, 'public', 'favicon.svg'), resolve(output, 'assets', 'favicon.svg')),
 ]);
 
 const outputs = [
