@@ -83,11 +83,11 @@ else {
   for (const required of ['NUMA', 'iowait', 'Multipath', 'Readiness probe', 'Page cache']) {
     if (!terms.some((entry) => entry.term === required)) failures.push(`term base: missing "${required}"`);
   }
-  const broken = terms.filter((entry) => !entry.html || (entry.chapter !== null && !(entry.chapter >= 0 && entry.chapter <= 27)));
+  const broken = terms.filter((entry) => !entry.html || (entry.chapter !== null && !(entry.chapter >= 0 && entry.chapter <= 33)));
   if (broken.length) failures.push(`term base: ${broken.length} entries with empty text or bad chapter`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
-for (let number = 0; number < 28; number += 1) {
+for (let number = 0; number < 34; number += 1) {
   const chapter = cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html'));
   if (!chapter?.includes(`data-chapter-trainer="${number}"`)) failures.push(`chapter ${number}: missing quick trainer`);
   const count = chapter?.match(/data-trainer-question=/g)?.length ?? 0;
@@ -97,11 +97,11 @@ for (let number = 0; number < 28; number += 1) {
     if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
   }
 }
-// Практикум нумеруется по академическим модулям U00–U30, а главы — отдельно.
+// Практикум нумеруется по академическим модулям U00–U36, а главы — отдельно.
 // Ссылка «Теория» с работы L<N> обязана вести в ту главу, внутри которой физически
 // находится заголовок модуля U<N>, иначе связка практикума и теории разъезжается.
-const MODULE_COUNT = 31;
-const chapterHtml = Array.from({ length: 28 }, (_, number) => cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html')));
+const MODULE_COUNT = 37;
+const chapterHtml = Array.from({ length: 34 }, (_, number) => cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html')));
 const linkedModules = new Set();
 for (let number = 0; number < MODULE_COUNT; number += 1) {
   const padded = String(number).padStart(2, '0');
@@ -120,14 +120,14 @@ for (let number = 0; number < MODULE_COUNT; number += 1) {
   if (!linkedModules.has(number)) failures.push(`module ${number}: unreachable from any chapter page`);
 }
 // Каждая глава, кроме нулевой, разбирает одно типичное заблуждение.
-for (let number = 1; number < 28; number += 1) {
+for (let number = 1; number < 34; number += 1) {
   const html = chapterHtml[number];
   if (!html?.includes('Типичная ошибка')) failures.push(`chapter ${number}: missing misconception block`);
 }
-// Разобранный пример объявлен во введении как схема из пяти шагов. Глава 27 устроена
+// Разобранный пример объявлен во введении как схема из пяти шагов. Глава 33 устроена
 // иначе (последовательность аварий), у главы 00 разбора нет — остальные обязаны схему держать.
 const WORKED_EXAMPLE_STEPS = ['Ситуация', 'Стратегия', 'Действия', 'Интерпретация', 'Вывод'];
-for (let number = 1; number < 27; number += 1) {
+for (let number = 1; number < 33; number += 1) {
   const html = chapterHtml[number] ?? '';
   const headings = Array.from(html.matchAll(/<h([23])[^>]*>(.*?)<\/h\1>/gs))
     .map((match) => ({ level: Number(match[1]), text: match[2].replace(/<[^>]+>/g, '').trim() }));
@@ -150,8 +150,8 @@ if (!dataMatch) failures.push('assessment: missing study-data');
 else {
   const data = JSON.parse(dataMatch[1]);
   bankSize = { items: data.items?.length ?? 0, cases: data.cases?.length ?? 0 };
-  if (data.items?.length !== 93) failures.push(`assessment: expected 93 items, got ${data.items?.length}`);
-  if (data.cases?.length !== 31) failures.push(`assessment: expected 31 cases, got ${data.cases?.length}`);
+  if (data.items?.length !== 111) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
+  if (data.cases?.length !== 37) failures.push(`assessment: expected 37 cases, got ${data.cases?.length}`);
   // Тип задания обязан соответствовать его форме: «Расчёт» без числовых полей —
   // обычный вопрос с выбором, и обещание расчёта в таком задании ложно.
   for (const item of data.items ?? []) {
@@ -228,7 +228,7 @@ const routePage = cache.get(resolve(root, 'route', 'index.html'));
 if (!routePage) failures.push('route: page is missing');
 else {
   const rows = routePage.match(/data-route-row="\d+"/g)?.length ?? 0;
-  if (rows !== 28) failures.push(`route: checklist has ${rows} rows for 28 chapters`);
+  if (rows !== 34) failures.push(`route: checklist has ${rows} rows for 34 chapters`);
   for (const marker of ['data-route-calendar', 'data-backup-save', 'data-backup-load']) {
     if (!routePage.includes(marker)) failures.push(`route: missing ${marker}`);
   }
@@ -239,13 +239,13 @@ for (const [file, html] of cache) {
 }
 // Итоговый контроль пересчитывается по числу модулей: расхождение знаменателя
 // и порога с числом заданий даёт молча неверный результат.
-if (assessment && (assessment.includes('total:28') || assessment.includes("correctCount>=24"))) {
-  failures.push('assessment: final exam still scored out of 28');
+if (assessment && (assessment.includes('length:31') || assessment.includes("correctCount>=27?"))) {
+  failures.push('assessment: final exam still scored out of 31');
 }
 // Шкала времени только дополняется: код не должен уметь переписать дату.
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
   failures.push('site.js: timeline must be append-only');
 }
-if (htmlFiles.length !== 67) failures.push(`expected 67 routes, got ${htmlFiles.length}`);
+if (htmlFiles.length !== 79) failures.push(`expected 79 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
