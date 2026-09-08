@@ -21,6 +21,8 @@ const parts = [
 
 const pad = (number) => String(number).padStart(2, '0');
 const strip = (html) => html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+const entities = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'", nbsp: ' ', mdash: '—', ndash: '–', laquo: '«', raquo: '»', hellip: '…', rarr: '→', larr: '←', times: '×', middot: '·' };
+const decode = (text) => text.replace(/&(#\d+|[a-z]+);/gi, (match, name) => entities[name.toLowerCase()] ?? match);
 const escape = (text) => String(text).replace(/[&<>\"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char]);
 const sha256 = (data) => createHash('sha256').update(data).digest('hex');
 const marker = (id) => {
@@ -133,11 +135,19 @@ const readerTools = `
   <button type="button" class="notes-backdrop" data-notes-close aria-label="Закрыть панель заметок" hidden></button>
   <div class="selection-toolbar" data-selection-toolbar hidden role="toolbar" aria-label="Действия с выделенным текстом"><button type="button" data-define-selection title="Показать определение термина">Определение</button><button type="button" data-copy-selection title="Копировать выделенный текст">Копировать</button><button type="button" data-save-quote title="Сохранить цитату">В цитаты</button><button type="button" data-remove-current-highlight hidden>Убрать маркер</button><span aria-hidden="true"></span><button type="button" class="color-dot yellow" data-highlight-color="yellow" aria-label="Выделить жёлтым"></button><button type="button" class="color-dot green" data-highlight-color="green" aria-label="Выделить зелёным"></button><button type="button" class="color-dot blue" data-highlight-color="blue" aria-label="Выделить синим"></button><button type="button" class="color-dot pink" data-highlight-color="pink" aria-label="Выделить розовым"></button></div>
   <div class="define-card" data-define-card hidden role="dialog" aria-label="Определение термина" aria-live="polite"><button type="button" class="define-close" data-define-close aria-label="Закрыть определение">×</button><div data-define-body></div></div>
-  <div class="reader-toast" data-reader-toast role="status" aria-live="polite"></div>`;
+  <div class="reader-toast" data-reader-toast role="status" aria-live="polite"></div>
+  <div class="search-overlay" data-search-overlay hidden role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <div class="search-panel">
+      <h2 id="search-title" class="visually-hidden">Поиск по учебнику</h2>
+      <div class="search-field"><span aria-hidden="true">⌕</span><input type="search" data-search-input placeholder="Найти по всему учебнику: PMTU, initramfs, bifurcation…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос" aria-controls="search-results"><button type="button" class="icon-button" data-search-close aria-label="Закрыть поиск">×</button></div>
+      <p class="search-status" data-search-status role="status">Введите не меньше двух символов.</p>
+      <div class="search-results" id="search-results" data-search-results></div>
+    </div>
+  </div>`;
 
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
-<body><header class="topbar">${globalNav}<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary>Разделы</summary><div>${globalNav}</div></details></header>
+<body><header class="topbar">${globalNav}<button class="search-toggle" type="button" data-search-open aria-haspopup="dialog"><span aria-hidden="true">⌕</span><span>Поиск</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary>Разделы</summary><div>${globalNav}</div></details></header>
 <div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main"><p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 ${readerTools}<script src="/assets/site.js"></script></body></html>`;
 
@@ -212,6 +222,19 @@ const chapterTrainerOverrides = new Map([[0, [
   { id: 'C00-1', stem: 'Что лучше всего позволяет безопасно повторить break/fix-упражнение?', options: ['Известный baseline: template или snapshot плюс зафиксированная конфигурация', 'Случайный reboot всех VM после каждого изменения', 'Единственная копия стенда без документации', 'Одновременная замена нескольких настроек'], answer: 0, explanation: 'Известная исходная точка делает опыт повторяемым и позволяет связать наблюдаемый эффект с конкретным изменением.' },
 ]]]);
 
+// Номер верного ответа не должен читаться в исходном коде страницы. В разметку попадает
+// контрольная сумма пары «идентификатор вопроса + номер варианта»; скрипт сверяет с ней
+// выбор читателя и восстанавливает индекс перебором вариантов. Та же функция дословно
+// повторена в клиентском скрипте — при правке менять обе.
+const ANSWER_SALT = 'sic6';
+const answerDigest = (trainerId, index) => {
+  let hash = 0x811c9dc5;
+  for (const character of `${trainerId}|${index}|${ANSWER_SALT}`) {
+    hash = Math.imul(hash ^ character.charCodeAt(0), 0x01000193) >>> 0;
+  }
+  return hash.toString(36);
+};
+
 const chapterTrainer = (number) => {
   const module = studyModuleByChapter[number];
   const items = chapterTrainerOverrides.get(number) ?? studyDatabase.items.filter((item) => item.module === module && Array.isArray(item.options)).slice(0, 2);
@@ -221,7 +244,7 @@ const chapterTrainer = (number) => {
     const shift = (number + questionIndex) % item.options.length;
     const options = [...item.options.slice(shift), ...item.options.slice(0, shift)];
     const answer = (item.answer - shift + item.options.length) % item.options.length;
-    return `<fieldset class="trainer-question" data-trainer-question="${trainerId}" data-answer="${answer}"><legend><span>${questionIndex + 1}</span>${escape(item.stem)}</legend><div class="trainer-options">${options.map((option, optionIndex) => `<label><input type="radio" name="trainer-${trainerId}" value="${optionIndex}"><span>${escape(option)}</span></label>`).join('')}</div><div class="trainer-actions"><button type="button" data-trainer-check>Проверить</button><p class="trainer-feedback" data-trainer-feedback hidden data-explanation="${escape(item.explanation)}" role="status"></p></div></fieldset>`;
+    return `<fieldset class="trainer-question" data-trainer-question="${trainerId}" data-answer="${answerDigest(trainerId, answer)}"><legend><span>${questionIndex + 1}</span>${escape(item.stem)}</legend><div class="trainer-options">${options.map((option, optionIndex) => `<label><input type="radio" name="trainer-${trainerId}" value="${optionIndex}"><span>${escape(option)}</span></label>`).join('')}</div><div class="trainer-actions"><button type="button" data-trainer-check>Проверить</button><p class="trainer-feedback" data-trainer-feedback hidden data-explanation="${escape(item.explanation)}" role="status"></p></div></fieldset>`;
   }).join('');
   return `<section class="chapter-trainer" data-chapter-trainer="${number}" aria-labelledby="trainer-title-${number}"><header><div><p class="eyebrow">Закрепление материала</p><h2 id="trainer-title-${number}">Мини-тренажёр главы</h2><p>Два вопроса с мгновенной проверкой. Результат сохраняется в этом браузере.</p></div><strong data-trainer-score>0 / 2</strong></header>${questions}<footer><span data-trainer-summary>Ответьте на оба вопроса.</span><a href="/assessment/?module=${module}">Полный тренажёр по теме →</a></footer></section>`;
 };
@@ -309,7 +332,30 @@ const css = `
 @media(max-width:560px){.define-card{left:10px!important;right:10px;width:auto}}
 /* Reader notebook */
 .notes-toggle{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #ffffff35;background:#ffffff0b;color:white;font:600 12px/1.2 inherit;cursor:pointer;white-space:nowrap}.notes-toggle:hover{border-color:var(--teal2);background:#ffffff14}.notes-toggle:focus-visible{outline:2px solid var(--teal2);outline-offset:3px}.notes-toggle strong{min-width:18px;padding:2px 5px;border-radius:10px;background:var(--teal);color:#06151d;font-size:10px;text-align:center}.notes-panel{position:fixed;z-index:50;top:68px;right:0;bottom:0;width:min(410px,100vw);padding:24px;background:var(--white);color:var(--ink);border-left:1px solid var(--line);box-shadow:-18px 0 48px #0005;overflow:auto;transform:translateX(105%);visibility:hidden;transition:transform .22s ease,visibility .22s}.notes-panel.is-open{transform:translateX(0);visibility:visible}.notes-backdrop{position:fixed;z-index:45;inset:68px 0 0;border:0;background:#00101899;cursor:default}.notes-head,.notes-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.notes-head h2{margin:3px 0 0;font-family:Georgia,serif;font-size:30px}.icon-button,.text-button{border:0;background:transparent;color:var(--ink);cursor:pointer}.icon-button{font-size:30px;line-height:1;padding:2px 6px}.text-button{padding:4px 0;color:var(--link);font-weight:700}.text-button:disabled{opacity:.45;cursor:not-allowed}.selection-card,.note-composer,.notes-library{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.selection-card h3,.notes-library h3{margin:0 0 12px;font-size:15px}.selection-preview{min-height:68px;margin:0 0 12px;padding:12px;background:var(--soft);border:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.5;white-space:pre-wrap}.selection-actions{display:flex;gap:8px}.selection-actions button,.note-composer button{padding:9px 12px;border:1px solid #63858a;background:var(--white);color:var(--ink);font:inherit;cursor:pointer}.selection-actions button:disabled,.highlight-palette button:disabled{opacity:.38;cursor:not-allowed}.highlight-palette{display:flex;align-items:center;gap:10px;margin-top:13px}.undo-highlight{margin-top:13px;padding:0;border:0;background:transparent;color:var(--link);font:700 12px/1.4 inherit;cursor:pointer}.undo-highlight:disabled{opacity:.42;cursor:not-allowed}.color-dot{width:24px;height:24px;padding:0!important;border:2px solid #26363b!important;border-radius:50%;cursor:pointer;box-shadow:0 0 0 1px #ffffffaa}.color-dot:hover:not(:disabled),.color-dot:focus-visible{transform:scale(1.12);outline:2px solid var(--teal);outline-offset:2px}.color-dot.yellow,.reader-highlight[data-color=yellow]{background:#ffe48c!important}.color-dot.green,.reader-highlight[data-color=green]{background:#a9e6bd!important}.color-dot.blue,.reader-highlight[data-color=blue]{background:#a9d8ff!important}.color-dot.pink,.reader-highlight[data-color=pink]{background:#f7b8cf!important}.reader-highlight{color:#102733;padding:.04em .08em;border-radius:2px;box-decoration-break:clone;-webkit-box-decoration-break:clone;cursor:pointer}.reader-highlight:target{outline:3px solid var(--teal);outline-offset:3px}.note-composer label{display:block;margin-bottom:8px;font-size:13px;font-weight:800}.note-composer textarea{width:100%;resize:vertical;padding:12px;border:1px solid #63858a;background:var(--paper);color:var(--ink);font:inherit;line-height:1.5}.note-composer .button{margin-top:9px}.notes-library-head{align-items:baseline}.notes-library-head h3 span{display:inline-block;min-width:22px;margin-left:4px;padding:2px 6px;border-radius:12px;background:var(--soft);text-align:center}.notes-list{display:grid;gap:10px}.notes-empty{color:var(--muted);font-size:13px;line-height:1.5}.note-item{padding:13px;border:1px solid var(--line);background:var(--paper)}.note-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.note-kind{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}.note-item p{margin:9px 0;font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.note-item-source{display:block;color:var(--link);font-size:11px;text-decoration:none}.note-item-actions{display:flex;gap:12px;margin-top:10px}.note-item-actions button{padding:0;border:0;background:transparent;color:var(--link);font:700 11px/1.4 inherit;cursor:pointer}.note-item-actions .danger{color:#c45a43}.selection-toolbar{position:fixed;z-index:60;display:flex;align-items:center;gap:6px;padding:8px;background:var(--navy2);border:1px solid #ffffff2b;box-shadow:0 8px 24px #0007;color:white}.selection-toolbar[hidden]{display:none}.selection-toolbar>button:not(.color-dot){padding:7px 9px;border:1px solid #ffffff30;background:#ffffff0e;color:white;font:600 11px/1.2 inherit;cursor:pointer}.selection-toolbar>button[hidden]{display:none}.selection-toolbar>span{width:1px;height:22px;background:#ffffff38}.selection-toolbar .color-dot{width:20px;height:20px}.reader-toast{position:fixed;z-index:70;right:22px;bottom:22px;max-width:330px;padding:11px 15px;background:var(--navy2);color:white;border:1px solid #ffffff2b;box-shadow:0 8px 24px #0006;font-size:13px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}.reader-toast.is-visible{opacity:1;transform:translateY(0)}
-@media(max-width:900px){.topbar{gap:12px}.notes-toggle span:nth-child(2){display:none}.notes-panel{top:68px}.selection-toolbar{left:10px!important;right:10px;bottom:12px;top:auto!important;justify-content:center;flex-wrap:wrap}}@media(max-width:560px){.notes-toggle{padding:8px}.theme-toggle{padding:8px}.notes-panel{padding:19px}.notes-backdrop{display:none}.selection-toolbar>button:not(.color-dot){font-size:10px}}@media print{.notes-toggle,.notes-panel,.notes-backdrop,.selection-toolbar,.reader-toast{display:none!important}.reader-highlight{background:transparent!important;color:inherit;padding:0}}
+/* Полнотекстовый поиск */
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.search-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #ffffff35;background:#ffffff0b;color:white;font:600 12px/1.2 inherit;cursor:pointer;white-space:nowrap}
+.search-toggle:hover{border-color:var(--teal2);background:#ffffff14}
+.search-toggle:focus-visible{outline:2px solid var(--teal2);outline-offset:3px}
+.search-toggle kbd{padding:2px 5px;border:1px solid #ffffff30;background:#ffffff12;font:600 10px/1.3 inherit;letter-spacing:.04em}
+.topbar .search-toggle~.theme-toggle{margin-left:0}
+.search-overlay{position:fixed;inset:0;z-index:60;display:flex;justify-content:center;padding:min(12vh,110px) 16px 24px;background:#04141ba8;backdrop-filter:blur(2px)}
+.search-overlay[hidden]{display:none}
+.search-panel{display:flex;flex-direction:column;width:min(760px,100%);max-height:76vh;background:var(--white);border:1px solid var(--line);box-shadow:0 30px 80px #04141b40}
+.search-field{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.search-field>span{color:var(--muted);font-size:22px;line-height:1}
+.search-field input{flex:1;min-width:0;padding:8px 2px;border:0;background:transparent;color:var(--ink);font:400 17px/1.4 inherit}
+.search-field input:focus{outline:none}
+.search-status{margin:0;padding:10px 16px;color:var(--muted);font-size:12.5px;border-bottom:1px solid var(--line)}
+.search-results{overflow-y:auto;padding:6px 0 10px}
+.search-hit{display:block;padding:13px 16px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.search-hit:last-child{border-bottom:0}
+.search-hit:hover,.search-hit:focus-visible,.search-hit.is-active{background:var(--soft);outline:none}
+.search-hit strong{display:block;font-size:15px;line-height:1.35}
+.search-hit em{display:block;margin-top:3px;color:var(--muted);font-style:normal;font-size:12px}
+.search-hit p{margin:6px 0 0;color:var(--ink);font-size:13.5px;line-height:1.5}
+.search-hit mark{background:var(--teal2);color:#04191d;padding:0 1px}
+@media(max-width:900px){.topbar{gap:12px}.search-toggle span:nth-child(2),.search-toggle kbd{display:none}.notes-toggle span:nth-child(2){display:none}.notes-panel{top:68px}.selection-toolbar{left:10px!important;right:10px;bottom:12px;top:auto!important;justify-content:center;flex-wrap:wrap}}@media(max-width:560px){.notes-toggle{padding:8px}.theme-toggle{padding:8px}.notes-panel{padding:19px}.notes-backdrop{display:none}.selection-toolbar>button:not(.color-dot){font-size:10px}}@media print{.notes-toggle,.notes-panel,.notes-backdrop,.selection-toolbar,.reader-toast{display:none!important}.reader-highlight{background:transparent!important;color:inherit;padding:0}}
 `;
 
 const js = `(() => {'use strict';
@@ -465,7 +511,103 @@ const QUICK_KEY='server-infrastructure-chapter-trainers-v1';
 const readQuick=()=>{try{const value=JSON.parse(localStorage.getItem(QUICK_KEY)||'null');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch{return{}}};
 const quickRecords=readQuick(),saveQuick=()=>{try{localStorage.setItem(QUICK_KEY,JSON.stringify(quickRecords));return true}catch{return false}};
 const recordQuickCheck=(id,correct)=>{const old=quickRecords[id];quickRecords[id]={correct,attempts:(old?.attempts||0)+1,last:Date.now()};saveQuick()};
-document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;score.textContent=done+' / '+questions.length;summary.textContent=done===questions.length?'Глава закреплена. Можно переходить дальше.':done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=Number(question.dataset.answer),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
+const answerDigest=(id,index)=>{let hash=0x811c9dc5;for(const character of id+'|'+index+'|sic6')hash=Math.imul(hash^character.charCodeAt(0),0x01000193)>>>0;return hash.toString(36)};
+const answerIndex=question=>{const id=question.dataset.trainerQuestion,digest=question.dataset.answer,total=question.querySelectorAll('input[type=radio]').length;for(let index=0;index<total;index+=1)if(answerDigest(id,index)===digest)return index;return -1};
+document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;score.textContent=done+' / '+questions.length;summary.textContent=done===questions.length?'Глава закреплена. Можно переходить дальше.':done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=answerIndex(question),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
+/* Полнотекстовый поиск. Индекс лежит отдельным файлом и загружается один раз при
+   первом открытии панели, поэтому страница не тяжелеет от 76 тысяч слов. */
+const searchOverlay=document.querySelector('[data-search-overlay]'),searchInput=document.querySelector('[data-search-input]'),searchStatus=document.querySelector('[data-search-status]'),searchResults=document.querySelector('[data-search-results]');
+const fold=text=>String(text).toLowerCase().replace(/ё/g,'е');
+let searchIndex=null,searchRequest=null,searchTimer=0,searchReturnFocus=null;
+const loadSearchIndex=()=>{
+  if(searchIndex)return Promise.resolve(searchIndex);
+  if(!searchRequest)searchRequest=fetch('/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.map(entry=>({...entry,f:fold(entry.h+' '+entry.x)}));return searchIndex});
+  return searchRequest;
+};
+const markTerms=(raw,terms)=>{
+  const folded=fold(raw),ranges=[];
+  for(const term of terms){let from=0,at;while((at=folded.indexOf(term,from))>=0){ranges.push([at,at+term.length]);from=at+term.length}}
+  ranges.sort((a,b)=>a[0]-b[0]);
+  let html='',cursor=0;
+  for(const [start,end] of ranges){if(start<cursor)continue;html+=escapeText(raw.slice(cursor,start))+'<mark>'+escapeText(raw.slice(start,end))+'</mark>';cursor=end}
+  return html+escapeText(raw.slice(cursor));
+};
+const excerpt=(text,terms)=>{
+  const folded=fold(text);let at=-1;
+  for(const term of terms){const found=folded.indexOf(term);if(found>=0&&(at<0||found<at))at=found}
+  const start=Math.max(0,(at<0?0:at)-90),end=Math.min(text.length,start+280);
+  return (start>0?'… ':'')+text.slice(start,end).trim()+(end<text.length?' …':'');
+};
+const renderSearch=(query,index)=>{
+  const terms=[...new Set(fold(query).split(/[^\\p{L}\\p{N}._-]+/u).filter(term=>term.length>1))];
+  if(!terms.length){searchResults.innerHTML='';searchStatus.textContent='Введите не меньше двух символов.';return}
+  const hits=[];
+  for(const entry of index){
+    let score=0,missing=false;
+    for(const term of terms){
+      let count=0,from=0,at;
+      while((at=entry.f.indexOf(term,from))>=0){count+=1;from=at+term.length}
+      if(!count){missing=true;break}
+      score+=count+(fold(entry.h).includes(term)?12:0);
+    }
+    if(!missing)hits.push({entry,score});
+  }
+  hits.sort((a,b)=>b.score-a.score);
+  if(!hits.length){searchResults.innerHTML='';searchStatus.textContent='Ничего не найдено. Попробуйте более короткое слово или основу термина.';return}
+  searchStatus.textContent='Найдено разделов: '+hits.length+(hits.length>40?' — показаны первые 40':'');
+  searchResults.innerHTML=hits.slice(0,40).map(({entry})=>{
+    const href=entry.u+(entry.a?'#'+entry.a:'');
+    return '<a class="search-hit" href="'+escapeText(href)+'"><strong>'+markTerms(entry.h,terms)+'</strong><em>'+escapeText(entry.t)+'</em><p>'+markTerms(excerpt(entry.x,terms),terms)+'</p></a>';
+  }).join('');
+};
+const scheduleSearch=()=>{
+  clearTimeout(searchTimer);
+  const query=searchInput.value.trim();
+  if(query.length<2){searchResults.innerHTML='';searchStatus.textContent='Введите не меньше двух символов.';return}
+  searchTimer=setTimeout(()=>{
+    searchStatus.textContent='Ищем…';
+    loadSearchIndex().then(index=>{if(searchInput.value.trim()===query)renderSearch(query,index)})
+      .catch(()=>{searchStatus.textContent='Не удалось загрузить поисковый индекс.'});
+  },120);
+};
+const activeHit=()=>searchResults.querySelector('.search-hit.is-active');
+const moveHit=step=>{
+  const hits=[...searchResults.querySelectorAll('.search-hit')];
+  if(!hits.length)return;
+  const current=hits.indexOf(activeHit());
+  const next=hits[Math.min(hits.length-1,Math.max(0,current<0?0:current+step))];
+  hits.forEach(hit=>hit.classList.remove('is-active'));
+  next.classList.add('is-active');
+  next.scrollIntoView({block:'nearest'});
+};
+const closeSearch=()=>{
+  if(!searchOverlay||searchOverlay.hidden)return;
+  searchOverlay.hidden=true;
+  searchReturnFocus?.focus?.();
+};
+const openSearch=()=>{
+  if(!searchOverlay)return;
+  searchReturnFocus=document.activeElement;
+  searchOverlay.hidden=false;
+  searchInput.select();
+  searchInput.focus();
+  loadSearchIndex().catch(()=>{});
+};
+if(searchOverlay){
+  document.querySelectorAll('[data-search-open]').forEach(button=>button.addEventListener('click',openSearch));
+  document.querySelectorAll('[data-search-close]').forEach(button=>button.addEventListener('click',closeSearch));
+  searchOverlay.addEventListener('pointerdown',event=>{if(event.target===searchOverlay)closeSearch()});
+  searchInput.addEventListener('input',scheduleSearch);
+  searchOverlay.addEventListener('keydown',event=>{
+    if(event.key==='Escape'){event.preventDefault();closeSearch();return}
+    if(event.key==='ArrowDown'){event.preventDefault();moveHit(1);return}
+    if(event.key==='ArrowUp'){event.preventDefault();moveHit(-1);return}
+    if(event.key==='Enter'){const hit=activeHit();if(hit){event.preventDefault();hit.click()}}
+  });
+  document.addEventListener('keydown',event=>{
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();searchOverlay.hidden?openSearch():closeSearch()}
+  });
+}
 const search=document.querySelector('[data-course-search]');if(search)search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();document.querySelectorAll('[data-course-card]').forEach(card=>card.hidden=q&&!card.dataset.courseCard.includes(q));document.querySelectorAll('[data-course-group]').forEach(group=>group.hidden=![...group.querySelectorAll('[data-course-card]')].some(card=>!card.hidden));});
 const context=document.modelContext;if(!context?.registerTool)return;const lifecycle=new AbortController();const register=tool=>{try{Promise.resolve(context.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{})}catch{}};
 register({name:'get_course_progress',title:'Показать прогресс курса',description:'Возвращает краткий прогресс самостоятельного обучения в этом браузере.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute:()=>({answeredChecks:Object.keys(records).length,correctChecks:progressTotals.correct,programmingTestsPassed:Number(state?.practice?.passed||0),bestFinalExam:progressTotals.best})});
@@ -492,6 +634,42 @@ for (const [url, html] of outputs) {
   await mkdir(dirname(file), { recursive: true });
   await writeFile(file, html);
 }
+
+// ---------- Индекс полнотекстового поиска ----------
+// Единица поиска — раздел, а не страница: результат ведёт сразу к нужному месту главы.
+// Индекс собирается из готовых страниц, поэтому он не может разойтись с тем, что читает
+// читатель. Мини-тренажёр из индекса исключён: его вопросы — не текст учебника.
+const searchDocuments = [];
+const indexPage = (url, html) => {
+  const title = strip(html.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? url).replace(/\s*·\s*Серверная инфраструктура$/, '');
+  const mainMatch = html.match(/<main class="page-main">([\s\S]*)<\/main>/);
+  if (!mainMatch) return;
+  const main = mainMatch[1]
+    .replace(/<(script|style)\b[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<section class="chapter-trainer"[\s\S]*?<\/section>/g, ' ');
+  const headings = Array.from(main.matchAll(/<h([1-4])[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h\1>/g));
+  const blocks = headings.length
+    ? headings.map((match, order) => ({
+      anchor: match[2],
+      heading: strip(match[3]),
+      body: main.slice(match.index + match[0].length, headings[order + 1]?.index ?? main.length),
+    }))
+    : [{ anchor: '', heading: title, body: main }];
+  const before = searchDocuments.length;
+  for (const block of blocks) {
+    const text = decode(strip(block.body));
+    if (text.length < 40) continue;
+    searchDocuments.push({ u: url, t: title, a: block.anchor, h: decode(block.heading), x: text });
+  }
+  // Страница целиком из интерактивных блоков (тренажёр A1) не даёт ни одного раздела —
+  // она всё равно должна находиться по названию, иначе маршрут выпадает из поиска.
+  if (searchDocuments.length === before) searchDocuments.push({ u: url, t: title, a: '', h: title, x: decode(strip(main)) });
+};
+indexPage('/', home);
+indexPage('/curriculum/', curriculum);
+for (const [url, html] of outputs) indexPage(url, html);
+if (searchDocuments.length < 400) throw new Error(`Search index too small: ${searchDocuments.length} sections`);
+await writeFile(resolve(output, 'assets', 'search.json'), JSON.stringify(searchDocuments));
 
 const htmlFiles = ['index.html', 'curriculum/index.html', ...outputs.map(([url]) => `${url.slice(1)}index.html`)];
 for (const relative of htmlFiles) {

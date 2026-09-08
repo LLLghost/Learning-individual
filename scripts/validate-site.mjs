@@ -47,6 +47,25 @@ const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
 if (!siteJs.includes('server-infrastructure-reader-v1') || !siteJs.includes('data-highlight-color')) failures.push('site.js: missing reader notebook behavior');
 if (!siteCss.includes('.notes-panel') || !siteCss.includes('.reader-highlight')) failures.push('site.css: missing reader notebook styles');
 if (!siteJs.includes('recordQuickCheck') || !siteCss.includes('.chapter-trainer')) failures.push('assets: missing chapter trainer behavior or styles');
+// Полнотекстовый поиск: индекс собран по всем маршрутам и доступен с каждой страницы.
+if (!siteJs.includes('loadSearchIndex') || !siteCss.includes('.search-panel')) failures.push('assets: missing full-text search behavior or styles');
+try {
+  const searchIndex = JSON.parse(await readFile(resolve(root, 'assets', 'search.json'), 'utf8'));
+  const indexedRoutes = new Set(searchIndex.map((entry) => entry.u));
+  if (searchIndex.length < 400) failures.push(`search index: only ${searchIndex.length} sections`);
+  if (indexedRoutes.size !== htmlFiles.length) failures.push(`search index: covers ${indexedRoutes.size} of ${htmlFiles.length} routes`);
+  const malformed = searchIndex.filter((entry) => !entry.u || !entry.h || !entry.x);
+  if (malformed.length) failures.push(`search index: ${malformed.length} sections without url, heading or text`);
+  for (const entry of searchIndex) {
+    if (entry.a && !cache.get(resolve(root, entry.u.slice(1), 'index.html'))?.includes(`id="${entry.a}"`)) {
+      failures.push(`search index: dangling anchor ${entry.u}#${entry.a}`);
+      break;
+    }
+  }
+} catch { failures.push('assets: missing or invalid search.json'); }
+for (const [file, html] of cache) {
+  if (!html.includes('data-search-open')) failures.push(`${file}: missing site search entry point`);
+}
 // Справочник терминов: база должна быть встроена в site.js и содержать глоссарий целиком.
 const termsMatch = siteJs.match(/const TERMS=(\[[\s\S]*?\]);\r?\nconst defineCard/);
 if (!termsMatch) failures.push('site.js: missing term reference base');
@@ -65,6 +84,10 @@ for (let number = 0; number < 28; number += 1) {
   if (!chapter?.includes(`data-chapter-trainer="${number}"`)) failures.push(`chapter ${number}: missing quick trainer`);
   const count = chapter?.match(/data-trainer-question=/g)?.length ?? 0;
   if (count !== 2) failures.push(`chapter ${number}: expected 2 quick questions, got ${count}`);
+  // Верный ответ мини-тренажёра не печатается в разметку открытым номером.
+  for (const match of chapter?.matchAll(/data-answer="([^"]*)"/g) ?? []) {
+    if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
+  }
 }
 // Практикум нумеруется по академическим модулям U00–U27, а главы — отдельно.
 // Ссылка «Теория» с работы L<N> обязана вести в ту главу, внутри которой физически
@@ -92,6 +115,21 @@ for (let number = 1; number < 28; number += 1) {
   const html = chapterHtml[number];
   if (!html?.includes('Типичная ошибка')) failures.push(`chapter ${number}: missing misconception block`);
 }
+// Разобранный пример объявлен во введении как схема из пяти шагов. Глава 27 устроена
+// иначе (последовательность аварий), у главы 00 разбора нет — остальные обязаны схему держать.
+const WORKED_EXAMPLE_STEPS = ['Ситуация', 'Стратегия', 'Действия', 'Интерпретация', 'Вывод'];
+for (let number = 1; number < 27; number += 1) {
+  const html = chapterHtml[number] ?? '';
+  const headings = Array.from(html.matchAll(/<h([23])[^>]*>(.*?)<\/h\1>/gs))
+    .map((match) => ({ level: Number(match[1]), text: match[2].replace(/<[^>]+>/g, '').trim() }));
+  const start = headings.findIndex((heading) => heading.level === 2 && heading.text.includes('Разобранный пример'));
+  if (start < 0) { failures.push(`chapter ${number}: missing worked example`); continue; }
+  let end = start + 1;
+  while (end < headings.length && headings[end].level === 3) end += 1;
+  const steps = headings.slice(start + 1, end).map((heading) => heading.text);
+  const missing = WORKED_EXAMPLE_STEPS.filter((step) => !steps.includes(step));
+  if (missing.length) failures.push(`chapter ${number}: worked example lacks ${missing.join(', ')}`);
+}
 
 const chapter00 = cache.get(resolve(root, 'chapters', '00', 'index.html'));
 const chapter01 = cache.get(resolve(root, 'chapters', '01', 'index.html'));
@@ -103,6 +141,12 @@ else {
   const data = JSON.parse(dataMatch[1]);
   if (data.items?.length !== 84) failures.push(`assessment: expected 84 items, got ${data.items?.length}`);
   if (data.cases?.length !== 28) failures.push(`assessment: expected 28 cases, got ${data.cases?.length}`);
+  // Тип задания обязан соответствовать его форме: «Расчёт» без числовых полей —
+  // обычный вопрос с выбором, и обещание расчёта в таком задании ложно.
+  for (const item of data.items ?? []) {
+    if (item.kind === 'calculation' && !item.fields?.length) failures.push(`item ${item.id}: kind "calculation" without numeric fields`);
+    if (item.kind === 'concept' && !item.options?.length) failures.push(`item ${item.id}: kind "concept" without options`);
+  }
 }
 if (htmlFiles.length !== 63) failures.push(`expected 63 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
