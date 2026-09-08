@@ -92,6 +92,13 @@ for (let number = 0; number < 34; number += 1) {
   if (!chapter?.includes(`data-chapter-trainer="${number}"`)) failures.push(`chapter ${number}: missing quick trainer`);
   const count = chapter?.match(/data-trainer-question=/g)?.length ?? 0;
   if (count !== 2) failures.push(`chapter ${number}: expected 2 quick questions, got ${count}`);
+  // Свободное воспроизведение идёт до мини-тренажёра: узнавание вариантов, увиденное
+  // первым, подсказывает формулировки и обесценивает попытку вспомнить.
+  if (!chapter?.includes(`data-chapter-recall="${number}"`)) failures.push(`chapter ${number}: missing free-recall block`);
+  else if (chapter.indexOf('data-chapter-recall=') > chapter.indexOf('data-chapter-trainer=')) {
+    failures.push(`chapter ${number}: free recall must come before the quick trainer`);
+  }
+  if (/data-recall-topic[^>]*checked/.test(chapter ?? '')) failures.push(`chapter ${number}: recall topics must start unchecked`);
   // Верный ответ мини-тренажёра не печатается в разметку открытым номером.
   for (const match of chapter?.matchAll(/data-answer="([^"]*)"/g) ?? []) {
     if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
