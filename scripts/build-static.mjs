@@ -131,6 +131,7 @@ const globalNav = `
   <a class="brand" href="/"><span>SERVER</span><strong>INFRA</strong></a>
   <nav aria-label="Основная навигация">
     <a href="/curriculum/">Программа</a>
+    <a href="/route/">Маршрут</a>
     <a href="/assessment/">Проверка знаний</a>
     <a href="/labs/00/">Практикум</a>
     <a href="/reference/">Справочник</a>
@@ -157,10 +158,27 @@ const readerTools = `
     </div>
   </div>`;
 
+// Длинную страницу нельзя читать одним свитком: переход от одного раздела к
+// другому должен быть в один щелчок. Список собирается из заголовков h2 самой
+// страницы, поэтому не может разойтись с её содержанием.
+const sectionRail = (body) => {
+  const headings = [...body.matchAll(/<h2[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
+    .map((match) => ({ id: match[1], text: strip(match[2]) }))
+    .filter((heading) => heading.text);
+  if (headings.length < 5) return '';
+  const items = headings.map((heading) => {
+    const numbered = heading.text.match(/^(\d+\.\d+[A-Z]?|U\d\d)\.\s*(.*)$/);
+    const mark = numbered ? numbered[1] : '';
+    const label = numbered ? numbered[2] : heading.text;
+    return `<li><a href="#${heading.id}" data-section-link>${mark ? `<span>${escape(mark)}</span>` : '<span></span>'}${escape(label)}</a></li>`;
+  }).join('');
+  return `<nav class="section-rail" data-section-rail aria-label="Разделы страницы"><details data-section-details><summary><span>Разделы страницы</span><strong>${headings.length}</strong></summary><ol>${items}</ol></details></nav>`;
+};
+
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
 <body><a class="skip-link" href="#main">К основному тексту</a><div class="read-progress" data-read-progress aria-hidden="true"></div><header class="topbar">${globalNav}<div class="read-size" data-read-size-group role="group" aria-label="Размер текста" hidden><button type="button" data-read-size="s" aria-pressed="false" title="Мелкий текст">А</button><button type="button" data-read-size="m" aria-pressed="true" title="Обычный текст">А</button><button type="button" data-read-size="l" aria-pressed="false" title="Крупный текст">А</button></div><button class="search-toggle" type="button" data-search-open aria-haspopup="dialog"><span aria-hidden="true">⌕</span><span>Поиск</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary>Разделы</summary><div>${globalNav}</div></details></header>
-<div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main" id="main" tabindex="-1"><p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
+<div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main" id="main" tabindex="-1">${sectionRail(body)}<p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 ${readerTools}<script src="/assets/site.js"></script></body></html>`;
 
 // ---------- Справочная база терминов ----------
@@ -323,6 +341,69 @@ const a1 = pageShell({
   body: `<header class="tool-intro"><h1>Тренажёр A1</h1><p>Быстрая проверка базовых понятий перед переходом к модульному кабинету.</p><a href="/assessment/">← Основной кабинет</a></header><article class="study-surface">${section('selftest')}</article>${quizData}${quizScript}`,
 });
 
+// ---------- Маршрут самостоятельного прохождения ----------
+// Чек-лист и календарь не редактируются: строки собраны из состава курса, а
+// отметки берутся из фактического прогресса — мини-тренажёра главы и зачёта
+// модуля в кабинете. Поставить дату вручную интерфейс не позволяет.
+const routeRows = chapters.map((chapter) => {
+  // Модули считаются только собственные: нулевая глава опирается на модуль первой,
+  // и засчитывать его дважды нельзя.
+  const shown = chapterModules[chapter.number];
+  const own = shown.filter((module) => moduleChapter[module] === chapter.number);
+  const links = (list) => list.map((module) => `<a href="/assessment/?module=${module}">U${pad(module)}</a>`).join(' ');
+  const labLinks = shown.map((module) => `<a href="${labs[module].url}">L${pad(module)}A/B</a>`).join(' ');
+  const moduleCell = own.length
+    ? `<span class="route-links">${links(own)}</span><span class="route-mark" data-route-state="none">—</span>`
+    : `<span class="route-links">${links(shown)}</span><span class="route-note">модуль главы ${pad(moduleChapter[shown[0]])}</span>`;
+  return `<tr data-route-row="${chapter.number}" data-own="${own.join(',')}">
+    <th scope="row"><span>${pad(chapter.number)}</span><a href="${chapter.url}">${escape(chapter.title.replace(/^\d+\.\s*/, ''))}</a></th>
+    <td data-route-cell="chapter"><span class="route-mark" data-route-state="none">—</span></td>
+    <td data-route-cell="module">${moduleCell}</td>
+    <td data-route-cell="labs"><span class="route-links">${labLinks}</span><span class="route-note">проверяете сами</span></td>
+  </tr>`;
+}).join('');
+
+const route = pageShell({
+  title: 'Маршрут самостоятельного прохождения',
+  eyebrow: 'Порядок работы · чек-лист · календарь',
+  className: 'tool-page',
+  description: 'Порядок самостоятельного прохождения курса, чек-лист по главам и календарь фактического прогресса.',
+  body: `<header class="tool-intro"><h1>Маршрут самостоятельного прохождения</h1><p>Эта страница отвечает на три вопроса: в каком порядке идти, что считается пройденным и что уже сделано. Отметки в чек-листе и календаре появляются сами — из мини-тренажёров глав и зачёта модулей в учебном кабинете; вручную их выставить нельзя.</p></header>
+<section class="compact-prose" aria-labelledby="route-order">
+<h2 id="route-order">Порядок работы</h2>
+<ol class="route-order">
+<li><strong>Соберите стенд по главе 00.</strong> Весь курс стоит на нём: без стенда лаборатории и работы практикума выполнить не на чем.</li>
+<li><strong>Идите по главам подряд.</strong> Каждая опирается на предыдущие, а «Перед началом» прямо связывает новую тему с уже разобранной.</li>
+<li><strong>Читайте главу целиком</strong> — до разобранного примера и типичной ошибки мышления. Они дают метод, а не факты.</li>
+<li><strong>Выполните лабораторию главы</strong> на стенде, а не мысленно.</li>
+<li><strong>Решите мини-тренажёр</strong> в конце главы: два вопроса, мгновенная проверка. Это первая отметка в календаре.</li>
+<li><strong>Сдайте модуль U в кабинете:</strong> задания на механизм, расчёт и сценарий по шагам. Это вторая отметка.</li>
+<li><strong>Сделайте обе работы практикума</strong> — A (воспроизвести механизм) и B (сломанный стенд). Работу B не пропускайте: навык формируется именно там.</li>
+<li><strong>Запишите результат в свой репозиторий:</strong> учебник заводит его в разделе 0.17 и дальше опирается на него как на рабочий инструмент.</li>
+</ol>
+<p class="route-hint">Курс считается пройденным, когда сданы все 31 модуль, пройдены 28 из 28 тестов практикума на Python и итоговый контроль набирает не меньше 27 из 31.</p>
+</section>
+<section class="route-board" data-route-board aria-labelledby="route-check">
+<div class="route-head"><h2 id="route-check">Чек-лист по главам</h2><p data-route-summary>Отметки появятся после первого решённого мини-тренажёра.</p></div>
+<table class="route-table">
+<thead><tr><th scope="col">Глава</th><th scope="col">Мини-тренажёр</th><th scope="col">Модуль</th><th scope="col">Практикум</th></tr></thead>
+<tbody>${routeRows}</tbody>
+</table>
+<p class="route-note">Работы практикума автоматической проверки не имеют: их критерий приёмки написан в самой работе, а подтверждением служит ваш репозиторий. Учебник намеренно не предлагает отметить их щелчком — отметка, которую ставишь себе сам, ничего не доказывает.</p>
+</section>
+<section class="route-board" data-route-calendar aria-labelledby="route-calendar-title">
+<div class="route-head"><h2 id="route-calendar-title">Календарь</h2><p>Дни, в которые что-то было впервые зачтено. Календарь только показывает: изменить дату через интерфейс нельзя.</p></div>
+<div data-route-months class="route-months"></div>
+<ol class="route-log" data-route-log></ol>
+</section>
+<section class="compact-prose" aria-labelledby="route-backup">
+<h2 id="route-backup">Резервная копия</h2>
+<p>Весь прогресс хранится в этом браузере: очистка данных сайта, другой браузер или другое устройство означают пустой курс. Резервная копия собирает всё сразу — ответы кабинета, мини-тренажёры глав, календарь, заметки с выделениями и настройки чтения.</p>
+<div class="route-backup"><button type="button" class="button primary" data-backup-save>Сохранить резервную копию</button><label class="file-label">Загрузить резервную копию<input type="file" accept="application/json,.json" class="hidden-input" data-backup-load></label></div>
+<p class="route-note" data-backup-status role="status">Файл сохраняется на ваш компьютер и никуда не отправляется.</p>
+</section>`,
+});
+
 const referenceCards = `<div class="reference-cards"><a href="/reference/archive/"><span>Аттестация</span><strong>Экзаменационный банк и рубрики</strong></a><a href="/assessment/"><span>Интерактив</span><strong>Автоматическая проверка</strong></a><a href="/curriculum/"><span>Навигация</span><strong>Все 28 глав курса</strong></a></div>`;
 const reference = pageShell({ title: 'Справочник и приложения', eyebrow: 'Команды · runbook · глоссарий', body: `<header class="catalog-head"><h1>Справочник и приложения</h1><p>Материалы для работы рядом с терминалом и повторения после курса.</p></header>${referenceCards}<article class="prose">${rewriteLinks(source.slice(appendicesStart, selftestStart), '/reference/')}</article>` });
 const archive = pageShell({ title: 'Аттестация и архив материалов', eyebrow: 'Экзамены · ключи · рубрики', body: `<header class="catalog-head"><h1>Аттестация и архив</h1><p>Полная справочная модель очной аттестации, исходный экзаменационный банк и преподавательские ключи.</p></header><article class="prose">${rewriteLinks(source.slice(assessmentReferenceStart, mainEnd), '/reference/archive/')}</article>` });
@@ -333,6 +414,78 @@ const css = `
 /* Chapter quick trainer */
 .chapter-trainer{max-width:900px;margin:68px auto 0;padding:clamp(22px,4vw,38px);background:var(--white);border:1px solid var(--line);box-shadow:0 16px 40px #06151d0c}.chapter-trainer>header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line)}.chapter-trainer h2{margin:0;font-family:Georgia,serif;font-size:clamp(28px,4vw,38px)}.chapter-trainer header p:last-child{max-width:610px;margin:9px 0 0;color:var(--muted);line-height:1.55}.chapter-trainer>header>strong{flex:0 0 auto;min-width:78px;padding:10px 12px;background:var(--navy2);color:white;text-align:center;font-variant-numeric:tabular-nums}.trainer-question{margin:24px 0 0;padding:0;border:0}.trainer-question legend{display:flex;gap:12px;width:100%;font-size:16px;font-weight:750;line-height:1.45}.trainer-question legend>span{display:grid;flex:0 0 28px;height:28px;place-items:center;background:var(--teal);color:#04191d;font-size:12px}.trainer-options{display:grid;gap:8px;margin:15px 0}.trainer-options label{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--soft);border:1px solid var(--line);cursor:pointer;line-height:1.45}.trainer-options label:has(input:checked){border-color:var(--teal);background:var(--selected)}.trainer-options label.is-correct{border-color:#319480;background:var(--success)}.trainer-options label.is-wrong{border-color:#c45a43;background:var(--quote)}.trainer-options input{margin-top:.25em;accent-color:var(--teal)}.trainer-actions{display:flex;align-items:center;gap:14px}.trainer-actions button{padding:10px 16px;border:1px solid var(--navy);background:var(--navy);color:white;font:700 13px/1.2 inherit;cursor:pointer}.trainer-actions button:disabled{opacity:.55;cursor:not-allowed}.trainer-feedback{margin:0;font-size:13px;line-height:1.45}.trainer-feedback.is-correct{color:#137769}.trainer-feedback.is-wrong{color:#b04f3c}.chapter-trainer>footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:27px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.chapter-trainer>footer a{color:var(--link);font-weight:750;text-decoration:none}@media(max-width:560px){.chapter-trainer>header,.chapter-trainer>footer,.trainer-actions{align-items:stretch;flex-direction:column}.chapter-trainer>header>strong{align-self:flex-start}.trainer-feedback{min-height:0}}
 /* Chapter practice bridge */
+/* Маршрут прохождения: чек-лист и календарь только показывают факты. */
+.route-order{margin:0;padding-left:22px}
+.route-order li{margin:10px 0;line-height:1.6}
+.route-hint{margin:20px 0 0;padding:14px 16px;background:var(--soft);border-left:3px solid var(--teal);line-height:1.55}
+.route-board{max-width:980px;margin:0 auto 38px;padding:clamp(18px,4vw,34px);background:var(--white);border:1px solid var(--line)}
+.route-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+.route-head h2{margin:0;font-family:Georgia,serif;font-size:clamp(22px,3vw,30px)}
+.route-head p{margin:0;color:var(--muted);font-size:13px;max-width:520px;line-height:1.5}
+.route-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.route-table th,.route-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.route-table thead th{border-bottom:2px solid var(--line);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.route-table tbody th{font-weight:600;max-width:330px}
+.route-table tbody th span{display:inline-block;min-width:26px;color:var(--link);font-variant-numeric:tabular-nums}
+.route-table a{color:var(--link);text-decoration:none;margin-right:7px}
+.route-table a:hover{text-decoration:underline}
+.route-table tr[data-route-done=all]{background:var(--success)}
+.route-mark{display:inline-block;padding:2px 8px;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;border:1px solid var(--line);background:var(--soft);color:var(--muted)}
+.route-mark[data-route-state=done]{border-color:#2f9a86;background:var(--success);color:var(--ink);font-weight:650}
+.route-mark[data-route-state=partial]{border-color:var(--amber);background:var(--quote);color:var(--ink)}
+.route-links{display:block;margin-bottom:5px}
+.route-note{margin:16px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}
+td .route-note{display:block;margin:4px 0 0;font-size:11.5px}
+.route-months{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:18px}
+.route-month{border:1px solid var(--line);padding:12px}
+.route-month h3{margin:0 0 10px;font-size:13px;font-weight:700}
+.route-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.route-grid span{display:grid;place-items:center;aspect-ratio:1;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;background:var(--soft)}
+.route-grid span.is-empty{background:none}
+.route-grid span.is-weekend{color:#a2726a}
+.route-grid span.has-events{background:var(--teal);color:#04191d;font-weight:750}
+.route-grid span.is-head{background:none;color:var(--muted);font-size:10px;text-transform:uppercase}
+.route-log{margin:24px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.route-log li{display:grid;grid-template-columns:104px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.5}
+.route-log time{color:var(--link);font-variant-numeric:tabular-nums}
+.route-log p{margin:0}
+.route-empty{color:var(--muted);font-size:13px;line-height:1.55}
+.route-backup{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+@media(max-width:700px){
+  .route-table{font-size:12.5px}
+  .route-table th,.route-table td{padding:7px 6px}
+  .route-table tbody th{max-width:none}
+  .route-log li{grid-template-columns:1fr;gap:2px}
+}
+/* Навигация по разделам страницы: липкая колонка справа на широком экране,
+   сворачиваемый блок сверху на узком. */
+.section-rail{margin:0 0 26px}
+.section-rail details{border:1px solid var(--line);background:var(--white)}
+.section-rail summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;cursor:pointer;font-weight:750;font-size:13px;list-style:none}
+.section-rail summary::-webkit-details-marker{display:none}
+.section-rail summary::after{content:'▾';color:var(--muted);transition:transform var(--duration-quick) var(--ease-out)}
+.section-rail details[open] summary::after{transform:rotate(180deg)}
+.section-rail summary strong{min-width:22px;padding:2px 7px;background:var(--soft);color:var(--muted);font-size:11px;text-align:center;font-variant-numeric:tabular-nums}
+.section-rail ol{margin:0;padding:4px 0 10px;list-style:none;counter-reset:none}
+.section-rail li{margin:0}
+.section-rail a{display:grid;grid-template-columns:44px 1fr;gap:8px;padding:7px 15px;color:var(--muted);text-decoration:none;font-size:12.5px;line-height:1.4;border-left:2px solid transparent}
+.section-rail a span{color:var(--link);font-variant-numeric:tabular-nums}
+.section-rail a:hover{color:var(--ink);background:var(--soft)}
+.section-rail a[aria-current=true]{color:var(--ink);border-left-color:var(--teal);background:var(--selected);font-weight:650}
+.section-rail a:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+@media(max-width:1239px){
+  .section-rail{position:sticky;top:68px;z-index:15;margin:0 0 22px}
+  .section-rail details{box-shadow:0 8px 20px #06151d1f}
+  .section-rail details[open] ol{max-height:min(56vh,420px);overflow:auto;overscroll-behavior:contain}
+}
+@media(min-width:1240px){
+  .page-main:has(.section-rail){display:grid;grid-template-columns:minmax(0,1fr) 250px;column-gap:clamp(24px,3vw,48px);align-items:start}
+  .page-main:has(.section-rail)>*{grid-column:1;min-width:0}
+  .page-main .section-rail{grid-column:2;grid-row:1/span 500;position:sticky;top:96px;max-height:calc(100vh - 132px);overflow:auto;margin:0;overscroll-behavior:contain}
+  .section-rail details{border:0;border-left:1px solid var(--line);background:none}
+  .section-rail summary{padding:0 15px 10px;color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .section-rail summary::after{display:none}
+}
 .chapter-practice{max-width:900px;margin:34px auto 0;padding:clamp(20px,3.4vw,32px);background:var(--soft);border:1px solid var(--line)}.chapter-practice header{margin-bottom:18px}.chapter-practice h2{margin:4px 0 0;font-family:Georgia,serif;font-size:clamp(22px,3vw,28px)}.practice-grid{display:grid;gap:10px}.practice-grid a{display:grid;grid-template-columns:58px 1fr;align-items:baseline;gap:4px 14px;padding:14px 16px;background:var(--white);border:1px solid var(--line);color:inherit;text-decoration:none}.practice-grid a:hover{border-color:var(--teal)}.practice-grid span{grid-row:1/3;align-self:center;font-weight:750;font-size:13px;color:var(--link);font-variant-numeric:tabular-nums}.practice-grid strong{font-size:15px;line-height:1.4}.practice-grid em{color:var(--muted);font-size:12.5px;font-style:normal;line-height:1.4}.practice-note{margin:16px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}@media(max-width:560px){.practice-grid a{grid-template-columns:1fr}.practice-grid span{grid-row:auto}}
 /* Term definition card */
 .define-card{position:fixed;z-index:60;width:min(430px,calc(100vw - 24px));max-height:min(60vh,460px);overflow:auto;padding:18px 20px 20px;background:var(--white);border:1px solid var(--line);box-shadow:0 22px 54px #06151d2e}.define-close{position:absolute;top:8px;right:8px;padding:2px 8px;border:0;background:transparent;color:var(--muted);font-size:19px;line-height:1;cursor:pointer}.define-close:hover{color:var(--ink)}
@@ -656,6 +809,12 @@ document.addEventListener('pointerdown',event=>{
   if(defineCard.contains(event.target)||event.target.closest?.('[data-define-selection]'))return;
   hideDefine();
 });
+/* Шкала времени прохождения. Запись только добавляется: дата первого зачёта
+   больше не меняется, интерфейса правки нет. Та же пара функций дословно
+   повторена в скрипте учебного кабинета — при правке менять обе. */
+const TIMELINE_KEY='server-infrastructure-timeline-v1';
+const readTimeline=()=>{try{const value=JSON.parse(localStorage.getItem(TIMELINE_KEY)||'null');return value&&value.events&&typeof value.events==='object'&&!Array.isArray(value.events)?value:{schema:'course-timeline',events:{}}}catch{return{schema:'course-timeline',events:{}}}};
+const stampTimeline=key=>{const line=readTimeline();if(line.events[key])return false;const now=new Date();line.events[key]=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);try{localStorage.setItem(TIMELINE_KEY,JSON.stringify(line));return true}catch{return false}};
 const QUICK_KEY='server-infrastructure-chapter-trainers-v1';
 const readQuick=()=>{try{const value=JSON.parse(localStorage.getItem(QUICK_KEY)||'null');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch{return{}}};
 const quickRecords=readQuick(),saveQuick=()=>{try{localStorage.setItem(QUICK_KEY,JSON.stringify(quickRecords));return true}catch{return false}};
@@ -664,7 +823,7 @@ const answerDigest=(id,index)=>{let hash=0x811c9dc5;for(const character of id+'|
 const answerIndex=question=>{const id=question.dataset.trainerQuestion,digest=question.dataset.answer,total=question.querySelectorAll('input[type=radio]').length;for(let index=0;index<total;index+=1)if(answerDigest(id,index)===digest)return index;return -1};
 /* Длительности читаются из тех же токенов движения, что и CSS, чтобы не разъезжались. */
 const motionMs=(name,fallback)=>{const value=parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));return Number.isFinite(value)?value:fallback};
-document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const renderScore=done=>{const group=document.createElement('span');group.className='t-digit-group';const digit=document.createElement('span');digit.className='t-digit';digit.textContent=String(done);group.append(digit);score.replaceChildren(group,document.createTextNode(' / '+questions.length));void group.offsetWidth;group.classList.add('is-animating')};const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;renderScore(done);summary.textContent=done===questions.length?'Глава закреплена. Можно переходить дальше.':done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=answerIndex(question),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const check=document.createElement('span');check.className='trainer-check';check.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';button.after(check);const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){check.classList.remove('is-shown');void check.offsetWidth;check.classList.add('is-shown')}else{const shakeMs=motionMs('--shake-dur-a',80)*2+motionMs('--shake-dur-b',60)*2;question.classList.remove('is-shaking');void question.offsetWidth;question.classList.add('is-shaking');setTimeout(()=>question.classList.remove('is-shaking'),shakeMs+20)}if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
+document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const renderScore=done=>{const group=document.createElement('span');group.className='t-digit-group';const digit=document.createElement('span');digit.className='t-digit';digit.textContent=String(done);group.append(digit);score.replaceChildren(group,document.createTextNode(' / '+questions.length));void group.offsetWidth;group.classList.add('is-animating')};const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;renderScore(done);summary.textContent=done===questions.length?'Глава закреплена. Можно переходить дальше.':done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length);if(done===questions.length)stampTimeline('chapter:'+trainer.dataset.chapterTrainer)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=answerIndex(question),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const check=document.createElement('span');check.className='trainer-check';check.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';button.after(check);const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){check.classList.remove('is-shown');void check.offsetWidth;check.classList.add('is-shown')}else{const shakeMs=motionMs('--shake-dur-a',80)*2+motionMs('--shake-dur-b',60)*2;question.classList.remove('is-shaking');void question.offsetWidth;question.classList.add('is-shaking');setTimeout(()=>question.classList.remove('is-shaking'),shakeMs+20)}if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
 /* Полнотекстовый поиск. Индекс лежит отдельным файлом и загружается один раз при
    первом открытии панели, поэтому страница не тяжелеет от 76 тысяч слов. */
 const searchOverlay=document.querySelector('[data-search-overlay]'),searchInput=document.querySelector('[data-search-input]'),searchStatus=document.querySelector('[data-search-status]'),searchResults=document.querySelector('[data-search-results]');
@@ -769,6 +928,125 @@ if(searchOverlay){
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();searchOverlay.hidden?openSearch():closeSearch()}
   });
 }
+/* Страница маршрута: чек-лист, календарь и резервная копия. Все отметки
+   выводятся из фактического прогресса — интерфейса, который проставляет дату,
+   здесь нет. */
+const BACKUP_KEYS=['server-infrastructure-selfstudy-v6','server-infrastructure-chapter-trainers-v1','server-infrastructure-timeline-v1','server-infrastructure-reader-v1','server-infrastructure-reading-v1','server-infrastructure-theme','server-infrastructure-quiz-a1-v1'];
+const routeBoard=document.querySelector('[data-route-board]');
+if(routeBoard){
+  const MONTHS=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+  const readJSON=key=>{try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}};
+  const humanDate=iso=>{const [y,m,d]=iso.split('-').map(Number);return d+' '+MONTHS[m-1].slice(0,3)+' '+y};
+  const events=readTimeline().events;
+  const quick=readJSON('server-infrastructure-chapter-trainers-v1')||{};
+  const study=readJSON('server-infrastructure-selfstudy-v6');
+  const rows=[...routeBoard.querySelectorAll('[data-route-row]')];
+  let doneChapters=0,doneModules=0,totalModules=0;
+  for(const row of rows){
+    const number=Number(row.dataset.routeRow),modules=row.dataset.own?row.dataset.own.split(',').map(Number):[];
+    const chapterMark=row.querySelector('[data-route-cell=chapter] .route-mark');
+    const stamped=events['chapter:'+number];
+    const attempts=Object.entries(quick).filter(([id])=>id.startsWith('Q'+String(number).padStart(2,'0')+'-'));
+    if(stamped){chapterMark.textContent=humanDate(stamped);chapterMark.dataset.routeState='done';doneChapters++}
+    else if(attempts.length){chapterMark.textContent='в работе';chapterMark.dataset.routeState='partial'}
+    const moduleMark=row.querySelector('[data-route-cell=module] .route-mark');
+    if(!moduleMark)continue;
+    const dates=modules.map(module=>events['module:'+module]).filter(Boolean);
+    totalModules+=modules.length;doneModules+=dates.length;
+    if(dates.length===modules.length&&modules.length){moduleMark.textContent=humanDate(dates.sort().at(-1));moduleMark.dataset.routeState='done'}
+    else if(dates.length){moduleMark.textContent=dates.length+' из '+modules.length;moduleMark.dataset.routeState='partial'}
+    if(stamped&&dates.length===modules.length&&modules.length)row.dataset.routeDone='all';
+  }
+  const summary=routeBoard.querySelector('[data-route-summary]');
+  if(summary&&(doneChapters||doneModules))summary.textContent='Глав закреплено: '+doneChapters+' из '+rows.length+' · модулей сдано: '+doneModules+' из '+totalModules+(study?'':' · кабинет ещё не открывали');
+  /* Календарь: только вывод. Показываем месяцы от первой отметки до текущего. */
+  const calendar=document.querySelector('[data-route-calendar]'),monthsBox=calendar?.querySelector('[data-route-months]'),log=calendar?.querySelector('[data-route-log]');
+  if(monthsBox&&log){
+    const names={};document.querySelectorAll('[data-route-row]').forEach(row=>{names['chapter:'+row.dataset.routeRow]='Глава '+String(row.dataset.routeRow).padStart(2,'0')+' закреплена';row.dataset.own.split(',').filter(Boolean).forEach(module=>{names['module:'+module]='Модуль U'+String(module).padStart(2,'0')+' сдан'})});
+    const byDay=new Map();
+    for(const [key,date] of Object.entries(events)){if(!byDay.has(date))byDay.set(date,[]);byDay.get(date).push(names[key]||key)}
+    const days=[...byDay.keys()].sort();
+    if(!days.length){monthsBox.innerHTML='<p class="route-empty">Отметок пока нет. Первая появится, когда мини-тренажёр главы будет решён полностью.</p>';}
+    else{
+      const first=new Date(days[0]+'T00:00:00'),last=new Date();
+      const cells=[];let cursor=new Date(first.getFullYear(),first.getMonth(),1);
+      const limit=new Date(last.getFullYear(),last.getMonth(),1);
+      while(cursor<=limit&&cells.length<24){cells.push(new Date(cursor));cursor.setMonth(cursor.getMonth()+1)}
+      monthsBox.innerHTML=cells.map(month=>{
+        const year=month.getFullYear(),index=month.getMonth();
+        const total=new Date(year,index+1,0).getDate(),shift=(new Date(year,index,1).getDay()+6)%7;
+        const head=['пн','вт','ср','чт','пт','сб','вс'].map(day=>'<span class="is-head">'+day+'</span>').join('');
+        const blanks='<span class="is-empty"></span>'.repeat(shift);
+        const body=Array.from({length:total},(_,i)=>{
+          const day=i+1,iso=year+'-'+String(index+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'),list=byDay.get(iso);
+          const weekend=[5,6].includes((shift+i)%7);
+          return '<span class="'+(list?'has-events':weekend?'is-weekend':'')+'"'+(list?' title="'+list.join('; ').replace(/"/g,'')+'"':'')+'>'+day+'</span>';
+        }).join('');
+        return '<div class="route-month"><h3>'+MONTHS[index]+' '+year+'</h3><div class="route-grid">'+head+blanks+body+'</div></div>';
+      }).join('');
+      log.replaceChildren(...days.slice().reverse().map(date=>{
+        const item=document.createElement('li'),time=document.createElement('time');
+        time.dateTime=date;time.textContent=humanDate(date);
+        const text=document.createElement('p');text.textContent=byDay.get(date).join(', ');
+        item.append(time,text);return item;
+      }));
+    }
+  }
+  /* Резервная копия: один файл на всё локальное состояние учебника. */
+  const backupStatus=document.querySelector('[data-backup-status]');
+  const say=text=>{if(backupStatus)backupStatus.textContent=text};
+  document.querySelector('[data-backup-save]')?.addEventListener('click',()=>{
+    const data={};let kept=0;
+    for(const key of BACKUP_KEYS){const value=localStorage.getItem(key);if(value!==null){data[key]=value;kept++}}
+    const file=JSON.stringify({schema:'course-backup',version:1,exportedAt:new Date().toISOString(),data},null,2);
+    const url=URL.createObjectURL(new Blob([file],{type:'application/json;charset=utf-8'}));
+    const link=document.createElement('a');link.href=url;link.download='course-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    say(kept?'Сохранено разделов состояния: '+kept+'. Держите файл вне этого браузера.':'Сохранять нечего: прогресса в этом браузере пока нет.');
+  });
+  document.querySelector('[data-backup-load]')?.addEventListener('change',async event=>{
+    const input=event.target,file=input.files?.[0];
+    if(!file)return;
+    try{
+      if(file.size>10*1024*1024)throw new Error('файл больше допустимых 10 MiB');
+      const parsed=JSON.parse(await file.text());
+      if(parsed?.schema!=='course-backup'||!parsed.data||typeof parsed.data!=='object')throw new Error('это не резервная копия учебника');
+      const keys=Object.keys(parsed.data).filter(key=>BACKUP_KEYS.includes(key));
+      if(!keys.length)throw new Error('в файле нет известных разделов состояния');
+      for(const key of keys)if(typeof parsed.data[key]!=='string')throw new Error('раздел '+key+' повреждён');
+      if(!confirm('Заменить прогресс в этом браузере данными из файла? Разделов: '+keys.length+'. Текущий прогресс будет потерян — сохраните его копию заранее.'))return;
+      for(const key of keys)localStorage.setItem(key,parsed.data[key]);
+      say('Загружено разделов: '+keys.length+'. Обновляем страницу…');
+      setTimeout(()=>location.reload(),400);
+    }catch(error){say('Загрузить не удалось: '+error.message+'.')}
+    finally{input.value=''}
+  });
+}
+/* Навигация по разделам страницы: на широком экране список раскрыт всегда,
+   на узком остаётся свёрнутым, чтобы не отодвигать текст. Текущий раздел
+   подсвечивается по мере прокрутки. */
+const sectionRail=document.querySelector('[data-section-rail]'),sectionDetails=sectionRail?.querySelector('[data-section-details]');
+if(sectionRail&&sectionDetails){
+  const wide=matchMedia('(min-width: 1240px)');
+  const syncRail=()=>{sectionDetails.open=wide.matches};
+  syncRail();
+  wide.addEventListener('change',syncRail);
+  const links=new Map([...sectionRail.querySelectorAll('[data-section-link]')].map(a=>[decodeURIComponent(a.getAttribute('href').slice(1)),a]));
+  sectionRail.addEventListener('click',event=>{if(event.target.closest('a')&&!wide.matches)sectionDetails.open=false});
+  const targets=[...links.keys()].map(id=>document.getElementById(id)).filter(Boolean);
+  if(targets.length&&'IntersectionObserver'in window){
+    let current=null;
+    const mark=id=>{if(id===current)return;links.get(current)?.removeAttribute('aria-current');const next=links.get(id);if(!next)return;next.setAttribute('aria-current','true');current=id;if(wide.matches){const box=sectionRail.getBoundingClientRect(),item=next.getBoundingClientRect();if(item.top<box.top||item.bottom>box.bottom)next.scrollIntoView({block:'nearest'})}};
+    const seen=new Set();
+    const observer=new IntersectionObserver(entries=>{
+      for(const entry of entries){if(entry.isIntersecting)seen.add(entry.target.id);else seen.delete(entry.target.id)}
+      const visible=targets.filter(target=>seen.has(target.id));
+      if(visible.length)mark(visible[0].id);
+      else{const above=targets.filter(target=>target.getBoundingClientRect().top<120);if(above.length)mark(above[above.length-1].id)}
+    },{rootMargin:'-88px 0px -70% 0px',threshold:0});
+    targets.forEach(target=>observer.observe(target));
+  }
+}
 /* Индикатор прочитанного: доля прокрученного основного текста. */
 const readProgress=document.querySelector('[data-read-progress]'),readMain=document.querySelector('.page-main');
 if(readProgress&&readMain){
@@ -864,7 +1142,7 @@ await Promise.all([
 const outputs = [
   ...chapters.map((item) => [item.url, chapterPage(item)]),
   ...labs.map((item) => [item.url, labPage(item)]),
-  ['/about/', about], ['/assessment/', assessment], ['/assessment/a1/', a1], ['/reference/', reference], ['/reference/archive/', archive],
+  ['/about/', about], ['/route/', route], ['/assessment/', assessment], ['/assessment/a1/', a1], ['/reference/', reference], ['/reference/archive/', archive],
 ];
 for (const [url, html] of outputs) {
   const file = resolve(output, url.slice(1), 'index.html');
