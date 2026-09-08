@@ -92,6 +92,21 @@ for (let number = 0; number < 34; number += 1) {
   if (!chapter?.includes(`data-chapter-trainer="${number}"`)) failures.push(`chapter ${number}: missing quick trainer`);
   const count = chapter?.match(/data-trainer-question=/g)?.length ?? 0;
   if (count !== 2) failures.push(`chapter ${number}: expected 2 quick questions, got ${count}`);
+  // Свободное воспроизведение идёт до мини-тренажёра: узнавание вариантов, увиденное
+  // первым, подсказывает формулировки и обесценивает попытку вспомнить.
+  if (!chapter?.includes(`data-chapter-recall="${number}"`)) failures.push(`chapter ${number}: missing free-recall block`);
+  else if (chapter.indexOf('data-chapter-recall=') > chapter.indexOf('data-chapter-trainer=')) {
+    failures.push(`chapter ${number}: free recall must come before the quick trainer`);
+  }
+  if (/data-recall-topic[^>]*checked/.test(chapter ?? '')) failures.push(`chapter ${number}: recall topics must start unchecked`);
+  // Вопрос до чтения стоит во вводной части: после первого нумерованного раздела
+  // он перестаёт быть вопросом до чтения и становится обычной самопроверкой.
+  const pretest = chapter?.indexOf('class="pretest"') ?? -1;
+  if (pretest < 0) failures.push(`chapter ${number}: missing pre-reading question`);
+  else {
+    const firstSection = chapter.search(new RegExp(`<h2 id="[^"]+">${number}\\.\\d`));
+    if (firstSection >= 0 && pretest > firstSection) failures.push(`chapter ${number}: pre-reading question must sit before section ${number}.1`);
+  }
   // Верный ответ мини-тренажёра не печатается в разметку открытым номером.
   for (const match of chapter?.matchAll(/data-answer="([^"]*)"/g) ?? []) {
     if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
@@ -145,10 +160,11 @@ const chapter01 = cache.get(resolve(root, 'chapters', '01', 'index.html'));
 if (chapter00?.includes('id="b00-s060"')) failures.push('chapter 00: next part introduction leaked into chapter 00');
 if (!chapter01?.includes('id="b00-s060"')) failures.push('chapter 01: missing Part I introduction');
 let bankSize = { items: 0, cases: 0 };
+let data = null;
 const dataMatch = assessment?.match(/<script type="application\/json" id="study-data">(.*?)<\/script>/s);
 if (!dataMatch) failures.push('assessment: missing study-data');
 else {
-  const data = JSON.parse(dataMatch[1]);
+  data = JSON.parse(dataMatch[1]);
   bankSize = { items: data.items?.length ?? 0, cases: data.cases?.length ?? 0 };
   if (data.items?.length !== 111) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
   if (data.cases?.length !== 37) failures.push(`assessment: expected 37 cases, got ${data.cases?.length}`);
@@ -255,10 +271,56 @@ else {
 for (const [file, html] of cache) {
   if (!html.includes('href="/route/"') && !html.includes(`href="${BASE}/route/"`)) failures.push(`${file}: missing route link in navigation`);
 }
-// Итоговый контроль пересчитывается по числу модулей: расхождение знаменателя
-// и порога с числом заданий даёт молча неверный результат.
-if (assessment && (assessment.includes('length:31') || assessment.includes("correctCount>=27?"))) {
-  failures.push('assessment: final exam still scored out of 31');
+// Сборка не разбирает клиентский код, поэтому синтаксическая ошибка в кабинете
+// доходит до страницы незамеченной: сломанный скрипт просто не выполняется.
+const cabinet = assessment?.match(/<script>\n\(\(\)=>\{[\s\S]*?<\/script>/)?.[0];
+if (!cabinet) failures.push('assessment: cabinet script not found');
+else {
+  try { new Function(cabinet.slice('<script>'.length, -'</script>'.length)); }
+  catch (error) { failures.push(`assessment: cabinet script does not parse — ${error.message}`); }
+}
+
+// Второй ярус: у каждого задания на механизм спрашивают рассуждение, и его
+// формулировки не должны повторять слова верного варианта первого яруса —
+// иначе выбор рассуждения подсказывает ответ.
+if (data?.items) {
+  const stop = new Set(['этот','этом','этого','который','которая','которые','поэтому','значит','может','можно','нужно','только','всегда','после','через','между','потому','самое','нельзя','должен','должна','должно','также','более','менее','если','когда','чтобы']);
+  const words = (text) => new Set(String(text).toLowerCase().replace(/[^a-zа-яё0-9\s-]/gi, ' ').split(/\s+/).filter((word) => word.length >= 6 && !stop.has(word)));
+  for (const item of data.items.filter((entry) => entry.kind === 'concept')) {
+    const tier = item.reason;
+    if (!tier || !Array.isArray(tier.options) || tier.options.length !== 3 || tier.answer !== 0) {
+      failures.push(`item ${item.id}: concept item without a three-option reason tier`);
+      continue;
+    }
+    const right = words(item.options[item.answer]);
+    const overlap = tier.options.map((text) => [...words(text)].filter((word) => right.has(word)).length);
+    if (overlap[0] > overlap[1] + 2 && overlap[0] > overlap[2] + 2) {
+      failures.push(`item ${item.id}: reason tier leaks the correct answer through shared wording`);
+    }
+  }
+}
+
+// Кабинет считает модули по одной константе. Пока их было несколько, копии
+// расходились при каждом расширении курса: вариант собирался на 37 вопросов,
+// записывался как 31 и отбрасывался проверкой на 28 — попытка исчезала при
+// перезагрузке, а «маршрут пройден» срабатывал на 31 модуле из 37.
+if (assessment) {
+  if (!assessment.includes(`const MODULES=${MODULE_COUNT},`)) {
+    failures.push(`assessment: cabinet must declare MODULES=${MODULE_COUNT}`);
+  }
+  // Попытка хранит собственный знаменатель, поэтому запись и её проверка не
+  // могут разойтись; число модулей в расчётах берётся только из константы.
+  if (!assessment.includes('total:MODULES')) failures.push('assessment: exam attempt must record total:MODULES');
+  if (!assessment.includes('h.correct<=h.total')) failures.push('assessment: attempt history must validate against its own total');
+  const literals = assessment.match(/(?:length|size|total|max)\s*[:=]+\s*(\d+)|correctCount>=(\d+)|done===(\d+)/g) ?? [];
+  const stale = literals.filter((hit) => /\b(2[4-9]|3[0-6])\b/.test(hit) && !hit.includes('length:7'));
+  if (stale.length) failures.push(`assessment: hand-written module counts left in the cabinet: ${[...new Set(stale)].join(', ')}`);
+}
+// Резервная копия обязана увозить всё локальное состояние: ключ, забытый здесь,
+// теряется молча — при переносе в другой браузер исчезает только часть работы.
+const backupKeys = siteJs.match(/BACKUP_KEYS=\[([^\]]*)\]/)?.[1] ?? '';
+for (const key of ['selfstudy-v6', 'chapter-trainers-v1', 'recall-v1', 'timeline-v1', 'reader-v1', 'reading-v1', 'quiz-a1-v1']) {
+  if (!backupKeys.includes(key)) failures.push(`site.js: backup does not cover server-infrastructure-${key}`);
 }
 // Шкала времени только дополняется: код не должен уметь переписать дату.
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
