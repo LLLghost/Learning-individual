@@ -286,6 +286,12 @@ if (assessment) {
   const stale = literals.filter((hit) => /\b(2[4-9]|3[0-6])\b/.test(hit) && !hit.includes('length:7'));
   if (stale.length) failures.push(`assessment: hand-written module counts left in the cabinet: ${[...new Set(stale)].join(', ')}`);
 }
+// Резервная копия обязана увозить всё локальное состояние: ключ, забытый здесь,
+// теряется молча — при переносе в другой браузер исчезает только часть работы.
+const backupKeys = siteJs.match(/BACKUP_KEYS=\[([^\]]*)\]/)?.[1] ?? '';
+for (const key of ['selfstudy-v6', 'chapter-trainers-v1', 'recall-v1', 'timeline-v1', 'reader-v1', 'reading-v1', 'quiz-a1-v1']) {
+  if (!backupKeys.includes(key)) failures.push(`site.js: backup does not cover server-infrastructure-${key}`);
+}
 // Шкала времени только дополняется: код не должен уметь переписать дату.
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
   failures.push('site.js: timeline must be append-only');

@@ -974,7 +974,7 @@ if(searchOverlay){
 /* Страница маршрута: чек-лист, календарь и резервная копия. Все отметки
    выводятся из фактического прогресса — интерфейса, который проставляет дату,
    здесь нет. */
-const BACKUP_KEYS=['server-infrastructure-selfstudy-v6','server-infrastructure-chapter-trainers-v1','server-infrastructure-timeline-v1','server-infrastructure-reader-v1','server-infrastructure-reading-v1','server-infrastructure-theme','server-infrastructure-quiz-a1-v1'];
+const BACKUP_KEYS=['server-infrastructure-selfstudy-v6','server-infrastructure-chapter-trainers-v1','server-infrastructure-recall-v1','server-infrastructure-timeline-v1','server-infrastructure-reader-v1','server-infrastructure-reading-v1','server-infrastructure-theme','server-infrastructure-quiz-a1-v1'];
 const routeBoard=document.querySelector('[data-route-board]');
 if(routeBoard){
   const MONTHS=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
