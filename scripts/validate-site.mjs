@@ -160,10 +160,11 @@ const chapter01 = cache.get(resolve(root, 'chapters', '01', 'index.html'));
 if (chapter00?.includes('id="b00-s060"')) failures.push('chapter 00: next part introduction leaked into chapter 00');
 if (!chapter01?.includes('id="b00-s060"')) failures.push('chapter 01: missing Part I introduction');
 let bankSize = { items: 0, cases: 0 };
+let data = null;
 const dataMatch = assessment?.match(/<script type="application\/json" id="study-data">(.*?)<\/script>/s);
 if (!dataMatch) failures.push('assessment: missing study-data');
 else {
-  const data = JSON.parse(dataMatch[1]);
+  data = JSON.parse(dataMatch[1]);
   bankSize = { items: data.items?.length ?? 0, cases: data.cases?.length ?? 0 };
   if (data.items?.length !== 111) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
   if (data.cases?.length !== 37) failures.push(`assessment: expected 37 cases, got ${data.cases?.length}`);
@@ -270,6 +271,35 @@ else {
 for (const [file, html] of cache) {
   if (!html.includes('href="/route/"') && !html.includes(`href="${BASE}/route/"`)) failures.push(`${file}: missing route link in navigation`);
 }
+// Сборка не разбирает клиентский код, поэтому синтаксическая ошибка в кабинете
+// доходит до страницы незамеченной: сломанный скрипт просто не выполняется.
+const cabinet = assessment?.match(/<script>\n\(\(\)=>\{[\s\S]*?<\/script>/)?.[0];
+if (!cabinet) failures.push('assessment: cabinet script not found');
+else {
+  try { new Function(cabinet.slice('<script>'.length, -'</script>'.length)); }
+  catch (error) { failures.push(`assessment: cabinet script does not parse — ${error.message}`); }
+}
+
+// Второй ярус: у каждого задания на механизм спрашивают рассуждение, и его
+// формулировки не должны повторять слова верного варианта первого яруса —
+// иначе выбор рассуждения подсказывает ответ.
+if (data?.items) {
+  const stop = new Set(['этот','этом','этого','который','которая','которые','поэтому','значит','может','можно','нужно','только','всегда','после','через','между','потому','самое','нельзя','должен','должна','должно','также','более','менее','если','когда','чтобы']);
+  const words = (text) => new Set(String(text).toLowerCase().replace(/[^a-zа-яё0-9\s-]/gi, ' ').split(/\s+/).filter((word) => word.length >= 6 && !stop.has(word)));
+  for (const item of data.items.filter((entry) => entry.kind === 'concept')) {
+    const tier = item.reason;
+    if (!tier || !Array.isArray(tier.options) || tier.options.length !== 3 || tier.answer !== 0) {
+      failures.push(`item ${item.id}: concept item without a three-option reason tier`);
+      continue;
+    }
+    const right = words(item.options[item.answer]);
+    const overlap = tier.options.map((text) => [...words(text)].filter((word) => right.has(word)).length);
+    if (overlap[0] > overlap[1] + 2 && overlap[0] > overlap[2] + 2) {
+      failures.push(`item ${item.id}: reason tier leaks the correct answer through shared wording`);
+    }
+  }
+}
+
 // Кабинет считает модули по одной константе. Пока их было несколько, копии
 // расходились при каждом расширении курса: вариант собирался на 37 вопросов,
 // записывался как 31 и отбрасывался проверкой на 28 — попытка исчезала при
