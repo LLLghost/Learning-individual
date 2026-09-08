@@ -53,6 +53,33 @@ for (let number = 0; number < 28; number += 1) {
   const count = chapter?.match(/data-trainer-question=/g)?.length ?? 0;
   if (count !== 2) failures.push(`chapter ${number}: expected 2 quick questions, got ${count}`);
 }
+// Практикум нумеруется по академическим модулям U00–U27, а главы — отдельно.
+// Ссылка «Теория» с работы L<N> обязана вести в ту главу, внутри которой физически
+// находится заголовок модуля U<N>, иначе связка практикума и теории разъезжается.
+const chapterHtml = Array.from({ length: 28 }, (_, number) => cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html')));
+const linkedModules = new Set();
+for (let number = 0; number < 28; number += 1) {
+  const padded = String(number).padStart(2, '0');
+  const owner = chapterHtml.findIndex((html) => html?.includes(`id="ch${padded}"`));
+  if (owner < 0) { failures.push(`module ch${padded}: not found in any chapter page`); continue; }
+  const lab = cache.get(resolve(root, 'labs', padded, 'index.html'));
+  const expected = `<a href="/chapters/${String(owner).padStart(2, '0')}/">Теория: глава ${String(owner).padStart(2, '0')}</a>`;
+  if (!lab?.includes(expected)) failures.push(`lab ${padded}: theory link must point to chapter ${String(owner).padStart(2, '0')} (module U${padded} lives there)`);
+}
+for (const html of chapterHtml) {
+  if (!html?.includes('class="chapter-practice"')) failures.push('chapter: missing practicum bridge');
+  for (const match of html?.matchAll(/href="\/assessment\/\?module=(\d+)"/g) ?? []) linkedModules.add(Number(match[1]));
+  for (const match of html?.matchAll(/href="\/labs\/(\d+)\//g) ?? []) linkedModules.add(Number(match[1]));
+}
+for (let number = 0; number < 28; number += 1) {
+  if (!linkedModules.has(number)) failures.push(`module ${number}: unreachable from any chapter page`);
+}
+// Каждая глава, кроме нулевой, разбирает одно типичное заблуждение.
+for (let number = 1; number < 28; number += 1) {
+  const html = chapterHtml[number];
+  if (!html?.includes('Типичная ошибка')) failures.push(`chapter ${number}: missing misconception block`);
+}
+
 const chapter00 = cache.get(resolve(root, 'chapters', '00', 'index.html'));
 const chapter01 = cache.get(resolve(root, 'chapters', '01', 'index.html'));
 if (chapter00?.includes('id="b00-s060"')) failures.push('chapter 00: next part introduction leaked into chapter 00');
