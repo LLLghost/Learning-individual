@@ -54,6 +54,7 @@ const followingScript = (id) => {
   return source.slice(start, end + 9);
 };
 
+const MODULE_COUNT = 31;
 const chapterStarts = Array.from({ length: 28 }, (_, number) => marker(`b${pad(number)}`));
 const chapterPageStarts = chapterStarts.map((start, number) => {
   if (number === 0) return start;
@@ -79,7 +80,7 @@ const chapters = chapterStarts.map((start, number) => {
   return { number, title: strip(titleMatch[1]), intro, content, url: `/chapters/${pad(number)}/` };
 });
 
-const labMarkers = Array.from({ length: 28 }, (_, number) => marker(`lab${pad(number)}`));
+const labMarkers = Array.from({ length: MODULE_COUNT }, (_, number) => marker(`lab${pad(number)}`));
 const labEnd = marker('assessment-reference');
 const labs = labMarkers.map((start, number) => {
   const end = number === 27 ? labEnd : labMarkers[number + 1];
@@ -199,19 +200,20 @@ const localToc = (content) => Array.from(content.matchAll(/<h([23])[^>]*id="([^"
   .slice(0, 18)
   .map((match) => `<a class="local-${match[1]}" href="#${match[2]}">${escape(strip(match[3]))}</a>`).join('');
 
-// Нумерация академических модулей U00–U27 не совпадает с нумерацией глав: часть глав
-// содержит несколько U-модулей, часть — ни одного. Единственный достоверный источник
+// Нумерация академических модулей U00–U30 не совпадает с нумерацией глав: часть глав
+// содержит несколько U-модулей, а нулевая опирается на модуль соседней. Достоверный источник
 // соответствия — то, внутри какой главы физически находится заголовок U-модуля.
 // Всё остальное (практикум, тренажёры, ссылки «Проверить знания») выводится отсюда,
 // поэтому связка не может разъехаться при правке учебника.
-const moduleChapter = Array.from({ length: 28 }, (_, module) => {
+const moduleChapter = Array.from({ length: MODULE_COUNT }, (_, module) => {
   const position = marker(`ch${pad(module)}`);
   let chapter = 0;
   chapterStarts.forEach((start, number) => { if (start <= position) chapter = number; });
   return chapter;
 });
-// Главы без собственного U-модуля опираются на модуль соседней главы той же темы.
-const chapterFallbackModule = new Map([[0, 0], [3, 3], [5, 4], [11, 9], [25, 26]]);
+// Нулевая глава ставит стенд и опирается на модуль первой главы; у остальных
+// глав есть собственный академический модуль.
+const chapterFallbackModule = new Map([[0, 0]]);
 const chapterModules = chapterStarts.map((_, chapter) => {
   const own = moduleChapter.flatMap((owner, module) => (owner === chapter ? [module] : []));
   return own.length ? own : [chapterFallbackModule.get(chapter)];
@@ -258,7 +260,7 @@ const chapterPractice = (number) => {
     const note = own ? 'Модуль этой главы' : `Модуль главы ${pad(moduleChapter[module])}, разбирается на материале этой темы`;
     return `<a href="${labs[module].url}"><span>L${pad(module)}</span><strong>${escape(labs[module].title.replace(/^L\d+[A-Z/]?\.\s*/, ''))}</strong><em>${note}</em></a>`;
   }).join('');
-  return `<section class="chapter-practice" aria-labelledby="practice-title-${number}"><header><p class="eyebrow">Практика по теме</p><h2 id="practice-title-${number}">Работы практикума</h2></header><div class="practice-grid">${items}</div><p class="practice-note">Нумерация работ <strong>L</strong> следует академическим модулям <strong>U00–U27</strong>, а не номерам глав: часть глав содержит несколько модулей, часть опирается на модуль соседней главы.</p></section>`;
+  return `<section class="chapter-practice" aria-labelledby="practice-title-${number}"><header><p class="eyebrow">Практика по теме</p><h2 id="practice-title-${number}">Работы практикума</h2></header><div class="practice-grid">${items}</div><p class="practice-note">Нумерация работ <strong>L</strong> следует академическим модулям <strong>U00–U30</strong>, а не номерам глав: часть глав содержит несколько модулей, а нулевая опирается на модуль первой.</p></section>`;
 };
 
 const chapterPage = (chapter) => {
@@ -282,7 +284,7 @@ const labPage = (lab) => {
 const homeCards = parts.map(([label, title, numbers]) => `<a class="part-card" href="${chapters[numbers[0]].url}"><span>${label}</span><h2>${title}</h2><p>${numbers.length} ${numbers.length === 1 ? 'модуль' : 'модулей'} · ${numbers.map((number) => pad(number)).join(' · ')}</p></a>`).join('');
 const home = pageShell({
   title: 'Университетский курс', eyebrow: 'Самостоятельное обучение', className: 'landing',
-  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>28</strong><span>глав</span></div><div><strong>196</strong><span>автопроверок</span></div><div><strong>56</strong><span>полевых работ</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>Девять последовательных частей</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
+  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>28</strong><span>глав</span></div><div><strong>217</strong><span>автопроверок</span></div><div><strong>62</strong><span>полевых работ</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>Девять последовательных частей</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
   description: 'Многостраничный университетский курс по серверной инфраструктуре для самостоятельного обучения.',
 });
 
@@ -298,7 +300,7 @@ const checkerData = scriptElement('checker-code-data');
 let studyScript = followingScript('checker-code-data')
   .replace(/'#ch'\+pad\(([^)]+)\)/g, "'/chapters/'+pad($1)+'/'")
   .replace(/'#lab'\+pad\(([^)]+)\)/g, "'/labs/'+pad($1)+'/'")
-  .replace(/render\(\);\s*\}\)\(\);\s*<\/script>$/, "const requested=new URLSearchParams(location.search).get('module');if(requested!==null&&/^\\d{1,2}$/.test(requested)&&Number(requested)<28){module=Number(requested);tab='learn';}\nrender();\n})();\n</script>");
+  .replace(/render\(\);\s*\}\)\(\);\s*<\/script>$/, "const requested=new URLSearchParams(location.search).get('module');if(requested!==null&&/^\\d{1,2}$/.test(requested)&&Number(requested)<31){module=Number(requested);tab='learn';}\nrender();\n})();\n</script>");
 const studySection = section('study-app');
 const assessmentIntro = rewriteLinks(source.slice(assessmentStart, labsStart), '/assessment/');
 const assessment = pageShell({
@@ -536,7 +538,7 @@ const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch{r
 const freshProgress=()=>({schema:'course-study-progress',version:${JSON.stringify(studyDatabase.version)},records:{},scenarios:{},exam:null,history:[],practice:null});
 let state=read();if(!state||state.schema!=='course-study-progress'||state.version!==${JSON.stringify(studyDatabase.version)}||!state.records||typeof state.records!=='object'||Array.isArray(state.records))state=freshProgress();
 const records=state.records,history=Array.isArray(state.history)?state.history:[];
-const renderCourseProgress=()=>{const correct=Object.values(records).filter(x=>x?.correct).length,best=Math.max(0,...history.map(x=>Number(x.correct||0)));document.querySelectorAll('[data-progress-title]').forEach(x=>x.textContent=correct?correct+' проверок выполнено верно':'Маршрут ещё не начат');document.querySelectorAll('[data-progress-copy]').forEach(x=>x.textContent='Python: '+Number(state?.practice?.passed||0)+'/28 · итоговый тест: '+best+'/28');return{correct,best}};
+const renderCourseProgress=()=>{const correct=Object.values(records).filter(x=>x?.correct).length,best=Math.max(0,...history.map(x=>Number(x.correct||0)));document.querySelectorAll('[data-progress-title]').forEach(x=>x.textContent=correct?correct+' проверок выполнено верно':'Маршрут ещё не начат');document.querySelectorAll('[data-progress-copy]').forEach(x=>x.textContent='Python: '+Number(state?.practice?.passed||0)+'/28 · итоговый тест: '+best+'/31');return{correct,best}};
 const progressTotals=renderCourseProgress();
 /* ---------- Справка по терминам ---------- */
 const TERMS=${JSON.stringify(referenceTerms)};
@@ -835,7 +837,7 @@ document.querySelectorAll('.prose details').forEach(details=>{
 const search=document.querySelector('[data-course-search]');if(search)search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();document.querySelectorAll('[data-course-card]').forEach(card=>card.hidden=q&&!card.dataset.courseCard.includes(q));document.querySelectorAll('[data-course-group]').forEach(group=>group.hidden=![...group.querySelectorAll('[data-course-card]')].some(card=>!card.hidden));});
 const context=document.modelContext;if(!context?.registerTool)return;const lifecycle=new AbortController();const register=tool=>{try{Promise.resolve(context.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{})}catch{}};
 register({name:'get_course_progress',title:'Показать прогресс курса',description:'Возвращает краткий прогресс самостоятельного обучения в этом браузере.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute:()=>({answeredChecks:Object.keys(records).length,correctChecks:progressTotals.correct,programmingTestsPassed:Number(state?.practice?.passed||0),bestFinalExam:progressTotals.best})});
-register({name:'open_course_module',title:'Открыть модуль курса',description:'Переходит на отдельную страницу одного из 28 модулей курса.',inputSchema:{type:'object',properties:{module:{type:'integer',minimum:0,maximum:27}},required:['module'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute:input=>{const n=input?.module;if(!Number.isInteger(n)||n<0||n>27)throw Error('Номер модуля должен быть целым числом от 0 до 27.');location.href='/chapters/'+String(n).padStart(2,'0')+'/';return{openedModule:n};}});
+register({name:'open_course_module',title:'Открыть модуль курса',description:'Переходит на отдельную страницу одной из 28 глав курса.',inputSchema:{type:'object',properties:{module:{type:'integer',minimum:0,maximum:27}},required:['module'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute:input=>{const n=input?.module;if(!Number.isInteger(n)||n<0||n>27)throw Error('Номер модуля должен быть целым числом от 0 до 27.');location.href='/chapters/'+String(n).padStart(2,'0')+'/';return{openedModule:n};}});
 })();`;
 
 await rm(output, { recursive: true, force: true });

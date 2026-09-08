@@ -89,12 +89,13 @@ for (let number = 0; number < 28; number += 1) {
     if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
   }
 }
-// Практикум нумеруется по академическим модулям U00–U27, а главы — отдельно.
+// Практикум нумеруется по академическим модулям U00–U30, а главы — отдельно.
 // Ссылка «Теория» с работы L<N> обязана вести в ту главу, внутри которой физически
 // находится заголовок модуля U<N>, иначе связка практикума и теории разъезжается.
+const MODULE_COUNT = 31;
 const chapterHtml = Array.from({ length: 28 }, (_, number) => cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html')));
 const linkedModules = new Set();
-for (let number = 0; number < 28; number += 1) {
+for (let number = 0; number < MODULE_COUNT; number += 1) {
   const padded = String(number).padStart(2, '0');
   const owner = chapterHtml.findIndex((html) => html?.includes(`id="ch${padded}"`));
   if (owner < 0) { failures.push(`module ch${padded}: not found in any chapter page`); continue; }
@@ -107,7 +108,7 @@ for (const html of chapterHtml) {
   for (const match of html?.matchAll(/href="\/assessment\/\?module=(\d+)"/g) ?? []) linkedModules.add(Number(match[1]));
   for (const match of html?.matchAll(/href="\/labs\/(\d+)\//g) ?? []) linkedModules.add(Number(match[1]));
 }
-for (let number = 0; number < 28; number += 1) {
+for (let number = 0; number < MODULE_COUNT; number += 1) {
   if (!linkedModules.has(number)) failures.push(`module ${number}: unreachable from any chapter page`);
 }
 // Каждая глава, кроме нулевой, разбирает одно типичное заблуждение.
@@ -135,12 +136,14 @@ const chapter00 = cache.get(resolve(root, 'chapters', '00', 'index.html'));
 const chapter01 = cache.get(resolve(root, 'chapters', '01', 'index.html'));
 if (chapter00?.includes('id="b00-s060"')) failures.push('chapter 00: next part introduction leaked into chapter 00');
 if (!chapter01?.includes('id="b00-s060"')) failures.push('chapter 01: missing Part I introduction');
+let bankSize = { items: 0, cases: 0 };
 const dataMatch = assessment?.match(/<script type="application\/json" id="study-data">(.*?)<\/script>/s);
 if (!dataMatch) failures.push('assessment: missing study-data');
 else {
   const data = JSON.parse(dataMatch[1]);
-  if (data.items?.length !== 84) failures.push(`assessment: expected 84 items, got ${data.items?.length}`);
-  if (data.cases?.length !== 28) failures.push(`assessment: expected 28 cases, got ${data.cases?.length}`);
+  bankSize = { items: data.items?.length ?? 0, cases: data.cases?.length ?? 0 };
+  if (data.items?.length !== 93) failures.push(`assessment: expected 93 items, got ${data.items?.length}`);
+  if (data.cases?.length !== 31) failures.push(`assessment: expected 31 cases, got ${data.cases?.length}`);
   // Тип задания обязан соответствовать его форме: «Расчёт» без числовых полей —
   // обычный вопрос с выбором, и обещание расчёта в таком задании ложно.
   for (const item of data.items ?? []) {
@@ -211,6 +214,6 @@ for (const [name, pattern] of proseRules) {
   if (hit) failures.push(`course.html: ${name} — ...${prose.slice(Math.max(0, hit.index - 40), hit.index + 40).trim()}...`);
 }
 
-if (htmlFiles.length !== 63) failures.push(`expected 63 routes, got ${htmlFiles.length}`);
+if (htmlFiles.length !== 66) failures.push(`expected 66 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
-console.log(`Validated ${htmlFiles.length} routes: links, anchors, 84 items, 28 scenarios.`);
+console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
