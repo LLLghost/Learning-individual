@@ -178,7 +178,7 @@ const sectionRail = (body) => {
 
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
-<body><a class="skip-link" href="#main">К основному тексту</a><div class="read-progress" data-read-progress aria-hidden="true"></div><header class="topbar">${globalNav}<div class="read-size" data-read-size-group role="group" aria-label="Размер текста" hidden><button type="button" data-read-size="s" aria-pressed="false" title="Мелкий текст">А</button><button type="button" data-read-size="m" aria-pressed="true" title="Обычный текст">А</button><button type="button" data-read-size="l" aria-pressed="false" title="Крупный текст">А</button></div><button class="search-toggle" type="button" data-search-open aria-haspopup="dialog"><span aria-hidden="true">⌕</span><span>Поиск</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary>Разделы</summary><div>${globalNav}</div></details></header>
+<body><a class="skip-link" href="#main">К основному тексту</a><div class="read-progress" data-read-progress aria-hidden="true"></div><header class="topbar">${globalNav}<div class="read-size" data-read-size-group role="group" aria-label="Размер текста" hidden><button type="button" data-read-size="s" aria-pressed="false" title="Мелкий текст">А</button><button type="button" data-read-size="m" aria-pressed="true" title="Обычный текст">А</button><button type="button" data-read-size="l" aria-pressed="false" title="Крупный текст">А</button></div><button class="search-toggle" type="button" data-search-open aria-haspopup="dialog"><span aria-hidden="true">⌕</span><span>Поиск</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary><span class="menu-label">Разделы</span></summary><div>${globalNav}</div></details></header>
 <div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main" id="main" tabindex="-1">${sectionRail(body)}<p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 ${readerTools}<script src="/assets/site.js"></script></body></html>`;
 
@@ -680,6 +680,111 @@ html{scroll-behavior:auto}
 ::view-transition-old(root),::view-transition-new(root){animation:none!important}
 }
 @media(max-width:900px){.topbar{gap:12px}.topbar .brand{margin-right:auto}.read-size{display:none}.search-toggle span:nth-child(2),.search-toggle kbd{display:none}.notes-toggle span:nth-child(2){display:none}.notes-panel{top:68px}.selection-toolbar{left:10px!important;right:10px;bottom:12px;top:auto!important;justify-content:center;flex-wrap:wrap}}@media(max-width:560px){.notes-toggle{padding:8px}.theme-toggle{padding:8px}.notes-panel{padding:19px}.notes-backdrop{display:none}.selection-toolbar>button:not(.color-dot){font-size:10px}}@media print{.notes-toggle,.notes-panel,.notes-backdrop,.selection-toolbar,.reader-toast{display:none!important}.reader-highlight{background:transparent!important;color:inherit;padding:0}}
+/* --- Телефоны -------------------------------------------------------------
+   Страница обязана помещаться в ширину экрана. Иначе браузер сам расширяет
+   область просмотра под самый широкий элемент и уменьшает масштаб: текст
+   становится мельче задуманного, и это видно на всех страницах сразу.
+   Ширину задавали панель сверху (её нельзя было сжать уже 355px) и таблица
+   маршрута (433px), из-за которой страница не помещалась даже в 430px. */
+@media(max-width:900px){
+ .topbar{gap:10px;padding:0 14px}
+ .brand{min-width:0}
+ /* Кнопки панели — цели для пальца, а не для указателя: 44px по обеим сторонам. */
+ .search-toggle,.theme-toggle,.notes-toggle{min-width:44px;min-height:44px;justify-content:center}
+ .mobile-menu summary{display:inline-flex;align-items:center;min-height:44px;padding:0 2px}
+ /* Длинное имя файла или адрес не должны раздвигать страницу. */
+ .prose,.compact-prose,.route-board,.study-surface{overflow-wrap:break-word}
+ /* Широкая таблица прокручивается внутри себя, а не тянет за собой страницу. */
+ .prose table{display:block;overflow-x:auto;max-width:100%}
+ .study-app select{max-width:100%}
+}
+@media(max-width:400px){
+ .topbar{gap:6px;padding:0 10px}
+ .brand span{display:none}
+ /* Логотип перестаёт наезжать на кнопки: он сжимается, а не выходит за свои границы. */
+ .brand{overflow:hidden}
+ /* «инфраструктура» набором в 44px занимает 300px и одна задаёт ширину страницы. */
+ .hero h1{font-size:34px}
+ .section-head h2{font-size:28px}
+ .catalog-head h1,.tool-intro h1{font-size:34px}
+}
+/* Длинное слово в заголовке переносится по слогам, а не расталкивает страницу
+   и не рвётся посреди корня: язык страницы задан, переносы расставит браузер. */
+.hero h1,.catalog-head h1,.tool-intro h1,.prose h1,.prose h2,.prose h3{overflow-wrap:break-word;hyphens:auto}
+@media(max-width:320px){
+ /* Логотип должен помещаться целиком: обрезанное слово читается как поломка. */
+ .topbar{gap:4px;padding:0 8px}
+ .brand strong{font-size:17px}
+}
+/* Чек-лист маршрута на телефоне разворачивается в карточки: четыре колонки
+   не сжимаются ниже 433px, а горизонтальная прокрутка для списка, по которому
+   ведут учёт, неудобна. Подписи берутся из data-атрибутов, разметка та же. */
+@media(max-width:600px){
+ .route-table,.route-table tbody,.route-table tr,.route-table tbody th,.route-table td{display:block}
+ .route-table thead{display:none}
+ .route-table tr{border:1px solid var(--line);margin:0 0 10px;padding:11px 13px}
+ .route-table tbody th{max-width:none;padding:0 0 9px;font-size:15px;border-bottom:1px solid var(--line)}
+ .route-table td{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:0}
+ .route-table td::before{flex:0 0 96px;color:var(--muted);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+ .route-table td[data-route-cell=chapter]::before{content:'Тренажёр'}
+ .route-table td[data-route-cell=module]::before{content:'Модуль'}
+ .route-table td[data-route-cell=labs]::before{content:'Практикум'}
+ .route-table a{display:inline-block;padding:3px 0;margin-right:10px}
+ .route-months{grid-template-columns:1fr}
+}
+/* На самых узких экранах слово «Разделы» уступает место значку. Слово остаётся
+   в разметке скрытым для глаза, но доступным программам чтения с экрана —
+   у кнопки должно оставаться название. */
+.mobile-menu summary::before{content:'\\2630';margin-right:8px;font-size:19px;line-height:1}
+@media(max-width:360px){
+ .mobile-menu .menu-label{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ .mobile-menu summary::before{margin-right:0}
+ .mobile-menu summary{min-width:44px;justify-content:center}
+}
+/* Поле выбора файла пряталось только внутри кабинета, поэтому на странице
+   маршрута рядом с оформленной кнопкой торчал системный элемент выбора. */
+.hidden-input{display:none}
+@media(max-width:380px){
+ /* На самых узких экранах подпись строки чек-листа встаёт над значением. */
+ .route-table td{display:block}
+ .route-table td::before{display:block;margin-bottom:3px}
+}
+/* Блок кода прокручивается внутри себя везде, а не только в тексте главы:
+   в кабинете и на служебных страницах он тоже длиннее экрана телефона. */
+.study-surface pre,.compact-prose pre,.route-board pre,.study-app pre{overflow:auto;max-width:100%}
+@media(max-width:420px){
+ /* Две колонки чисел на титуле не сжимаются ниже 304px — на узком экране одна. */
+ .hero-stats{grid-template-columns:1fr}
+ /* Заголовок раздела и ссылка рядом требуют ширины, которой нет: переносим. */
+ .section-head{flex-wrap:wrap;gap:10px}
+ .hero-stats div{padding:18px}
+}
+@media(max-width:600px){
+ /* Кнопки резервной копии — в столбец: рядом они требуют ширины, которой нет. */
+ .route-backup{flex-direction:column;align-items:stretch}
+ .route-backup>*{min-width:0;max-width:100%;text-align:center}
+}
+/* Мелкие цели нажатия в читательских инструментах и кабинете. */
+/* Ссылка-строка и флажок — такие же цели для пальца, как кнопка: добавляем
+   высоту отступами, чтобы не менять выравнивание текста. */
+@media(max-width:900px){
+ .pager a{display:block;padding:9px 0}
+ .section-head a{display:inline-block;padding:9px 0}
+ .chapter-trainer>footer a{display:inline-block;padding:9px 0}
+ .section-rail a{min-height:40px;align-content:center}
+ .recall-topics label{padding:8px 0}
+ .recall-topics li a{display:inline-block;padding:6px 0}
+ .route-table a{padding:8px 0;margin-right:14px}
+ .selection-toolbar>button:not(.color-dot){font-size:11.5px}
+}
+.color-dot{width:34px!important;height:34px!important}
+.undo-highlight{min-height:40px}
+.text-button{padding:9px 4px}
+.study-app .controls a{display:inline-flex;align-items:center;min-height:40px;padding:0 4px}
+.study-app label.conf-option{min-height:40px}
+.route-table thead th{font-size:12px}
+td .route-note{font-size:12px}
+.route-grid span.is-head{font-size:11px}
 `;
 
 const js = `(() => {'use strict';
