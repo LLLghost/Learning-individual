@@ -46,6 +46,17 @@ const siteJs = await readFile(resolve(root, 'assets', 'site.js'), 'utf8');
 const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
 if (!siteJs.includes('server-infrastructure-reader-v1') || !siteJs.includes('data-highlight-color')) failures.push('site.js: missing reader notebook behavior');
 if (!siteCss.includes('.notes-panel') || !siteCss.includes('.reader-highlight')) failures.push('site.css: missing reader notebook styles');
+if (!siteJs.includes('recordQuickCheck') || !siteCss.includes('.chapter-trainer')) failures.push('assets: missing chapter trainer behavior or styles');
+for (let number = 0; number < 28; number += 1) {
+  const chapter = cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html'));
+  if (!chapter?.includes(`data-chapter-trainer="${number}"`)) failures.push(`chapter ${number}: missing quick trainer`);
+  const count = chapter?.match(/data-trainer-question=/g)?.length ?? 0;
+  if (count !== 2) failures.push(`chapter ${number}: expected 2 quick questions, got ${count}`);
+}
+const chapter00 = cache.get(resolve(root, 'chapters', '00', 'index.html'));
+const chapter01 = cache.get(resolve(root, 'chapters', '01', 'index.html'));
+if (chapter00?.includes('id="b00-s060"')) failures.push('chapter 00: next part introduction leaked into chapter 00');
+if (!chapter01?.includes('id="b00-s060"')) failures.push('chapter 01: missing Part I introduction');
 const dataMatch = assessment?.match(/<script type="application\/json" id="study-data">(.*?)<\/script>/s);
 if (!dataMatch) failures.push('assessment: missing study-data');
 else {
