@@ -206,6 +206,24 @@ for (const heading of outline) {
   }
 }
 
+// Разобранные примеры нумеруются номером своего U-модуля: в U18 это E18.x.
+// Вставка нового модуля сдвигает шкалу, и метки в соседних модулях легко
+// отстают — тогда один и тот же код E оказывается сразу в двух местах.
+const moduleSpans = [...body.matchAll(/<h2 id="ch(\d\d)">/g)]
+  .map((match, index, list) => ({
+    module: Number(match[1]),
+    start: match.index,
+    end: index + 1 < list.length ? list[index + 1].index : body.length,
+  }));
+for (const span of moduleSpans) {
+  for (const label of body.slice(span.start, span.end).matchAll(/\bE(\d+)\.\d+/g)) {
+    if (Number(label[1]) !== span.module) {
+      failures.push(`course.html: ${label[0]} inside module U${String(span.module).padStart(2, '0')}`);
+      break;
+    }
+  }
+}
+
 const prose = body
   .replace(/<(pre|code|kbd|samp|script|style)\b[\s\S]*?<\/\1>/g, ' ')
   .replace(/<[^>]+>/g, ' ');
