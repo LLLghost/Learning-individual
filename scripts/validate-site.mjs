@@ -2,6 +2,9 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const root = resolve(process.cwd(), 'build');
+// Тот же базовый путь, с которым собирался сайт: ссылки на страницах начинаются
+// с него, а файлы по-прежнему лежат в корне build.
+const BASE = (process.env.BASE_PATH ?? '').replace(/\/+$/, '');
 const walk = async (directory) => {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];
@@ -19,7 +22,12 @@ const failures = [];
 const targetFile = (current, pathname) => {
   if (!pathname) return current;
   const decoded = decodeURIComponent(pathname);
-  if (decoded.startsWith('/')) return resolve(root, decoded.slice(1), decoded.endsWith('/') ? 'index.html' : '');
+  if (BASE && decoded === BASE) return resolve(root, 'index.html');
+  if (decoded.startsWith('/')) {
+    if (BASE && !decoded.startsWith(`${BASE}/`)) return resolve(root, 'missing-base-prefix');
+    const rooted = BASE ? decoded.slice(BASE.length) : decoded;
+    return resolve(root, rooted.slice(1), rooted.endsWith('/') ? 'index.html' : '');
+  }
   return resolve(dirname(current), decoded, decoded.endsWith('/') ? 'index.html' : '');
 };
 
@@ -100,13 +108,13 @@ for (let number = 0; number < MODULE_COUNT; number += 1) {
   const owner = chapterHtml.findIndex((html) => html?.includes(`id="ch${padded}"`));
   if (owner < 0) { failures.push(`module ch${padded}: not found in any chapter page`); continue; }
   const lab = cache.get(resolve(root, 'labs', padded, 'index.html'));
-  const expected = `<a href="/chapters/${String(owner).padStart(2, '0')}/">Теория: глава ${String(owner).padStart(2, '0')}</a>`;
+  const expected = `<a href="${BASE}/chapters/${String(owner).padStart(2, '0')}/">Теория: глава ${String(owner).padStart(2, '0')}</a>`;
   if (!lab?.includes(expected)) failures.push(`lab ${padded}: theory link must point to chapter ${String(owner).padStart(2, '0')} (module U${padded} lives there)`);
 }
 for (const html of chapterHtml) {
   if (!html?.includes('class="chapter-practice"')) failures.push('chapter: missing practicum bridge');
-  for (const match of html?.matchAll(/href="\/assessment\/\?module=(\d+)"/g) ?? []) linkedModules.add(Number(match[1]));
-  for (const match of html?.matchAll(/href="\/labs\/(\d+)\//g) ?? []) linkedModules.add(Number(match[1]));
+  for (const match of html?.matchAll(/href="[^"]*\/assessment\/\?module=(\d+)"/g) ?? []) linkedModules.add(Number(match[1]));
+  for (const match of html?.matchAll(/href="[^"]*\/labs\/(\d+)\//g) ?? []) linkedModules.add(Number(match[1]));
 }
 for (let number = 0; number < MODULE_COUNT; number += 1) {
   if (!linkedModules.has(number)) failures.push(`module ${number}: unreachable from any chapter page`);

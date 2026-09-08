@@ -54,6 +54,17 @@ const followingScript = (id) => {
   return source.slice(start, end + 9);
 };
 
+// Базовый путь публикации. Пусто — сайт живёт в корне домена. Для страниц проекта
+// на GitHub Pages задают BASE_PATH=/имя-репозитория: маршруты и файлы остаются
+// прежними, префикс появляется только в ссылках, которые видит браузер.
+const BASE = (process.env.BASE_PATH ?? '').replace(/\/+$/, '');
+if (BASE && !/^\/[A-Za-z0-9._~-]+(?:\/[A-Za-z0-9._~-]+)*$/.test(BASE)) {
+  throw new Error(`BASE_PATH должен начинаться со «/» и не содержать пробелов: ${BASE}`);
+}
+// Все абсолютные ссылки страниц создаёт этот генератор — в самом учебнике их нет,
+// поэтому префикс проставляется одним проходом по готовой странице.
+const withBase = (html) => (BASE ? html.replace(/(href|src)="\/(?!\/)/g, `$1="${BASE}/`) : html);
+
 const MODULE_COUNT = 31;
 const chapterStarts = Array.from({ length: 28 }, (_, number) => marker(`b${pad(number)}`));
 const chapterPageStarts = chapterStarts.map((start, number) => {
@@ -298,8 +309,8 @@ const quizScript = followingScript('quiz-data');
 const studyData = scriptElement('study-data');
 const checkerData = scriptElement('checker-code-data');
 let studyScript = followingScript('checker-code-data')
-  .replace(/'#ch'\+pad\(([^)]+)\)/g, "'/chapters/'+pad($1)+'/'")
-  .replace(/'#lab'\+pad\(([^)]+)\)/g, "'/labs/'+pad($1)+'/'")
+  .replace(/'#ch'\+pad\(([^)]+)\)/g, `'${BASE}/chapters/'+pad($1)+'/'`)
+  .replace(/'#lab'\+pad\(([^)]+)\)/g, `'${BASE}/labs/'+pad($1)+'/'`)
   .replace(/render\(\);\s*\}\)\(\);\s*<\/script>$/, "const requested=new URLSearchParams(location.search).get('module');if(requested!==null&&/^\\d{1,2}$/.test(requested)&&Number(requested)<31){module=Number(requested);tab='learn';}\nrender();\n})();\n</script>");
 const studySection = section('study-app');
 const assessmentIntro = rewriteLinks(source.slice(assessmentStart, labsStart), '/assessment/');
@@ -585,7 +596,7 @@ const defSuggest=text=>{
   }
   return [...found].slice(0,6).map(index=>TERMS[index]);
 };
-const defChapterHref=entry=>entry.chapter===null?null:'/chapters/'+String(entry.chapter).padStart(2,'0')+'/#b'+String(entry.chapter).padStart(2,'0');
+const defChapterHref=entry=>entry.chapter===null?null:'${BASE}/chapters/'+String(entry.chapter).padStart(2,'0')+'/#b'+String(entry.chapter).padStart(2,'0');
 const hideDefine=()=>{if(defineCard)defineCard.hidden=true};
 const showDefine=(entry,query,rect)=>{
   if(!defineCard||!defineBody)return;
@@ -661,7 +672,7 @@ const fold=text=>String(text).toLowerCase().replace(/ё/g,'е');
 let searchIndex=null,searchRequest=null,searchTimer=0,searchReturnFocus=null;
 const loadSearchIndex=()=>{
   if(searchIndex)return Promise.resolve(searchIndex);
-  if(!searchRequest)searchRequest=fetch('/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.map(entry=>({...entry,f:fold(entry.h+' '+entry.x)}));return searchIndex});
+  if(!searchRequest)searchRequest=fetch('${BASE}/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.map(entry=>({...entry,f:fold(entry.h+' '+entry.x)}));return searchIndex});
   return searchRequest;
 };
 const markTerms=(raw,terms)=>{
@@ -696,7 +707,7 @@ const renderSearch=(query,index)=>{
   if(!hits.length){searchResults.innerHTML='';searchStatus.textContent='Ничего не найдено. Попробуйте более короткое слово или основу термина.';return}
   searchStatus.textContent='Найдено разделов: '+hits.length+(hits.length>40?' — показаны первые 40':'');
   searchResults.innerHTML=hits.slice(0,40).map(({entry})=>{
-    const href=entry.u+(entry.a?'#'+entry.a:'');
+    const href='${BASE}'+entry.u+(entry.a?'#'+entry.a:'');
     const source=entry.t===entry.h?'':'<em>'+escapeText(entry.t)+'</em>';
     return '<a class="search-hit" href="'+escapeText(href)+'"><strong>'+markTerms(entry.h,terms)+'</strong>'+source+'<p>'+markTerms(excerpt(entry.x,terms),terms)+'</p></a>';
   }).join('');
@@ -837,14 +848,14 @@ document.querySelectorAll('.prose details').forEach(details=>{
 const search=document.querySelector('[data-course-search]');if(search)search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();document.querySelectorAll('[data-course-card]').forEach(card=>card.hidden=q&&!card.dataset.courseCard.includes(q));document.querySelectorAll('[data-course-group]').forEach(group=>group.hidden=![...group.querySelectorAll('[data-course-card]')].some(card=>!card.hidden));});
 const context=document.modelContext;if(!context?.registerTool)return;const lifecycle=new AbortController();const register=tool=>{try{Promise.resolve(context.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{})}catch{}};
 register({name:'get_course_progress',title:'Показать прогресс курса',description:'Возвращает краткий прогресс самостоятельного обучения в этом браузере.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute:()=>({answeredChecks:Object.keys(records).length,correctChecks:progressTotals.correct,programmingTestsPassed:Number(state?.practice?.passed||0),bestFinalExam:progressTotals.best})});
-register({name:'open_course_module',title:'Открыть модуль курса',description:'Переходит на отдельную страницу одной из 28 глав курса.',inputSchema:{type:'object',properties:{module:{type:'integer',minimum:0,maximum:27}},required:['module'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute:input=>{const n=input?.module;if(!Number.isInteger(n)||n<0||n>27)throw Error('Номер модуля должен быть целым числом от 0 до 27.');location.href='/chapters/'+String(n).padStart(2,'0')+'/';return{openedModule:n};}});
+register({name:'open_course_module',title:'Открыть модуль курса',description:'Переходит на отдельную страницу одной из 28 глав курса.',inputSchema:{type:'object',properties:{module:{type:'integer',minimum:0,maximum:27}},required:['module'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute:input=>{const n=input?.module;if(!Number.isInteger(n)||n<0||n>27)throw Error('Номер модуля должен быть целым числом от 0 до 27.');location.href='${BASE}/chapters/'+String(n).padStart(2,'0')+'/';return{openedModule:n};}});
 })();`;
 
 await rm(output, { recursive: true, force: true });
 await mkdir(resolve(output, 'assets'), { recursive: true });
 await Promise.all([
-  writeFile(resolve(output, 'index.html'), home),
-  writeFile(resolve(output, 'curriculum', 'index.html'), curriculum).catch(async (error) => { await mkdir(resolve(output, 'curriculum'), { recursive: true }); await writeFile(resolve(output, 'curriculum', 'index.html'), curriculum); }),
+  writeFile(resolve(output, 'index.html'), withBase(home)),
+  writeFile(resolve(output, 'curriculum', 'index.html'), withBase(curriculum)).catch(async () => { await mkdir(resolve(output, 'curriculum'), { recursive: true }); await writeFile(resolve(output, 'curriculum', 'index.html'), withBase(curriculum)); }),
   writeFile(resolve(output, 'assets', 'site.css'), css),
   writeFile(resolve(output, 'assets', 'site.js'), js),
   cp(resolve(root, 'public', 'favicon.svg'), resolve(output, 'assets', 'favicon.svg')),
@@ -858,7 +869,7 @@ const outputs = [
 for (const [url, html] of outputs) {
   const file = resolve(output, url.slice(1), 'index.html');
   await mkdir(dirname(file), { recursive: true });
-  await writeFile(file, html);
+  await writeFile(file, withBase(html));
 }
 
 // ---------- Индекс полнотекстового поиска ----------

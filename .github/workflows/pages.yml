@@ -1,0 +1,59 @@
+name: Публикация на GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Одновременно публикуется только одна сборка; уже идущую не прерываем,
+# чтобы не оставить страницы в промежуточном состоянии.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Страницы проекта живут в подкаталоге /<репозиторий>/, личный сайт
+      # <владелец>.github.io — в корне. Свой домен тоже отдаётся из корня:
+      # в этом случае оставьте BASE_PATH пустым.
+      - name: Определить базовый путь
+        run: |
+          if [ "${{ github.event.repository.name }}" = "${{ github.repository_owner }}.github.io" ]; then
+            echo "BASE_PATH=" >> "$GITHUB_ENV"
+          else
+            echo "BASE_PATH=/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
+          fi
+
+      # Генератор и проверка используют только стандартную библиотеку Node,
+      # поэтому устанавливать зависимости не нужно.
+      - name: Собрать сайт
+        run: node scripts/build-static.mjs
+
+      - name: Проверить собранный сайт
+        run: node scripts/validate-site.mjs
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
