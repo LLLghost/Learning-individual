@@ -222,6 +222,30 @@ for (const [name, pattern] of proseRules) {
   if (hit) failures.push(`course.html: ${name} — ...${prose.slice(Math.max(0, hit.index - 40), hit.index + 40).trim()}...`);
 }
 
-if (htmlFiles.length !== 66) failures.push(`expected 66 routes, got ${htmlFiles.length}`);
+// Страница маршрута: чек-лист собран по всем главам, а отметки выводятся из
+// прогресса — интерфейса, который проставляет дату вручную, быть не должно.
+const routePage = cache.get(resolve(root, 'route', 'index.html'));
+if (!routePage) failures.push('route: page is missing');
+else {
+  const rows = routePage.match(/data-route-row="\d+"/g)?.length ?? 0;
+  if (rows !== 28) failures.push(`route: checklist has ${rows} rows for 28 chapters`);
+  for (const marker of ['data-route-calendar', 'data-backup-save', 'data-backup-load']) {
+    if (!routePage.includes(marker)) failures.push(`route: missing ${marker}`);
+  }
+  if (/<input(?![^>]*type="file")[^>]*data-route/.test(routePage)) failures.push('route: checklist must not accept manual input');
+}
+for (const [file, html] of cache) {
+  if (!html.includes('href="/route/"') && !html.includes(`href="${BASE}/route/"`)) failures.push(`${file}: missing route link in navigation`);
+}
+// Итоговый контроль пересчитывается по числу модулей: расхождение знаменателя
+// и порога с числом заданий даёт молча неверный результат.
+if (assessment && (assessment.includes('total:28') || assessment.includes("correctCount>=24"))) {
+  failures.push('assessment: final exam still scored out of 28');
+}
+// Шкала времени только дополняется: код не должен уметь переписать дату.
+if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
+  failures.push('site.js: timeline must be append-only');
+}
+if (htmlFiles.length !== 67) failures.push(`expected 67 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
