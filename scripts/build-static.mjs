@@ -126,12 +126,13 @@ const globalNav = `
 const readerTools = `
   <aside class="notes-panel" data-notes-panel aria-hidden="true" aria-labelledby="notes-title">
     <header class="notes-head"><div><p class="eyebrow">Личный конспект</p><h2 id="notes-title">Заметки и цитаты</h2></div><button type="button" class="icon-button" data-notes-close aria-label="Закрыть заметки">×</button></header>
-    <section class="selection-card" aria-labelledby="selection-title"><h3 id="selection-title">Выбранный фрагмент</h3><p class="selection-preview" data-selection-preview>Выделите текст в учебнике, чтобы скопировать, сохранить или отметить его цветом.</p><div class="selection-actions"><button type="button" data-copy-selection disabled>Копировать</button><button type="button" data-save-quote disabled>Сохранить цитату</button></div><div class="highlight-palette" role="group" aria-label="Цвет маркера"><button type="button" class="color-dot yellow" data-highlight-color="yellow" disabled aria-label="Выделить жёлтым"></button><button type="button" class="color-dot green" data-highlight-color="green" disabled aria-label="Выделить зелёным"></button><button type="button" class="color-dot blue" data-highlight-color="blue" disabled aria-label="Выделить синим"></button><button type="button" class="color-dot pink" data-highlight-color="pink" disabled aria-label="Выделить розовым"></button></div><button type="button" class="undo-highlight" data-undo-highlight disabled>↶ Отменить последнее выделение</button></section>
+    <section class="selection-card" aria-labelledby="selection-title"><h3 id="selection-title">Выбранный фрагмент</h3><p class="selection-preview" data-selection-preview>Выделите слово или фрагмент в учебнике: справочник покажет определение, текст можно скопировать, сохранить или отметить цветом.</p><div class="selection-actions"><button type="button" data-define-selection disabled>Определение</button><button type="button" data-copy-selection disabled>Копировать</button><button type="button" data-save-quote disabled>Сохранить цитату</button></div><div class="highlight-palette" role="group" aria-label="Цвет маркера"><button type="button" class="color-dot yellow" data-highlight-color="yellow" disabled aria-label="Выделить жёлтым"></button><button type="button" class="color-dot green" data-highlight-color="green" disabled aria-label="Выделить зелёным"></button><button type="button" class="color-dot blue" data-highlight-color="blue" disabled aria-label="Выделить синим"></button><button type="button" class="color-dot pink" data-highlight-color="pink" disabled aria-label="Выделить розовым"></button></div><button type="button" class="undo-highlight" data-undo-highlight disabled>↶ Отменить последнее выделение</button></section>
     <section class="note-composer"><label for="reader-note">Новая заметка</label><textarea id="reader-note" data-note-input rows="4" placeholder="Запишите вывод, вопрос или идею…"></textarea><button type="button" class="button primary" data-add-note>Сохранить заметку</button></section>
     <section class="notes-library" aria-labelledby="library-title"><div class="notes-library-head"><h3 id="library-title">Сохранённое <span data-notes-count>0</span></h3><button type="button" class="text-button" data-copy-all disabled>Копировать всё</button></div><div class="notes-list" data-notes-list><p class="notes-empty">Здесь появятся ваши заметки, цитаты и цветные выделения.</p></div></section>
   </aside>
   <button type="button" class="notes-backdrop" data-notes-close aria-label="Закрыть панель заметок" hidden></button>
-  <div class="selection-toolbar" data-selection-toolbar hidden role="toolbar" aria-label="Действия с выделенным текстом"><button type="button" data-copy-selection title="Копировать выделенный текст">Копировать</button><button type="button" data-save-quote title="Сохранить цитату">В цитаты</button><button type="button" data-remove-current-highlight hidden>Убрать маркер</button><span aria-hidden="true"></span><button type="button" class="color-dot yellow" data-highlight-color="yellow" aria-label="Выделить жёлтым"></button><button type="button" class="color-dot green" data-highlight-color="green" aria-label="Выделить зелёным"></button><button type="button" class="color-dot blue" data-highlight-color="blue" aria-label="Выделить синим"></button><button type="button" class="color-dot pink" data-highlight-color="pink" aria-label="Выделить розовым"></button></div>
+  <div class="selection-toolbar" data-selection-toolbar hidden role="toolbar" aria-label="Действия с выделенным текстом"><button type="button" data-define-selection title="Показать определение термина">Определение</button><button type="button" data-copy-selection title="Копировать выделенный текст">Копировать</button><button type="button" data-save-quote title="Сохранить цитату">В цитаты</button><button type="button" data-remove-current-highlight hidden>Убрать маркер</button><span aria-hidden="true"></span><button type="button" class="color-dot yellow" data-highlight-color="yellow" aria-label="Выделить жёлтым"></button><button type="button" class="color-dot green" data-highlight-color="green" aria-label="Выделить зелёным"></button><button type="button" class="color-dot blue" data-highlight-color="blue" aria-label="Выделить синим"></button><button type="button" class="color-dot pink" data-highlight-color="pink" aria-label="Выделить розовым"></button></div>
+  <div class="define-card" data-define-card hidden role="dialog" aria-label="Определение термина" aria-live="polite"><button type="button" class="define-close" data-define-close aria-label="Закрыть определение">×</button><div data-define-body></div></div>
   <div class="reader-toast" data-reader-toast role="status" aria-live="polite"></div>`;
 
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
@@ -139,6 +140,50 @@ const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', descrip
 <body><header class="topbar">${globalNav}<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary>Разделы</summary><div>${globalNav}</div></details></header>
 <div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main"><p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 ${readerTools}<script src="/assets/site.js"></script></body></html>`;
+
+// ---------- Справочная база терминов ----------
+// Основа — приложение C (глоссарий) прямо из учебника, чтобы определения не
+// разъезжались с текстом; public/reference-terms.json добавляет термины, которых
+// в глоссарии нет, и варианты написания для поиска по выделенному фрагменту.
+const glossaryEntries = () => {
+  const start = marker('b27-s058');
+  const end = marker('b27-s059');
+  const block = source.slice(start, end);
+  const body = block.slice(block.indexOf('<p>', block.indexOf('</p>') + 4));
+  return Array.from(body.matchAll(/<strong>(.*?)<\/strong>\s*—\s*([\s\S]*?)(?=<br>|<\/p>)/g)).map((match) => {
+    const definition = match[2].replace(/<a\b[^>]*>[\s\S]*?<\/a>/g, '').trim();
+    const chapter = match[2].match(/href="#b(\d\d)"/);
+    // В глоссарии определение идёт после тире и потому начинается со строчной буквы;
+    // в карточке термин вынесен в заголовок, поэтому предложение начинается заново.
+    const sentence = definition.replace(/[\s.]*$/, '.').replace(/^([a-zа-я])/, (letter) => letter.toUpperCase());
+    return {
+      term: strip(match[1]),
+      html: sentence,
+      chapter: chapter ? Number(chapter[1]) : null,
+      aliases: [],
+    };
+  });
+};
+const supplementFile = JSON.parse(await readFile(resolve(root, 'public', 'reference-terms.json'), 'utf8'));
+const glossaryAliases = supplementFile.aliasesForGlossary ?? {};
+// Термин вида WWN/WWID ищется и по каждой половине, если та достаточно длинная,
+// чтобы не породить ложных совпадений (CI/CD так не разбирается).
+const slashVariants = (term) => {
+  const parts = term.split('/').map((part) => part.trim());
+  return parts.length > 1 && parts.every((part) => part.length >= 3) ? parts : [];
+};
+const referenceTerms = [
+  ...glossaryEntries().map((entry) => ({ ...entry, aliases: [...slashVariants(entry.term), ...(glossaryAliases[entry.term] ?? [])] })),
+  ...supplementFile.terms.map((entry) => ({
+    term: entry.t,
+    html: escape(entry.d),
+    chapter: entry.c ?? null,
+    aliases: [...slashVariants(entry.t), ...(entry.a ?? [])],
+  })),
+];
+const unknownAlias = Object.keys(glossaryAliases).find((term) => !referenceTerms.some((entry) => entry.term === term));
+if (unknownAlias) throw new Error(`aliasesForGlossary references a missing glossary term: ${unknownAlias}`);
+if (referenceTerms.length < 150) throw new Error(`Reference base too small: ${referenceTerms.length}`);
 
 const localToc = (content) => Array.from(content.matchAll(/<h([23])[^>]*id="([^"]+)"[^>]*>(.*?)<\/h\1>/gs))
   .slice(0, 18)
@@ -253,6 +298,15 @@ const css = `
 .chapter-trainer{max-width:900px;margin:68px auto 0;padding:clamp(22px,4vw,38px);background:var(--white);border:1px solid var(--line);box-shadow:0 16px 40px #06151d0c}.chapter-trainer>header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line)}.chapter-trainer h2{margin:0;font-family:Georgia,serif;font-size:clamp(28px,4vw,38px)}.chapter-trainer header p:last-child{max-width:610px;margin:9px 0 0;color:var(--muted);line-height:1.55}.chapter-trainer>header>strong{flex:0 0 auto;min-width:78px;padding:10px 12px;background:var(--navy2);color:white;text-align:center;font-variant-numeric:tabular-nums}.trainer-question{margin:24px 0 0;padding:0;border:0}.trainer-question legend{display:flex;gap:12px;width:100%;font-size:16px;font-weight:750;line-height:1.45}.trainer-question legend>span{display:grid;flex:0 0 28px;height:28px;place-items:center;background:var(--teal);color:#04191d;font-size:12px}.trainer-options{display:grid;gap:8px;margin:15px 0}.trainer-options label{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--soft);border:1px solid var(--line);cursor:pointer;line-height:1.45}.trainer-options label:has(input:checked){border-color:var(--teal);background:var(--selected)}.trainer-options label.is-correct{border-color:#319480;background:var(--success)}.trainer-options label.is-wrong{border-color:#c45a43;background:var(--quote)}.trainer-options input{margin-top:.25em;accent-color:var(--teal)}.trainer-actions{display:flex;align-items:center;gap:14px}.trainer-actions button{padding:10px 16px;border:1px solid var(--navy);background:var(--navy);color:white;font:700 13px/1.2 inherit;cursor:pointer}.trainer-actions button:disabled{opacity:.55;cursor:not-allowed}.trainer-feedback{margin:0;font-size:13px;line-height:1.45}.trainer-feedback.is-correct{color:#137769}.trainer-feedback.is-wrong{color:#b04f3c}.chapter-trainer>footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:27px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.chapter-trainer>footer a{color:var(--link);font-weight:750;text-decoration:none}@media(max-width:560px){.chapter-trainer>header,.chapter-trainer>footer,.trainer-actions{align-items:stretch;flex-direction:column}.chapter-trainer>header>strong{align-self:flex-start}.trainer-feedback{min-height:0}}
 /* Chapter practice bridge */
 .chapter-practice{max-width:900px;margin:34px auto 0;padding:clamp(20px,3.4vw,32px);background:var(--soft);border:1px solid var(--line)}.chapter-practice header{margin-bottom:18px}.chapter-practice h2{margin:4px 0 0;font-family:Georgia,serif;font-size:clamp(22px,3vw,28px)}.practice-grid{display:grid;gap:10px}.practice-grid a{display:grid;grid-template-columns:58px 1fr;align-items:baseline;gap:4px 14px;padding:14px 16px;background:var(--white);border:1px solid var(--line);color:inherit;text-decoration:none}.practice-grid a:hover{border-color:var(--teal)}.practice-grid span{grid-row:1/3;align-self:center;font-weight:750;font-size:13px;color:var(--link);font-variant-numeric:tabular-nums}.practice-grid strong{font-size:15px;line-height:1.4}.practice-grid em{color:var(--muted);font-size:12.5px;font-style:normal;line-height:1.4}.practice-note{margin:16px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}@media(max-width:560px){.practice-grid a{grid-template-columns:1fr}.practice-grid span{grid-row:auto}}
+/* Term definition card */
+.define-card{position:fixed;z-index:60;width:min(430px,calc(100vw - 24px));max-height:min(60vh,460px);overflow:auto;padding:18px 20px 20px;background:var(--white);border:1px solid var(--line);box-shadow:0 22px 54px #06151d2e}.define-close{position:absolute;top:8px;right:8px;padding:2px 8px;border:0;background:transparent;color:var(--muted);font-size:19px;line-height:1;cursor:pointer}.define-close:hover{color:var(--ink)}
+.define-term{margin:0 6px 0 0;font-family:Georgia,serif;font-size:20px;line-height:1.25}.define-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;padding-right:26px}.define-source{flex:0 0 auto;font-size:11px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.define-card p{margin:10px 0 0;font-size:14.5px;line-height:1.6}.define-card p.define-def{color:var(--ink)}
+.define-card a.define-link{display:inline-block;margin-top:12px;color:var(--link);font-weight:750;font-size:13px;text-decoration:none}.define-card a.define-link:hover{text-decoration:underline}
+.define-more{margin-top:15px;padding-top:12px;border-top:1px solid var(--line)}.define-more p{margin:0 0 8px;font-size:12px;color:var(--muted)}
+.define-suggest{display:flex;flex-wrap:wrap;gap:7px}.define-suggest button{padding:5px 10px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:600 12.5px/1.2 inherit;cursor:pointer}.define-suggest button:hover{border-color:var(--teal)}
+.define-miss{color:var(--muted)}.define-actions{display:flex;gap:8px;margin-top:14px}.define-actions button{padding:7px 12px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:600 12.5px/1.2 inherit;cursor:pointer}.define-actions button:hover{border-color:var(--teal)}
+@media(max-width:560px){.define-card{left:10px!important;right:10px;width:auto}}
 /* Reader notebook */
 .notes-toggle{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #ffffff35;background:#ffffff0b;color:white;font:600 12px/1.2 inherit;cursor:pointer;white-space:nowrap}.notes-toggle:hover{border-color:var(--teal2);background:#ffffff14}.notes-toggle:focus-visible{outline:2px solid var(--teal2);outline-offset:3px}.notes-toggle strong{min-width:18px;padding:2px 5px;border-radius:10px;background:var(--teal);color:#06151d;font-size:10px;text-align:center}.notes-panel{position:fixed;z-index:50;top:68px;right:0;bottom:0;width:min(410px,100vw);padding:24px;background:var(--white);color:var(--ink);border-left:1px solid var(--line);box-shadow:-18px 0 48px #0005;overflow:auto;transform:translateX(105%);visibility:hidden;transition:transform .22s ease,visibility .22s}.notes-panel.is-open{transform:translateX(0);visibility:visible}.notes-backdrop{position:fixed;z-index:45;inset:68px 0 0;border:0;background:#00101899;cursor:default}.notes-head,.notes-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.notes-head h2{margin:3px 0 0;font-family:Georgia,serif;font-size:30px}.icon-button,.text-button{border:0;background:transparent;color:var(--ink);cursor:pointer}.icon-button{font-size:30px;line-height:1;padding:2px 6px}.text-button{padding:4px 0;color:var(--link);font-weight:700}.text-button:disabled{opacity:.45;cursor:not-allowed}.selection-card,.note-composer,.notes-library{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.selection-card h3,.notes-library h3{margin:0 0 12px;font-size:15px}.selection-preview{min-height:68px;margin:0 0 12px;padding:12px;background:var(--soft);border:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.5;white-space:pre-wrap}.selection-actions{display:flex;gap:8px}.selection-actions button,.note-composer button{padding:9px 12px;border:1px solid #63858a;background:var(--white);color:var(--ink);font:inherit;cursor:pointer}.selection-actions button:disabled,.highlight-palette button:disabled{opacity:.38;cursor:not-allowed}.highlight-palette{display:flex;align-items:center;gap:10px;margin-top:13px}.undo-highlight{margin-top:13px;padding:0;border:0;background:transparent;color:var(--link);font:700 12px/1.4 inherit;cursor:pointer}.undo-highlight:disabled{opacity:.42;cursor:not-allowed}.color-dot{width:24px;height:24px;padding:0!important;border:2px solid #26363b!important;border-radius:50%;cursor:pointer;box-shadow:0 0 0 1px #ffffffaa}.color-dot:hover:not(:disabled),.color-dot:focus-visible{transform:scale(1.12);outline:2px solid var(--teal);outline-offset:2px}.color-dot.yellow,.reader-highlight[data-color=yellow]{background:#ffe48c!important}.color-dot.green,.reader-highlight[data-color=green]{background:#a9e6bd!important}.color-dot.blue,.reader-highlight[data-color=blue]{background:#a9d8ff!important}.color-dot.pink,.reader-highlight[data-color=pink]{background:#f7b8cf!important}.reader-highlight{color:#102733;padding:.04em .08em;border-radius:2px;box-decoration-break:clone;-webkit-box-decoration-break:clone;cursor:pointer}.reader-highlight:target{outline:3px solid var(--teal);outline-offset:3px}.note-composer label{display:block;margin-bottom:8px;font-size:13px;font-weight:800}.note-composer textarea{width:100%;resize:vertical;padding:12px;border:1px solid #63858a;background:var(--paper);color:var(--ink);font:inherit;line-height:1.5}.note-composer .button{margin-top:9px}.notes-library-head{align-items:baseline}.notes-library-head h3 span{display:inline-block;min-width:22px;margin-left:4px;padding:2px 6px;border-radius:12px;background:var(--soft);text-align:center}.notes-list{display:grid;gap:10px}.notes-empty{color:var(--muted);font-size:13px;line-height:1.5}.note-item{padding:13px;border:1px solid var(--line);background:var(--paper)}.note-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.note-kind{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}.note-item p{margin:9px 0;font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.note-item-source{display:block;color:var(--link);font-size:11px;text-decoration:none}.note-item-actions{display:flex;gap:12px;margin-top:10px}.note-item-actions button{padding:0;border:0;background:transparent;color:var(--link);font:700 11px/1.4 inherit;cursor:pointer}.note-item-actions .danger{color:#c45a43}.selection-toolbar{position:fixed;z-index:60;display:flex;align-items:center;gap:6px;padding:8px;background:var(--navy2);border:1px solid #ffffff2b;box-shadow:0 8px 24px #0007;color:white}.selection-toolbar[hidden]{display:none}.selection-toolbar>button:not(.color-dot){padding:7px 9px;border:1px solid #ffffff30;background:#ffffff0e;color:white;font:600 11px/1.2 inherit;cursor:pointer}.selection-toolbar>button[hidden]{display:none}.selection-toolbar>span{width:1px;height:22px;background:#ffffff38}.selection-toolbar .color-dot{width:20px;height:20px}.reader-toast{position:fixed;z-index:70;right:22px;bottom:22px;max-width:330px;padding:11px 15px;background:var(--navy2);color:white;border:1px solid #ffffff2b;box-shadow:0 8px 24px #0006;font-size:13px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}.reader-toast.is-visible{opacity:1;transform:translateY(0)}
 @media(max-width:900px){.topbar{gap:12px}.notes-toggle span:nth-child(2){display:none}.notes-panel{top:68px}.selection-toolbar{left:10px!important;right:10px;bottom:12px;top:auto!important;justify-content:center;flex-wrap:wrap}}@media(max-width:560px){.notes-toggle{padding:8px}.theme-toggle{padding:8px}.notes-panel{padding:19px}.notes-backdrop{display:none}.selection-toolbar>button:not(.color-dot){font-size:10px}}@media print{.notes-toggle,.notes-panel,.notes-backdrop,.selection-toolbar,.reader-toast{display:none!important}.reader-highlight{background:transparent!important;color:inherit;padding:0}}
@@ -281,11 +335,11 @@ readerState.highlights.filter(item=>item.path===readerPath).sort((a,b)=>Number(a
 const itemLabel=item=>item.kind==='note'?'Заметка':item.kind==='quote'?'Цитата':'Маркер';
 const renderReader=()=>{const entries=[...readerState.notes,...readerState.highlights.map(item=>({...item,kind:'highlight'}))].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))),count=entries.length;document.querySelectorAll('[data-notes-count]').forEach(node=>node.textContent=String(count));document.querySelectorAll('[data-notes-badge]').forEach(node=>{node.textContent=String(count);node.hidden=!count});document.querySelectorAll('[data-copy-all]').forEach(node=>node.disabled=!count);document.querySelectorAll('[data-undo-highlight]').forEach(node=>node.disabled=!readerState.highlights.length);if(!readerList)return;if(!count){readerList.innerHTML='<p class="notes-empty">Здесь появятся ваши заметки, цитаты и цветные выделения.</p>';return}readerList.innerHTML=entries.map(item=>{const href=item.path+(item.kind==='highlight'?'#reader-highlight-'+item.id:'');return '<article class="note-item"><div class="note-item-head"><span class="note-kind">'+itemLabel(item)+'</span><time datetime="'+escapeText(item.createdAt)+'">'+new Date(item.createdAt).toLocaleDateString('ru-RU')+'</time></div><p>'+escapeText(item.text)+'</p><a class="note-item-source" href="'+escapeText(href)+'">'+escapeText(item.title||item.path)+'</a><div class="note-item-actions"><button type="button" data-copy-item="'+escapeText(item.id)+'" data-item-kind="'+escapeText(item.kind)+'">Копировать</button><button type="button" class="danger" data-delete-item="'+escapeText(item.id)+'" data-item-kind="'+escapeText(item.kind)+'">Удалить</button></div></article>'}).join('')};
 renderReader();
-const setSelectionControls=enabled=>{document.querySelectorAll('[data-copy-selection],[data-save-quote],[data-highlight-color]').forEach(button=>button.disabled=!enabled)};
+const setSelectionControls=enabled=>{document.querySelectorAll('[data-copy-selection],[data-save-quote],[data-highlight-color],[data-define-selection]').forEach(button=>button.disabled=!enabled)};
 const positionToolbar=rect=>{if(!readerToolbar)return;readerToolbar.hidden=false;readerToolbar.style.left=Math.max(10,Math.min(innerWidth-readerToolbar.offsetWidth-10,rect.left+rect.width/2-readerToolbar.offsetWidth/2))+'px';readerToolbar.style.top=Math.max(76,rect.top-readerToolbar.offsetHeight-10)+'px'};
-const clearSelectionUi=()=>{activeSelection=null;activeHighlightId=null;setSelectionControls(false);document.querySelectorAll('[data-remove-current-highlight]').forEach(button=>button.hidden=true);if(readerPreview)readerPreview.textContent='Выделите текст в учебнике, чтобы скопировать, сохранить или отметить его цветом.';if(readerToolbar)readerToolbar.hidden=true};
+const clearSelectionUi=()=>{activeSelection=null;activeHighlightId=null;setSelectionControls(false);document.querySelectorAll('[data-remove-current-highlight]').forEach(button=>button.hidden=true);if(readerPreview)readerPreview.textContent='Выделите слово или фрагмент в учебнике: справочник покажет определение, текст можно скопировать, сохранить или отметить цветом.';if(readerToolbar)readerToolbar.hidden=true};
 const captureSelection=()=>{const selection=getSelection();if(!selection||selection.rangeCount!==1||selection.isCollapsed){if(!selectionControlActive)clearSelectionUi();return}const range=selection.getRangeAt(0),startElement=range.startContainer.nodeType===1?range.startContainer:range.startContainer.parentElement,endElement=range.endContainer.nodeType===1?range.endContainer:range.endContainer.parentElement,root=startElement?.closest('.prose');if(!root||!root.contains(endElement)||readerPanel?.contains(startElement)||readerToolbar?.contains(startElement)){if(!selectionControlActive)clearSelectionUi();return}const before=document.createRange();before.selectNodeContents(root);before.setEnd(range.startContainer,range.startOffset);const text=range.toString();if(!text.trim()){if(!selectionControlActive)clearSelectionUi();return}activeHighlightId=null;document.querySelectorAll('[data-remove-current-highlight]').forEach(button=>button.hidden=true);activeSelection={text,path:readerPath,title:readerTitle,rootIndex:readerRoots.indexOf(root),start:before.toString().length,end:before.toString().length+text.length};setSelectionControls(true);if(readerPreview)readerPreview.textContent=text.length>500?text.slice(0,500)+'…':text;positionToolbar(range.getBoundingClientRect())};
-document.addEventListener('selectionchange',()=>requestAnimationFrame(captureSelection));const protectSelection=event=>{if(!activeSelection)return;selectionControlActive=true;event.preventDefault()};document.querySelectorAll('[data-copy-selection],[data-save-quote],[data-highlight-color],[data-remove-current-highlight],[data-notes-toggle]').forEach(button=>{button.addEventListener('pointerdown',protectSelection);button.addEventListener('mousedown',protectSelection)});const releaseSelectionControl=()=>setTimeout(()=>{selectionControlActive=false},0);document.addEventListener('pointerup',releaseSelectionControl);document.addEventListener('mouseup',releaseSelectionControl);
+document.addEventListener('selectionchange',()=>requestAnimationFrame(captureSelection));const protectSelection=event=>{if(!activeSelection)return;selectionControlActive=true;event.preventDefault()};document.querySelectorAll('[data-copy-selection],[data-save-quote],[data-highlight-color],[data-remove-current-highlight],[data-notes-toggle],[data-define-selection]').forEach(button=>{button.addEventListener('pointerdown',protectSelection);button.addEventListener('mousedown',protectSelection)});const releaseSelectionControl=()=>setTimeout(()=>{selectionControlActive=false},0);document.addEventListener('pointerup',releaseSelectionControl);document.addEventListener('mouseup',releaseSelectionControl);
 document.querySelectorAll('[data-copy-selection]').forEach(button=>button.addEventListener('click',()=>activeSelection&&copyText(activeSelection.text)));
 document.querySelectorAll('[data-save-quote]').forEach(button=>button.addEventListener('click',()=>{if(!activeSelection)return;readerState.notes.push({id:makeId(),kind:'quote',text:activeSelection.text.trim(),path:readerPath,title:readerTitle,createdAt:new Date().toISOString()});saveReader();renderReader();showToast('Цитата сохранена');openNotes()}));
 document.querySelectorAll('[data-highlight-color]').forEach(button=>button.addEventListener('click',()=>{if(!activeSelection)return;if(activeHighlightId){const record=readerState.highlights.find(item=>item.id===activeHighlightId);if(!record)return;if(record.color===button.dataset.highlightColor)return showToast('Этот цвет уже выбран');record.color=button.dataset.highlightColor;document.querySelectorAll('[data-reading-highlight]').forEach(mark=>{if(mark.dataset.readingHighlight===record.id)mark.dataset.color=record.color});saveReader();renderReader();return showToast('Цвет маркера изменён')}const overlaps=readerState.highlights.some(item=>item.path===readerPath&&item.rootIndex===activeSelection.rootIndex&&Number(item.start)<activeSelection.end&&Number(item.end)>activeSelection.start);if(overlaps)return showToast('Этот фрагмент пересекается с другим маркером');const record={id:makeId(),text:activeSelection.text,path:readerPath,title:readerTitle,rootIndex:activeSelection.rootIndex,start:activeSelection.start,end:activeSelection.end,color:button.dataset.highlightColor,createdAt:new Date().toISOString()};readerState.highlights.push(record);saveReader();applyHighlight(record);getSelection()?.removeAllRanges();clearSelectionUi();renderReader();showToast('Текст выделен цветом')}));
@@ -302,6 +356,111 @@ let state=read();if(!state||state.schema!=='course-study-progress'||state.versio
 const records=state.records,history=Array.isArray(state.history)?state.history:[];
 const renderCourseProgress=()=>{const correct=Object.values(records).filter(x=>x?.correct).length,best=Math.max(0,...history.map(x=>Number(x.correct||0)));document.querySelectorAll('[data-progress-title]').forEach(x=>x.textContent=correct?correct+' проверок выполнено верно':'Маршрут ещё не начат');document.querySelectorAll('[data-progress-copy]').forEach(x=>x.textContent='Python: '+Number(state?.practice?.passed||0)+'/28 · итоговый тест: '+best+'/28');return{correct,best}};
 const progressTotals=renderCourseProgress();
+/* ---------- Справка по терминам ---------- */
+const TERMS=${JSON.stringify(referenceTerms)};
+const defineCard=document.querySelector('[data-define-card]'),defineBody=document.querySelector('[data-define-body]');
+// Нормализация: регистр, ё, и вся пунктуация кроме символов, встречающихся внутри
+// самих терминов (/ . _ - +) — чтобы «/proc», «set -euo pipefail» и «network.target» находились.
+const defNorm=value=>String(value??'').toLowerCase().replace(/ё/g,'е').replace(/[^0-9a-zа-я/._+-]+/g,' ').replace(/\\s+/g,' ').trim();
+// Грубый стеммер для русских слов: снимает падежные окончания, чтобы «маршрутизации»
+// находило «Маршрутизация». Латиницу не трогает — там окончаний нет.
+const defStem=word=>/^[а-я]/.test(word)&&word.length>4?word.replace(/(иями|ями|ами|ого|его|ыми|ими|ой|ей|ый|ий|ая|яя|ое|ее|ые|ие|ах|ях|ам|ям|ом|ем|ов|ев|у|ю|а|я|ы|и|е|о|й|ь)$/,''):word;
+const defKey=value=>defNorm(value).split(' ').map(defStem).join(' ');
+const DEF_INDEX=new Map();
+TERMS.forEach((entry,index)=>{
+  for(const variant of [entry.term,...entry.aliases]){
+    for(const key of [defNorm(variant),defKey(variant)]){
+      if(key&&!DEF_INDEX.has(key))DEF_INDEX.set(key,index);
+    }
+  }
+});
+const defLookup=text=>{
+  const tokens=defNorm(text).split(' ').filter(Boolean);
+  if(!tokens.length)return null;
+  // от самой длинной сочетаемости к самой короткой: «page cache» важнее, чем «cache»
+  for(let size=Math.min(tokens.length,5);size>0;size-=1){
+    for(let start=0;start+size<=tokens.length;start+=1){
+      const window=tokens.slice(start,start+size);
+      const hit=DEF_INDEX.get(window.join(' '))??DEF_INDEX.get(window.map(defStem).join(' '));
+      if(hit!==undefined)return TERMS[hit];
+    }
+  }
+  return null;
+};
+const defSuggest=text=>{
+  const tokens=defNorm(text).split(' ').filter(token=>token.length>=3);
+  if(!tokens.length)return [];
+  const found=new Set();
+  for(const token of tokens){
+    const stem=defStem(token);
+    TERMS.forEach((entry,index)=>{
+      if(found.size>=6)return;
+      const key=defNorm(entry.term);
+      if(key.startsWith(stem)||key.includes(token))found.add(index);
+    });
+  }
+  return [...found].slice(0,6).map(index=>TERMS[index]);
+};
+const defChapterHref=entry=>entry.chapter===null?null:'/chapters/'+String(entry.chapter).padStart(2,'0')+'/#b'+String(entry.chapter).padStart(2,'0');
+const hideDefine=()=>{if(defineCard)defineCard.hidden=true};
+const showDefine=(entry,query,rect)=>{
+  if(!defineCard||!defineBody)return;
+  if(entry){
+    const href=defChapterHref(entry);
+    defineBody.innerHTML='<div class="define-head"><h3 class="define-term">'+escapeText(entry.term)+'</h3><span class="define-source">справочник курса</span></div>'
+      +'<p class="define-def">'+entry.html+'</p>'
+      +(href?'<a class="define-link" href="'+href+'">Разбор в главе '+String(entry.chapter).padStart(2,'0')+' →</a>':'')
+      +'<div class="define-actions"><button type="button" data-define-copy>Копировать</button><button type="button" data-define-note>Сохранить в заметки</button></div>';
+    defineBody.dataset.term=entry.term;
+    defineBody.dataset.text=entry.term+' — '+entry.html.replace(/<[^>]+>/g,'');
+  }else{
+    const near=defSuggest(query);
+    defineBody.innerHTML='<div class="define-head"><h3 class="define-term">Определения нет</h3></div>'
+      +'<p class="define-miss">В справочнике курса нет статьи для «'+escapeText(query.length>60?query.slice(0,60)+'…':query)+'». Справочник покрывает термины глоссария и ключевые понятия глав.</p>'
+      +(near.length?'<div class="define-more"><p>Возможно, вы искали:</p><div class="define-suggest">'+near.map(item=>'<button type="button" data-define-pick="'+escapeText(item.term)+'">'+escapeText(item.term)+'</button>').join('')+'</div></div>':'');
+    delete defineBody.dataset.term;
+    delete defineBody.dataset.text;
+  }
+  defineCard.hidden=false;
+  const width=defineCard.offsetWidth,height=defineCard.offsetHeight;
+  const left=rect?Math.max(10,Math.min(innerWidth-width-10,rect.left+rect.width/2-width/2)):Math.max(10,innerWidth-width-24);
+  const below=rect?rect.bottom+10:96;
+  const top=rect&&below+height>innerHeight-10?Math.max(76,rect.top-height-10):Math.min(below,Math.max(76,innerHeight-height-10));
+  defineCard.style.left=left+'px';
+  defineCard.style.top=top+'px';
+};
+const defineFromText=(text,rect)=>{
+  const query=String(text||'').trim();
+  if(!query)return showToast('Сначала выделите слово или сочетание');
+  showDefine(defLookup(query),query,rect);
+};
+const selectionRect=()=>{
+  const selection=getSelection();
+  if(selection&&selection.rangeCount===1&&!selection.isCollapsed)return selection.getRangeAt(0).getBoundingClientRect();
+  return readerToolbar&&!readerToolbar.hidden?readerToolbar.getBoundingClientRect():null;
+};
+document.querySelectorAll('[data-define-selection]').forEach(button=>button.addEventListener('click',()=>{
+  if(!activeSelection)return showToast('Сначала выделите слово или сочетание');
+  defineFromText(activeSelection.text,selectionRect());
+}));
+document.querySelectorAll('[data-define-close]').forEach(button=>button.addEventListener('click',hideDefine));
+defineCard?.addEventListener('click',event=>{
+  const pick=event.target.closest('[data-define-pick]');
+  if(pick)return defineFromText(pick.dataset.definePick,defineCard.getBoundingClientRect());
+  if(event.target.closest('[data-define-copy]'))return copyText(defineBody.dataset.text||'').then(()=>showToast('Определение скопировано'));
+  if(event.target.closest('[data-define-note]')){
+    const text=defineBody.dataset.text;
+    if(!text)return;
+    readerState.notes.push({id:makeId(),kind:'quote',text,path:readerPath,title:readerTitle,createdAt:new Date().toISOString()});
+    saveReader();renderReader();showToast('Определение сохранено в заметки');
+  }
+});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')hideDefine()});
+document.addEventListener('pointerdown',event=>{
+  if(defineCard?.hidden)return;
+  if(defineCard.contains(event.target)||event.target.closest?.('[data-define-selection]'))return;
+  hideDefine();
+});
 const QUICK_KEY='server-infrastructure-chapter-trainers-v1';
 const readQuick=()=>{try{const value=JSON.parse(localStorage.getItem(QUICK_KEY)||'null');return value&&typeof value==='object'&&!Array.isArray(value)?value:{}}catch{return{}}};
 const quickRecords=readQuick(),saveQuick=()=>{try{localStorage.setItem(QUICK_KEY,JSON.stringify(quickRecords));return true}catch{return false}};

@@ -47,6 +47,19 @@ const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
 if (!siteJs.includes('server-infrastructure-reader-v1') || !siteJs.includes('data-highlight-color')) failures.push('site.js: missing reader notebook behavior');
 if (!siteCss.includes('.notes-panel') || !siteCss.includes('.reader-highlight')) failures.push('site.css: missing reader notebook styles');
 if (!siteJs.includes('recordQuickCheck') || !siteCss.includes('.chapter-trainer')) failures.push('assets: missing chapter trainer behavior or styles');
+// Справочник терминов: база должна быть встроена в site.js и содержать глоссарий целиком.
+const termsMatch = siteJs.match(/const TERMS=(\[[\s\S]*?\]);\r?\nconst defineCard/);
+if (!termsMatch) failures.push('site.js: missing term reference base');
+else {
+  const terms = JSON.parse(termsMatch[1]);
+  if (terms.length < 200) failures.push(`site.js: term base too small (${terms.length})`);
+  for (const required of ['NUMA', 'iowait', 'Multipath', 'Readiness probe', 'Page cache']) {
+    if (!terms.some((entry) => entry.term === required)) failures.push(`term base: missing "${required}"`);
+  }
+  const broken = terms.filter((entry) => !entry.html || (entry.chapter !== null && !(entry.chapter >= 0 && entry.chapter <= 27)));
+  if (broken.length) failures.push(`term base: ${broken.length} entries with empty text or bad chapter`);
+}
+if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
 for (let number = 0; number < 28; number += 1) {
   const chapter = cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html'));
   if (!chapter?.includes(`data-chapter-trainer="${number}"`)) failures.push(`chapter ${number}: missing quick trainer`);
