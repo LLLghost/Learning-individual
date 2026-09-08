@@ -255,10 +255,21 @@ else {
 for (const [file, html] of cache) {
   if (!html.includes('href="/route/"') && !html.includes(`href="${BASE}/route/"`)) failures.push(`${file}: missing route link in navigation`);
 }
-// Итоговый контроль пересчитывается по числу модулей: расхождение знаменателя
-// и порога с числом заданий даёт молча неверный результат.
-if (assessment && (assessment.includes('length:31') || assessment.includes("correctCount>=27?"))) {
-  failures.push('assessment: final exam still scored out of 31');
+// Кабинет считает модули по одной константе. Пока их было несколько, копии
+// расходились при каждом расширении курса: вариант собирался на 37 вопросов,
+// записывался как 31 и отбрасывался проверкой на 28 — попытка исчезала при
+// перезагрузке, а «маршрут пройден» срабатывал на 31 модуле из 37.
+if (assessment) {
+  if (!assessment.includes(`const MODULES=${MODULE_COUNT},`)) {
+    failures.push(`assessment: cabinet must declare MODULES=${MODULE_COUNT}`);
+  }
+  // Попытка хранит собственный знаменатель, поэтому запись и её проверка не
+  // могут разойтись; число модулей в расчётах берётся только из константы.
+  if (!assessment.includes('total:MODULES')) failures.push('assessment: exam attempt must record total:MODULES');
+  if (!assessment.includes('h.correct<=h.total')) failures.push('assessment: attempt history must validate against its own total');
+  const literals = assessment.match(/(?:length|size|total|max)\s*[:=]+\s*(\d+)|correctCount>=(\d+)|done===(\d+)/g) ?? [];
+  const stale = literals.filter((hit) => /\b(2[4-9]|3[0-6])\b/.test(hit) && !hit.includes('length:7'));
+  if (stale.length) failures.push(`assessment: hand-written module counts left in the cabinet: ${[...new Set(stale)].join(', ')}`);
 }
 // Шкала времени только дополняется: код не должен уметь переписать дату.
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
