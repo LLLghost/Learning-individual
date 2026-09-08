@@ -99,6 +99,14 @@ for (let number = 0; number < 34; number += 1) {
     failures.push(`chapter ${number}: free recall must come before the quick trainer`);
   }
   if (/data-recall-topic[^>]*checked/.test(chapter ?? '')) failures.push(`chapter ${number}: recall topics must start unchecked`);
+  // Вопрос до чтения стоит во вводной части: после первого нумерованного раздела
+  // он перестаёт быть вопросом до чтения и становится обычной самопроверкой.
+  const pretest = chapter?.indexOf('class="pretest"') ?? -1;
+  if (pretest < 0) failures.push(`chapter ${number}: missing pre-reading question`);
+  else {
+    const firstSection = chapter.search(new RegExp(`<h2 id="[^"]+">${number}\\.\\d`));
+    if (firstSection >= 0 && pretest > firstSection) failures.push(`chapter ${number}: pre-reading question must sit before section ${number}.1`);
+  }
   // Верный ответ мини-тренажёра не печатается в разметку открытым номером.
   for (const match of chapter?.matchAll(/data-answer="([^"]*)"/g) ?? []) {
     if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
