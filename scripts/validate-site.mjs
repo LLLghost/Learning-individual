@@ -148,6 +148,69 @@ else {
     if (item.kind === 'concept' && !item.options?.length) failures.push(`item ${item.id}: kind "concept" without options`);
   }
 }
+// --- единообразие исходника учебника ---
+// Оглавление, нумерация разделов и типографика ломаются незаметно: сайт
+// собирается, ссылки работают, а читатель видит два разных названия одного
+// раздела или «11.9» дважды. Проверяем это на исходном документе.
+const course = await readFile(resolve(process.cwd(), 'public', 'course.html'), 'utf8');
+const plain = (html) => html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+const mainStart = course.indexOf('<main');
+const mainEnd = course.lastIndexOf('</main>');
+const body = course.slice(mainStart, mainEnd);
+
+const ids = [...course.matchAll(/ id="([^"]+)"/g)].map((match) => match[1]);
+const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+if (duplicateIds.length) failures.push(`course.html: duplicate ids ${duplicateIds.slice(0, 5).join(', ')}`);
+
+const outline = [...body.matchAll(/<h([12])\s+id="([^"]+)"[^>]*>([\s\S]*?)<\/h\1>/g)]
+  .map((match) => ({ level: match[1], id: match[2], text: plain(match[3]) }));
+const tocStart = course.indexOf('<ul id="toc">');
+const tocHtml = course.slice(tocStart, course.indexOf('</ul>', tocStart));
+const toc = [...tocHtml.matchAll(/<li class="level-(\d)"><a href="#([^"]+)">([\s\S]*?)<\/a><\/li>/g)]
+  .map((match) => ({ level: match[1], id: match[2], text: plain(match[3]) }));
+if (toc.length !== outline.length) failures.push(`course.html: table of contents has ${toc.length} items for ${outline.length} headings`);
+else {
+  for (const [index, entry] of toc.entries()) {
+    const heading = outline[index];
+    if (entry.id !== heading.id) { failures.push(`course.html: toc item ${index} points at ${entry.id}, heading is ${heading.id}`); break; }
+    if (entry.level !== heading.level) failures.push(`course.html: toc level mismatch at ${entry.id}`);
+    if (entry.text !== heading.text) failures.push(`course.html: toc text differs from heading ${entry.id}`);
+  }
+}
+
+let currentChapter = null;
+let expectedSection = 1;
+for (const heading of outline) {
+  if (heading.level === '1') {
+    currentChapter = /^b(\d\d)$/.test(heading.id) ? Number(heading.id.slice(1)) : null;
+    expectedSection = 1;
+    continue;
+  }
+  const numbered = heading.text.match(/^(\d+)\.(\d+)([A-Z]?)\./);
+  if (!numbered || currentChapter === null) continue;
+  if (Number(numbered[1]) !== currentChapter) failures.push(`course.html: ${heading.id} numbered ${numbered[1]}.x inside chapter ${currentChapter}`);
+  else if (!numbered[3]) {
+    if (Number(numbered[2]) !== expectedSection) failures.push(`course.html: ${heading.id} is ${numbered[1]}.${numbered[2]} after ${numbered[1]}.${expectedSection - 1}`);
+    expectedSection = Number(numbered[2]) + 1;
+  }
+}
+
+const prose = body
+  .replace(/<(pre|code|kbd|samp|script|style)\b[\s\S]*?<\/\1>/g, ' ')
+  .replace(/<[^>]+>/g, ' ');
+const proseRules = [
+  ['straight quotation marks', /["“”]/],
+  ['three dots instead of an ellipsis', /\.\.\./],
+  ['hyphen used as a dash', /[а-яА-Я0-9)]\s-\s/],
+  ['"алерт" instead of "оповещение"', /алерт/i],
+  ['"латентность" instead of "задержка"', /латентност/i],
+  ['"оверхед" instead of "накладные расходы"', /оверхед/i],
+];
+for (const [name, pattern] of proseRules) {
+  const hit = prose.match(pattern);
+  if (hit) failures.push(`course.html: ${name} — ...${prose.slice(Math.max(0, hit.index - 40), hit.index + 40).trim()}...`);
+}
+
 if (htmlFiles.length !== 63) failures.push(`expected 63 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, 84 items, 28 scenarios.`);
