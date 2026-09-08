@@ -38,3 +38,6 @@ next-env.d.ts
 /outputs/
 /work/
 /site-package.tar.gz
+
+# рабочий файл вычитки
+/need.jsonl
