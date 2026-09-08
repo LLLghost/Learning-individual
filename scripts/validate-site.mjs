@@ -24,6 +24,7 @@ const targetFile = (current, pathname) => {
 };
 
 for (const [file, html] of cache) {
+  if (!html.includes('data-notes-toggle') || !html.includes('data-notes-panel')) failures.push(`${file}: missing reader notebook controls`);
   for (const match of html.matchAll(/href="([^"]+)"/g)) {
     const href = match[1];
     if (/^(?:https?:|mailto:|javascript:)/.test(href)) continue;
@@ -41,6 +42,10 @@ for (const [file, html] of cache) {
 }
 
 const assessment = cache.get(resolve(root, 'assessment', 'index.html'));
+const siteJs = await readFile(resolve(root, 'assets', 'site.js'), 'utf8');
+const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
+if (!siteJs.includes('server-infrastructure-reader-v1') || !siteJs.includes('data-highlight-color')) failures.push('site.js: missing reader notebook behavior');
+if (!siteCss.includes('.notes-panel') || !siteCss.includes('.reader-highlight')) failures.push('site.css: missing reader notebook styles');
 const dataMatch = assessment?.match(/<script type="application\/json" id="study-data">(.*?)<\/script>/s);
 if (!dataMatch) failures.push('assessment: missing study-data');
 else {
