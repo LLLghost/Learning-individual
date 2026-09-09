@@ -214,6 +214,15 @@ const mainStart = course.indexOf('<main');
 const mainEnd = course.lastIndexOf('</main>');
 const body = course.slice(mainStart, mainEnd);
 
+// Остатки markdown: список, написанный дефисами или цифрами внутри абзаца,
+// браузер схлопывает в одну строку — читатель видит «причины: - права; - порт;»
+// вместо перечня. В самой разметке это незаметно, поэтому проверяем отдельно.
+const collapsedLists = [...body.replace(/<pre[\s\S]*?<\/pre>/g, ' ').matchAll(/<p>((?:(?!<\/?p[ >])[\s\S])*?)<\/p>/g)]
+  .filter((match) => /(?:^|\n)\s*(?:-|\d+\.)\s+\S/.test(match[1]));
+if (collapsedLists.length) {
+  failures.push(`course.html: ${collapsedLists.length} paragraphs hold a markdown list that collapses into one line`);
+}
+
 const ids = [...course.matchAll(/ id="([^"]+)"/g)].map((match) => match[1]);
 const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
 if (duplicateIds.length) failures.push(`course.html: duplicate ids ${duplicateIds.slice(0, 5).join(', ')}`);
