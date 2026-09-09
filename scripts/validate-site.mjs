@@ -214,6 +214,24 @@ const mainStart = course.indexOf('<main');
 const mainEnd = course.lastIndexOf('</main>');
 const body = course.slice(mainStart, mainEnd);
 
+// Справочник A: разделы A.1–A.16 на месте, и у каждой команды, которая меняет
+// состояние, стоит пометка «Осторожно». Справочник читают в спешке и наискось —
+// команда без предупреждения там опаснее, чем её отсутствие.
+const appendixA = body.slice(body.indexOf('id="b33-s044"'), body.indexOf('id="b33-s053"'));
+const sectionNumbers = [...appendixA.matchAll(/<h2[^>]*>A\.(\d+)\./g)].map((match) => Number(match[1]));
+for (let number = 1; number <= 16; number += 1) {
+  if (!sectionNumbers.includes(number)) failures.push(`course.html: appendix A is missing section A.${number}`);
+}
+for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap']) {
+  const at = appendixA.indexOf(command);
+  if (at < 0) { failures.push(`appendix A: lost the "${command}" entry`); continue; }
+  // Предупреждение может стоять и до команды, и после неё — важно, что оно
+  // есть в том же разделе, который читатель видит целиком.
+  const from = appendixA.lastIndexOf('<h2', at);
+  const to = appendixA.indexOf('<h2', at);
+  const section = appendixA.slice(from < 0 ? 0 : from, to < 0 ? undefined : to);
+  if (!section.includes('Осторожно')) failures.push(`appendix A: "${command}" changes state but its section carries no warning`);
+}
 // Остатки markdown: список, написанный дефисами или цифрами внутри абзаца,
 // браузер схлопывает в одну строку — читатель видит «причины: - права; - порт;»
 // вместо перечня. В самой разметке это незаметно, поэтому проверяем отдельно.
