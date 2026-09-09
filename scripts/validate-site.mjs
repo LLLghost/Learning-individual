@@ -333,7 +333,12 @@ const mobileRules = [
   ['.route-table td[data-route-cell=labs]::before', 'чек-лист маршрута разворачивается в карточки'],
   ['.search-toggle,.theme-toggle,.notes-toggle{min-width:44px;min-height:44px', 'кнопки панели — цели для пальца'],
   ['.hero-stats{grid-template-columns:1fr}', 'числа на титуле в одну колонку на узком экране'],
-  ['.section-head{flex-wrap:wrap', 'заголовок раздела и ссылка переносятся'],
+  ['.section-head,.progress-card,.chapter-trainer>header,.chapter-trainer>footer,.route-head{flex-direction:column',
+    'пары «заголовок слева — ссылка справа» идут в столбец на телефоне'],
+  ['.file-label{display:inline-flex', 'метка выбора файла не строчная — иначе её отступы налезают на соседние строки'],
+  ['.study-app .controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))',
+    'колонки разделов кабинета сжимаются: у простого 1fr нижняя граница — самое длинное слово, и на 280–320px строка не помещалась'],
+  ['.study-app .status-box{display:grid', 'блок состояния кабинета оформлен отдельно от вводного абзаца'],
 ];
 for (const [rule, why] of mobileRules) {
   if (!siteCss.includes(rule)) failures.push(`site.css: mobile rule lost — ${why} (${rule})`);

@@ -755,8 +755,6 @@ html{scroll-behavior:auto}
 @media(max-width:420px){
  /* Две колонки чисел на титуле не сжимаются ниже 304px — на узком экране одна. */
  .hero-stats{grid-template-columns:1fr}
- /* Заголовок раздела и ссылка рядом требуют ширины, которой нет: переносим. */
- .section-head{flex-wrap:wrap;gap:10px}
  .hero-stats div{padding:18px}
 }
 @media(max-width:600px){
@@ -764,6 +762,42 @@ html{scroll-behavior:auto}
  .route-backup{flex-direction:column;align-items:stretch}
  .route-backup>*{min-width:0;max-width:100%;text-align:center}
 }
+/* Строка «заголовок слева — ссылка справа» на телефоне не работает: ссылка
+   сжимается в узкую колонку и её текст встаёт вплотную к заголовку. Ширина, при
+   которой это начинается, зависит от установленных шрифтов, поэтому полагаться
+   на «должно поместиться» нельзя — на телефоне такие пары идут в столбец. */
+@media(max-width:760px){
+ .section-head,.progress-card,.chapter-trainer>header,.chapter-trainer>footer,.route-head{flex-direction:column;align-items:flex-start;gap:12px}
+ .section-head a,.progress-card a,.chapter-trainer>footer a{align-self:flex-start}
+ /* Разделы кабинета читаются как набор кнопок в два столбца, а не как строка,
+    рвущаяся в произвольных местах. */
+    Колонки задаём через minmax(0,1fr): у обычного 1fr нижняя граница — ширина
+    самого длинного слова в кнопке, поэтому на экране 280–320px две такие
+    колонки не помещались и страница разъезжалась вбок. */
+ .study-app .controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .study-app .controls>*{width:100%;min-width:0;justify-content:center;text-align:center;overflow-wrap:break-word}
+ .study-app .controls select{grid-column:1/-1}
+}
+/* Шапка кабинета читалась как сплошной серый текст: у блока состояния и у
+   заметки о хранении не было ни одного правила, и они выглядели так же, как
+   вводный абзац. Разводим три вещи — что это, где вы сейчас, чем управлять. */
+.study-app>h2{margin:0 0 8px;font-family:Georgia,serif;font-size:clamp(23px,4vw,31px);line-height:1.15}
+.study-app>p:first-of-type{margin:0 0 16px;color:var(--muted);font-size:13.5px;line-height:1.55}
+.study-app .status-box{display:grid;gap:7px;margin:0 0 10px;padding:15px 17px;background:var(--soft);border:1px solid var(--line);border-left:3px solid var(--teal)}
+.study-app .status-box strong{font-size:16px;line-height:1.3}
+.study-app .status-box div{color:var(--muted);font-size:13px;line-height:1.5;font-variant-numeric:tabular-nums}
+.study-app .status-box progress{height:8px}
+.study-app #storage-status{margin:0 0 16px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+/* Полоса разделов — это навигация, а не россыпь кнопок: собираем её в блок. */
+.study-app .controls:has(.navbtn){gap:6px;padding:7px;background:var(--soft);border:1px solid var(--line)}
+.study-app .navbtn{border-color:transparent;background:transparent;font-weight:650}
+.study-app .navbtn:hover{background:var(--white)}
+.study-app .navbtn[aria-pressed=true]{background:var(--navy);color:white;border-color:var(--navy)}
+#study-panel{margin-top:22px;padding-top:4px}
+/* Метка выбора файла была строчной: её вертикальные отступы налезали на
+   соседнюю строку и на таблицу под ней. */
+.file-label{display:inline-flex;align-items:center;justify-content:center;vertical-align:top}
+.study-app button,.study-surface button{vertical-align:top}
 /* Мелкие цели нажатия в читательских инструментах и кабинете. */
 /* Ссылка-строка и флажок — такие же цели для пальца, как кнопка: добавляем
    высоту отступами, чтобы не менять выравнивание текста. */
