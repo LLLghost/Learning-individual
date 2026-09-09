@@ -343,6 +343,24 @@ const mobileRules = [
 for (const [rule, why] of mobileRules) {
   if (!siteCss.includes(rule)) failures.push(`site.css: mobile rule lost — ${why} (${rule})`);
 }
+// Ширина страницы на большом экране. Три правила держат раскладку вместе;
+// каждое из них уже однажды разъезжалось.
+const layoutRules = [
+  ['.page-layout{max-width:var(--page)', 'ширина страницы задана переменной'],
+  ['padding:0 max(24px,calc((100vw - var(--page))/2))', 'верхняя панель считает поля по той же переменной, иначе логотип уезжает от текста'],
+  ['.prose{width:min(100%,900px,var(--reading-measure))}',
+    'мера строки — верхняя граница, а не размер: через max-width текст не замечал, что колонка уже, и уезжал под рейл разделов'],
+];
+for (const [rule, why] of layoutRules) {
+  if (!siteCss.includes(rule)) failures.push(`site.css: layout rule lost — ${why} (${rule})`);
+}
+// Рейл разделов встаёт сбоку только когда рядом помещается полная строка:
+// 300 боковая + 152 поля + 250 рейл + 48 зазор + ~750 текста.
+const railBreakpoint = siteCss.match(/@media\s*\(min-width:\s*(\d+)px\)[^@]*\.page-main:has\(\.section-rail\)\{display:grid/);
+if (!railBreakpoint) failures.push('site.css: side rail grid rule not found');
+else if (Number(railBreakpoint[1]) < 1500) {
+  failures.push(`site.css: side rail appears at ${railBreakpoint[1]}px — too early, it eats the reading width`);
+}
 // Слово «Разделы» остаётся в разметке: значок ☰ не даёт кнопке названия.
 for (const [file, html] of cache) {
   if (!html.includes('<summary><span class="menu-label">Разделы</span></summary>')) {
