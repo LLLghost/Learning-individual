@@ -112,6 +112,35 @@ for (let number = 0; number < 34; number += 1) {
     if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
   }
 }
+// Вводная часть «Начало»: пять уроков для читателя без опыта. Она живёт вне
+// нумерации глав, поэтому обычные проверки глав её не касаются — и без
+// отдельных правил её падение осталось бы незамеченным.
+const LESSON_COUNT = 5;
+for (let number = 1; number <= LESSON_COUNT; number += 1) {
+  const file = resolve(root, 'start', String(number).padStart(2, '0'), 'index.html');
+  const lesson = cache.get(file);
+  if (!lesson) { failures.push(`lesson ${number}: page is missing`); continue; }
+  const headings = lesson.match(/<h1[^>]*>/g)?.length ?? 0;
+  const expected = number === 1 ? 2 : 1;
+  if (headings !== expected) failures.push(`lesson ${number}: expected ${expected} h1, got ${headings}`);
+  // Урок без разбора — это чтение без проверки: свёрнутый блок «Проверьте себя»
+  // единственное место, где читатель может убедиться, что понял.
+  if (!lesson.includes('<summary>Проверьте себя</summary>')) failures.push(`lesson ${number}: missing the self-check block`);
+}
+// Последний урок обязан вести в главу 00: вводная часть кончается там, где
+// начинается курс, и тупика в конце быть не должно.
+const lastLesson = cache.get(resolve(root, 'start', '05', 'index.html')) ?? '';
+if (!/<nav class="pager"[^>]*>[\s\S]*?href="[^"]*\/chapters\/00\/"[\s\S]*?<\/nav>/.test(lastLesson)) {
+  failures.push('lesson 5: the pager must lead on to chapter 00');
+}
+// Вход в неё виден с главной и из программы, иначе часть существует, но её не находят.
+for (const [name, file] of [['home', resolve(root, 'index.html')], ['curriculum', resolve(root, 'curriculum', 'index.html')]]) {
+  if (!cache.get(file)?.includes('/start/01/')) failures.push(`${name}: no entry point into the introductory part`);
+}
+// Заголовок части забирает первый урок: на странице «О курсе» ему делать нечего.
+if (cache.get(resolve(root, 'about', 'index.html'))?.includes('id="start-part"')) {
+  failures.push('about: the introductory part heading leaked onto the about page');
+}
 // Практикум нумеруется по академическим модулям U00–U36, а главы — отдельно.
 // Ссылка «Теория» с работы L<N> обязана вести в ту главу, внутри которой физически
 // находится заголовок модуля U<N>, иначе связка практикума и теории разъезжается.
@@ -184,6 +213,33 @@ const plain = (html) => html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
 const mainStart = course.indexOf('<main');
 const mainEnd = course.lastIndexOf('</main>');
 const body = course.slice(mainStart, mainEnd);
+
+// Справочник A: разделы A.1–A.16 на месте, и у каждой команды, которая меняет
+// состояние, стоит пометка «Осторожно». Справочник читают в спешке и наискось —
+// команда без предупреждения там опаснее, чем её отсутствие.
+const appendixA = body.slice(body.indexOf('id="b33-s044"'), body.indexOf('id="b33-s053"'));
+const sectionNumbers = [...appendixA.matchAll(/<h2[^>]*>A\.(\d+)\./g)].map((match) => Number(match[1]));
+for (let number = 1; number <= 16; number += 1) {
+  if (!sectionNumbers.includes(number)) failures.push(`course.html: appendix A is missing section A.${number}`);
+}
+for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap']) {
+  const at = appendixA.indexOf(command);
+  if (at < 0) { failures.push(`appendix A: lost the "${command}" entry`); continue; }
+  // Предупреждение может стоять и до команды, и после неё — важно, что оно
+  // есть в том же разделе, который читатель видит целиком.
+  const from = appendixA.lastIndexOf('<h2', at);
+  const to = appendixA.indexOf('<h2', at);
+  const section = appendixA.slice(from < 0 ? 0 : from, to < 0 ? undefined : to);
+  if (!section.includes('Осторожно')) failures.push(`appendix A: "${command}" changes state but its section carries no warning`);
+}
+// Остатки markdown: список, написанный дефисами или цифрами внутри абзаца,
+// браузер схлопывает в одну строку — читатель видит «причины: - права; - порт;»
+// вместо перечня. В самой разметке это незаметно, поэтому проверяем отдельно.
+const collapsedLists = [...body.replace(/<pre[\s\S]*?<\/pre>/g, ' ').matchAll(/<p>((?:(?!<\/?p[ >])[\s\S])*?)<\/p>/g)]
+  .filter((match) => /(?:^|\n)\s*(?:-|\d+\.)\s+\S/.test(match[1]));
+if (collapsedLists.length) {
+  failures.push(`course.html: ${collapsedLists.length} paragraphs hold a markdown list that collapses into one line`);
+}
 
 const ids = [...course.matchAll(/ id="([^"]+)"/g)].map((match) => match[1]);
 const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
@@ -410,6 +466,6 @@ if (!/\.prose h3\{overflow-wrap:break-word;hyphens:manual\}/.test(siteCss)) {
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
   failures.push('site.js: timeline must be append-only');
 }
-if (htmlFiles.length !== 79) failures.push(`expected 79 routes, got ${htmlFiles.length}`);
+if (htmlFiles.length !== 84) failures.push(`expected 84 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
