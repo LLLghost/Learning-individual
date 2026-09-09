@@ -322,6 +322,29 @@ const backupKeys = siteJs.match(/BACKUP_KEYS=\[([^\]]*)\]/)?.[1] ?? '';
 for (const key of ['selfstudy-v6', 'chapter-trainers-v1', 'recall-v1', 'timeline-v1', 'reader-v1', 'reading-v1', 'quiz-a1-v1']) {
   if (!backupKeys.includes(key)) failures.push(`site.js: backup does not cover server-infrastructure-${key}`);
 }
+// Вёрстка для телефона: правила, без которых страница перестаёт помещаться в
+// экран. Браузер тогда расширяет область просмотра под самый широкий элемент и
+// уменьшает масштаб — текст мельчает на всех страницах сразу, а заметить это по
+// сборке нельзя. Проверять раскладку целиком здесь нечем, поэтому закрепляем
+// сами правила: их удаление и было причиной каждого из найденных случаев.
+const mobileRules = [
+  ['.hidden-input{display:none}', 'системное поле выбора файла скрыто на всех страницах, а не только в кабинете'],
+  ['.prose table{display:block;overflow-x:auto', 'широкая таблица прокручивается внутри себя'],
+  ['.route-table td[data-route-cell=labs]::before', 'чек-лист маршрута разворачивается в карточки'],
+  ['.search-toggle,.theme-toggle,.notes-toggle{min-width:44px;min-height:44px', 'кнопки панели — цели для пальца'],
+  ['.hero-stats{grid-template-columns:1fr}', 'числа на титуле в одну колонку на узком экране'],
+  ['.section-head{flex-wrap:wrap', 'заголовок раздела и ссылка переносятся'],
+];
+for (const [rule, why] of mobileRules) {
+  if (!siteCss.includes(rule)) failures.push(`site.css: mobile rule lost — ${why} (${rule})`);
+}
+// Слово «Разделы» остаётся в разметке: значок ☰ не даёт кнопке названия.
+for (const [file, html] of cache) {
+  if (!html.includes('<summary><span class="menu-label">Разделы</span></summary>')) {
+    failures.push(`${file}: mobile menu button lost its accessible name`);
+    break;
+  }
+}
 // Шкала времени только дополняется: код не должен уметь переписать дату.
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
   failures.push('site.js: timeline must be append-only');
