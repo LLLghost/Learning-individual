@@ -350,6 +350,44 @@ for (const [file, html] of cache) {
     break;
   }
 }
+// Строение страницы: заголовок каждого уровня стоит на своём месте. Проверки
+// закрывают три случая, которые уже случались и на сборке никак не сказывались.
+const railText = (html) => {
+  const open = html.indexOf('data-section-rail');
+  return open < 0 ? '' : html.slice(open, html.indexOf('</nav>', open));
+};
+for (const [file, html] of cache) {
+  const opening = html.match(/<article class="[^"]*\bprose\b[^"]*">/);
+  if (!opening) continue;
+  const article = html.slice(opening.index + opening[0].length, html.indexOf('</article>', opening.index));
+  const main = html.slice(html.indexOf('<main'), html.lastIndexOf('</main>'));
+  const outline = main.replace(/<aside[\s\S]*?<\/aside>/g, '').replace(/<nav[\s\S]*?<\/nav>/g, '');
+  // 1. Страница не кончается заголовком: так «Часть 0» висела в конце «О курсе»
+  //    без единой строки под собой.
+  const blocks = [...article.matchAll(/<(h[1-4]|p|ul|ol|table|pre|blockquote|details|div)[\s>]/g)].map((match) => match[1]);
+  if (/^h[1-4]$/.test(blocks.at(-1) ?? '')) failures.push(`${file}: page ends with a heading and no text under it`);
+  // 2. Уровни не перепрыгивают ступень: h1 → h3 ломает оглавление для чтения
+  //    с экрана и оставляет раздел вне навигации по странице.
+  let previous = 0;
+  for (const match of outline.matchAll(/<h([1-4])[^>]*>/g)) {
+    const level = Number(match[1]);
+    if (previous && level > previous + 1) { failures.push(`${file}: heading level jumps h${previous} → h${level}`); break; }
+    previous = level;
+  }
+  // 3. Навигация по разделам повторяет заголовки h2 страницы — и по составу,
+  //    и по порядку: расхождение означает ссылку в никуда или потерянный раздел.
+  const rail = railText(html);
+  if (rail) {
+    const listed = [...rail.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]).join('|');
+    const present = [...main.matchAll(/<h2 id="([^"]+)"/g)].map((match) => match[1]).join('|');
+    if (listed !== present) failures.push(`${file}: section rail does not match the page headings`);
+  }
+}
+// Автоматические переносы в заголовках рвут обычные слова ради плотности
+// строки, а не по нужде: «Как устро-ен учебник».
+if (!/\.prose h3\{overflow-wrap:break-word;hyphens:manual\}/.test(siteCss)) {
+  failures.push('site.css: headings must not hyphenate automatically');
+}
 // Шкала времени только дополняется: код не должен уметь переписать дату.
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
   failures.push('site.js: timeline must be append-only');
