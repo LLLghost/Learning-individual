@@ -232,6 +232,35 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
   const section = appendixA.slice(from < 0 ? 0 : from, to < 0 ? undefined : to);
   if (!section.includes('Осторожно')) failures.push(`appendix A: "${command}" changes state but its section carries no warning`);
 }
+// Обращение к читателю. Книга собиралась из разных источников, и половина
+// текста говорила «ты», половина «вы» — иногда через абзац. Прямая речь в
+// кавычках («какое решение ты принял?» — вопрос к ядру) под правило не
+// подпадает, поэтому кавычки вырезаются до проверки.
+{
+  const prose = body
+    .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
+    .replace(/<code[\s\S]*?<\/code>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/«[^»]*»/g, ' ');
+  const singular = [...prose.matchAll(/(?<![а-яё])(ты|тебя|тебе|тобой|твой|твоя|твоё|твои|твоих|твоей|твоего|твоим)(?![а-яё])/gi)];
+  if (singular.length) {
+    failures.push(`course.html: the reader is addressed as «ты» in ${singular.length} places, the book says «вы»`);
+  }
+}
+// Недельный план — единственное место, где курс разложен по времени. Он уже
+// разошёлся с книгой один раз: таблица осталась на 28 позициях старой
+// нумерации, когда модулей стало 37, и девять модулей просто выпали из плана.
+// Ни сборка, ни ссылки этого не замечают — таблица остаётся рабочей.
+{
+  const planStart = body.indexOf('id="program"');
+  const planEnd = body.indexOf('</table>', planStart);
+  const plan = planStart < 0 || planEnd < 0 ? '' : body.slice(planStart, planEnd);
+  const listed = [...plan.matchAll(/href="#ch(\d\d)"/g)].map((match) => match[1]);
+  for (let number = 0; number <= 36; number += 1) {
+    const times = listed.filter((value) => value === String(number).padStart(2, '0')).length;
+    if (times !== 1) failures.push(`course.html: the weekly plan lists module U${String(number).padStart(2, '0')} ${times} times, expected once`);
+  }
+}
 // Остатки markdown: список, написанный дефисами или цифрами внутри абзаца,
 // браузер схлопывает в одну строку — читатель видит «причины: - права; - порт;»
 // вместо перечня. В самой разметке это незаметно, поэтому проверяем отдельно.
