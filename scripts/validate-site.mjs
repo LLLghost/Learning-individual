@@ -307,6 +307,47 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
     failures.push(`course.html: informal imperatives in prose: ${[...new Set(informal)].slice(0, 5).join(', ')}`);
   }
 }
+// База справочника отставала от текста: в ней были pstore и Machine Check, но
+// не было VM (146 употреблений), GiB, CPU, RTO — то есть как раз тех слов,
+// которые читатель встречает первыми и выделяет чаще всего. Правило требует,
+// чтобы всякое латинское слово, встречающееся в прозе не реже десяти раз,
+// имело определение. Нормализация здесь та же, что в панели «Определение».
+{
+  const terms = JSON.parse(siteJs.match(/const TERMS=(\[[\s\S]*?\]);\r?\nconst defineCard/)?.[1] ?? '[]');
+  const normalize = (value) => String(value).toLowerCase().replace(/ё/g, 'е')
+    .replace(/[^0-9a-zа-я/._+-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const keys = new Set();
+  for (const entry of terms) {
+    for (const variant of [entry.term, ...(entry.aliases ?? [])]) {
+      const key = normalize(variant);
+      keys.add(key);
+      // Часть составного термина считается только с трёх букв: иначе «vm» из
+      // «Шаблон VM» выдавало бы себя за определение виртуальной машины.
+      for (const part of key.split(' ')) if (part.length > 2) keys.add(part);
+    }
+  }
+  // Имена продуктов, служебные обозначения и слова из списка источников:
+  // определять их незачем, а встречаются они часто.
+  const notTerms = new Set(['bash', 'unix', 'documentation', 'storage', 'nbsp', 'rfc', 'a1', 'shell']);
+  const plain = body
+    .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
+    .replace(/<code[\s\S]*?<\/code>/g, ' ')
+    .replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z]+;/g, ' ');
+  const counted = new Map();
+  for (const match of plain.matchAll(/(?<![A-Za-z0-9_/.-])[A-Za-z][A-Za-z0-9+]{1,13}(?![A-Za-z0-9_/+])/g)) {
+    const word = match[0].toLowerCase();
+    counted.set(word, (counted.get(word) ?? 0) + 1);
+  }
+  const orphans = [...counted]
+    .filter(([word, times]) => times >= 10 && !keys.has(word) && !notTerms.has(word) && !/^[ult]\d\d?$/.test(word))
+    .sort((left, right) => right[1] - left[1]);
+  if (orphans.length) {
+    const list = orphans.slice(0, 6).map(([word, times]) => word + ' (' + times + ')').join(', ');
+    failures.push(`term base: no definition for ${list}`);
+  }
+}
 // Слова, для которых в книге есть принятый русский перевод. Пока инструмент
 // вычитки не видел последнюю шестую часть файла, она жила по своим правилам:
 // «next hop» вместо «следующий узел», «riser» вместо «райзер», «enumeration»
