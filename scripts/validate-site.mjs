@@ -344,14 +344,38 @@ if (data?.items) {
   const words = (text) => new Set(String(text).toLowerCase().replace(/[^a-zа-яё0-9\s-]/gi, ' ').split(/\s+/).filter((word) => word.length >= 6 && !stop.has(word)));
   for (const item of data.items.filter((entry) => entry.kind === 'concept')) {
     const tier = item.reason;
-    if (!tier || !Array.isArray(tier.options) || tier.options.length !== 3 || tier.answer !== 0) {
+    if (!tier || !Array.isArray(tier.options) || tier.options.length !== 3 || !Number.isInteger(tier.answer) || tier.answer < 0 || tier.answer > 2) {
       failures.push(`item ${item.id}: concept item without a three-option reason tier`);
       continue;
     }
     const right = words(item.options[item.answer]);
     const overlap = tier.options.map((text) => [...words(text)].filter((word) => right.has(word)).length);
-    if (overlap[0] > overlap[1] + 2 && overlap[0] > overlap[2] + 2) {
+    const others = overlap.filter((_, index) => index !== tier.answer);
+    if (others.every((value) => overlap[tier.answer] > value + 2)) {
       failures.push(`item ${item.id}: reason tier leaks the correct answer through shared wording`);
+    }
+  }
+}
+
+// Позиция верного варианта. Банк собирался по заданию за раз, и верный ответ
+// каждый раз записывался первым: в какой-то момент все 74 задания, все 74
+// вторых яруса и все 148 шагов сценариев проходились выбором первого варианта,
+// то есть кабинет мерил не понимание, а привычку. В разметке это не видно
+// никак — только в распределении, поэтому оно и закреплено здесь.
+if (data?.items && data?.cases) {
+  const families = [
+    ['items', data.items.filter((item) => Array.isArray(item.options)).map((item) => [item.answer, item.options.length])],
+    ['reason tiers', data.items.filter((item) => item.reason).map((item) => [item.reason.answer, item.reason.options.length])],
+    ['scenario stages', data.cases.flatMap((scenario) => scenario.stages.map((stage) => [stage.answer, stage.options.length]))],
+  ];
+  for (const [name, answers] of families) {
+    const width = Math.max(...answers.map(([, length]) => length));
+    for (let position = 0; position < width; position += 1) {
+      const share = answers.filter(([answer]) => answer === position).length / answers.length;
+      if (share > 0.5) {
+        failures.push(`${name}: choosing option ${position + 1} every time passes ${Math.round(share * 100)}% of them`);
+      }
+      if (share === 0) failures.push(`${name}: option ${position + 1} is never the correct one`);
     }
   }
 }
