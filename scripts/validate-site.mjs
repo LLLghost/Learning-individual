@@ -295,6 +295,17 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
   if (orders.length) {
     failures.push(`course.html: singular imperatives in prose: ${[...new Set(orders)].slice(0, 5).join(', ')}`);
   }
+  // Команды вида «размечай», «учитывай», «упакуй» парного правила не имеют:
+  // множественной формы этих глаголов в книге не было ни разу, поэтому они
+  // пережили две вычитки подряд. Окончание -ай/-яй/-уй/-юй само по себе почти
+  // всегда глагол — существительных с ним считанные штуки, и они перечислены.
+  const NOUNS = new Set(['случай', 'край', 'обычай', 'урожай', 'сарай', 'лишай', 'рай', 'бой', 'слой', 'строй', 'настрой']);
+  const informal = [...prose.matchAll(/(?<![А-Яа-яЁё])([А-ЯЁа-яё]{4,}(?:ай|яй|уй|юй))(?![а-яё])/g)]
+    .map((match) => match[1].toLowerCase())
+    .filter((word) => !NOUNS.has(word));
+  if (informal.length) {
+    failures.push(`course.html: informal imperatives in prose: ${[...new Set(informal)].slice(0, 5).join(', ')}`);
+  }
 }
 // Слова, для которых в книге есть принятый русский перевод. Пока инструмент
 // вычитки не видел последнюю шестую часть файла, она жила по своим правилам:
