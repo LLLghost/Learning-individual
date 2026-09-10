@@ -232,6 +232,18 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
   const section = appendixA.slice(from < 0 ? 0 : from, to < 0 ? undefined : to);
   if (!section.includes('Осторожно')) failures.push(`appendix A: "${command}" changes state but its section carries no warning`);
 }
+// Работы практикума читает один человек за одним стендом. Пять из них
+// остались от аудиторного формата и описывали двоих: «учащийся по описанному
+// сценарию отключает путь; студент фиксирует деградацию» — читателю в этом
+// месте непонятно, кто он и что делать. Проверяем только сами работы:
+// в экзаменационных рубриках ниже «студент» — законное слово.
+{
+  const works = body.slice(body.indexOf('id="lab00"'), body.indexOf('id="collector-code"'));
+  const classroom = [...works.matchAll(/(?:^|[^а-яё])(учащ[а-яё]+|студент[а-яё]*)/gi)].map((match) => match[1]);
+  if (classroom.length) {
+    failures.push(`labs: the works still speak of ${[...new Set(classroom)].join(', ')} — they are done alone`);
+  }
+}
 // Мост «глава → модуль». При двойной нумерации (глава 15 содержит U15–U17,
 // глава 25 — U28) строка «Академическое продолжение этой главы» — единственная
 // подсказка, где искать углубление. Она отсутствовала в десяти главах из
