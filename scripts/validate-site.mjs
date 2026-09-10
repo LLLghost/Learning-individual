@@ -264,18 +264,84 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
   });
 }
 // Обращение к читателю. Книга собиралась из разных источников, и половина
-// текста говорила «ты», половина «вы» — иногда через абзац. Прямая речь в
-// кавычках («какое решение ты принял?» — вопрос к ядру) под правило не
-// подпадает, поэтому кавычки вырезаются до проверки.
+// текста говорила «ты», половина «вы» — иногда через абзац. Местоимения были
+// только верхушкой: команды читателю («создай», «сравни», «переходи дальше»)
+// и глаголы второго лица («пока не можешь ответить») жили в тексте ещё
+// пятьюстами вхождениями. Прямая речь в кавычках («какое решение ты принял?» —
+// вопрос к ядру; задача вида «сервер не работает — найди причину») под правило
+// не подпадает, поэтому кавычки вырезаются до проверки.
 {
   const prose = body
     .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
     .replace(/<code[\s\S]*?<\/code>/g, ' ')
+    .replace(/<script[\s\S]*?<\/script>/g, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/«[^»]*»/g, ' ');
   const singular = [...prose.matchAll(/(?<![а-яё])(ты|тебя|тебе|тобой|твой|твоя|твоё|твои|твоих|твоей|твоего|твоим)(?![а-яё])/gi)];
   if (singular.length) {
     failures.push(`course.html: the reader is addressed as «ты» in ${singular.length} places, the book says «вы»`);
+  }
+  const present = [...prose.matchAll(/(?<![А-Яа-яЁё])[А-Яа-яЁё]{2,}(?:ешь|ишь)(?![а-яё])/gi)].map((match) => match[0]);
+  if (present.length) {
+    failures.push(`course.html: second-person singular verbs in prose: ${[...new Set(present)].slice(0, 5).join(', ')}`);
+  }
+  // Формы множественного числа берутся из самой книги: если «создайте» в ней
+  // есть, то «создай» — та же команда, сказанная на «ты».
+  const plural = new Set([...prose.matchAll(/(?<![А-Яа-яЁё])([А-Яа-яЁё]{3,}(?:йте|ите|ьте))(?![а-яё])/gi)].map((match) => match[1].toLowerCase()));
+  const singles = new Set([...plural].map((word) => word.slice(0, -2)));
+  const orders = [...prose.matchAll(/(?<![А-Яа-яЁё])([А-Яа-яЁё]{3,})(?![а-яё])/gi)]
+    .map((match) => match[1].toLowerCase())
+    .filter((word) => singles.has(word));
+  if (orders.length) {
+    failures.push(`course.html: singular imperatives in prose: ${[...new Set(orders)].slice(0, 5).join(', ')}`);
+  }
+}
+// Слова, для которых в книге есть принятый русский перевод. Пока инструмент
+// вычитки не видел последнюю шестую часть файла, она жила по своим правилам:
+// «next hop» вместо «следующий узел», «riser» вместо «райзер», «enumeration»
+// вместо «перечисление» — в тех же главах, где рядом стоял русский вариант.
+// Имена объектов и параметров (Endpoints, capture_output) переводу не подлежат
+// и вынесены в исключения.
+{
+  const keep = ['Endpoints', 'EndpointSlice', 'capture_output', 'Extensible Firmware Interface',
+    'Boot:Driver:Firmware', 'upstream-документация', 'Readiness probe'];
+  let prose = body
+    .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
+    .replace(/<code[\s\S]*?<\/code>/g, ' ')
+    .replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+  for (const phrase of keep) prose = prose.split(phrase).join(' ');
+  const settled = {
+    'next hop': 'следующий узел', enumeration: 'перечисление', endpoint: 'оконечное устройство',
+    riser: 'райзер', expander: 'экспандер', capture: 'перехват', production: 'рабочая система',
+    benchmark: 'замер', durability: 'долговечность', toolchain: 'набор инструментов сборки',
+    canary: 'канареечная партия', 'control plane': 'плоскость управления',
+    userspace: 'пользовательское пространство', firmware: 'прошивка',
+    'longest-prefix': 'самое длинное совпадение префикса', upstream: 'вышестоящий канал',
+    backend: 'нижележащее хранилище', readiness: 'готовность', failover: 'переключение на резерв',
+    detection: 'обнаружение', validation: 'проверка', regression: 'регрессия', rollout: 'развёртывание',
+  };
+  for (const [english, russian] of Object.entries(settled)) {
+    const found = prose.match(new RegExp(`(?<![A-Za-z._/-])${english}(?![A-Za-z._/-])`, 'gi'));
+    if (found) failures.push(`course.html: «${english}» left in prose ${found.length} times, the book says «${russian}»`);
+  }
+  // Банк заданий читают теми же глазами, что и главы, но правится он отдельным
+  // инструментом — и отставал от книги: «Regression связывают … Stop condition:
+  // остановить rollout» в одном разборе с русским текстом вокруг.
+  if (data?.items && data?.cases) {
+    const strings = [
+      ...data.items.flatMap((item) => [item.stem, item.explanation, ...(item.options ?? []), ...(item.reason?.options ?? [])]),
+      ...data.cases.flatMap((scenario) => [scenario.title, scenario.initial, scenario.evidence,
+        ...scenario.stages.flatMap((stage) => [stage.label, ...stage.options])]),
+    ];
+    let bank = strings.filter(Boolean).join(' \n ');
+    // Вывод команды, имя тома UEFI и имена стендов — не перевод, а данные.
+    for (const phrase of ['lspci: endpoint', 'firmware volume', 'dev, staging, production',
+      'staging квалифицировал digest A, production получил B']) bank = bank.split(phrase).join(' ');
+    for (const [english, russian] of Object.entries(settled)) {
+      const found = bank.match(new RegExp(`(?<![A-Za-z._/-])${english}(?![A-Za-z._/-])`, 'gi'));
+      if (found) failures.push(`study-data: «${english}» left in ${found.length} strings, the book says «${russian}»`);
+    }
   }
 }
 // Недельный план — единственное место, где курс разложен по времени. Он уже
