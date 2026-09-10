@@ -232,6 +232,25 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
   const section = appendixA.slice(from < 0 ? 0 : from, to < 0 ? undefined : to);
   if (!section.includes('Осторожно')) failures.push(`appendix A: "${command}" changes state but its section carries no warning`);
 }
+// Мост «глава → модуль». При двойной нумерации (глава 15 содержит U15–U17,
+// глава 25 — U28) строка «Академическое продолжение этой главы» — единственная
+// подсказка, где искать углубление. Она отсутствовала в десяти главах из
+// тридцати трёх, а глава 2 обещала U03, который лежит в главе 3: ссылка вела
+// вперёд, в чужой текст. Сверяем обещание с тем, что физически лежит в главе.
+{
+  const heads = [...body.matchAll(/<h1 id="b(\d\d)">/g)];
+  const moduleMarks = [...body.matchAll(/id="ch(\d\d)"/g)];
+  heads.forEach((head, index) => {
+    const from = head.index;
+    const to = heads[index + 1]?.index ?? body.length;
+    const inside = moduleMarks.filter((mark) => mark.index > from && mark.index < to).map((mark) => mark[1]);
+    const bridge = body.slice(from, Math.min(to, from + 900)).match(/Академическое продолжение этой главы:<\/strong>([\s\S]*?)<\/p>/);
+    const named = bridge ? [...bridge[1].matchAll(/#ch(\d\d)/g)].map((match) => match[1]) : [];
+    if (named.join(',') !== inside.join(',')) {
+      failures.push(`chapter ${head[1]}: the module bridge names [${named.join(', ') || '—'}] but the chapter holds [${inside.join(', ') || '—'}]`);
+    }
+  });
+}
 // Обращение к читателю. Книга собиралась из разных источников, и половина
 // текста говорила «ты», половина «вы» — иногда через абзац. Прямая речь в
 // кавычках («какое решение ты принял?» — вопрос к ядру) под правило не
