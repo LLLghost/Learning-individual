@@ -214,15 +214,15 @@ const mainStart = course.indexOf('<main');
 const mainEnd = course.lastIndexOf('</main>');
 const body = course.slice(mainStart, mainEnd);
 
-// Справочник A: разделы A.1–A.16 на месте, и у каждой команды, которая меняет
+// Справочник A: разделы A.1–A.24 на месте, и у каждой команды, которая меняет
 // состояние, стоит пометка «Осторожно». Справочник читают в спешке и наискось —
 // команда без предупреждения там опаснее, чем её отсутствие.
 const appendixA = body.slice(body.indexOf('id="b33-s044"'), body.indexOf('id="b33-s053"'));
 const sectionNumbers = [...appendixA.matchAll(/<h2[^>]*>A\.(\d+)\./g)].map((match) => Number(match[1]));
-for (let number = 1; number <= 16; number += 1) {
+for (let number = 1; number <= 24; number += 1) {
   if (!sectionNumbers.includes(number)) failures.push(`course.html: appendix A is missing section A.${number}`);
 }
-for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap']) {
+for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 777', 'strace -f -p', 'ssh -N -R']) {
   const at = appendixA.indexOf(command);
   if (at < 0) { failures.push(`appendix A: lost the "${command}" entry`); continue; }
   // Предупреждение может стоять и до команды, и после неё — важно, что оно
@@ -231,6 +231,66 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap']) {
   const to = appendixA.indexOf('<h2', at);
   const section = appendixA.slice(from < 0 ? 0 : from, to < 0 ? undefined : to);
   if (!section.includes('Осторожно')) failures.push(`appendix A: "${command}" changes state but its section carries no warning`);
+}
+// Работы практикума читает один человек за одним стендом. Пять из них
+// остались от аудиторного формата и описывали двоих: «учащийся по описанному
+// сценарию отключает путь; студент фиксирует деградацию» — читателю в этом
+// месте непонятно, кто он и что делать. Проверяем только сами работы:
+// в экзаменационных рубриках ниже «студент» — законное слово.
+{
+  const works = body.slice(body.indexOf('id="lab00"'), body.indexOf('id="collector-code"'));
+  const classroom = [...works.matchAll(/(?:^|[^а-яё])(учащ[а-яё]+|студент[а-яё]*)/gi)].map((match) => match[1]);
+  if (classroom.length) {
+    failures.push(`labs: the works still speak of ${[...new Set(classroom)].join(', ')} — they are done alone`);
+  }
+}
+// Мост «глава → модуль». При двойной нумерации (глава 15 содержит U15–U17,
+// глава 25 — U28) строка «Академическое продолжение этой главы» — единственная
+// подсказка, где искать углубление. Она отсутствовала в десяти главах из
+// тридцати трёх, а глава 2 обещала U03, который лежит в главе 3: ссылка вела
+// вперёд, в чужой текст. Сверяем обещание с тем, что физически лежит в главе.
+{
+  const heads = [...body.matchAll(/<h1 id="b(\d\d)">/g)];
+  const moduleMarks = [...body.matchAll(/id="ch(\d\d)"/g)];
+  heads.forEach((head, index) => {
+    const from = head.index;
+    const to = heads[index + 1]?.index ?? body.length;
+    const inside = moduleMarks.filter((mark) => mark.index > from && mark.index < to).map((mark) => mark[1]);
+    const bridge = body.slice(from, Math.min(to, from + 900)).match(/Академическое продолжение этой главы:<\/strong>([\s\S]*?)<\/p>/);
+    const named = bridge ? [...bridge[1].matchAll(/#ch(\d\d)/g)].map((match) => match[1]) : [];
+    if (named.join(',') !== inside.join(',')) {
+      failures.push(`chapter ${head[1]}: the module bridge names [${named.join(', ') || '—'}] but the chapter holds [${inside.join(', ') || '—'}]`);
+    }
+  });
+}
+// Обращение к читателю. Книга собиралась из разных источников, и половина
+// текста говорила «ты», половина «вы» — иногда через абзац. Прямая речь в
+// кавычках («какое решение ты принял?» — вопрос к ядру) под правило не
+// подпадает, поэтому кавычки вырезаются до проверки.
+{
+  const prose = body
+    .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
+    .replace(/<code[\s\S]*?<\/code>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/«[^»]*»/g, ' ');
+  const singular = [...prose.matchAll(/(?<![а-яё])(ты|тебя|тебе|тобой|твой|твоя|твоё|твои|твоих|твоей|твоего|твоим)(?![а-яё])/gi)];
+  if (singular.length) {
+    failures.push(`course.html: the reader is addressed as «ты» in ${singular.length} places, the book says «вы»`);
+  }
+}
+// Недельный план — единственное место, где курс разложен по времени. Он уже
+// разошёлся с книгой один раз: таблица осталась на 28 позициях старой
+// нумерации, когда модулей стало 37, и девять модулей просто выпали из плана.
+// Ни сборка, ни ссылки этого не замечают — таблица остаётся рабочей.
+{
+  const planStart = body.indexOf('id="program"');
+  const planEnd = body.indexOf('</table>', planStart);
+  const plan = planStart < 0 || planEnd < 0 ? '' : body.slice(planStart, planEnd);
+  const listed = [...plan.matchAll(/href="#ch(\d\d)"/g)].map((match) => match[1]);
+  for (let number = 0; number <= 36; number += 1) {
+    const times = listed.filter((value) => value === String(number).padStart(2, '0')).length;
+    if (times !== 1) failures.push(`course.html: the weekly plan lists module U${String(number).padStart(2, '0')} ${times} times, expected once`);
+  }
 }
 // Остатки markdown: список, написанный дефисами или цифрами внутри абзаца,
 // браузер схлопывает в одну строку — читатель видит «причины: - права; - порт;»
@@ -344,14 +404,38 @@ if (data?.items) {
   const words = (text) => new Set(String(text).toLowerCase().replace(/[^a-zа-яё0-9\s-]/gi, ' ').split(/\s+/).filter((word) => word.length >= 6 && !stop.has(word)));
   for (const item of data.items.filter((entry) => entry.kind === 'concept')) {
     const tier = item.reason;
-    if (!tier || !Array.isArray(tier.options) || tier.options.length !== 3 || tier.answer !== 0) {
+    if (!tier || !Array.isArray(tier.options) || tier.options.length !== 3 || !Number.isInteger(tier.answer) || tier.answer < 0 || tier.answer > 2) {
       failures.push(`item ${item.id}: concept item without a three-option reason tier`);
       continue;
     }
     const right = words(item.options[item.answer]);
     const overlap = tier.options.map((text) => [...words(text)].filter((word) => right.has(word)).length);
-    if (overlap[0] > overlap[1] + 2 && overlap[0] > overlap[2] + 2) {
+    const others = overlap.filter((_, index) => index !== tier.answer);
+    if (others.every((value) => overlap[tier.answer] > value + 2)) {
       failures.push(`item ${item.id}: reason tier leaks the correct answer through shared wording`);
+    }
+  }
+}
+
+// Позиция верного варианта. Банк собирался по заданию за раз, и верный ответ
+// каждый раз записывался первым: в какой-то момент все 74 задания, все 74
+// вторых яруса и все 148 шагов сценариев проходились выбором первого варианта,
+// то есть кабинет мерил не понимание, а привычку. В разметке это не видно
+// никак — только в распределении, поэтому оно и закреплено здесь.
+if (data?.items && data?.cases) {
+  const families = [
+    ['items', data.items.filter((item) => Array.isArray(item.options)).map((item) => [item.answer, item.options.length])],
+    ['reason tiers', data.items.filter((item) => item.reason).map((item) => [item.reason.answer, item.reason.options.length])],
+    ['scenario stages', data.cases.flatMap((scenario) => scenario.stages.map((stage) => [stage.answer, stage.options.length]))],
+  ];
+  for (const [name, answers] of families) {
+    const width = Math.max(...answers.map(([, length]) => length));
+    for (let position = 0; position < width; position += 1) {
+      const share = answers.filter(([answer]) => answer === position).length / answers.length;
+      if (share > 0.5) {
+        failures.push(`${name}: choosing option ${position + 1} every time passes ${Math.round(share * 100)}% of them`);
+      }
+      if (share === 0) failures.push(`${name}: option ${position + 1} is never the correct one`);
     }
   }
 }
