@@ -76,9 +76,11 @@ for (const [file, html] of cache) {
 }
 // Справочник терминов: база должна быть встроена в site.js и содержать глоссарий целиком.
 const termsMatch = siteJs.match(/const TERMS=(\[[\s\S]*?\]);\r?\nconst defineCard/);
+// База нужна двум правилам: здесь — целостность записей, ниже — покрытие текста.
+// Разбор один: две копии регулярки разошлись бы с генератором поодиночке.
+const terms = termsMatch ? JSON.parse(termsMatch[1]) : [];
 if (!termsMatch) failures.push('site.js: missing term reference base');
 else {
-  const terms = JSON.parse(termsMatch[1]);
   if (terms.length < 200) failures.push(`site.js: term base too small (${terms.length})`);
   for (const required of ['NUMA', 'iowait', 'Multipath', 'Readiness probe', 'Page cache']) {
     if (!terms.some((entry) => entry.term === required)) failures.push(`term base: missing "${required}"`);
@@ -213,6 +215,16 @@ const plain = (html) => html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
 const mainStart = course.indexOf('<main');
 const mainEnd = course.lastIndexOf('</main>');
 const body = course.slice(mainStart, mainEnd);
+// Текст без разметки, кода и скриптов нужен трём правилам ниже. Тело книги —
+// больше мегабайта, и каждая лишняя цепочка replace копирует его целиком,
+// поэтому чистка делается один раз. Сущности убираются здесь же: «&nbsp;»
+// иначе выглядит как часто встречающееся слово «nbsp».
+const bodyText = body
+  .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
+  .replace(/<code[\s\S]*?<\/code>/g, ' ')
+  .replace(/<script[\s\S]*?<\/script>/g, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/&[a-z]+;/g, ' ');
 
 // Справочник A: разделы A.1–A.24 на месте, и у каждой команды, которая меняет
 // состояние, стоит пометка «Осторожно». Справочник читают в спешке и наискось —
@@ -271,12 +283,7 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
 // вопрос к ядру; задача вида «сервер не работает — найди причину») под правило
 // не подпадает, поэтому кавычки вырезаются до проверки.
 {
-  const prose = body
-    .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
-    .replace(/<code[\s\S]*?<\/code>/g, ' ')
-    .replace(/<script[\s\S]*?<\/script>/g, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/«[^»]*»/g, ' ');
+  const prose = bodyText.replace(/«[^»]*»/g, ' ');
   const singular = [...prose.matchAll(/(?<![а-яё])(ты|тебя|тебе|тобой|твой|твоя|твоё|твои|твоих|твоей|твоего|твоим)(?![а-яё])/gi)];
   if (singular.length) {
     failures.push(`course.html: the reader is addressed as «ты» in ${singular.length} places, the book says «вы»`);
@@ -310,10 +317,20 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
 // База справочника отставала от текста: в ней были pstore и Machine Check, но
 // не было VM (146 употреблений), GiB, CPU, RTO — то есть как раз тех слов,
 // которые читатель встречает первыми и выделяет чаще всего. Правило требует,
-// чтобы всякое латинское слово, встречающееся в прозе не реже десяти раз,
-// имело определение. Нормализация здесь та же, что в панели «Определение».
-{
-  const terms = JSON.parse(siteJs.match(/const TERMS=(\[[\s\S]*?\]);\r?\nconst defineCard/)?.[1] ?? '[]');
+// чтобы часто встречающееся латинское слово имело определение. Русские термины
+// оно не ловит намеренно: у сокращения форма одна, а русское слово пришлось бы
+// разбирать по словоформам — это остаётся на совести вычитки.
+// Пустая база — отдельная поломка, о ней уже сказано выше; повторять её здесь
+// списком из всех слов книги бессмысленно.
+if (terms.length) {
+  // Ниже десяти употреблений начинается хвост разовой терминологии (iowait,
+  // PMTU, MSS встречаются по девять раз): такое слово читатель видит в одном
+  // абзаце, и требовать на него статью незачем.
+  const OFTEN = 10;
+  // U00–U36, T00–T36 и L00–L36 — номера модулей, самопроверок и работ. Ровно
+  // две цифры: без этого под правило попадал бы L2 — уровень кэша, то есть
+  // настоящий термин, а не метка.
+  const LABEL = /^[ult]\d\d$/;
   const normalize = (value) => String(value).toLowerCase().replace(/ё/g, 'е')
     .replace(/[^0-9a-zа-я/._+-]+/g, ' ').replace(/\s+/g, ' ').trim();
   const keys = new Set();
@@ -321,30 +338,25 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
     for (const variant of [entry.term, ...(entry.aliases ?? [])]) {
       const key = normalize(variant);
       keys.add(key);
-      // Часть составного термина считается только с трёх букв: иначе «vm» из
+      // Часть составного термина считается определением слова: панель находит
+      // «Page cache» по выделенному «cache». С трёх букв — иначе «vm» из
       // «Шаблон VM» выдавало бы себя за определение виртуальной машины.
       for (const part of key.split(' ')) if (part.length > 2) keys.add(part);
     }
   }
-  // Имена продуктов, служебные обозначения и слова из списка источников:
+  // Имена продуктов, обозначение этапа экзамена и слова из списка источников:
   // определять их незачем, а встречаются они часто.
-  const notTerms = new Set(['bash', 'unix', 'documentation', 'storage', 'nbsp', 'rfc', 'a1', 'shell']);
-  const plain = body
-    .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
-    .replace(/<code[\s\S]*?<\/code>/g, ' ')
-    .replace(/<script[\s\S]*?<\/script>/g, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&[a-z]+;/g, ' ');
+  const notTerms = new Set(['bash', 'unix', 'documentation', 'storage', 'rfc', 'a1']);
   const counted = new Map();
-  for (const match of plain.matchAll(/(?<![A-Za-z0-9_/.-])[A-Za-z][A-Za-z0-9+]{1,13}(?![A-Za-z0-9_/+])/g)) {
+  for (const match of bodyText.matchAll(/(?<![A-Za-z0-9_/.-])[A-Za-z][A-Za-z0-9+]{1,13}(?![A-Za-z0-9_/+])/g)) {
     const word = match[0].toLowerCase();
     counted.set(word, (counted.get(word) ?? 0) + 1);
   }
   const orphans = [...counted]
-    .filter(([word, times]) => times >= 10 && !keys.has(word) && !notTerms.has(word) && !/^[ult]\d\d?$/.test(word))
+    .filter(([word, times]) => times >= OFTEN && !keys.has(word) && !notTerms.has(word) && !LABEL.test(word))
     .sort((left, right) => right[1] - left[1]);
   if (orphans.length) {
-    const list = orphans.slice(0, 6).map(([word, times]) => word + ' (' + times + ')').join(', ');
+    const list = orphans.slice(0, 6).map(([word, times]) => `${word} (${times})`).join(', ');
     failures.push(`term base: no definition for ${list}`);
   }
 }
@@ -357,11 +369,7 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
 {
   const keep = ['Endpoints', 'EndpointSlice', 'capture_output', 'Extensible Firmware Interface',
     'Boot:Driver:Firmware', 'upstream-документация', 'Readiness probe'];
-  let prose = body
-    .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
-    .replace(/<code[\s\S]*?<\/code>/g, ' ')
-    .replace(/<script[\s\S]*?<\/script>/g, ' ')
-    .replace(/<[^>]+>/g, ' ');
+  let prose = bodyText;
   for (const phrase of keep) prose = prose.split(phrase).join(' ');
   const settled = {
     'next hop': 'следующий узел', enumeration: 'перечисление', endpoint: 'оконечное устройство',
