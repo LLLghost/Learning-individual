@@ -154,9 +154,13 @@ for (let number = 0; number < MODULE_COUNT; number += 1) {
   const padded = String(number).padStart(2, '0');
   const owner = chapterHtml.findIndex((html) => html?.includes(`id="ch${padded}"`));
   if (owner < 0) { failures.push(`module ch${padded}: not found in any chapter page`); continue; }
-  const lab = cache.get(resolve(root, 'labs', padded, 'index.html'));
-  const expected = `<a href="${BASE}/chapters/${String(owner).padStart(2, '0')}/">Теория: глава ${String(owner).padStart(2, '0')}</a>`;
-  if (!lab?.includes(expected)) failures.push(`lab ${padded}: theory link must point to chapter ${String(owner).padStart(2, '0')} (module U${padded} lives there)`);
+  // Работа больше не отдельная страница: её текст лежит секцией на странице
+  // практики. Связка «работа → теория» от этого не изменилась, проверяется она
+  // теперь по ссылке внутри самой секции.
+  const section = assessment?.match(new RegExp(`<section data-lab-module="${number}">([\\s\\S]*?)</section>`))?.[1];
+  if (!section) { failures.push(`lab ${padded}: text is missing from the practice page`); continue; }
+  const expected = `href="${BASE}/chapters/${String(owner).padStart(2, '0')}/#ch${padded}"`;
+  if (!section.includes(expected)) failures.push(`lab ${padded}: theory link must point to chapter ${String(owner).padStart(2, '0')} (module U${padded} lives there)`);
 }
 for (const html of chapterHtml) {
   if (!html?.includes('class="chapter-practice"')) failures.push('chapter: missing practicum bridge');
@@ -777,37 +781,56 @@ for (const [file, html] of cache) {
     }
     // Сбор фактов и вердикт разделены: иначе ожидаемые значения уезжают к
     // читателю вместе со скриптом.
-    if (/вердикт|засчитано|правильный ответ/i.test(code.replace(/вердикт выносит учебник|Вердикт не содержит|Отчёт не содержит вердикта/g, ''))) {
+    if (/вердикт|засчитано|правильный ответ/i.test(code.replace(/вердикт выносит учебник|Отчёт не содержит вердикта/g, ''))) {
       failures.push('course_lab.py: collector must not decide the verdict');
     }
+    // Операции сверки описаны в кабинете; работа не может сослаться на ту,
+    // которой нет, — иначе проверка молча не сработает ни разу.
+    const ops = new Set([...(assessment.match(/const LAB_OPS=\{([\s\S]*?)\n\};/)?.[1] ?? '')
+      .matchAll(/^\s(\w+):/gm)].map((match) => match[1]));
+    if (ops.size < 5) failures.push('assessment: check operations not found in the cabinet');
     const answerIndexes = new Set();
     for (const lab of labs) {
       const where = `lab-data ${lab.id}`;
       if (!/^L\d\d[AB]$/.test(lab.id)) failures.push(`${where}: id is not a lab part`);
       if (!Number.isInteger(lab.module) || lab.module < 0 || lab.module > 36) failures.push(`${where}: module out of range`);
+      if (!['stand', 'collect', 'dataset'].includes(lab.kind)) failures.push(`${where}: unknown kind ${lab.kind}`);
       if (!lab.why || lab.why.options?.length !== 4 || !Number.isInteger(lab.why.answer)
         || lab.why.answer < 0 || lab.why.answer > 3 || !lab.why.explanation) {
         failures.push(`${where}: mechanism question must offer four options, an answer and an explanation`);
       } else answerIndexes.add(lab.why.answer);
+      if (!lab.checks?.length) failures.push(`${where}: no checks`);
+      for (const check of lab.checks ?? []) {
+        if (!ops.has(check.op)) failures.push(`${where}: unknown check operation ${check.op}`);
+        if (!check.label) failures.push(`${where}: check without a label`);
+        // Сверка по хешу требует самого хеша: у работы с вариантами он в
+        // variants, у остальных — в expect.
+        if (check.op === 'hash') {
+          const stored = lab.kind === 'stand'
+            ? (lab.variants ?? []).map((variant) => variant[check.field])
+            : [lab.expect?.[check.field]];
+          if (!stored.length || stored.some((value) => value === undefined)) {
+            failures.push(`${where}: no expected value for ${check.field}`);
+          }
+        }
+      }
       // Ожидаемое лежит хешами: в разметку не попадает ни одно значение, по
       // которому ответ читается без решения.
       const secrets = lab.kind === 'stand'
         ? (lab.variants ?? []).flatMap((variant) => Object.values(variant))
-        : Object.values(lab.expect?.hashed ?? {});
-      if (!secrets.length) failures.push(`${where}: no expected values`);
+        : Object.values(lab.expect ?? {});
       for (const value of secrets) {
         if (typeof value !== 'string' || !/^[0-9a-z]{4,9}$/.test(value) || /^\d+$/.test(value)) {
           failures.push(`${where}: expected value is not hashed (${value})`);
         }
       }
-      // Ветка сверки пишется кодом рядом с кабинетом: работа без неё загрузится
-      // и молча не получит вердикта.
-      if (!assessment.includes(`${lab.id}(r,lab)`)) failures.push(`${where}: no check branch in the cabinet`);
-      // Со страницы работы должен вести мост в кабинет.
-      const labPage = cache.get(resolve(root, 'labs', String(lab.module).padStart(2, '0'), 'index.html'));
-      if (!labPage?.includes('lab-autocheck') || !labPage.includes(lab.id)) {
-        failures.push(`${where}: lab page does not point to the cabinet`);
+      // Текст работы и её проверка стоят на одной странице и в одном виде
+      // модуля: раньше это были две страницы, между которыми читатель ходил сам.
+      if (!assessment.includes(`<section data-lab-module="${lab.module}">`)) {
+        failures.push(`${where}: the lab text is not on the practice page`);
       }
+      // Работа, которой нет в реестре скрипта, не подготовится и не соберётся.
+      if (!code.includes(`'${lab.id}': {'kind'`)) failures.push(`${where}: not registered in course_lab.py`);
     }
     // Тот же урок, что и с банком заданий: верный вариант, поставленный по
     // привычке первым, делает вопрос проходимым без чтения.
@@ -822,6 +845,6 @@ for (const [file, html] of cache) {
   }
 }
 
-if (htmlFiles.length !== 84) failures.push(`expected 84 routes, got ${htmlFiles.length}`);
+if (htmlFiles.length !== 47) failures.push(`expected 47 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
