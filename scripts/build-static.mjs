@@ -126,7 +126,7 @@ const labs = labMarkers.map((start, number) => {
   // и в оглавлении для чтения с экрана она начинается со второй ступени.
   const content = source.slice(start, end).replace(/^<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/, '<h1$1>$2</h1>');
   const titleMatch = content.match(/^<h1[^>]*>(.*?)<\/h1>/s);
-  return { number, title: strip(titleMatch?.[1] ?? `Практикум ${number}`), content, url: `/labs/${pad(number)}/` };
+  return { number, title: strip(titleMatch?.[1] ?? `Практикум ${number}`), content, url: `/assessment/?module=${number}` };
 });
 // Нулевая работа идёт вместе с общим введением практикума: его h1 уже на месте.
 labs[0].content = source.slice(labsStart, labMarkers[1]);
@@ -163,8 +163,7 @@ const globalNav = `
   <nav aria-label="Основная навигация">
     <a href="/curriculum/">Программа</a>
     <a href="/route/">Маршрут</a>
-    <a href="/assessment/">Проверка знаний</a>
-    <a href="/labs/00/">Практикум</a>
+    <a href="/assessment/">Практика и проверка</a>
     <a href="/reference/">Справочник</a>
     <a href="/about/">О курсе</a>
   </nav>`;
@@ -414,16 +413,6 @@ const lessonPage = (lesson) => {
   });
 };
 
-const labPage = (lab) => {
-  const checked = autoCheckedLabs.get(lab.number);
-  const autoNote = checked ? `<p class="lab-autocheck">Часть <strong>${escape(checked.id)}</strong> проверяется автоматически: скрипт готовит задание, вы решаете, отчёт загружается в <a href="/assessment/">учебный кабинет</a> на вкладке «Работы практикума».</p>` : '';
-  const previous = labs[lab.number - 1];
-  const next = labs[lab.number + 1];
-  const theory = chapters[moduleChapter[lab.number]];
-  const pager = `<nav class="pager"><a href="${theory.url}">Теория: глава ${pad(theory.number)}</a>${previous ? `<a href="${previous.url}">← L${pad(previous.number)}</a>` : '<span></span>'}${next ? `<a href="${next.url}">L${pad(next.number)} →</a>` : '<span></span>'}</nav>`;
-  const sidebar = `<a class="back-link" href="/curriculum/">← Вся программа</a><p class="side-title">Практикум</p>${labs.map((item) => `<a ${item.number === lab.number ? 'aria-current="page"' : ''} href="${item.url}"><span>L${pad(item.number)}</span>${escape(item.title.replace(/^L\d+[A-Z/]?\.\s*/, ''))}</a>`).join('')}`;
-  return pageShell({ title: lab.title, eyebrow: `Практикум · модуль U${pad(lab.number)} · теория в главе ${pad(theory.number)}`, body: `<article class="prose">${rewriteLinks(lab.content, lab.url)}${autoNote}</article>${pager}`, sidebar, className: 'with-sidebar' });
-};
 
 const homeCards = parts.map(([label, title, numbers]) => `<a class="part-card" href="${chapters[numbers[0]].url}"><span>${label}</span><h2>${title}</h2><p>${numbers.length} ${numbers.length === 1 ? 'модуль' : 'модулей'} · ${numbers.map((number) => pad(number)).join(' · ')}</p></a>`).join('');
 const home = pageShell({
@@ -452,13 +441,16 @@ const labData = scriptElement('lab-data');
 const autoCheckedLabs = new Map(scriptJson('lab-data').labs.map((lab) => [lab.module, lab]));
 let studyScript = followingScript('checker-code-data')
   .replace(/'#ch'\+pad\(([^)]+)\)/g, `'${BASE}/chapters/'+pad($1)+'/'`)
-  .replace(/'#lab'\+pad\(([^)]+)\)/g, `'${BASE}/labs/'+pad($1)+'/'`)
   .replace(/render\(\);\s*\}\)\(\);\s*<\/script>$/, "const requested=new URLSearchParams(location.search).get('module');if(requested!==null&&/^\\d{1,2}$/.test(requested)&&Number(requested)<37){module=Number(requested);tab='learn';}\nrender();\n})();\n</script>");
 const studySection = section('study-app');
 const assessmentIntro = rewriteLinks(source.slice(assessmentStart, labsStart), '/assessment/');
+// Тексты работ переезжают на страницу кабинета скрытыми секциями: практика и
+// проверка перестали быть двумя разными местами. Разметка готовится здесь, а
+// кабинет показывает нужную секцию — так он по-прежнему не пользуется innerHTML.
+const labTexts = `<div id="lab-texts" hidden>${labs.map((lab) => `<section data-lab-module="${lab.number}">${rewriteLinks(lab.content, '/assessment/')}</section>`).join('')}</div>`;
 const assessment = pageShell({
   title: 'Проверка знаний', eyebrow: 'Автоматизированный учебный кабинет', className: 'tool-page',
-  body: `<header class="tool-intro"><h1>Проверка знаний</h1><p>Выполняйте задания по модулям, возвращайтесь к слабым темам и переносите прогресс между браузерами.</p><a class="button" href="/assessment/a1/">Тренажёр A1 · 40 вопросов</a></header><article class="study-surface">${studySection}</article><article class="prose compact-prose">${assessmentIntro}</article>${studyData}${checkerData}${labCode}${labData}${studyScript}`,
+  body: `<header class="tool-intro"><h1>Проверка знаний</h1><p>Выполняйте задания по модулям, возвращайтесь к слабым темам и переносите прогресс между браузерами.</p><a class="button" href="/assessment/a1/">Тренажёр A1 · 40 вопросов</a></header><article class="study-surface">${studySection}</article><article class="prose compact-prose">${assessmentIntro}</article>${labTexts}${studyData}${checkerData}${labCode}${labData}${studyScript}`,
 });
 const a1 = pageShell({
   title: 'Тренажёр A1', eyebrow: '40 вопросов · мгновенная проверка', className: 'tool-page',
@@ -611,7 +603,7 @@ td .route-note{display:block;margin:4px 0 0;font-size:11.5px}
   .section-rail summary{padding:0 15px 10px;color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
   .section-rail summary::after{display:none}
 }
-.chapter-practice{max-width:900px;margin:34px auto 0;padding:clamp(20px,3.4vw,32px);background:var(--soft);border:1px solid var(--line)}.chapter-practice header{margin-bottom:18px}.chapter-practice h2{margin:4px 0 0;font-family:Georgia,serif;font-size:clamp(22px,3vw,28px)}.practice-grid{display:grid;gap:10px}.practice-grid a{display:grid;grid-template-columns:58px 1fr;align-items:baseline;gap:4px 14px;padding:14px 16px;background:var(--white);border:1px solid var(--line);color:inherit;text-decoration:none}.practice-grid a:hover{border-color:var(--teal)}.practice-grid span{grid-row:1/3;align-self:center;font-weight:750;font-size:13px;color:var(--link);font-variant-numeric:tabular-nums}.practice-grid strong{font-size:15px;line-height:1.4}.practice-grid em{color:var(--muted);font-size:12.5px;font-style:normal;line-height:1.4}.practice-note{margin:16px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}.lab-autocheck{margin:26px 0 0;padding:14px 16px;background:var(--success);border-left:3px solid var(--teal);font-size:14.5px}@media(max-width:560px){.practice-grid a{grid-template-columns:1fr}.practice-grid span{grid-row:auto}}
+.chapter-practice{max-width:900px;margin:34px auto 0;padding:clamp(20px,3.4vw,32px);background:var(--soft);border:1px solid var(--line)}.chapter-practice header{margin-bottom:18px}.chapter-practice h2{margin:4px 0 0;font-family:Georgia,serif;font-size:clamp(22px,3vw,28px)}.practice-grid{display:grid;gap:10px}.practice-grid a{display:grid;grid-template-columns:58px 1fr;align-items:baseline;gap:4px 14px;padding:14px 16px;background:var(--white);border:1px solid var(--line);color:inherit;text-decoration:none}.practice-grid a:hover{border-color:var(--teal)}.practice-grid span{grid-row:1/3;align-self:center;font-weight:750;font-size:13px;color:var(--link);font-variant-numeric:tabular-nums}.practice-grid strong{font-size:15px;line-height:1.4}.practice-grid em{color:var(--muted);font-size:12.5px;font-style:normal;line-height:1.4}.practice-note{margin:16px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}.module-lab{margin:26px 0 0;padding:18px 20px;background:var(--white);border:1px solid var(--line)}.module-lab h3{margin:0 0 10px;font-family:Georgia,serif;font-size:20px}.module-lab h2{font-size:18px;margin:0 0 8px}.module-lab p{font-size:14.5px;line-height:1.6}.module-lab pre{overflow:auto;background:var(--navy);color:#d9eeee;padding:12px 14px;font-size:12.5px}.lab-card{border-left:3px solid var(--teal)}.lab-card h4{margin:0 0 6px;font-size:16px}@media(max-width:560px){.practice-grid a{grid-template-columns:1fr}.practice-grid span{grid-row:auto}}
 /* Term definition card */
 .define-card{position:fixed;z-index:60;width:min(430px,calc(100vw - 24px));max-height:min(60vh,460px);overflow:auto;padding:18px 20px 20px;background:var(--white);border:1px solid var(--line);box-shadow:0 22px 54px #06151d2e}.define-close{position:absolute;top:8px;right:8px;padding:2px 8px;border:0;background:transparent;color:var(--muted);font-size:19px;line-height:1;cursor:pointer}.define-close:hover{color:var(--ink)}
 .define-term{margin:0 6px 0 0;font-family:Georgia,serif;font-size:20px;line-height:1.25}.define-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;padding-right:26px}.define-source{flex:0 0 auto;font-size:11px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
@@ -1439,7 +1431,6 @@ await Promise.all([
 const outputs = [
   ...lessons.map((item) => [item.url, lessonPage(item)]),
   ...chapters.map((item) => [item.url, chapterPage(item)]),
-  ...labs.map((item) => [item.url, labPage(item)]),
   ['/about/', about], ['/route/', route], ['/assessment/', assessment], ['/assessment/a1/', a1], ['/reference/', reference], ['/reference/archive/', archive],
 ];
 for (const [url, html] of outputs) {
