@@ -323,10 +323,13 @@ const chapterModules = chapterStarts.map((_, chapter) => {
   return own.length ? own : [chapterFallbackModule.get(chapter)];
 });
 const studyModuleByChapter = chapterModules.map((modules) => modules[0]);
-const chapterTrainerOverrides = new Map([[0, [
-  { id: 'C00-0', stem: 'Зачем в учебном стенде отдельные CLIENT-NET, SERVER-NET и STORAGE-NET?', options: ['Чтобы наблюдать маршрутизацию и отказы между изолированными сегментами', 'Чтобы каждая VM обязательно получила выход в Интернет без маршрутизатора', 'Чтобы заменить резервное копирование VM', 'Чтобы Proxmox автоматически исправлял сетевые ошибки'], answer: 0, explanation: 'Изолированные bridges создают наблюдаемые L2-сегменты. Связь между ними требует маршрутизатора, поэтому путь пакета можно разбирать по слоям.' },
-  { id: 'C00-1', stem: 'Что лучше всего позволяет безопасно повторить break/fix-упражнение?', options: ['Известный baseline: template или snapshot плюс зафиксированная конфигурация', 'Случайный reboot всех VM после каждого изменения', 'Единственная копия стенда без документации', 'Одновременная замена нескольких настроек'], answer: 0, explanation: 'Известная исходная точка делает опыт повторяемым и позволяет связать наблюдаемый эффект с конкретным изменением.' },
-]]]);
+// Мини-тренажёр главы — своя проверка, а не копия банка кабинета. Раньше он брал
+// два первых задания модуля прямо из `study-data`: читатель отвечал на те же
+// вопросы, которые потом оцениваются, и видел их разбор заранее — первый ярус
+// оценки был раскрыт до попытки. Теперь у главы свои вопросы: один о главной
+// модели главы, второй о её «типичной ошибке мышления». Уровень другой —
+// «прочитал и понял», тогда как кабинет спрашивает применение механизма.
+const chapterQuick = scriptJson('chapter-quick-data');
 
 // Номер верного ответа не должен читаться в исходном коде страницы. В разметку попадает
 // контрольная сумма пары «идентификатор вопроса + номер варианта»; скрипт сверяет с ней
@@ -364,7 +367,7 @@ const chapterRecall = (chapter) => {
 
 const chapterTrainer = (number) => {
   const module = studyModuleByChapter[number];
-  const items = chapterTrainerOverrides.get(number) ?? studyDatabase.items.filter((item) => item.module === module && Array.isArray(item.options)).slice(0, 2);
+  const items = chapterQuick[String(number)] ?? [];
   if (items.length !== 2) throw new Error(`Expected two quick-check questions for chapter ${number}`);
   const questions = items.map((item, questionIndex) => {
     const trainerId = `Q${pad(number)}-${questionIndex}`;
@@ -373,7 +376,7 @@ const chapterTrainer = (number) => {
     const answer = (item.answer - shift + item.options.length) % item.options.length;
     return `<fieldset class="trainer-question" data-trainer-question="${trainerId}" data-answer="${answerDigest(trainerId, answer)}"><legend><span>${questionIndex + 1}</span>${escape(item.stem)}</legend><div class="trainer-options">${options.map((option, optionIndex) => `<label><input type="radio" name="trainer-${trainerId}" value="${optionIndex}"><span>${escape(option)}</span></label>`).join('')}</div><div class="trainer-actions"><button type="button" data-trainer-check>Проверить</button><p class="trainer-feedback" data-trainer-feedback hidden data-explanation="${escape(item.explanation)}" role="status"></p></div></fieldset>`;
   }).join('');
-  return `<section class="chapter-trainer" data-chapter-trainer="${number}" aria-labelledby="trainer-title-${number}"><header><div><p class="eyebrow">Закрепление материала</p><h2 id="trainer-title-${number}">Мини-тренажёр главы</h2><p>Два вопроса с мгновенной проверкой. Результат сохраняется в этом браузере.</p></div><strong data-trainer-score>0 / 2</strong></header>${questions}<footer><span data-trainer-summary>Ответьте на оба вопроса.</span><a href="/assessment/?module=${module}">Полный тренажёр по теме →</a></footer></section>`;
+  return `<section class="chapter-trainer" data-chapter-trainer="${number}" aria-labelledby="trainer-title-${number}"><header><div><p class="eyebrow">Сразу после главы</p><h2 id="trainer-title-${number}">Мини-тренажёр главы</h2><p>Два вопроса по главным утверждениям этой главы: прочитана и понята. Мгновенная проверка, результат сохраняется в этом браузере.</p></div><strong data-trainer-score>0 / 2</strong></header>${questions}<footer><span data-trainer-summary>Ответьте на оба вопроса.</span><a href="/assessment/?module=${module}">Проверка знаний · модуль U${pad(module)} →</a></footer></section>`;
 };
 
 // Обратная связка «глава → её академические модули»: без неё главы 3, 5, 11 и 25

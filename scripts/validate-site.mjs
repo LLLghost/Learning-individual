@@ -243,6 +243,53 @@ const body = course.slice(mainStart, mainEnd);
 // больше мегабайта, и каждая лишняя цепочка replace копирует его целиком,
 // поэтому чистка делается один раз. Сущности убираются здесь же: «&nbsp;»
 // иначе выглядит как часто встречающееся слово «nbsp».
+// Мини-тренажёр главы и банк кабинета — разные ярусы проверки, и их вопросы
+// обязаны различаться. Тренажёр брал два первых задания модуля прямо из
+// `study-data`: читатель отвечал на те же вопросы, которые потом оцениваются,
+// и видел их разбор заранее. В разметке это незаметно — вопросы там настоящие,
+// просто чужие. Правило сверяет тексты вопросов обеих проверок между собой.
+{
+  const quick = JSON.parse(course.match(/id="chapter-quick-data"[^>]*>([\s\S]*?)<\/script>/)?.[1] ?? 'null');
+  if (!quick) failures.push('course.html: missing chapter-quick-data block');
+  else {
+    const positions = new Map();
+    const words = (text) => new Set(String(text).toLowerCase().replace(/ё/g, 'е').split(/[^a-zа-я0-9]+/).filter((word) => word.length > 3));
+    const overlap = (left, right) => {
+      let common = 0;
+      for (const word of left) if (right.has(word)) common += 1;
+      return common / (Math.min(left.size, right.size) || 1);
+    };
+    const bank = (data?.items ?? []).map((item) => ({ id: item.id, words: words(item.stem) }));
+    for (let number = 0; number < 34; number += 1) {
+      const items = quick[String(number)];
+      if (!Array.isArray(items) || items.length !== 2) {
+        failures.push(`chapter ${number}: expected two own quick questions`);
+        continue;
+      }
+      for (const item of items) {
+        if (!item.stem || !Array.isArray(item.options) || item.options.length !== 4) {
+          failures.push(`quick ${item.id ?? number}: need a stem and four options`);
+          continue;
+        }
+        if (new Set(item.options).size !== 4) failures.push(`quick ${item.id}: repeated option`);
+        if (!(item.answer >= 0 && item.answer < 4)) failures.push(`quick ${item.id}: answer out of range`);
+        if (!item.explanation) failures.push(`quick ${item.id}: missing explanation`);
+        positions.set(item.answer, (positions.get(item.answer) ?? 0) + 1);
+        const mine = words(item.stem);
+        for (const entry of bank) {
+          if (overlap(mine, entry.words) >= 0.6) {
+            failures.push(`quick ${item.id}: repeats bank item ${entry.id}`);
+            break;
+          }
+        }
+      }
+    }
+    // Тот же урок, что и с банком: собранный по привычке набор проходится
+    // выбором одного и того же номера.
+    const most = Math.max(...positions.values());
+    if (most > 68 * 0.45) failures.push(`chapter-quick-data: ${most} of 68 correct answers sit at one position`);
+  }
+}
 const bodyText = body
   // Подписи внешних ссылок — это названия чужих документов, а не проза книги:
   // «Red Hat Enterprise Linux documentation» давало слову documentation
