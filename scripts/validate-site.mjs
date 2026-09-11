@@ -88,6 +88,25 @@ else {
   }
   const broken = terms.filter((entry) => !entry.html || (entry.chapter !== null && !(entry.chapter >= 0 && entry.chapter <= 33)));
   if (broken.length) failures.push(`term base: ${broken.length} entries with empty text or bad chapter`);
+  // Имя и написание принадлежат одной статье. Индекс панели занимает ключ первым
+  // совпадением и молча отбрасывает второе: «mac» отвечал статьёй Ethernet вместо
+  // «MAC-адрес», «плейбук» — статьёй YAML вместо Ansible, а «Тайм-аут» и Timeout
+  // были двумя статьями об одном понятии, из которых читатель видел только одну.
+  // В разметке и в сборке этого не видно: панель просто отвечает не тем.
+  const owner = new Map();
+  const clashes = [];
+  terms.forEach((entry, index) => {
+    for (const variant of [entry.term, ...(entry.aliases ?? [])]) {
+      const key = String(variant).toLowerCase().trim();
+      if (!key) continue;
+      const held = owner.get(key);
+      if (held === undefined) owner.set(key, index);
+      // Повтор внутри одной статьи безвреден: ответ тот же. Ловим только случай,
+      // когда написание уводит читателя в чужую статью.
+      else if (held !== index) clashes.push(`${variant}: ${terms[held].term} / ${entry.term}`);
+    }
+  });
+  if (clashes.length) failures.push(`term base: one spelling claimed twice — ${clashes.slice(0, 6).join('; ')}`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
 for (let number = 0; number < 34; number += 1) {
@@ -304,6 +323,18 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
   // Формы множественного числа берутся из самой книги: если «создайте» в ней
   // есть, то «создай» — та же команда, сказанная на «ты».
   const plural = new Set([...prose.matchAll(/(?<![А-Яа-яЁё])([А-Яа-яЁё]{3,}(?:йте|ите|ьте))(?![а-яё])/gi)].map((match) => match[1].toLowerCase()));
+  // «привяжи API к loopback» в лаборатории 22.14 пережило это правило: пары
+  // «привяжите» в книге не было ни разу, а формы берутся из самой книги. Глагол,
+  // употреблённый в единственном числе один-единственный раз, так и остаётся
+  // невидимым. Поэтому к формам из книги добавлен список команд, которыми
+  // учебник обращается к читателю постоянно, — их единственное число ошибка
+  // всегда, встречается такая форма в книге или нет.
+  const ORDERS = ['привяжите', 'создайте', 'сделайте', 'выполните', 'запишите', 'измерьте', 'настройте', 'проверьте',
+    'откройте', 'запустите', 'соберите', 'сломайте', 'поставьте', 'возьмите', 'посмотрите', 'найдите', 'сохраните',
+    'покажите', 'объясните', 'назовите', 'сравните', 'проведите', 'добавьте', 'уберите', 'остановите', 'включите',
+    'отключите', 'повторите', 'прочитайте', 'снимите', 'перейдите', 'ответьте', 'опишите', 'составьте', 'подключите',
+    'удалите', 'замените', 'пропустите', 'зафиксируйте', 'разверните', 'подсчитайте', 'выберите'];
+  for (const word of ORDERS) plural.add(word);
   const singles = new Set([...plural].map((word) => word.slice(0, -2)));
   const orders = [...prose.matchAll(/(?<![А-Яа-яЁё])([А-Яа-яЁё]{3,})(?![а-яё])/gi)]
     .map((match) => match[1].toLowerCase())

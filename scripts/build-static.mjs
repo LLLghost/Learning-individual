@@ -457,6 +457,8 @@ let studyScript = followingScript('checker-code-data')
   // она молча указывала бы на несуществующий якорь этой же страницы.
   .replace(/'#autopractice'/g, `'${BASE}/about/#autopractice'`)
   .replace(/'#ch'\+pad\(([^)]+)\)/g, `'${BASE}/chapters/'+pad($1)+'/'`)
+  // Перенос прогресса — один на весь курс, на «Маршруте»: кабинет только ведёт туда.
+  .replace(/'#route-backup'/g, `'${BASE}/route/#route-backup'`)
   .replace(/render\(\);\s*\}\)\(\);\s*<\/script>$/, "const requested=new URLSearchParams(location.search).get('module');if(requested!==null&&/^\\d{1,2}$/.test(requested)&&Number(requested)<37){module=Number(requested);tab='learn';}\nrender();\n})();\n</script>");
 const studySection = section('study-app');
 const assessmentIntro = rewriteLinks(source.slice(assessmentStart, labsStart), '/assessment/');
@@ -484,6 +486,11 @@ const routeRows = chapters.map((chapter) => {
   const own = shown.filter((module) => moduleChapter[module] === chapter.number);
   const links = (list) => list.map((module) => `<a href="/assessment/?module=${module}">U${pad(module)}</a>`).join(' ');
   const labLinks = shown.map((module) => `<a href="${labs[module].url}">L${pad(module)}A/B</a>`).join(' ');
+  // Столбец обещал «проверяете сами» по всем работам и после появления
+  // автопроверки остался прежним: читатель не узнавал, что часть работ
+  // кабинет засчитывает сам.
+  const autoHere = shown.map((module) => autoCheckedLabs.get(module)).filter(Boolean);
+  const labNote = autoHere.length ? `автопроверка: ${autoHere.map((lab) => escape(lab.id)).join(' ')}` : 'проверяете сами';
   const moduleCell = own.length
     ? `<span class="route-links">${links(own)}</span><span class="route-mark" data-route-state="none">—</span>`
     : `<span class="route-links">${links(shown)}</span><span class="route-note">модуль главы ${pad(moduleChapter[shown[0]])}</span>`;
@@ -491,7 +498,7 @@ const routeRows = chapters.map((chapter) => {
     <th scope="row"><span>${pad(chapter.number)}</span><a href="${chapter.url}">${escape(chapter.title.replace(/^\d+\.\s*/, ''))}</a></th>
     <td data-route-cell="chapter"><span class="route-mark" data-route-state="none">—</span></td>
     <td data-route-cell="module">${moduleCell}</td>
-    <td data-route-cell="labs"><span class="route-links">${labLinks}</span><span class="route-note">проверяете сами</span></td>
+    <td data-route-cell="labs"><span class="route-links">${labLinks}</span><span class="route-note">${labNote}</span></td>
   </tr>`;
 }).join('');
 
@@ -522,7 +529,7 @@ const route = pageShell({
 <thead><tr><th scope="col">Глава</th><th scope="col">Мини-тренажёр</th><th scope="col">Модуль</th><th scope="col">Практикум</th></tr></thead>
 <tbody>${routeRows}</tbody>
 </table>
-<p class="route-note">Работы практикума автоматической проверки не имеют: их критерий приёмки написан в самой работе, а подтверждением служит ваш репозиторий. Учебник намеренно не предлагает отметить их щелчком — отметка, которую ставишь себе сам, ничего не доказывает.</p>
+<p class="route-note">У шестнадцати работ практикума есть автоматическая проверка — они названы в столбце и засчитываются кабинетом. У остальных критерий приёмки написан в самой работе, а подтверждением служит ваш репозиторий: кнопки «отметить сделанным» здесь нет намеренно — отметка, поставленная самому себе, ничего не доказывает.</p>
 </section>
 <section class="route-board" data-route-calendar aria-labelledby="route-calendar-title">
 <div class="route-head"><h2 id="route-calendar-title">Календарь</h2><p>Дни, в которые что-то было впервые зачтено. Календарь только показывает: изменить дату через интерфейс нельзя.</p></div>
