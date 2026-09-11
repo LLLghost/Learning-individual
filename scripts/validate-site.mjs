@@ -756,6 +756,72 @@ for (const [file, html] of cache) {
   }
 }
 
+// --- автоматическая проверка работ практикума ---
+// Задание готовит скрипт, читатель решает, отчёт загружается в кабинет. Здесь
+// закреплено то, что разъезжается молча: страница кабинета собирается из
+// перечисленных блоков, а не из сплошного среза, поэтому забытый блок данных
+// просто не доедет — и вкладка окажется пустой без единой ошибки в разметке.
+{
+  const labMatch = assessment?.match(/<script type="application\/json" id="lab-data">(.*?)<\/script>/s);
+  const labScript = assessment?.match(/<script type="application\/json" id="lab-code-data">(.*?)<\/script>/s);
+  if (!labMatch || !labScript) {
+    failures.push('assessment: lab-data or lab-code-data missing from the cabinet page');
+  } else {
+    const labs = JSON.parse(labMatch[1]).labs;
+    const code = JSON.parse(labScript[1]);
+    // Инжектор меняет чужую машину — единственное место в проекте, где это так.
+    // Отказ без метки стенда, откат и «показать, но не делать» — не удобства,
+    // а условие, при котором такую правку вообще можно отдавать читателю.
+    for (const guard of ['/etc/course-lab-stand', 'def cmd_restore', 'dry_run', 'управляющей сети']) {
+      if (!code.includes(guard)) failures.push(`course_lab.py: safety guard missing (${guard})`);
+    }
+    // Сбор фактов и вердикт разделены: иначе ожидаемые значения уезжают к
+    // читателю вместе со скриптом.
+    if (/вердикт|засчитано|правильный ответ/i.test(code.replace(/вердикт выносит учебник|Вердикт не содержит|Отчёт не содержит вердикта/g, ''))) {
+      failures.push('course_lab.py: collector must not decide the verdict');
+    }
+    const answerIndexes = new Set();
+    for (const lab of labs) {
+      const where = `lab-data ${lab.id}`;
+      if (!/^L\d\d[AB]$/.test(lab.id)) failures.push(`${where}: id is not a lab part`);
+      if (!Number.isInteger(lab.module) || lab.module < 0 || lab.module > 36) failures.push(`${where}: module out of range`);
+      if (!lab.why || lab.why.options?.length !== 4 || !Number.isInteger(lab.why.answer)
+        || lab.why.answer < 0 || lab.why.answer > 3 || !lab.why.explanation) {
+        failures.push(`${where}: mechanism question must offer four options, an answer and an explanation`);
+      } else answerIndexes.add(lab.why.answer);
+      // Ожидаемое лежит хешами: в разметку не попадает ни одно значение, по
+      // которому ответ читается без решения.
+      const secrets = lab.kind === 'stand'
+        ? (lab.variants ?? []).flatMap((variant) => Object.values(variant))
+        : Object.values(lab.expect?.hashed ?? {});
+      if (!secrets.length) failures.push(`${where}: no expected values`);
+      for (const value of secrets) {
+        if (typeof value !== 'string' || !/^[0-9a-z]{4,9}$/.test(value) || /^\d+$/.test(value)) {
+          failures.push(`${where}: expected value is not hashed (${value})`);
+        }
+      }
+      // Ветка сверки пишется кодом рядом с кабинетом: работа без неё загрузится
+      // и молча не получит вердикта.
+      if (!assessment.includes(`${lab.id}(r,lab)`)) failures.push(`${where}: no check branch in the cabinet`);
+      // Со страницы работы должен вести мост в кабинет.
+      const labPage = cache.get(resolve(root, 'labs', String(lab.module).padStart(2, '0'), 'index.html'));
+      if (!labPage?.includes('lab-autocheck') || !labPage.includes(lab.id)) {
+        failures.push(`${where}: lab page does not point to the cabinet`);
+      }
+    }
+    // Тот же урок, что и с банком заданий: верный вариант, поставленный по
+    // привычке первым, делает вопрос проходимым без чтения.
+    if (labs.length > 1 && answerIndexes.size === 1) {
+      failures.push('lab-data: every mechanism answer sits at the same position');
+    }
+  }
+  // Результаты работ живут внутри ключа прогресса: отдельный ключ пришлось бы
+  // вносить в BACKUP_KEYS, иначе перенос в другой браузер терял бы их молча.
+  if (assessment && (!assessment.includes('errors:[],labs:{}') || !assessment.includes('clean.labs[id]='))) {
+    failures.push('assessment: lab results are not carried by the progress import');
+  }
+}
+
 if (htmlFiles.length !== 84) failures.push(`expected 84 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
