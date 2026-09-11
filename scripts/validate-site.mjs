@@ -672,6 +672,14 @@ for (const [file, html] of cache) {
 if (!/\.prose h3\{overflow-wrap:break-word;hyphens:manual\}/.test(siteCss)) {
   failures.push('site.css: headings must not hyphenate automatically');
 }
+// Ссылка «источник» у заметки строится из пути, а путь приезжает вместе с
+// файлом резервной копии — то есть может быть чужим. Без проверки туда
+// подставляется «javascript:…», и один щелчок по заметке выполняет чужой код
+// на домене учебника со всем прогрессом в его localStorage. Экранирование от
+// этого не спасает: браузер раскодирует сущности в href обратно.
+if (!/const safePath=value=>/.test(siteJs) || !siteJs.includes('const href=safePath(item.path)')) {
+  failures.push('site.js: note links must go through the internal-path guard');
+}
 // Шкала времени только дополняется: код не должен уметь переписать дату.
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
   failures.push('site.js: timeline must be append-only');
