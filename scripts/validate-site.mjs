@@ -221,6 +221,10 @@ const body = course.slice(mainStart, mainEnd);
 // поэтому чистка делается один раз. Сущности убираются здесь же: «&nbsp;»
 // иначе выглядит как часто встречающееся слово «nbsp».
 const bodyText = body
+  // Подписи внешних ссылок — это названия чужих документов, а не проза книги:
+  // «Red Hat Enterprise Linux documentation» давало слову documentation
+  // пятнадцать вхождений и требовало на него статью в справочнике.
+  .replace(/<a[^>]+href="https?:[^>]*>[\s\S]*?<\/a>/g, ' ')
   .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
   .replace(/<code[\s\S]*?<\/code>/g, ' ')
   .replace(/<script[\s\S]*?<\/script>/g, ' ')
@@ -323,41 +327,50 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
 // разбирать по словоформам — это остаётся на совести вычитки.
 // Пустая база — отдельная поломка, о ней уже сказано выше; повторять её здесь
 // списком из всех слов книги бессмысленно.
-if (terms.length) {
+// Границы кода панели в site.js: если их не найти, правило ниже проверит не то,
+// что видит читатель, и об этом надо сказать вслух, а не пройти молча.
+const defineFrom = siteJs.indexOf('const defNorm=');
+const defineTo = siteJs.indexOf('const defSuggest=');
+if (defineFrom < 0 || defineTo <= defineFrom) {
+  failures.push('site.js: define panel lookup not found, term coverage unchecked');
+}
+if (terms.length && defineFrom >= 0 && defineTo > defineFrom) {
   // Ниже десяти употреблений начинается хвост разовой терминологии (iowait,
   // PMTU, MSS встречаются по девять раз): такое слово читатель видит в одном
   // абзаце, и требовать на него статью незачем.
   const OFTEN = 10;
-  // U00–U36, T00–T36 и L00–L36 — номера модулей, самопроверок и работ. Ровно
-  // две цифры: без этого под правило попадал бы L2 — уровень кэша, то есть
-  // настоящий термин, а не метка.
-  const LABEL = /^[ult]\d\d$/;
-  const normalize = (value) => String(value).toLowerCase().replace(/ё/g, 'е')
-    .replace(/[^0-9a-zа-я/._+-]+/g, ' ').replace(/\s+/g, ' ').trim();
-  const keys = new Set();
-  for (const entry of terms) {
-    for (const variant of [entry.term, ...(entry.aliases ?? [])]) {
-      const key = normalize(variant);
-      keys.add(key);
-      // Часть составного термина считается определением слова: панель находит
-      // «Page cache» по выделенному «cache». С трёх букв — иначе «vm» из
-      // «Шаблон VM» выдавало бы себя за определение виртуальной машины.
-      for (const part of key.split(' ')) if (part.length > 2) keys.add(part);
-    }
-  }
-  // Имена продуктов, обозначение этапа экзамена и слова из списка источников:
-  // определять их незачем, а встречаются они часто.
-  const notTerms = new Set(['bash', 'unix', 'documentation', 'storage', 'rfc', 'a1']);
+  // U00–U36, T00–T36 и L00–L36 — номера модулей, самопроверок и работ, A1 —
+  // имя вводного тренажёра. Ровно две цифры: без этого под правило попадал бы
+  // L2 — уровень кэша, то есть настоящий термин, а не метка.
+  const LABEL = /^([ult]\d\d|a1)$/;
+  // Правило спрашивает ту же функцию, которой отвечает читателю панель, а не
+  // разбирает термины само. Свой разбор уже разошёлся с панелью: он засчитывал
+  // слово, если оно встречалось частью составного термина, — «TCP» считался
+  // определённым через «TCP handshake», а панель на выделенное «TCP» отвечала
+  // «Определения нет». Так прошли мимо Linux, systemd, Python и Docker.
+  const defLookup = new Function('TERMS', `${siteJs.slice(defineFrom, defineTo)} return defLookup;`)(terms);
+  // Составной термин вычёркиваем из текста до подсчёта: «boot» встречается
+  // только внутри «Secure Boot» и «UEFI Boot Manager», «average» — только в
+  // «Load average». Выделив словосочетание, читатель получает определение; а
+  // без этого правило требовало бы статью на каждое слово из имени.
+  const compound = terms
+    .flatMap((entry) => [entry.term, ...(entry.aliases ?? [])])
+    .filter((variant) => /[\s-]/.test(variant))
+    .sort((left, right) => right.length - left.length);
+  const masked = compound.reduce(
+    (text, variant) => text.split(new RegExp(variant.replace(/[.*+?^${}()|[\]\\/-]/g, '\\$&'), 'gi')).join(' '),
+    bodyText,
+  );
   const counted = new Map();
-  for (const match of bodyText.matchAll(/(?<![A-Za-z0-9_/.-])[A-Za-z][A-Za-z0-9+]{1,13}(?![A-Za-z0-9_/+])/g)) {
+  for (const match of masked.matchAll(/(?<![A-Za-z0-9_/.-])[A-Za-z][A-Za-z0-9+]{1,13}(?![A-Za-z0-9_/+])/g)) {
     const word = match[0].toLowerCase();
     counted.set(word, (counted.get(word) ?? 0) + 1);
   }
   const orphans = [...counted]
-    .filter(([word, times]) => times >= OFTEN && !keys.has(word) && !notTerms.has(word) && !LABEL.test(word))
+    .filter(([word, times]) => times >= OFTEN && !defLookup(word) && !LABEL.test(word))
     .sort((left, right) => right[1] - left[1]);
   if (orphans.length) {
-    const list = orphans.slice(0, 6).map(([word, times]) => `${word} (${times})`).join(', ');
+    const list = orphans.slice(0, 12).map(([word, times]) => `${word} (${times})`).join(', ');
     failures.push(`term base: no definition for ${list}`);
   }
 }
