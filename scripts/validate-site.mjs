@@ -1,5 +1,6 @@
+import { createHash } from 'node:crypto';
 import { readdir, readFile, stat } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { dirname, relative, resolve } from 'node:path';
 
 const root = resolve(process.cwd(), 'build');
 // Тот же базовый путь, с которым собирался сайт: ссылки на страницах начинаются
@@ -684,6 +685,64 @@ if (!/const safePath=value=>/.test(siteJs) || !siteJs.includes('const href=safeP
 if (!siteJs.includes('stampTimeline') || !siteJs.includes("if(line.events[key])return")) {
   failures.push('site.js: timeline must be append-only');
 }
+// --- политика безопасности страниц ---
+// GitHub Pages не отдаёт заголовков, поэтому политика едет в <meta>, а её
+// script-src перечисляет хеши встроенных скриптов. Разойтись политика с
+// содержимым может незаметно: разметка остаётся правильной, сборка проходит,
+// и только браузер молча отказывается выполнять скрипт. Здесь проверяется то
+// же, что проверил бы браузер.
+const scriptBlocks = /<script([^>]*)>([\s\S]*?)<\/script>/g;
+// <script type="application/json"> с банком заданий браузер не выполняет —
+// хеш ему не нужен.
+const executableScript = (attributes) => {
+  if (/\ssrc=/.test(attributes)) return false;
+  const type = /type\s*=\s*"([^"]*)"/.exec(attributes)?.[1].trim().toLowerCase();
+  return !type || type === 'module' || /^(text|application)\/(java|ecma)script$/.test(type);
+};
+for (const [file, html] of cache) {
+  const route = relative(root, file);
+  const policy = /<meta http-equiv="Content-Security-Policy" content="([^"]*)">/.exec(html)?.[1];
+  if (!policy) {
+    failures.push(`${route}: no Content-Security-Policy meta`);
+    continue;
+  }
+  for (const directive of ["default-src 'none'", "style-src 'self'", "connect-src 'self'", "base-uri 'none'"]) {
+    if (!policy.includes(directive)) failures.push(`${route}: policy lacks ${directive}`);
+  }
+  if (/unsafe-inline|unsafe-eval/.test(policy)) failures.push(`${route}: policy weakened by unsafe-*`);
+  for (const [, attributes, script] of html.matchAll(scriptBlocks)) {
+    if (!executableScript(attributes)) continue;
+    const hash = createHash('sha256').update(script).digest('base64');
+    if (!policy.includes(`'sha256-${hash}'`)) {
+      failures.push(`${route}: inline script not covered by the policy (sha256-${hash})`);
+    }
+  }
+  // style-src без 'unsafe-inline' не даёт работать ни атрибуту style, ни
+  // обработчику onclick в разметке. В разметке это незаметно: выравнивание
+  // столбца просто молча пропадает.
+  const styleAttribute = / style="/.exec(html);
+  if (styleAttribute) failures.push(`${route}: inline style attribute is blocked by the policy`);
+  const handler = / on(?:click|input|change|load|submit|focus|blur)="/.exec(html);
+  if (handler) failures.push(`${route}: inline event handler is blocked by the policy`);
+  // Скрипт, который ищет элемент с соседней страницы, падает на первой же
+  // строке и уносит с собой всё, что идёт ниже. Так на странице тренажёра A1
+  // не работали все 40 вопросов: скрипт начинался с оглавления, которого на
+  // ней нет.
+  for (const [, attributes, script] of html.matchAll(scriptBlocks)) {
+    if (!executableScript(attributes)) continue;
+    const lookups = /(?:const\s+(\w+)\s*=\s*)?document\.getElementById\('([^']+)'\)(\??)/g;
+    for (const [, name, id, guard] of script.matchAll(lookups)) {
+      if (html.includes(`id="${id}"`) || guard === '?') continue;
+      // Найденное можно положить в переменную и защитить ниже. Смотрим на
+      // первое обращение к ней: если оно идёт через ?., падать нечему, а
+      // обращения дальше живут внутри обработчика, который не подпишется.
+      const firstUse = name && new RegExp(`\\b${name}\\s*(\\??)\\.`).exec(script);
+      if (name && (!firstUse || firstUse[1] === '?')) continue;
+      failures.push(`${route}: inline script reaches for #${id}, which is not on this page`);
+    }
+  }
+}
+
 if (htmlFiles.length !== 84) failures.push(`expected 84 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
