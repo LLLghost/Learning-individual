@@ -124,19 +124,23 @@ const labs = labMarkers.map((start, number) => {
   // В книге работа — раздел практикума, на своей странице она и есть страница.
   // Заголовок один и тот же, уровень разный: без этого у страницы нет h1,
   // и в оглавлении для чтения с экрана она начинается со второй ступени.
-  const content = source.slice(start, end).replace(/^<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/, '<h1$1>$2</h1>');
-  const titleMatch = content.match(/^<h1[^>]*>(.*?)<\/h1>/s);
+  // Заголовок работы остаётся h2: своей страницей работа быть перестала и живёт
+  // разделом вида модуля, где h1 — заголовок самой страницы практики.
+  const content = source.slice(start, end);
+  const titleMatch = content.match(/^<h2[^>]*>(.*?)<\/h2>/s);
   return { number, title: strip(titleMatch?.[1] ?? `Практикум ${number}`), content, url: `/assessment/?module=${number}` };
 });
-// Нулевая работа идёт вместе с общим введением практикума: его h1 уже на месте.
-labs[0].content = source.slice(labsStart, labMarkers[1]);
+// Общее введение практикума не принадлежит нулевой работе. Вид модуля показывает
+// секцию работы целиком, поэтому заголовок всего практикума уезжал бы в U00 —
+// у одного модуля из тридцати семи появлялась лишняя ступень заголовков.
+const labsIntro = source.slice(labsStart, labMarkers[0]);
 
 const pages = [
   { url: '/about/', content: aboutSource },
   ...lessons.map((item) => ({ url: item.url, content: item.intro + item.content })),
   ...chapters.map((item) => ({ url: item.url, content: item.intro + item.content })),
   ...labs.map((item) => ({ url: item.url, content: item.content })),
-  { url: '/assessment/', content: source.slice(studyAppStart, labsStart) },
+  { url: '/assessment/', content: source.slice(studyAppStart, labMarkers[0]) },
   { url: '/assessment/a1/', content: section('selftest') },
   { url: '/reference/', content: source.slice(appendicesStart, selftestStart) },
   { url: '/reference/archive/', content: source.slice(assessmentReferenceStart, mainEnd) },
@@ -249,7 +253,7 @@ const finishPage = (html) => sealPolicy(withBase(html));
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policySlot}"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
 <body><a class="skip-link" href="#main">К основному тексту</a><div class="read-progress" data-read-progress aria-hidden="true"></div><header class="topbar">${globalNav}<div class="read-size" data-read-size-group role="group" aria-label="Размер текста" hidden><button type="button" data-read-size="s" aria-pressed="false" title="Мелкий текст">А</button><button type="button" data-read-size="m" aria-pressed="true" title="Обычный текст">А</button><button type="button" data-read-size="l" aria-pressed="false" title="Крупный текст">А</button></div><button class="search-toggle" type="button" data-search-open aria-haspopup="dialog"><span aria-hidden="true">⌕</span><span>Поиск</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary><span class="menu-label">Разделы</span></summary><div>${globalNav}</div></details></header>
-<div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main" id="main" tabindex="-1">${sectionRail(body)}<p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
+<div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main" id="main" tabindex="-1">${sectionRail(body.replace(/<div id="lab-texts"[\s\S]*?<\/div>/, ' '))}<p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 ${readerTools}<script src="/assets/site.js"></script></body></html>`;
 
 // ---------- Справочная база терминов ----------
@@ -414,10 +418,18 @@ const lessonPage = (lesson) => {
 };
 
 
-const homeCards = parts.map(([label, title, numbers]) => `<a class="part-card" href="${chapters[numbers[0]].url}"><span>${label}</span><h2>${title}</h2><p>${numbers.length} ${numbers.length === 1 ? 'модуль' : 'модулей'} · ${numbers.map((number) => pad(number)).join(' · ')}</p></a>`).join('');
+// Русский счёт требует трёх форм, а не двух: «2 модулей» на карточке части
+// читалось ошибкой вёрстки, хотя разметка была правильной.
+const plural = (n, one, few, many) => {
+  const tail = n % 100;
+  if (tail >= 11 && tail <= 14) return many;
+  const last = n % 10;
+  return last === 1 ? one : last >= 2 && last <= 4 ? few : many;
+};
+const homeCards = parts.map(([label, title, numbers]) => `<a class="part-card" href="${chapters[numbers[0]].url}"><span>${label}</span><h2>${title}</h2><p>${numbers.length} ${plural(numbers.length, 'модуль', 'модуля', 'модулей')} · ${numbers.map((number) => pad(number)).join(' · ')}</p></a>`).join('');
 const home = pageShell({
   title: 'Университетский курс', eyebrow: 'Самостоятельное обучение', className: 'landing',
-  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>34</strong><span>главы</span></div><div><strong>259</strong><span>автопроверок</span></div><div><strong>74</strong><span>полевых работ</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Если вы здесь впервые</p><h2>Пять уроков до начала курса</h2></div><a href="/start/01/">Начать с нуля →</a></section><p class="lead-note">Курс начинается со сборки стенда и предполагает, что терминал, виртуальная машина и сеть — знакомые слова. Если это не так, вводная часть объясняет их за вечер и без единой команды.</p><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>${parts.length} последовательных ${parts.length % 10 === 1 && parts.length % 100 !== 11 ? 'часть' : 'частей'}</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
+  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>34</strong><span>главы</span></div><div><strong>259</strong><span>автопроверок</span></div><div><strong>74</strong><span>полевые работы</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Если вы здесь впервые</p><h2>Пять уроков до начала курса</h2></div><a href="/start/01/">Начать с нуля →</a></section><p class="lead-note">Курс начинается со сборки стенда и предполагает, что терминал, виртуальная машина и сеть — знакомые слова. Если это не так, вводная часть объясняет их за вечер и без единой команды.</p><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>${parts.length} ${plural(parts.length, 'последовательная часть', 'последовательные части', 'последовательных частей')}</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
   description: 'Многостраничный университетский курс по серверной инфраструктуре для самостоятельного обучения.',
 });
 
@@ -440,6 +452,10 @@ const labData = scriptElement('lab-data');
 // уже было с мостом «глава → модуль».
 const autoCheckedLabs = new Map(scriptJson('lab-data').labs.map((lab) => [lab.module, lab]));
 let studyScript = followingScript('checker-code-data')
+  // Справка уехала на страницу «О курсе»: ссылка внутри кода кабинета не
+  // проходит через rewriteLinks, поэтому её адрес подставляется здесь — иначе
+  // она молча указывала бы на несуществующий якорь этой же страницы.
+  .replace(/'#autopractice'/g, `'${BASE}/about/#autopractice'`)
   .replace(/'#ch'\+pad\(([^)]+)\)/g, `'${BASE}/chapters/'+pad($1)+'/'`)
   .replace(/render\(\);\s*\}\)\(\);\s*<\/script>$/, "const requested=new URLSearchParams(location.search).get('module');if(requested!==null&&/^\\d{1,2}$/.test(requested)&&Number(requested)<37){module=Number(requested);tab='learn';}\nrender();\n})();\n</script>");
 const studySection = section('study-app');
@@ -447,10 +463,10 @@ const assessmentIntro = rewriteLinks(source.slice(assessmentStart, labsStart), '
 // Тексты работ переезжают на страницу кабинета скрытыми секциями: практика и
 // проверка перестали быть двумя разными местами. Разметка готовится здесь, а
 // кабинет показывает нужную секцию — так он по-прежнему не пользуется innerHTML.
-const labTexts = `<div id="lab-texts" hidden>${labs.map((lab) => `<section data-lab-module="${lab.number}">${rewriteLinks(lab.content, '/assessment/')}</section>`).join('')}</div>`;
+const labTexts = `<div id="lab-texts" hidden>${rewriteLinks(labsIntro, '/assessment/')}${labs.map((lab) => `<section data-lab-module="${lab.number}">${rewriteLinks(lab.content, '/assessment/')}</section>`).join('')}</div>`;
 const assessment = pageShell({
-  title: 'Проверка знаний', eyebrow: 'Автоматизированный учебный кабинет', className: 'tool-page',
-  body: `<header class="tool-intro"><h1>Проверка знаний</h1><p>Выполняйте задания по модулям, возвращайтесь к слабым темам и переносите прогресс между браузерами.</p><a class="button" href="/assessment/a1/">Тренажёр A1 · 40 вопросов</a></header><article class="study-surface">${studySection}</article><article class="prose compact-prose">${assessmentIntro}</article>${labTexts}${studyData}${checkerData}${labCode}${labData}${studyScript}`,
+  title: 'Практика и проверка', eyebrow: 'Задания, сценарии и работы практикума', className: 'tool-page',
+  body: `<header class="tool-intro">${assessmentIntro}<a class="button" href="/assessment/a1/">Тренажёр A1 · 40 вопросов</a></header><article class="study-surface">${studySection}</article>${labTexts}${studyData}${checkerData}${labCode}${labData}${studyScript}`,
 });
 const a1 = pageShell({
   title: 'Тренажёр A1', eyebrow: '40 вопросов · мгновенная проверка', className: 'tool-page',
@@ -498,7 +514,7 @@ const route = pageShell({
 <li><strong>Сделайте обе работы практикума</strong> — A (воспроизвести механизм) и B (сломанный стенд). Работу B не пропускайте: навык формируется именно там.</li>
 <li><strong>Запишите результат в свой репозиторий:</strong> учебник заводит его в разделе 0.17 и дальше опирается на него как на рабочий инструмент.</li>
 </ol>
-<p class="route-hint">Курс считается пройденным, когда сданы все 37 модулей, пройдены 28 из 28 тестов практикума на Python и итоговый контроль набирает не меньше 32 из 37.</p>
+<p class="route-hint">Курс считается пройденным, когда сданы все 37 модулей, пройдены 28 из 28 программных проверок и итоговый контроль набирает не меньше 32 из 37.</p>
 </section>
 <section class="route-board" data-route-board aria-labelledby="route-check">
 <div class="route-head"><h2 id="route-check">Чек-лист по главам</h2><p data-route-summary>Отметки появятся после первого решённого мини-тренажёра.</p></div>
