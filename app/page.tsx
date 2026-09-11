@@ -60,11 +60,11 @@ export default function Home() {
       {
         name: 'open_course_module',
         title: 'Открыть модуль курса',
-        description: 'Переходит к одному из 28 учебных модулей в видимом интерфейсе курса.',
+        description: 'Переходит к одному из 37 учебных модулей в видимом интерфейсе курса.',
         inputSchema: {
           type: 'object',
           properties: {
-            module: { type: 'integer', minimum: 0, maximum: 27 },
+            module: { type: 'integer', minimum: 0, maximum: 36 },
           },
           required: ['module'],
           additionalProperties: false,
@@ -72,8 +72,8 @@ export default function Home() {
         annotations: { readOnlyHint: false, untrustedContentHint: false },
         execute: (input) => {
           const value = (input as { module?: unknown })?.module;
-          if (!Number.isInteger(value) || Number(value) < 0 || Number(value) > 27) {
-            throw new Error('Номер модуля должен быть целым числом от 0 до 27.');
+          if (!Number.isInteger(value) || Number(value) < 0 || Number(value) > 36) {
+            throw new Error('Номер модуля должен быть целым числом от 0 до 36.');
           }
           const moduleNumber = Number(value);
           const courseWindow = getCourseWindow();

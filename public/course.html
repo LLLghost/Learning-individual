@@ -6,7 +6,7 @@ aside{position:fixed;inset:0 auto 0 0;width:310px;background:#102b3c;color:white
 .brand{font-size:24px;line-height:1.2;font-weight:700}.edition{color:#9bb8c8;font-size:13px;margin-top:10px}.content{margin-left:310px;padding:40px 48px 100px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;max-width:1040px;margin:0 auto 24px}.paper{max-width:1040px;margin:auto;background:white;padding:56px 62px;box-shadow:0 4px 22px #1735480a;border:1px solid var(--line);border-radius:8px}
 h1,h2,h3,h4{line-height:1.28;color:#143b51;scroll-margin-top:22px}h1{font-size:32px;margin-top:70px;padding-top:26px;border-top:3px solid #1b7086}h1:first-child{margin-top:0;border-top:0;padding-top:0;font-size:43px}h2{font-size:25px;margin-top:40px}h2[id^=ch]{background:#edf5f7;padding:22px;border-left:5px solid #297e91;border-radius:0 6px 6px 0}h3{font-size:20px;margin-top:30px}p{margin:16px 0}li{margin:7px 0}blockquote{border-left:4px solid #70a3b4;margin:24px 0;padding:5px 22px;background:#f5f9fa}
 pre{background:#132b3a;color:#eef5f7;padding:20px;border-radius:7px;overflow:auto;font-size:13px;line-height:1.6;tab-size:4}code{font-family:Consolas,"Liberation Mono",monospace;font-size:.87em;overflow-wrap:anywhere}p code,li code,td code{background:#f0f3f6;padding:2px 4px;border-radius:3px}pre code{font-size:inherit;overflow-wrap:normal}
-table{width:100%;border-collapse:collapse;font-size:14px;margin:24px 0;line-height:1.55;display:table}th,td{border:1px solid #cfdbe3;padding:10px 12px;vertical-align:top;overflow-wrap:anywhere}th{background:#eaf1f5;text-align:left}tr:nth-child(even) td{background:#f9fbfc}hr{border:0;border-top:1px solid var(--line);margin:38px 0}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:24px 0;line-height:1.55;display:table}th,td{border:1px solid #cfdbe3;padding:10px 12px;vertical-align:top;overflow-wrap:anywhere}th.num,td.num{text-align:right}th{background:#eaf1f5;text-align:left}tr:nth-child(even) td{background:#f9fbfc}hr{border:0;border-top:1px solid var(--line);margin:38px 0}
 details.answer-section{margin:40px 0;border:1px solid #b9cdd7;border-radius:7px;padding:22px;background:#fbfdfe}details summary{font-weight:700;color:#19475d;cursor:pointer}details.answer-section>h1{font-size:29px}.crossref{font-size:13px;color:var(--muted)}.quiz{background:#edf5f7;border:1px solid #bed6df;padding:24px;border-radius:8px;margin:25px 0}.quiz label{display:block;margin:10px 0;padding:9px;background:white;border-radius:5px}.quiz input{margin-right:10px}.feedback{font-weight:600}.progress{font-size:14px;color:var(--muted)}[hidden]{display:none!important}
 @media(max-width:1100px){aside{width:250px}.content{margin-left:250px;padding:24px}.paper{padding:32px}}@media(max-width:760px){aside{position:relative;width:auto;max-height:350px}.content{margin:0;padding:14px}.paper{padding:23px 18px}h1:first-child{font-size:31px}h1{font-size:27px}h2{font-size:23px}table{font-size:12px}td,th{padding:7px}pre{font-size:12px}.toolbar{margin-top:10px}}
 @media print{@page{size:A4;margin:18mm 15mm}body{background:white;font:10.5pt/1.45 Georgia,"Times New Roman",serif}aside,.toolbar,.quiz{display:none!important}.content{margin:0;padding:0}.paper{padding:0;max-width:none;border:0;box-shadow:none}h1{break-before:page;font-size:22pt;margin-top:0}h1:first-child{break-before:auto;font-size:28pt}h2{font-size:16pt}h3{font-size:12pt}h1,h2,h3,h4{break-after:avoid}table{font-size:8.5pt}tr,pre{break-inside:avoid}pre{white-space:pre-wrap;overflow-wrap:anywhere;color:black;background:#f3f5f6;font-size:8pt}a{color:#163e58;text-decoration:none}details.answer-section{background:white;border:0;padding:0}details>summary{font-size:13pt}p{orphans:3;widows:3}}
@@ -596,40 +596,40 @@ echo $?        # напечатает не ноль
 <thead>
 <tr>
 <th>Компонент</th>
-<th style="text-align: right;">Минимально комфортно</th>
-<th style="text-align: right;">Рекомендуемо</th>
+<th class="num">Минимально комфортно</th>
+<th class="num">Рекомендуемо</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>CPU</td>
-<td style="text-align: right;">4 физических ядра / 8 потоков</td>
-<td style="text-align: right;">8–16 ядер</td>
+<td class="num">4 физических ядра / 8 потоков</td>
+<td class="num">8–16 ядер</td>
 </tr>
 <tr>
 <td>RAM</td>
-<td style="text-align: right;">32 ГБ</td>
-<td style="text-align: right;">64 ГБ</td>
+<td class="num">32 ГБ</td>
+<td class="num">64 ГБ</td>
 </tr>
 <tr>
 <td>Системный накопитель</td>
-<td style="text-align: right;">256–512 ГБ SSD</td>
-<td style="text-align: right;">1 ТБ NVMe/SSD</td>
+<td class="num">256–512 ГБ SSD</td>
+<td class="num">1 ТБ NVMe/SSD</td>
 </tr>
 <tr>
 <td>NIC</td>
-<td style="text-align: right;">1×1GbE</td>
-<td style="text-align: right;">2×1/2.5/10GbE</td>
+<td class="num">1×1GbE</td>
+<td class="num">2×1/2.5/10GbE</td>
 </tr>
 <tr>
 <td>Доп. диски</td>
-<td style="text-align: right;">не обязательны</td>
-<td style="text-align: right;">2–4 отдельных SATA/SAS/NVMe</td>
+<td class="num">не обязательны</td>
+<td class="num">2–4 отдельных SATA/SAS/NVMe</td>
 </tr>
 <tr>
 <td>BMC/IPMI</td>
-<td style="text-align: right;">не обязателен</td>
-<td style="text-align: right;">очень желателен на сервере</td>
+<td class="num">не обязателен</td>
+<td class="num">очень желателен на сервере</td>
 </tr>
 </tbody>
 </table>
@@ -901,53 +901,53 @@ sudo systemctl enable --now qemu-guest-agent
 <thead>
 <tr>
 <th>VM</th>
-<th style="text-align: right;">vCPU</th>
-<th style="text-align: right;">RAM</th>
-<th style="text-align: right;">Системный диск</th>
+<th class="num">vCPU</th>
+<th class="num">RAM</th>
+<th class="num">Системный диск</th>
 <th>Дополнительно</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>router</td>
-<td style="text-align: right;">1–2</td>
-<td style="text-align: right;">1–2 ГБ</td>
-<td style="text-align: right;">16 ГБ</td>
+<td class="num">1–2</td>
+<td class="num">1–2 ГБ</td>
+<td class="num">16 ГБ</td>
 <td>4 NIC</td>
 </tr>
 <tr>
 <td>linux1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2 ГБ</td>
-<td style="text-align: right;">32 ГБ</td>
+<td class="num">2</td>
+<td class="num">2 ГБ</td>
+<td class="num">32 ГБ</td>
 <td>лабораторные диски позже</td>
 </tr>
 <tr>
 <td>linux2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2 ГБ</td>
-<td style="text-align: right;">32 ГБ</td>
+<td class="num">2</td>
+<td class="num">2 ГБ</td>
+<td class="num">32 ГБ</td>
 <td>—</td>
 </tr>
 <tr>
 <td>storage</td>
-<td style="text-align: right;">2–4</td>
-<td style="text-align: right;">4–8 ГБ</td>
-<td style="text-align: right;">32 ГБ</td>
+<td class="num">2–4</td>
+<td class="num">4–8 ГБ</td>
+<td class="num">32 ГБ</td>
 <td>4–6 виртуальных дисков</td>
 </tr>
 <tr>
 <td>monitoring</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">4 ГБ</td>
-<td style="text-align: right;">40 ГБ</td>
+<td class="num">2</td>
+<td class="num">4 ГБ</td>
+<td class="num">40 ГБ</td>
 <td>—</td>
 </tr>
 <tr>
 <td>automation</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2 ГБ</td>
-<td style="text-align: right;">32 ГБ</td>
+<td class="num">2</td>
+<td class="num">2 ГБ</td>
+<td class="num">32 ГБ</td>
 <td>—</td>
 </tr>
 </tbody>
@@ -10960,74 +10960,74 @@ if __name__ == "__main__":
 <tr>
 <th>Компонент</th>
 <th>Объём и рабочее время</th>
-<th style="text-align: right;">Максимум</th>
+<th class="num">Максимум</th>
 <th>Обязательный порог</th>
-<th style="text-align: right;">Вес в итоговом результате</th>
+<th class="num">Вес в итоговом результате</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Теория A1</td>
 <td>40 вопросов, 45 мин</td>
-<td style="text-align: right;">40</td>
+<td class="num">40</td>
 <td>30</td>
-<td style="text-align: right;">входит в теорию</td>
+<td class="num">входит в теорию</td>
 </tr>
 <tr>
 <td>Механизмы A2</td>
 <td>20 открытых, 75 мин</td>
-<td style="text-align: right;">60</td>
+<td class="num">60</td>
 <td>42</td>
-<td style="text-align: right;">входит в теорию</td>
+<td class="num">входит в теорию</td>
 </tr>
 <tr>
 <td>Расчёт и перенос R</td>
 <td>28 задач, две сессии по 90 мин</td>
-<td style="text-align: right;">112</td>
+<td class="num">112</td>
 <td>84</td>
-<td style="text-align: right;">входит в теорию</td>
+<td class="num">входит в теорию</td>
 </tr>
 <tr>
 <td>Теория вместе</td>
 <td>A1+A2+R</td>
-<td style="text-align: right;">212</td>
+<td class="num">212</td>
 <td>≥159 и все три частных порога</td>
-<td style="text-align: right;">20%</td>
+<td class="num">20%</td>
 </tr>
 <tr>
 <td>Данные B</td>
 <td>12 кейсов, 120 мин</td>
-<td style="text-align: right;">120</td>
+<td class="num">120</td>
 <td>84</td>
-<td style="text-align: right;">15%</td>
+<td class="num">15%</td>
 </tr>
 <tr>
 <td>Практика C</td>
 <td>8 станций по 40 мин</td>
-<td style="text-align: right;">800</td>
+<td class="num">800</td>
 <td>≥6 станций по ≥75; C4 и C8 обязательны; без критических нарушений</td>
-<td style="text-align: right;">25%</td>
+<td class="num">25%</td>
 </tr>
 <tr>
 <td>Проектирование D</td>
 <td>4 задачи, суммарно 180 мин</td>
-<td style="text-align: right;">400</td>
+<td class="num">400</td>
 <td>≥280; ни одна задача &lt;50</td>
-<td style="text-align: right;">15%</td>
+<td class="num">15%</td>
 </tr>
 <tr>
 <td>Устная защита E</td>
 <td>5 вопросов, 25 мин</td>
-<td style="text-align: right;">20</td>
+<td class="num">20</td>
 <td>14</td>
-<td style="text-align: right;">10%</td>
+<td class="num">10%</td>
 </tr>
 <tr>
 <td>Итоговый инцидент F</td>
 <td>180 мин и отчёт 45 мин</td>
-<td style="text-align: right;">100</td>
+<td class="num">100</td>
 <td>75</td>
-<td style="text-align: right;">15%</td>
+<td class="num">15%</td>
 </tr>
 </tbody>
 </table>
@@ -12671,41 +12671,41 @@ clat percentiles (usec):
 <thead>
 <tr>
 <th>Категория</th>
-<th style="text-align: right;">Баллы</th>
+<th class="num">Баллы</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Гипотезы</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Безопасность и путь восстановления</td>
-<td style="text-align: right;">15</td>
+<td class="num">15</td>
 </tr>
 <tr>
 <td>Базовые факты</td>
-<td style="text-align: right;">15</td>
+<td class="num">15</td>
 </tr>
 <tr>
 <td>Информативность проверок</td>
-<td style="text-align: right;">15</td>
+<td class="num">15</td>
 </tr>
 <tr>
 <td>Интерпретация</td>
-<td style="text-align: right;">15</td>
+<td class="num">15</td>
 </tr>
 <tr>
 <td>Минимальное исправление</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Проверка</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Объяснение первопричины</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 </tbody>
 </table>
@@ -12744,41 +12744,41 @@ clat percentiles (usec):
 <thead>
 <tr>
 <th>Категория</th>
-<th style="text-align: right;">Баллы</th>
+<th class="num">Баллы</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Понимание требований</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Корректность топологии</td>
-<td style="text-align: right;">20</td>
+<td class="num">20</td>
 </tr>
 <tr>
 <td>Домены отказа</td>
-<td style="text-align: right;">15</td>
+<td class="num">15</td>
 </tr>
 <tr>
 <td>Расчёт ёмкости и производительности</td>
-<td style="text-align: right;">15</td>
+<td class="num">15</td>
 </tr>
 <tr>
 <td>Безопасность и плоскость управления</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Наблюдаемость</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Восстановление и резервное копирование</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Компромиссы и альтернативы</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 </tbody>
 </table>
@@ -12802,45 +12802,45 @@ clat percentiles (usec):
 <thead>
 <tr>
 <th>Компонент</th>
-<th style="text-align: right;">Баллы</th>
+<th class="num">Баллы</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Сортировка и влияние</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Дерево гипотез</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Сохранение фактов</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Разделение и связывание неисправностей</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Техническая диагностика</td>
-<td style="text-align: right;">20</td>
+<td class="num">20</td>
 </tr>
 <tr>
 <td>Безопасное восстановление</td>
-<td style="text-align: right;">15</td>
+<td class="num">15</td>
 </tr>
 <tr>
 <td>Проверка</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Отчёт об инциденте</td>
-<td style="text-align: right;">10</td>
+<td class="num">10</td>
 </tr>
 <tr>
 <td>Устная защита</td>
-<td style="text-align: right;">5</td>
+<td class="num">5</td>
 </tr>
 </tbody>
 </table>
@@ -12908,13 +12908,16 @@ clat percentiles (usec):
 <p>предсказать → измерить → интерпретировать → локализовать → безопасно изменить → подтвердить → объяснить → предотвратить</p>
 </blockquote></details></main></article></div><script type="application/json" id="quiz-data">[{"id": 1, "stem": "Какое утверждение лучше всего описывает роль `journalctl` в инженерной диагностике?", "options": {"A": "Инструмент восстановления повреждённой файловой системы.", "B": "Источник событий userspace/systemd/kernel, который используется как evidence.", "C": "Средство изменения kernel parameters.", "D": "Замена packet capture."}, "answer": "B", "module": 4}, {"id": 2, "stem": "Сервис имеет `active (running)`, но TCP-клиенты получают timeout. Что `active`\nдоказывает наиболее строго?", "options": {"A": "Приложение отвечает корректно.", "B": "Firewall не блокирует соединение.", "C": "systemd считает unit запущенным и его основной процесс не завершился по критерию unit.", "D": "DNS исправен."}, "answer": "C", "module": 4}, {"id": 3, "stem": "После удаления большого файла `df` не показывает освобождение места, а `du`\nпоказывает меньше данных. Какая гипотеза наиболее сильная?", "options": {"A": "ARP cache переполнен.", "B": "Удалённый inode всё ещё открыт процессом.", "C": "CPU работает в powersave.", "D": "Не хватает default route."}, "answer": "B", "module": 3}, {"id": 4, "stem": "Что происходит раньше при обычной Linux boot chain?", "options": {"A": "systemd запускает services до kernel.", "B": "Bootloader передаёт управление kernel, после чего kernel запускает ранний userspace/initramfs.", "C": "initramfs запускает firmware.", "D": "systemd выбирает UEFI boot entry."}, "answer": "B", "module": 4}, {"id": 5, "stem": "Kernel уже запущен и система оказалась в initramfs shell из-за отсутствия root\nустройства. Какой слой уже частично доказан как работоспособный?", "options": {"A": "Bootloader смог передать управление kernel.", "B": "Application layer.", "C": "NFS server.", "D": "Grafana."}, "answer": "A", "module": 4}, {"id": 6, "stem": "Host `10.10.10.11/24` отправляет пакет к `10.10.20.12`. Какое действие требуется\nдо передачи Ethernet frame к удалённой сети?", "options": {"A": "Разрешить MAC конечного `10.10.20.12` через ARP.", "B": "Выбрать route/next hop и разрешить L2 identity next hop.", "C": "Отправить DNS query независимо от адреса назначения.", "D": "Выполнить TCP handshake с gateway."}, "answer": "B", "module": 6}, {"id": 7, "stem": "Для destination вне локальной IPv4 subnet ARP обычно выполняется для:", "options": {"A": "DNS server.", "B": "Next-hop gateway.", "C": "Remote host через все маршрутизаторы.", "D": "DHCP server."}, "answer": "B", "module": 6}, {"id": 8, "stem": "Какой принцип определяет выбор route при нескольких совпадающих prefixes?", "options": {"A": "Самый старый route.", "B": "Наибольший MTU.", "C": "Наиболее специфичный prefix, затем дополнительные правила/метрики.", "D": "Самое короткое имя interface."}, "answer": "C", "module": 6}, {"id": 9, "stem": "TCP handshake проходит, но крупные HTTPS responses через tunnel зависают. Какую\nгипотезу нужно проверить приоритетно?", "options": {"A": "PMTU/MTU.", "B": "Отсутствие systemd.", "C": "Неверный PCIe BDF.", "D": "RAID parity."}, "answer": "A", "module": 7}, {"id": 10, "stem": "Что VLAN tag изменяет непосредственно?", "options": {"A": "Разделение Ethernet traffic по логическим L2 domains.", "B": "TCP congestion window.", "C": "Filesystem block size.", "D": "CPU NUMA node."}, "answer": "A", "module": 8}, {"id": 11, "stem": "`lspci` не показывает установленную PCIe-карту. Какой шаг наименее разумен первым?", "options": {"A": "Проверить установку/riser/power.", "B": "Проверить BIOS/bifurcation/root-port topology.", "C": "Переустановить application package, который использует карту.", "D": "Проверить firmware visibility."}, "answer": "C", "module": 10}, {"id": 12, "stem": "`lspci` видит endpoint, но driver не bound. Как это изменяет диагностику?", "options": {"A": "Basic PCIe enumeration уже доказана; приоритет смещается к binding/resources/init.", "B": "Нужно менять Ethernet cable.", "C": "Карта точно физически неисправна.", "D": "Kernel точно не работает."}, "answer": "A", "module": 10}, {"id": 13, "stem": "Что означает PCIe BDF?", "options": {"A": "Block:Disk:Filesystem.", "B": "Bus:Device.Function.", "C": "Boot:Driver:Firmware.", "D": "Buffer:Descriptor:Frame."}, "answer": "B", "module": 10}, {"id": 14, "stem": "Зачем сопоставлять PCIe device с NUMA node?", "options": {"A": "Для оценки локальности CPU/memory/I/O и performance effects.", "B": "Чтобы узнать DNS suffix.", "C": "Чтобы создать GPT.", "D": "Чтобы определить filesystem UUID."}, "answer": "A", "module": 9}, {"id": 15, "stem": "BMC SEL полезен прежде всего потому, что:", "options": {"A": "хранит только application logs.", "B": "может содержать out-of-band аппаратные события, когда OS уже не могла писать лог.", "C": "заменяет SMART.", "D": "автоматически восстанавливает RAID."}, "answer": "B", "module": 10}, {"id": 16, "stem": "Все диски одной SAS shelf исчезли одновременно. Какая гипотеза обычно сильнее?", "options": {"A": "Независимый media failure каждого диска.", "B": "Общий failure domain: expander, shelf power или upstream link.", "C": "Ошибка DNS.", "D": "Неверный timezone."}, "answer": "B", "module": 14}, {"id": 17, "stem": "Четыре `/dev/sdX` имеют один WWID. Что проверить до форматирования?", "options": {"A": "Multipath.", "B": "CPU governor.", "C": "SSH host key.", "D": "GRUB theme."}, "answer": "A", "module": 15}, {"id": 18, "stem": "Что HBA в direct/IT-mode модели обычно предоставляет ОС?", "options": {"A": "Один virtual disk независимо от drives.", "B": "Более прямую видимость individual drives/targets.", "C": "DNS forwarding.", "D": "CPU virtualization."}, "answer": "B", "module": 14}, {"id": 19, "stem": "Что лучше всего характеризует hardware RAID controller?", "options": {"A": "Он всегда показывает каждый physical drive отдельно.", "B": "Он может агрегировать drives и представить ОС logical/virtual disks.", "C": "Он заменяет filesystem.", "D": "Он выполняет ARP."}, "answer": "B", "module": 14}, {"id": 20, "stem": "После увеличения LVM LV с 300 до 500 GiB `df` всё ещё показывает около 300 GiB.\nНаиболее вероятно:", "options": {"A": "Filesystem ещё не расширен или смонтирован не тот объект.", "B": "Нужно изменить VLAN.", "C": "Сломан DNS.", "D": "Уменьшился PCIe width."}, "answer": "A", "module": 13}, {"id": 21, "stem": "Почему число IOPS без контекста не описывает storage performance?", "options": {"A": "IOPS всегда равно throughput.", "B": "Нужны block size, pattern, queue depth, latency и параметры workload.", "C": "IOPS применимо только к tape.", "D": "IOPS показывает CPU temperature."}, "answer": "B", "module": 18}, {"id": 22, "stem": "Что лучше всего характеризует user-visible I/O latency?", "options": {"A": "Только average throughput.", "B": "Latency distribution/percentiles вместе с workload context.", "C": "Только disk capacity.", "D": "Только filesystem label."}, "answer": "B", "module": 18}, {"id": 23, "stem": "Что multipath решает концептуально?", "options": {"A": "Объединяет несколько путей одного storage identity в управляемое представление.", "B": "Создаёт VLAN.", "C": "Запускает containers.", "D": "Шифрует UEFI variables."}, "answer": "A", "module": 15}, {"id": 24, "stem": "Что snapshot сам по себе НЕ гарантирует?", "options": {"A": "Представление состояния данных на определённый момент.", "B": "Независимую off-host копию, переживающую потерю исходного storage.", "C": "Быстрый rollback в некоторых системах.", "D": "CoW semantics в некоторых реализациях."}, "answer": "B", "module": 16}, {"id": 25, "stem": "Почему `iostat` внутри VM недостаточно для полной диагностики disk latency?", "options": {"A": "Guest не видит underlying host/backend path и contention полностью.", "B": "VM не использует block devices.", "C": "`iostat` показывает только DNS.", "D": "Hypervisor не влияет на I/O."}, "answer": "A", "module": 19}, {"id": 26, "stem": "Какую роль Linux bridge обычно выполняет в виртуализационном стенде?", "options": {"A": "L2 forwarding между virtual/physical interfaces.", "B": "Filesystem journal.", "C": "UEFI boot manager.", "D": "RAID parity calculator."}, "answer": "A", "module": 8}, {"id": 27, "stem": "Почему `Running` у Kubernetes Pod не доказывает доступность Service?", "options": {"A": "Service может не выбрать Pod по labels/selectors или иметь пустые endpoints.", "B": "Kubernetes не использует сеть.", "C": "Pod автоматически слушает все ports.", "D": "Service существует только в firmware."}, "answer": "A", "module": 26}, {"id": 28, "stem": "Какое свойство Ansible наиболее важно для повторяемой эксплуатации?", "options": {"A": "Idempotency.", "B": "Только интерактивный shell.", "C": "Зависимость от GUI.", "D": "Отсутствие inventory."}, "answer": "A", "module": 23}, {"id": 29, "stem": "Зачем использовать `set -euo pipefail` в инженерном Bash-скрипте?", "options": {"A": "Для более строгого обнаружения части ошибок, undefined variables и pipeline failures.", "B": "Для автоматического исправления hardware faults.", "C": "Для создания RAID.", "D": "Для шифрования network traffic."}, "answer": "A", "module": 21}, {"id": 30, "stem": "Что должен делать read-only diagnostic collector по умолчанию?", "options": {"A": "Менять состояние, чтобы «попробовать починить».", "B": "Собирать evidence без разрушительных изменений.", "C": "Выполнять `wipefs`.", "D": "Перезагружать BMC."}, "answer": "B", "module": 22}, {"id": 31, "stem": "Какой признак отличает хороший alert от простого threshold?", "options": {"A": "Он связан с impact, устойчивым условием и действием/runbook.", "B": "Он срабатывает на каждое краткое отклонение.", "C": "В нём нет context.", "D": "Он всегда использует только CPU%."}, "answer": "A", "module": 20}, {"id": 32, "stem": "Что RPO описывает в backup/recovery?", "options": {"A": "Допустимый объём потери данных по времени.", "B": "Скорость CPU.", "C": "VLAN ID.", "D": "PCIe width."}, "answer": "A", "module": 20}, {"id": 33, "stem": "Что RTO описывает?", "options": {"A": "Допустимое время восстановления сервиса.", "B": "RAID stripe size.", "C": "NUMA node count.", "D": "TCP source port."}, "answer": "A", "module": 20}, {"id": 34, "stem": "В какой фазе UEFI/PI обычно выполняется ранняя инициализация памяти до DXE?", "options": {"A": "PEI.", "B": "BDS.", "C": "systemd.", "D": "Kubernetes scheduler."}, "answer": "A", "module": 27}, {"id": 35, "stem": "Что DXE protocol в EDK2/PI модели представляет концептуально?", "options": {"A": "Интерфейс, через который firmware components предоставляют/используют services.", "B": "DNS record.", "C": "Linux group.", "D": "RAID metadata."}, "answer": "A", "module": 27}, {"id": 36, "stem": "UEFI Shell и Linux видят PCI endpoint, но driver не может использовать BAR/resources.\nКакой слой становится главным?", "options": {"A": "Resource allocation/driver/device initialization.", "B": "Ethernet ARP.", "C": "DNS cache.", "D": "Filesystem quota."}, "answer": "A", "module": 29}, {"id": 37, "stem": "После BIOS update исчезли NVMe на passive bifurcation card. Что сравнивают первым?", "options": {"A": "Pre/post firmware settings и PCIe topology.", "B": "Только `/etc/hosts`.", "C": "NTP.", "D": "Docker tags."}, "answer": "A", "module": 29}, {"id": 38, "stem": "Почему изменение конфигурации до сбора evidence вредно?", "options": {"A": "Оно может уничтожить исходное состояние и сделать root cause недоказуемым.", "B": "Оно всегда уменьшает latency.", "C": "Оно гарантирует recovery.", "D": "Оно необходимо для чтения logs."}, "answer": "A", "module": 0}, {"id": 39, "stem": "Какой ответ лучше демонстрирует инженерное мышление?", "options": {"A": "«Запущу десять команд и посмотрю».", "B": "«Сформулирую гипотезу, предскажу наблюдение, измерю и обновлю модель».", "C": "«Перезагружу до исчезновения симптома».", "D": "«Заменю самый дорогой компонент»."}, "answer": "B", "module": 0}, {"id": 40, "stem": "Какой результат сильнее всего показывает выпускное владение материалом?", "options": {"A": "Умение перечислить 100 команд.", "B": "Умение безопасно локализовать неизвестный multi-layer incident, восстановить сервис и объяснить root cause.", "C": "Умение запомнить определения.", "D": "Умение установить одну Linux VM."}, "answer": "B", "module": 36}]</script><script>
 const tocInput=document.getElementById('toc-filter');
-tocInput.addEventListener('input',()=>{const q=tocInput.value.toLocaleLowerCase('ru');document.querySelectorAll('#toc li').forEach(li=>li.hidden=!li.textContent.toLocaleLowerCase('ru').includes(q));});
+// Оглавление, кнопки ответов и печать есть только на одностраничном
+// учебнике; на странице тренажёра A1 из собранного сайта их нет. Раньше
+// скрипт падал здесь на первой же строке, и весь тренажёр не запускался.
+tocInput?.addEventListener('input',()=>{const q=tocInput.value.toLocaleLowerCase('ru');document.querySelectorAll('#toc li').forEach(li=>li.hidden=!li.textContent.toLocaleLowerCase('ru').includes(q));});
 const answerSections=()=>[...document.querySelectorAll('details.answer-section')];
-document.getElementById('show-answers').onclick=()=>answerSections().forEach(d=>d.open=true);
-document.getElementById('hide-answers').onclick=()=>answerSections().forEach(d=>d.open=false);
+document.getElementById('show-answers')?.addEventListener('click',()=>answerSections().forEach(d=>d.open=true));
+document.getElementById('hide-answers')?.addEventListener('click',()=>answerSections().forEach(d=>d.open=false));
 function revealHash(){let id;try{id=decodeURIComponent(location.hash.slice(1));}catch{return}const target=document.getElementById(id);if(!target)return;for(let p=target.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;requestAnimationFrame(()=>target.scrollIntoView());}
 window.addEventListener('hashchange',revealHash);window.addEventListener('load',()=>{answerSections().forEach(d=>d.open=false);if(location.hash)revealHash();});
-let printState=[];window.addEventListener('beforeprint',()=>{printState=answerSections().map(d=>d.open);answerSections().forEach(d=>d.open=true);});window.addEventListener('afterprint',()=>answerSections().forEach((d,i)=>d.open=printState[i]));document.getElementById('print').onclick=()=>window.print();
+let printState=[];window.addEventListener('beforeprint',()=>{printState=answerSections().map(d=>d.open);answerSections().forEach(d=>d.open=true);});window.addEventListener('afterprint',()=>answerSections().forEach((d,i)=>d.open=printState[i]));document.getElementById('print')?.addEventListener('click',()=>window.print());
 const bank=JSON.parse(document.getElementById('quiz-data').textContent);let qi=0;const QUIZ_KEY='server-infrastructure-quiz-a1-v1';const attempts=new Map((()=>{try{const raw=JSON.parse(localStorage.getItem(QUIZ_KEY)||'[]');return Array.isArray(raw)?raw:[]}catch{return[]}})());const persist=()=>{try{localStorage.setItem(QUIZ_KEY,JSON.stringify([...attempts]))}catch{}};const quizOptions=q=>{const entries=Object.entries(q.options),shift=q.id%entries.length;return[...entries.slice(shift),...entries.slice(0,shift)]};
 const stem=document.getElementById('quiz-stem'), opts=document.getElementById('quiz-options'), feedback=document.getElementById('quiz-feedback');
 function quizRender(){const q=bank[qi];stem.textContent=`Q${q.id}. ${q.stem.replaceAll('`','')}`;opts.replaceChildren();quizOptions(q).forEach(([letter,text])=>{const label=document.createElement('label'),input=document.createElement('input');input.type='radio';input.name='answer';input.value=letter;input.checked=attempts.get(q.id)===letter;label.append(input,document.createTextNode(`${letter}. ${text.replaceAll('`','')}`));opts.append(label);});feedback.replaceChildren();quizStatus();}
