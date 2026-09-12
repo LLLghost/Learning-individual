@@ -240,6 +240,7 @@ const sealPolicy = (html) => {
     "style-src 'self'",
     "img-src 'self'",
     "connect-src 'self'",
+    "worker-src 'self'",
     "base-uri 'none'",
     "form-action 'none'",
   ].join('; ');
@@ -330,6 +331,7 @@ const studyModuleByChapter = chapterModules.map((modules) => modules[0]);
 // модели главы, второй о её «типичной ошибке мышления». Уровень другой —
 // «прочитал и понял», тогда как кабинет спрашивает применение механизма.
 const chapterQuick = scriptJson('chapter-quick-data');
+const lessonQuick = scriptJson('lesson-quick-data');
 
 // Номер верного ответа не должен читаться в исходном коде страницы. В разметку попадает
 // контрольная сумма пары «идентификатор вопроса + номер варианта»; скрипт сверяет с ней
@@ -365,19 +367,44 @@ const chapterRecall = (chapter) => {
 </section>`;
 };
 
-const chapterTrainer = (number) => {
-  const module = studyModuleByChapter[number];
-  const items = chapterQuick[String(number)] ?? [];
-  if (items.length !== 2) throw new Error(`Expected two quick-check questions for chapter ${number}`);
+// Мини-тренажёр общий для глав и вводных уроков: ярус один и тот же, меняются
+// только вопросы, подпись и то, куда ведёт ссылка. Ключ отметки в календаре
+// (`data-chapter-trainer`) для главы — её номер, для урока — «sN»: шкалы разные
+// и пересечься не должны.
+const quickTrainer = ({ scope, seed, items, eyebrow, title, lead, doneText, footerHref, footerText }) => {
+  if (items.length !== 2) throw new Error(`Expected two quick-check questions for ${scope}`);
   const questions = items.map((item, questionIndex) => {
-    const trainerId = `Q${pad(number)}-${questionIndex}`;
-    const shift = (number + questionIndex) % item.options.length;
+    const trainerId = `Q${scope}-${questionIndex}`;
+    const shift = (seed + questionIndex) % item.options.length;
     const options = [...item.options.slice(shift), ...item.options.slice(0, shift)];
     const answer = (item.answer - shift + item.options.length) % item.options.length;
     return `<fieldset class="trainer-question" data-trainer-question="${trainerId}" data-answer="${answerDigest(trainerId, answer)}"><legend><span>${questionIndex + 1}</span>${escape(item.stem)}</legend><div class="trainer-options">${options.map((option, optionIndex) => `<label><input type="radio" name="trainer-${trainerId}" value="${optionIndex}"><span>${escape(option)}</span></label>`).join('')}</div><div class="trainer-actions"><button type="button" data-trainer-check>Проверить</button><p class="trainer-feedback" data-trainer-feedback hidden data-explanation="${escape(item.explanation)}" role="status"></p></div></fieldset>`;
   }).join('');
-  return `<section class="chapter-trainer" data-chapter-trainer="${number}" aria-labelledby="trainer-title-${number}"><header><div><p class="eyebrow">Сразу после главы</p><h2 id="trainer-title-${number}">Мини-тренажёр главы</h2><p>Два вопроса по главным утверждениям этой главы: прочитана и понята. Мгновенная проверка, результат сохраняется в этом браузере.</p></div><strong data-trainer-score>0 / 2</strong></header>${questions}<footer><span data-trainer-summary>Ответьте на оба вопроса.</span><a href="/assessment/?module=${module}">Проверка знаний · модуль U${pad(module)} →</a></footer></section>`;
+  return `<section class="chapter-trainer" data-chapter-trainer="${scope}" data-trainer-done="${escape(doneText)}" aria-labelledby="trainer-title-${scope}"><header><div><p class="eyebrow">${escape(eyebrow)}</p><h2 id="trainer-title-${scope}">${escape(title)}</h2><p>${escape(lead)}</p></div><strong data-trainer-score>0 / 2</strong></header>${questions}<footer><span data-trainer-summary>Ответьте на оба вопроса.</span><a href="${footerHref}">${escape(footerText)}</a></footer></section>`;
 };
+
+const chapterTrainer = (number) => {
+  const module = studyModuleByChapter[number];
+  return quickTrainer({
+    scope: String(number), seed: number, items: chapterQuick[String(number)] ?? [],
+    eyebrow: 'Сразу после главы', title: 'Мини-тренажёр главы',
+    lead: 'Два вопроса по главным утверждениям этой главы: прочитана и понята. Мгновенная проверка, результат сохраняется в этом браузере.',
+    doneText: 'Глава закреплена. Можно переходить дальше.',
+    footerHref: `/assessment/?module=${module}`, footerText: `Проверка знаний · модуль U${pad(module)} →`,
+  });
+};
+
+// Вводные уроки жили вне всех трёх ярусов: свёрнутый блок «Проверьте себя» есть,
+// но он ничего не проверяет и никуда не идёт. Человек, пришедший с нуля, первые
+// пять шагов проходил без единой отметки.
+const lessonTrainer = (lesson) => quickTrainer({
+  scope: `s${lesson.number}`, seed: lesson.number, items: lessonQuick[String(lesson.number)] ?? [],
+  eyebrow: 'Сразу после урока', title: 'Мини-тренажёр урока',
+  lead: 'Два вопроса по главным утверждениям этого урока. Мгновенная проверка, результат сохраняется в этом браузере.',
+  doneText: 'Урок закреплён. Можно переходить дальше.',
+  footerHref: lesson.number < lessons.length ? lessons[lesson.number].url : '/chapters/00/',
+  footerText: lesson.number < lessons.length ? `Урок ${lesson.number + 1} →` : 'Глава 00 · сборка стенда →',
+});
 
 // Обратная связка «глава → её академические модули»: без неё главы 3, 5, 11 и 25
 // оставались тупиками — из них не было пути ни в практикум, ни в проверку знаний.
@@ -411,7 +438,7 @@ const lessonPage = (lesson) => {
     ? `<a href="${next.url}">Урок ${next.number} →</a>`
     : '<a href="/chapters/00/">Глава 00 →</a>';
   const pager = `<nav class="pager" aria-label="Переход между уроками">${previous ? `<a href="${previous.url}">← Урок ${previous.number}</a>` : '<a href="/about/">← О курсе</a>'}<a class="assessment-link" href="/curriculum/">Вся программа</a>${forward}</nav>`;
-  const body = `<article class="prose chapter-prose">${rewriteLinks(lesson.intro + lesson.content, lesson.url)}</article>${pager}`;
+  const body = `<article class="prose chapter-prose">${rewriteLinks(lesson.intro + lesson.content, lesson.url)}</article>${lessonTrainer(lesson)}${pager}`;
   return pageShell({
     title: lesson.title, eyebrow: `Начало · урок ${lesson.number} из ${LESSON_COUNT}`,
     body, sidebar: `<a class="back-link" href="/curriculum/">← Вся программа</a><div class="sidebar-scroll">${lessonNav(lesson.number)}</div>`,
@@ -432,7 +459,7 @@ const plural = (n, one, few, many) => {
 const homeCards = parts.map(([label, title, numbers]) => `<a class="part-card" href="${chapters[numbers[0]].url}"><span>${label}</span><h2>${title}</h2><p>${numbers.length} ${plural(numbers.length, 'модуль', 'модуля', 'модулей')} · ${numbers.map((number) => pad(number)).join(' · ')}</p></a>`).join('');
 const home = pageShell({
   title: 'Университетский курс', eyebrow: 'Самостоятельное обучение', className: 'landing',
-  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>34</strong><span>главы</span></div><div><strong>259</strong><span>автопроверок</span></div><div><strong>74</strong><span>полевые работы</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Если вы здесь впервые</p><h2>Пять уроков до начала курса</h2></div><a href="/start/01/">Начать с нуля →</a></section><p class="lead-note">Курс начинается со сборки стенда и предполагает, что терминал, виртуальная машина и сеть — знакомые слова. Если это не так, вводная часть объясняет их за вечер и без единой команды.</p><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>${parts.length} ${plural(parts.length, 'последовательная часть', 'последовательные части', 'последовательных частей')}</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
+  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>34</strong><span>главы</span></div><div><strong>259</strong><span>автопроверок</span></div><div><strong>74</strong><span>полевые работы</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p><p class="resume-line" data-resume-line hidden>Продолжить чтение: <a data-resume-link href="/">—</a> <em data-resume-note></em></p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Если вы здесь впервые</p><h2>Пять уроков до начала курса</h2></div><a href="/start/01/">Начать с нуля →</a></section><p class="lead-note">Курс начинается со сборки стенда и предполагает, что терминал, виртуальная машина и сеть — знакомые слова. Если это не так, вводная часть объясняет их за вечер и без единой команды.</p><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>${parts.length} ${plural(parts.length, 'последовательная часть', 'последовательные части', 'последовательных частей')}</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
   description: 'Многостраничный университетский курс по серверной инфраструктуре для самостоятельного обучения.',
 });
 
@@ -514,13 +541,13 @@ const route = pageShell({
 <section class="compact-prose" aria-labelledby="route-order">
 <h2 id="route-order">Порядок работы</h2>
 <ol class="route-order">
-<li><strong>Если администрировать не приходилось — начните с вводной части.</strong> Пять уроков <a href="/start/01/">«Начало»</a> объясняют, из чего собрана система и как про неё думать. Они читаются за вечер, стенд для них не нужен. У кого опыт есть — шаг пропускается.</li>
+<li><strong>Если администрировать не приходилось — начните с вводной части.</strong> Пять уроков <a href="/start/01/">«Начало»</a> объясняют, из чего собрана система и как про неё думать. Они читаются за вечер, стенд для них не нужен, а в конце каждого — мини-тренажёр из двух вопросов. У кого опыт есть — шаг пропускается.</li>
 <li><strong>Соберите стенд по главе 00.</strong> Весь курс стоит на нём: без стенда лаборатории и работы практикума выполнить не на чем.</li>
 <li><strong>Идите по главам подряд.</strong> Каждая опирается на предыдущие, а «Перед началом» прямо связывает новую тему с уже разобранной.</li>
 <li><strong>Читайте главу целиком</strong> — до разобранного примера и типичной ошибки мышления. Они дают метод, а не факты.</li>
 <li><strong>Выполните лабораторию главы</strong> на стенде, а не мысленно.</li>
 <li><strong>Решите мини-тренажёр</strong> в конце главы: два вопроса, мгновенная проверка. Это первая отметка в календаре.</li>
-<li><strong>Сдайте модуль U в кабинете:</strong> задания на механизм, расчёт и сценарий по шагам. Это вторая отметка.</li>
+<li><strong>Сдайте модуль U в кабинете</strong> — не в тот же день, а хотя бы через сутки: задания на механизм, расчёт и сценарий по шагам. Это вторая отметка. Дальше кабинет вернёт слабые задания сам через 2, 7 и 21 день.</li>
 <li><strong>Сделайте обе работы практикума</strong> — A (воспроизвести механизм) и B (сломанный стенд). Работу B не пропускайте: навык формируется именно там.</li>
 <li><strong>Запишите результат в свой репозиторий:</strong> учебник заводит его в разделе 0.17 и дальше опирается на него как на рабочий инструмент.</li>
 </ol>
@@ -532,12 +559,18 @@ const route = pageShell({
 <thead><tr><th scope="col">Глава</th><th scope="col">Мини-тренажёр</th><th scope="col">Модуль</th><th scope="col">Практикум</th></tr></thead>
 <tbody>${routeRows}</tbody>
 </table>
-<p class="route-note">У шестнадцати работ практикума есть автоматическая проверка — они названы в столбце и засчитываются кабинетом. У остальных критерий приёмки написан в самой работе, а подтверждением служит ваш репозиторий: кнопки «отметить сделанным» здесь нет намеренно — отметка, поставленная самому себе, ничего не доказывает.</p>
+<p class="route-note">У двадцати четырёх работ практикума есть автоматическая проверка — они названы в столбце и засчитываются кабинетом. У остальных критерий приёмки написан в самой работе, а подтверждением служит ваш репозиторий: кнопки «отметить сделанным» здесь нет намеренно — отметка, поставленная самому себе, ничего не доказывает.</p>
 </section>
 <section class="route-board" data-route-calendar aria-labelledby="route-calendar-title">
 <div class="route-head"><h2 id="route-calendar-title">Календарь</h2><p>Дни, в которые что-то было впервые зачтено. Календарь только показывает: изменить дату через интерфейс нельзя.</p></div>
 <div data-route-months class="route-months"></div>
 <ol class="route-log" data-route-log></ol>
+</section>
+<section class="compact-prose" aria-labelledby="route-offline">
+<h2 id="route-offline">Учебник без сети</h2>
+<p>Прочитанные страницы браузер оставляет у себя и открывает их без интернета. Одной кнопкой можно положить в память сразу весь курс — 47 страниц и поиск по ним: после этого учебник работает там, где связи нет, а страницы открываются мгновенно.</p>
+<div class="route-backup"><button type="button" class="button primary" data-offline-save>Сохранить учебник для работы без сети</button></div>
+<p class="route-note" data-offline-status role="status">Около шести мегабайт. Копия обновится сама, когда выйдет новая версия учебника.</p>
 </section>
 <section class="compact-prose" aria-labelledby="route-backup">
 <h2 id="route-backup">Резервная копия</h2>
@@ -553,7 +586,7 @@ const archive = pageShell({ title: 'Аттестация и архив мате�
 const about = pageShell({ title: 'О курсе', eyebrow: 'Как учиться самостоятельно', body: `<article class="prose">${rewriteLinks(aboutSource, '/about/')}</article>` });
 
 const css = `
-:root{--ink:#102733;--muted:#5b6d76;--navy:#071a24;--navy2:#0d2c38;--teal:#1aa698;--teal2:#8ce0d6;--paper:#f5f0e6;--white:#fffdf9;--line:#d9d4c8;--amber:#e2a947;--link:#087e75;--soft:#faf9f4;--code:#e4e2d9;--quote:#fff8e9;--success:#e9f5f3;--selected:#e7f6f3;--page:1600px;color-scheme:light}html[data-theme=dark]{--ink:#e8f0ed;--muted:#9fb1b2;--navy:#06151d;--navy2:#0d2a35;--teal:#45c8bb;--teal2:#94e5dc;--paper:#07171f;--white:#0d222b;--line:#29414a;--amber:#e2ae58;--link:#69d6ca;--soft:#102832;--code:#18323a;--quote:#2b281e;--success:#12362f;--selected:#113a36;color-scheme:dark}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;transition:background-color .2s,color .2s}.topbar{height:68px;background:var(--navy);color:white;display:flex;align-items:center;padding:0 max(24px,calc((100vw - var(--page))/2));gap:48px;position:sticky;top:0;z-index:20;border-bottom:1px solid #ffffff18}.brand{display:flex;align-items:baseline;gap:7px;color:white;text-decoration:none;letter-spacing:.08em}.brand span{font-size:11px;color:var(--teal2)}.brand strong{font-size:19px}.topbar>nav{display:flex;gap:28px}.topbar nav a{color:#d7e7e8;text-decoration:none;font-size:14px}.topbar nav a:hover{color:white}.theme-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #ffffff35;background:#ffffff0b;color:white;font:600 12px/1.2 inherit;cursor:pointer}.theme-toggle:hover{border-color:var(--teal2);background:#ffffff14}.theme-toggle:focus-visible{outline:2px solid var(--teal2);outline-offset:3px}.theme-toggle [data-theme-icon]{font-size:16px}.mobile-menu{display:none}.page-layout{max-width:var(--page);margin:auto;min-height:calc(100vh - 68px)}.page-main{min-width:0;padding:54px clamp(24px,5vw,76px) 90px}.with-sidebar{display:grid;grid-template-columns:300px minmax(0,1fr)}.side-nav{height:calc(100vh - 68px);position:sticky;top:68px;overflow:auto;padding:34px 24px;background:#0b2430;color:white}.side-nav a{display:grid;grid-template-columns:35px 1fr;gap:8px;padding:8px 9px;color:#bcd0d3;text-decoration:none;font-size:12px;line-height:1.35;border-radius:5px}.side-nav a span{color:#6ec9bf;font-variant-numeric:tabular-nums}.side-nav a:hover,.side-nav a[aria-current=page]{background:#173b47;color:white}.side-nav .back-link{display:block;margin-bottom:22px;color:white}.nav-group{margin:20px 0}.nav-group p,.side-title{margin:0 8px 8px;color:#6f9199;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.sidebar-scroll{padding-bottom:40px}.eyebrow{margin:0 0 12px;color:var(--teal);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.7fr);gap:72px;align-items:end;padding:58px 0 74px}.hero h1,.catalog-head h1,.tool-intro h1{font-family:Georgia,serif;font-size:clamp(42px,6vw,84px);line-height:.94;letter-spacing:-.04em;margin:0}.hero h1 em{color:var(--teal);font-weight:400}.hero>div>p{max-width:720px;font-size:19px;line-height:1.6;color:var(--muted)}.hero-actions{display:flex;gap:12px;margin-top:30px}.button{display:inline-block;border:1px solid #77979b;padding:12px 18px;text-decoration:none;color:var(--ink);font-weight:700;font-size:14px}.button.primary{background:var(--navy);color:white;border-color:#31505a}.hero-stats{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:var(--white)}.hero-stats div{padding:25px;border:1px solid var(--line)}.hero-stats strong{display:block;font-family:Georgia,serif;font-size:42px}.hero-stats span{font-size:12px;color:var(--muted)}.lead-note{max-width:720px;margin:0 0 26px;color:var(--muted);font-size:15px;line-height:1.65}.progress-card{background:var(--navy2);color:white;padding:26px 30px;display:flex;align-items:center;justify-content:space-between}.progress-card p{margin:6px 0;color:#b7d1d2}.progress-card a{color:var(--teal2)}.section-head{display:flex;align-items:end;justify-content:space-between;margin:70px 0 22px}.section-head h2{font-family:Georgia,serif;font-size:36px;margin:0}.section-head a{color:var(--ink)}.part-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.part-card{min-height:178px;padding:23px;background:var(--white);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:.18s}.part-card:hover,.chapter-card:hover{border-color:var(--teal);transform:translateY(-2px)}.part-card span{color:var(--teal);font-size:11px;font-weight:800;text-transform:uppercase}.part-card h2{font-family:Georgia,serif;font-size:23px}.part-card p{color:var(--muted);font-size:12px}.catalog-head{max-width:900px;margin-bottom:46px}.catalog-head h1,.tool-intro h1{font-size:clamp(40px,6vw,68px)}.catalog-head>p,.tool-intro>p{font-size:18px;line-height:1.6;color:var(--muted)}.search{display:block;margin-top:28px}.search span{display:block;font-size:12px;font-weight:700;margin-bottom:7px}.search input{width:min(560px,100%);padding:14px 16px;border:1px solid #69878b;background:var(--white);color:var(--ink);font:inherit}.catalog-part{display:grid;grid-template-columns:210px 1fr;gap:35px;border-top:1px solid var(--line);padding:32px 0}.catalog-part>div>p{color:var(--teal);font-size:11px;font-weight:800;text-transform:uppercase}.catalog-part h2{font-family:Georgia,serif;font-size:26px}.chapter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.chapter-card{padding:18px;background:var(--white);border:1px solid var(--line);text-decoration:none;color:var(--ink)}.chapter-card>span{color:var(--teal);font-family:ui-monospace,monospace}.chapter-card h3{font-size:16px;line-height:1.35}.chapter-card p{font-size:11px;color:var(--muted)}.chapter-prose,.prose{max-width:900px;margin:auto}.prose h1{font-family:Georgia,serif;font-size:clamp(34px,5vw,58px);line-height:1.06;letter-spacing:-.025em;margin:0 0 36px}.prose h2{font-family:Georgia,serif;font-size:32px;margin:62px 0 18px;padding-top:10px;border-top:1px solid var(--line)}.prose h3{font-size:20px;margin:38px 0 12px}.prose h4{font-size:16px}.prose p,.prose li{font-size:16px;line-height:1.72}.prose p{margin:13px 0}.prose a{color:var(--link)}.prose pre{overflow:auto;background:var(--navy);color:#d9eeee;padding:18px;border-left:4px solid var(--teal);font-size:13px;line-height:1.55}.prose code{font-family:"Cascadia Code",Consolas,monospace;background:var(--code);padding:.08em .28em}.prose pre code{background:none;padding:0}.prose table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white)}.prose th,.prose td{padding:10px;border:1px solid var(--line);text-align:left}.prose th.num,.prose td.num{text-align:right}.prose blockquote{margin:24px 0;padding:5px 20px;border-left:4px solid var(--amber);background:var(--quote)}.prose details{margin:20px 0;padding:16px;border:1px solid var(--line);background:var(--white)}.prose img{max-width:100%}.pager{max-width:900px;margin:60px auto 0;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;border-top:1px solid var(--line);padding-top:24px}.pager a{color:var(--ink);text-decoration:none;font-weight:700}.pager a:last-child{text-align:right}.assessment-link{color:var(--teal)!important}.tool-intro{max-width:950px;margin:0 auto 35px}.study-surface,.compact-prose{max-width:980px;margin:0 auto 38px;background:var(--white);border:1px solid var(--line);padding:clamp(18px,4vw,42px)}.study-app .controls{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}.study-app button,.study-surface button,.study-app select,.file-label{padding:10px 14px;border:1px solid #63858a;background:var(--white);color:var(--ink);cursor:pointer;font:inherit}.study-app .navbtn[aria-pressed=true]{background:var(--navy);color:white}.study-app .card,.quiz{padding:20px;margin:18px 0;border:1px solid var(--line);background:var(--soft)}.study-app label.option,.quiz label{display:block;padding:10px;margin:8px 0;background:var(--white);border:1px solid var(--line);cursor:pointer}.study-app label.option:has(input:checked){border-color:var(--teal);background:var(--selected)}.study-app .answer-field{display:block;width:100%;max-width:320px;padding:10px;margin-top:6px;background:var(--white);color:var(--ink);border:1px solid var(--line)}.study-app .result{padding:12px;border-left:4px solid var(--teal);background:var(--success)}.study-app .ok{color:var(--teal)}.study-app .bad{color:#e07961}.study-app progress{width:100%}.study-app table{width:100%;border-collapse:collapse}.study-app td,.study-app th{padding:9px;border:1px solid var(--line)}.study-app .hidden-input{display:none}.study-app .confidence{margin:14px 0 4px;padding:10px 12px;border:1px dashed var(--line);background:var(--white);display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}.study-app .confidence legend{padding:0 6px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.study-app label.conf-option{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid transparent;font-size:14px;cursor:pointer}.study-app label.conf-option:has(input:checked){border-color:var(--teal);background:var(--selected)}.study-app label.conf-option:has(input:disabled){opacity:.65;cursor:default}.study-app .reason-tier{margin:16px 0 4px;padding:14px 16px;border:1px solid var(--line);background:var(--white)}.study-app .reason-tier h4{margin:0 0 4px;font-size:15px}.study-app .reason-tier .note{margin:0 0 10px}.study-app .error-entry{border-left:4px solid #e07961}.study-app .error-entry.is-done{border-left-color:var(--teal);opacity:.72}.reference-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:900px;margin:0 auto 44px}.reference-cards a{padding:22px;background:var(--navy2);color:white;text-decoration:none}.reference-cards span{display:block;color:var(--teal2);font-size:11px;text-transform:uppercase;margin-bottom:8px}.reference-cards strong{font-family:Georgia,serif;font-size:20px}@media(max-width:900px){.topbar{gap:18px}.topbar>nav{display:none}.theme-toggle{margin-left:auto}.mobile-menu{display:block}.mobile-menu summary{cursor:pointer}.mobile-menu>div{position:absolute;right:16px;top:58px;background:var(--navy2);padding:18px;box-shadow:0 12px 30px #0008}.mobile-menu .brand{display:none}.mobile-menu nav{display:grid;gap:14px}.with-sidebar{display:block}.side-nav{display:none}.hero{grid-template-columns:1fr;gap:30px}.part-grid{grid-template-columns:1fr 1fr}.catalog-part{grid-template-columns:1fr}.chapter-grid{grid-template-columns:1fr}.reference-cards{grid-template-columns:1fr}.page-main{padding-top:35px}}@media(max-width:560px){.theme-toggle [data-theme-label]{display:none}.part-grid{grid-template-columns:1fr}.hero h1{font-size:44px}.hero-actions{flex-direction:column}.pager{grid-template-columns:1fr}.pager a:last-child{text-align:left}.study-surface{padding:14px}.topbar{padding:0 18px}}@media print{.topbar,.side-nav,.pager{display:none}.with-sidebar{display:block}.page-main{padding:0}.prose{width:auto;max-width:none}}
+:root{--ink:#102733;--muted:#5b6d76;--navy:#071a24;--navy2:#0d2c38;--teal:#1aa698;--teal2:#8ce0d6;--paper:#f5f0e6;--white:#fffdf9;--line:#d9d4c8;--amber:#e2a947;--link:#087e75;--soft:#faf9f4;--code:#e4e2d9;--quote:#fff8e9;--success:#e9f5f3;--selected:#e7f6f3;--page:1600px;color-scheme:light}html[data-theme=dark]{--ink:#e8f0ed;--muted:#9fb1b2;--navy:#06151d;--navy2:#0d2a35;--teal:#45c8bb;--teal2:#94e5dc;--paper:#07171f;--white:#0d222b;--line:#29414a;--amber:#e2ae58;--link:#69d6ca;--soft:#102832;--code:#18323a;--quote:#2b281e;--success:#12362f;--selected:#113a36;color-scheme:dark}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;transition:background-color .2s,color .2s}.topbar{height:68px;background:var(--navy);color:white;display:flex;align-items:center;padding:0 max(24px,calc((100vw - var(--page))/2));gap:48px;position:sticky;top:0;z-index:20;border-bottom:1px solid #ffffff18}.brand{display:flex;align-items:baseline;gap:7px;color:white;text-decoration:none;letter-spacing:.08em}.brand span{font-size:11px;color:var(--teal2)}.brand strong{font-size:19px}.topbar>nav{display:flex;gap:28px}.topbar nav a{color:#d7e7e8;text-decoration:none;font-size:14px}.topbar nav a:hover{color:white}.theme-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #ffffff35;background:#ffffff0b;color:white;font:600 12px/1.2 inherit;cursor:pointer}.theme-toggle:hover{border-color:var(--teal2);background:#ffffff14}.theme-toggle:focus-visible{outline:2px solid var(--teal2);outline-offset:3px}.theme-toggle [data-theme-icon]{font-size:16px}.mobile-menu{display:none}.page-layout{max-width:var(--page);margin:auto;min-height:calc(100vh - 68px)}.page-main{min-width:0;padding:54px clamp(24px,5vw,76px) 90px}.with-sidebar{display:grid;grid-template-columns:300px minmax(0,1fr)}.side-nav{height:calc(100vh - 68px);position:sticky;top:68px;overflow:auto;padding:34px 24px;background:#0b2430;color:white}.side-nav a{display:grid;grid-template-columns:35px 1fr;gap:8px;padding:8px 9px;color:#bcd0d3;text-decoration:none;font-size:12px;line-height:1.35;border-radius:5px}.side-nav a span{color:#6ec9bf;font-variant-numeric:tabular-nums}.side-nav a:hover,.side-nav a[aria-current=page]{background:#173b47;color:white}.side-nav .back-link{display:block;margin-bottom:22px;color:white}.nav-group{margin:20px 0}.nav-group p,.side-title{margin:0 8px 8px;color:#6f9199;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.sidebar-scroll{padding-bottom:40px}.eyebrow{margin:0 0 12px;color:var(--teal);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.7fr);gap:72px;align-items:end;padding:58px 0 74px}.hero h1,.catalog-head h1,.tool-intro h1{font-family:Georgia,serif;font-size:clamp(42px,6vw,84px);line-height:.94;letter-spacing:-.04em;margin:0}.hero h1 em{color:var(--teal);font-weight:400}.hero>div>p{max-width:720px;font-size:19px;line-height:1.6;color:var(--muted)}.hero-actions{display:flex;gap:12px;margin-top:30px}.button{display:inline-block;border:1px solid #77979b;padding:12px 18px;text-decoration:none;color:var(--ink);font-weight:700;font-size:14px}.button.primary{background:var(--navy);color:white;border-color:#31505a}.hero-stats{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:var(--white)}.hero-stats div{padding:25px;border:1px solid var(--line)}.hero-stats strong{display:block;font-family:Georgia,serif;font-size:42px}.hero-stats span{font-size:12px;color:var(--muted)}.lead-note{max-width:720px;margin:0 0 26px;color:var(--muted);font-size:15px;line-height:1.65}.progress-card{background:var(--navy2);color:white;padding:26px 30px;display:flex;align-items:center;justify-content:space-between}.progress-card p{margin:6px 0;color:#b7d1d2}.progress-card a{color:var(--teal2)}.resume-line{margin:10px 0 0;font-size:14px}.resume-line em{color:#9fc3c4;font-style:normal;font-size:12px}.section-head{display:flex;align-items:end;justify-content:space-between;margin:70px 0 22px}.section-head h2{font-family:Georgia,serif;font-size:36px;margin:0}.section-head a{color:var(--ink)}.part-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.part-card{min-height:178px;padding:23px;background:var(--white);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:.18s}.part-card:hover,.chapter-card:hover{border-color:var(--teal);transform:translateY(-2px)}.part-card span{color:var(--teal);font-size:11px;font-weight:800;text-transform:uppercase}.part-card h2{font-family:Georgia,serif;font-size:23px}.part-card p{color:var(--muted);font-size:12px}.catalog-head{max-width:900px;margin-bottom:46px}.catalog-head h1,.tool-intro h1{font-size:clamp(40px,6vw,68px)}.catalog-head>p,.tool-intro>p{font-size:18px;line-height:1.6;color:var(--muted)}.search{display:block;margin-top:28px}.search span{display:block;font-size:12px;font-weight:700;margin-bottom:7px}.search input{width:min(560px,100%);padding:14px 16px;border:1px solid #69878b;background:var(--white);color:var(--ink);font:inherit}.catalog-part{display:grid;grid-template-columns:210px 1fr;gap:35px;border-top:1px solid var(--line);padding:32px 0}.catalog-part>div>p{color:var(--teal);font-size:11px;font-weight:800;text-transform:uppercase}.catalog-part h2{font-family:Georgia,serif;font-size:26px}.chapter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.chapter-card{padding:18px;background:var(--white);border:1px solid var(--line);text-decoration:none;color:var(--ink)}.chapter-card>span{color:var(--teal);font-family:ui-monospace,monospace}.chapter-card h3{font-size:16px;line-height:1.35}.chapter-card p{font-size:11px;color:var(--muted)}.chapter-prose,.prose{max-width:900px;margin:auto}.prose h1{font-family:Georgia,serif;font-size:clamp(34px,5vw,58px);line-height:1.06;letter-spacing:-.025em;margin:0 0 36px}.prose h2{font-family:Georgia,serif;font-size:32px;margin:62px 0 18px;padding-top:10px;border-top:1px solid var(--line)}.prose h3{font-size:20px;margin:38px 0 12px}.prose h4{font-size:16px}.prose p,.prose li{font-size:16px;line-height:1.72}.prose p{margin:13px 0}.prose a{color:var(--link)}.prose pre{overflow:auto;background:var(--navy);color:#d9eeee;padding:18px;border-left:4px solid var(--teal);font-size:13px;line-height:1.55}.prose code{font-family:"Cascadia Code",Consolas,monospace;background:var(--code);padding:.08em .28em}.prose pre code{background:none;padding:0}.prose table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white)}.prose th,.prose td{padding:10px;border:1px solid var(--line);text-align:left}.prose th.num,.prose td.num{text-align:right}.prose blockquote{margin:24px 0;padding:5px 20px;border-left:4px solid var(--amber);background:var(--quote)}.prose details{margin:20px 0;padding:16px;border:1px solid var(--line);background:var(--white)}.prose img{max-width:100%}.pager{max-width:900px;margin:60px auto 0;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;border-top:1px solid var(--line);padding-top:24px}.pager a{color:var(--ink);text-decoration:none;font-weight:700}.pager a:last-child{text-align:right}.assessment-link{color:var(--teal)!important}.tool-intro{max-width:950px;margin:0 auto 35px}.study-surface,.compact-prose{max-width:980px;margin:0 auto 38px;background:var(--white);border:1px solid var(--line);padding:clamp(18px,4vw,42px)}.study-app .controls{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}.study-app button,.study-surface button,.study-app select,.file-label{padding:10px 14px;border:1px solid #63858a;background:var(--white);color:var(--ink);cursor:pointer;font:inherit}.study-app .navbtn[aria-pressed=true]{background:var(--navy);color:white}.study-app .card,.quiz{padding:20px;margin:18px 0;border:1px solid var(--line);background:var(--soft)}.study-app label.option,.quiz label{display:block;padding:10px;margin:8px 0;background:var(--white);border:1px solid var(--line);cursor:pointer}.study-app label.option:has(input:checked){border-color:var(--teal);background:var(--selected)}.study-app .answer-field{display:block;width:100%;max-width:320px;padding:10px;margin-top:6px;background:var(--white);color:var(--ink);border:1px solid var(--line)}.study-app .result{padding:12px;border-left:4px solid var(--teal);background:var(--success)}.study-app .ok{color:var(--teal)}.study-app .bad{color:#e07961}.study-app progress{width:100%}.study-app table{width:100%;border-collapse:collapse}.study-app td,.study-app th{padding:9px;border:1px solid var(--line)}.study-app .hidden-input{display:none}.study-app .confidence{margin:14px 0 4px;padding:10px 12px;border:1px dashed var(--line);background:var(--white);display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}.study-app .confidence legend{padding:0 6px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.study-app label.conf-option{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid transparent;font-size:14px;cursor:pointer}.study-app label.conf-option:has(input:checked){border-color:var(--teal);background:var(--selected)}.study-app label.conf-option:has(input:disabled){opacity:.65;cursor:default}.study-app .reason-tier{margin:16px 0 4px;padding:14px 16px;border:1px solid var(--line);background:var(--white)}.study-app .reason-tier h4{margin:0 0 4px;font-size:15px}.study-app .reason-tier .note{margin:0 0 10px}.study-app .error-entry{border-left:4px solid #e07961}.study-app .error-entry.is-done{border-left-color:var(--teal);opacity:.72}.reference-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:900px;margin:0 auto 44px}.reference-cards a{padding:22px;background:var(--navy2);color:white;text-decoration:none}.reference-cards span{display:block;color:var(--teal2);font-size:11px;text-transform:uppercase;margin-bottom:8px}.reference-cards strong{font-family:Georgia,serif;font-size:20px}@media(max-width:900px){.topbar{gap:18px}.topbar>nav{display:none}.theme-toggle{margin-left:auto}.mobile-menu{display:block}.mobile-menu summary{cursor:pointer}.mobile-menu>div{position:absolute;right:16px;top:58px;background:var(--navy2);padding:18px;box-shadow:0 12px 30px #0008}.mobile-menu .brand{display:none}.mobile-menu nav{display:grid;gap:14px}.with-sidebar{display:block}.side-nav{display:none}.hero{grid-template-columns:1fr;gap:30px}.part-grid{grid-template-columns:1fr 1fr}.catalog-part{grid-template-columns:1fr}.chapter-grid{grid-template-columns:1fr}.reference-cards{grid-template-columns:1fr}.page-main{padding-top:35px}}@media(max-width:560px){.theme-toggle [data-theme-label]{display:none}.part-grid{grid-template-columns:1fr}.hero h1{font-size:44px}.hero-actions{flex-direction:column}.pager{grid-template-columns:1fr}.pager a:last-child{text-align:left}.study-surface{padding:14px}.topbar{padding:0 18px}}@media print{.topbar,.side-nav,.pager{display:none}.with-sidebar{display:block}.page-main{padding:0}.prose{width:auto;max-width:none}}
 /* Chapter quick trainer */
 .chapter-recall{max-width:900px;margin:68px auto 0;padding:clamp(22px,4vw,38px);background:var(--white);border:1px solid var(--line)}.chapter-recall h2{margin:0;font-family:Georgia,serif;font-size:clamp(28px,4vw,38px)}.chapter-recall header p:last-child{max-width:640px;margin:9px 0 0;color:var(--muted);line-height:1.55}.recall-field{display:block;margin:22px 0 8px}.recall-field span{display:block;margin-bottom:7px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.recall-field textarea{width:100%;padding:14px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;line-height:1.6;resize:vertical}.recall-field textarea:focus-visible{outline:2px solid var(--teal);outline-offset:2px}.recall-hint{margin:0 0 18px;font-size:13px;color:var(--muted)}.recall-topics{padding:16px 18px;border:1px solid var(--line);background:var(--soft)}.recall-topics summary{cursor:pointer;font-weight:750}.recall-topics ol{margin:14px 0 0;padding-left:20px;display:grid;gap:9px}.recall-topics li{line-height:1.5}.recall-topics label{display:inline-flex;align-items:flex-start;gap:9px;cursor:pointer}.recall-topics input{margin-top:.3em;accent-color:var(--teal)}.recall-topics li a{margin-left:10px;font-size:12px;color:var(--link)}.recall-note{margin:12px 0 0;font-size:13px;color:var(--muted)}.recall-score{margin:14px 0 0;font-weight:750}.chapter-trainer{max-width:900px;margin:68px auto 0;padding:clamp(22px,4vw,38px);background:var(--white);border:1px solid var(--line);box-shadow:0 16px 40px #06151d0c}.chapter-trainer>header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line)}.chapter-trainer h2{margin:0;font-family:Georgia,serif;font-size:clamp(28px,4vw,38px)}.chapter-trainer header p:last-child{max-width:610px;margin:9px 0 0;color:var(--muted);line-height:1.55}.chapter-trainer>header>strong{flex:0 0 auto;min-width:78px;padding:10px 12px;background:var(--navy2);color:white;text-align:center;font-variant-numeric:tabular-nums}.trainer-question{margin:24px 0 0;padding:0;border:0}.trainer-question legend{display:flex;gap:12px;width:100%;font-size:16px;font-weight:750;line-height:1.45}.trainer-question legend>span{display:grid;flex:0 0 28px;height:28px;place-items:center;background:var(--teal);color:#04191d;font-size:12px}.trainer-options{display:grid;gap:8px;margin:15px 0}.trainer-options label{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--soft);border:1px solid var(--line);cursor:pointer;line-height:1.45}.trainer-options label:has(input:checked){border-color:var(--teal);background:var(--selected)}.trainer-options label.is-correct{border-color:#319480;background:var(--success)}.trainer-options label.is-wrong{border-color:#c45a43;background:var(--quote)}.trainer-options input{margin-top:.25em;accent-color:var(--teal)}.trainer-actions{display:flex;align-items:center;gap:14px}.trainer-actions button{padding:10px 16px;border:1px solid var(--navy);background:var(--navy);color:white;font:700 13px/1.2 inherit;cursor:pointer}.trainer-actions button:disabled{opacity:.55;cursor:not-allowed}.trainer-feedback{margin:0;font-size:13px;line-height:1.45}.trainer-feedback.is-correct{color:#137769}.trainer-feedback.is-wrong{color:#b04f3c}.chapter-trainer>footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:27px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.chapter-trainer>footer a{color:var(--link);font-weight:750;text-decoration:none}@media(max-width:560px){.chapter-trainer>header,.chapter-trainer>footer,.trainer-actions{align-items:stretch;flex-direction:column}.chapter-trainer>header>strong{align-self:flex-start}.trainer-feedback{min-height:0}}
 /* Chapter practice bridge */
@@ -1138,7 +1171,7 @@ const answerDigest=(id,index)=>{let hash=0x811c9dc5;for(const character of id+'|
 const answerIndex=question=>{const id=question.dataset.trainerQuestion,digest=question.dataset.answer,total=question.querySelectorAll('input[type=radio]').length;for(let index=0;index<total;index+=1)if(answerDigest(id,index)===digest)return index;return -1};
 /* Длительности читаются из тех же токенов движения, что и CSS, чтобы не разъезжались. */
 const motionMs=(name,fallback)=>{const value=parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));return Number.isFinite(value)?value:fallback};
-document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const renderScore=done=>{const group=document.createElement('span');group.className='t-digit-group';const digit=document.createElement('span');digit.className='t-digit';digit.textContent=String(done);group.append(digit);score.replaceChildren(group,document.createTextNode(' / '+questions.length));void group.offsetWidth;group.classList.add('is-animating')};const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;renderScore(done);summary.textContent=done===questions.length?'Глава закреплена. Можно переходить дальше.':done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length);if(done===questions.length)stampTimeline('chapter:'+trainer.dataset.chapterTrainer)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=answerIndex(question),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const check=document.createElement('span');check.className='trainer-check';check.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';button.after(check);const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){check.classList.remove('is-shown');void check.offsetWidth;check.classList.add('is-shown')}else{const shakeMs=motionMs('--shake-dur-a',80)*2+motionMs('--shake-dur-b',60)*2;question.classList.remove('is-shaking');void question.offsetWidth;question.classList.add('is-shaking');setTimeout(()=>question.classList.remove('is-shaking'),shakeMs+20)}if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
+document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const renderScore=done=>{const group=document.createElement('span');group.className='t-digit-group';const digit=document.createElement('span');digit.className='t-digit';digit.textContent=String(done);group.append(digit);score.replaceChildren(group,document.createTextNode(' / '+questions.length));void group.offsetWidth;group.classList.add('is-animating')};const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;renderScore(done);summary.textContent=done===questions.length?(trainer.dataset.trainerDone||'Глава закреплена. Можно переходить дальше.'):done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length);if(done===questions.length)stampTimeline('chapter:'+trainer.dataset.chapterTrainer)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=answerIndex(question),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const check=document.createElement('span');check.className='trainer-check';check.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';button.after(check);const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){check.classList.remove('is-shown');void check.offsetWidth;check.classList.add('is-shown')}else{const shakeMs=motionMs('--shake-dur-a',80)*2+motionMs('--shake-dur-b',60)*2;question.classList.remove('is-shaking');void question.offsetWidth;question.classList.add('is-shaking');setTimeout(()=>question.classList.remove('is-shaking'),shakeMs+20)}if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
 /* Полнотекстовый поиск. Индекс лежит отдельным файлом и загружается один раз при
    первом открытии панели, поэтому страница не тяжелеет от 76 тысяч слов. */
 const searchOverlay=document.querySelector('[data-search-overlay]'),searchInput=document.querySelector('[data-search-input]'),searchStatus=document.querySelector('[data-search-status]'),searchResults=document.querySelector('[data-search-results]');
@@ -1146,7 +1179,7 @@ const fold=text=>String(text).toLowerCase().replace(/ё/g,'е');
 let searchIndex=null,searchRequest=null,searchTimer=0,searchReturnFocus=null;
 const loadSearchIndex=()=>{
   if(searchIndex)return Promise.resolve(searchIndex);
-  if(!searchRequest)searchRequest=fetch('${BASE}/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.map(entry=>({...entry,f:fold(entry.h+' '+entry.x)}));return searchIndex});
+  if(!searchRequest)searchRequest=fetch('${BASE}/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.s.map(row=>{const page=data.p[row[0]];return{u:page[0],t:page[1],a:row[1],h:row[2],x:row[3],f:fold(row[2]+' '+row[3])}});return searchIndex});
   return searchRequest;
 };
 const markTerms=(raw,terms)=>{
@@ -1246,7 +1279,7 @@ if(searchOverlay){
 /* Страница маршрута: чек-лист, календарь и резервная копия. Все отметки
    выводятся из фактического прогресса — интерфейса, который проставляет дату,
    здесь нет. */
-const BACKUP_KEYS=['server-infrastructure-selfstudy-v6','server-infrastructure-chapter-trainers-v1','server-infrastructure-recall-v1','server-infrastructure-timeline-v1','server-infrastructure-reader-v1','server-infrastructure-reading-v1','server-infrastructure-theme','server-infrastructure-quiz-a1-v1'];
+const BACKUP_KEYS=['server-infrastructure-selfstudy-v6','server-infrastructure-place-v1','server-infrastructure-chapter-trainers-v1','server-infrastructure-recall-v1','server-infrastructure-timeline-v1','server-infrastructure-reader-v1','server-infrastructure-reading-v1','server-infrastructure-theme','server-infrastructure-quiz-a1-v1'];
 const routeBoard=document.querySelector('[data-route-board]');
 if(routeBoard){
   const MONTHS=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
@@ -1277,7 +1310,7 @@ if(routeBoard){
   /* Календарь: только вывод. Показываем месяцы от первой отметки до текущего. */
   const calendar=document.querySelector('[data-route-calendar]'),monthsBox=calendar?.querySelector('[data-route-months]'),log=calendar?.querySelector('[data-route-log]');
   if(monthsBox&&log){
-    const names={};document.querySelectorAll('[data-route-row]').forEach(row=>{names['chapter:'+row.dataset.routeRow]='Глава '+String(row.dataset.routeRow).padStart(2,'0')+' закреплена';row.dataset.own.split(',').filter(Boolean).forEach(module=>{names['module:'+module]='Модуль U'+String(module).padStart(2,'0')+' сдан'})});
+    const names={};for(let lesson=1;lesson<=${lessons.length};lesson+=1)names['chapter:s'+lesson]='Урок '+lesson+' закреплён';document.querySelectorAll('[data-route-row]').forEach(row=>{names['chapter:'+row.dataset.routeRow]='Глава '+String(row.dataset.routeRow).padStart(2,'0')+' закреплена';row.dataset.own.split(',').filter(Boolean).forEach(module=>{names['module:'+module]='Модуль U'+String(module).padStart(2,'0')+' сдан'})});
     const byDay=new Map();
     for(const [key,date] of Object.entries(events)){if(!byDay.has(date))byDay.set(date,[]);byDay.get(date).push(names[key]||key)}
     const days=[...byDay.keys()].sort();
@@ -1375,6 +1408,64 @@ if(readProgress&&readMain){
   addEventListener('scroll',()=>{if(!progressPending){progressPending=true;requestAnimationFrame(drawProgress)}},{passive:true});
   addEventListener('resize',drawProgress,{passive:true});
   drawProgress();
+}
+
+/* Работа без сети: обслуживающий скрипт регистрируется тихо. Если браузер его
+   не поддерживает или страница открыта не по http(s), сайт работает как прежде. */
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>{navigator.serviceWorker.register('${BASE}/sw.js').catch(()=>{})});
+const offlineSave=document.querySelector('[data-offline-save]'),offlineStatus=document.querySelector('[data-offline-status]');
+if(offlineSave&&offlineStatus){
+  if(!('serviceWorker' in navigator)){offlineSave.disabled=true;offlineStatus.textContent='Этот браузер не умеет хранить страницы для работы без сети.'}
+  else{
+    navigator.serviceWorker.addEventListener('message',event=>{
+      const data=event.data||{};
+      if(data.type==='save-progress')offlineStatus.textContent='Сохранено '+data.done+' из '+data.total+'…';
+      if(data.type==='save-done'){offlineSave.disabled=false;offlineStatus.textContent=data.failed?('Сохранено, но '+data.failed+' файлов скачать не удалось. Повторите при устойчивой связи.'):('Готово: '+data.total+' файлов в памяти браузера — все страницы курса и поиск по ним. Учебник открывается без сети.')}
+    });
+    offlineSave.addEventListener('click',async()=>{
+      offlineSave.disabled=true;offlineStatus.textContent='Сохраняем…';
+      const registration=await navigator.serviceWorker.ready.catch(()=>null);
+      if(!registration||!registration.active){offlineStatus.textContent='Хранилище ещё готовится. Обновите страницу и повторите.';offlineSave.disabled=false;return}
+      registration.active.postMessage({type:'save-all'});
+    });
+  }
+}
+
+/* Место чтения. Курс на 123 000 слов читают месяцами, и до сих пор не было
+   единственного, что нужно после перерыва: вернуться туда, где остановился.
+   Хранится одна запись — адрес, заголовок страницы, ближайший раздел и доля
+   прочитанного; пишется не чаще раза в секунду и при уходе со страницы. */
+const PLACE_KEY='server-infrastructure-place-v1';
+const placeMain=document.querySelector('.chapter-prose');
+if(placeMain){
+  const pageTitle=document.querySelector('.prose h1')?.textContent.trim()||document.title.split(' · ')[0];
+  const marks=[...document.querySelectorAll('.chapter-prose h2[id]')];
+  let placeSaved=0;
+  const savePlace=()=>{
+    placeSaved=Date.now();
+    const top=scrollY+120;
+    let near=null;for(const mark of marks){if(mark.offsetTop<=top)near=mark;else break}
+    const height=placeMain.offsetHeight-innerHeight;
+    const done=height>60?Math.min(1,Math.max(0,(scrollY-placeMain.offsetTop)/height)):0;
+    const place={u:location.pathname,t:pageTitle,h:near?near.textContent.trim():'',a:near?near.id:'',p:Math.round(done*100),d:new Date().toISOString().slice(0,10)};
+    try{localStorage.setItem(PLACE_KEY,JSON.stringify(place))}catch{}
+  };
+  addEventListener('scroll',()=>{if(Date.now()-placeSaved>1000)savePlace()},{passive:true});
+  addEventListener('pagehide',savePlace);
+  savePlace();
+}
+const resumeLine=document.querySelector('[data-resume-line]');
+if(resumeLine){
+  let place=null;try{place=JSON.parse(localStorage.getItem(PLACE_KEY)||'null')}catch{}
+  // Адрес берём только свой: чужая строка в хранилище не должна становиться ссылкой.
+  if(place&&typeof place.u==='string'&&place.u.length<80&&place.u.startsWith('/')&&place.u.endsWith('/')&&!place.u.includes('//')&&!place.u.includes('..')){
+    const link=resumeLine.querySelector('[data-resume-link]');
+    link.setAttribute('href',place.u+(place.a?'#'+encodeURIComponent(place.a):''));
+    const short=text=>{const value=String(text).replace(/^(?:[0-9]+(?:[.][0-9]+)*[.]|Урок [0-9]+[.])[ ]*/,'');return value.length>54?value.slice(0,53).trimEnd()+'…':value};
+    link.textContent=short(place.t)+(place.h?' · '+short(place.h):'');
+    resumeLine.querySelector('[data-resume-note]').textContent=place.p>0?'прочитано '+place.p+'%':'начато';
+    resumeLine.hidden=false;
+  }
 }
 
 /* Размер текста: три ступени, выбор сохраняется в этом браузере. */
@@ -1493,17 +1584,83 @@ const indexPage = (url, html) => {
     const text = readable(block.body);
     if (text.length < 40) continue;
     const heading = readable(block.heading);
-    searchDocuments.push({ u: url, t: title, a: block.anchor, h: heading, x: text });
+    searchDocuments.push([url, title, block.anchor, heading, text]);
   }
   // Страница целиком из интерактивных блоков (тренажёр A1) не даёт ни одного раздела —
   // она всё равно должна находиться по названию, иначе маршрут выпадает из поиска.
-  if (searchDocuments.length === before) searchDocuments.push({ u: url, t: title, a: '', h: title, x: readable(main) });
+  if (searchDocuments.length === before) searchDocuments.push([url, title, '', title, readable(main)]);
 };
 indexPage('/', home);
 indexPage('/curriculum/', curriculum);
 for (const [url, html] of outputs) indexPage(url, html);
 if (searchDocuments.length < 400) throw new Error(`Search index too small: ${searchDocuments.length} sections`);
-await writeFile(resolve(output, 'assets', 'search.json'), JSON.stringify(searchDocuments));
+// Адрес и заголовок страницы повторялись в каждом из 1567 разделов: страница
+// вынесена в отдельную таблицу, раздел стал массивом вместо объекта с ключами.
+// Текст раздела не режется — поиск полнотекстовый, и обрезка стоила бы находок.
+const searchPages = [];
+const searchPageIndex = new Map();
+const searchRows = searchDocuments.map(([url, title, anchor, heading, text]) => {
+  const key = url + '\u0000' + title;
+  if (!searchPageIndex.has(key)) { searchPageIndex.set(key, searchPages.length); searchPages.push([url, title]); }
+  return [searchPageIndex.get(key), anchor, heading, text];
+});
+await writeFile(resolve(output, 'assets', 'search.json'), JSON.stringify({ v: 2, p: searchPages, s: searchRows }));
+
+// ---------- Работа без сети ----------
+// Книга обещает, что интернет нужен только для внешних ссылок, а сайт этого не
+// давал: при обрыве связи открывалась только уже загруженная вкладка, и индекс
+// поиска в 1,6 МБ скачивался заново в каждой новой сессии. Обслуживающий скрипт
+// отдаёт из кэша и обновляет в фоне, а кнопка на «Маршруте» кладёт в память все
+// страницы сразу. Версия кэша считается по исходнику и собранным файлам: новая
+// публикация обязана вытеснить старую копию, иначе читатель останется на ней.
+const routeList = ['/', '/curriculum/', ...outputs.map(([url]) => url)].map((url) => `${BASE}${url}`);
+const buildId = sha256(source + css + js).slice(0, 12);
+const serviceWorker = `/* Собирается build-static.mjs. Правьте генератор, а не этот файл. */
+const VERSION='${buildId}';
+const CACHE='course-'+VERSION;
+const ROUTES=${JSON.stringify(routeList)};
+const SHELL=['${BASE}/assets/site.css','${BASE}/assets/site.js','${BASE}/assets/favicon.svg','${BASE}/'];
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()).catch(()=>self.skipWaiting()))});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
+/* Отдаём копию сразу и обновляем её в фоне: страница открывается мгновенно и
+   без сети, а следующее открытие уже получает свежую версию. */
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET')return;
+  const url=new URL(request.url);
+  if(url.origin!==self.location.origin)return;
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE);
+    const cached=await cache.match(request,{ignoreSearch:true});
+    const network=fetch(request).then(response=>{
+      if(response&&response.ok&&response.type==='basic')cache.put(request,response.clone()).catch(()=>{});
+      return response;
+    }).catch(()=>null);
+    if(cached){event.waitUntil(network);return cached}
+    const response=await network;
+    return response||new Response('Нет сети, и копии этой страницы в памяти браузера тоже нет.',{status:504,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+  })());
+});
+/* Сохранение всего учебника по кнопке: скачиваем по одному адресу и говорим
+   странице, сколько уже готово, — иначе кнопка на несколько мегабайт молчит. */
+self.addEventListener('message',event=>{
+  if(event.data&&event.data.type==='save-all'){
+    const client=event.source;
+    event.waitUntil((async()=>{
+      const cache=await caches.open(CACHE);
+      const all=[...ROUTES,'${BASE}/assets/search.json',...SHELL];
+      let done=0,failed=0;
+      for(const address of all){
+        try{const response=await fetch(address,{cache:'reload'});if(response.ok)await cache.put(address,response.clone());else failed+=1}catch{failed+=1}
+        done+=1;
+        if(client)client.postMessage({type:'save-progress',done,total:all.length});
+      }
+      if(client)client.postMessage({type:'save-done',total:all.length,failed});
+    })());
+  }
+});
+`;
+await writeFile(resolve(output, 'sw.js'), serviceWorker);
 
 const htmlFiles = ['index.html', 'curriculum/index.html', ...outputs.map(([url]) => `${url.slice(1)}index.html`)];
 for (const relative of htmlFiles) {
