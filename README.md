@@ -51,6 +51,7 @@ python3 -m http.server 4175 --directory build
 ```bash
 node scripts/validate-site.mjs
 node --check build/assets/site.js
+node scripts/check-links.mjs      # внешние ссылки; нужна сеть
 ```
 
 Отдельного тестового прогона нет: `scripts/validate-site.mjs` и есть спецификация — он ловит то, что не видно ни в сборке, ни в разметке.

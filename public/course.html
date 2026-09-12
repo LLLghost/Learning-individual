@@ -3287,11 +3287,11 @@ tcpdump -ni eth0 'tcp port 22' # повторные передачи одног�
 <p><strong>До:</strong> <a href="#ch06">05</a>. <strong>После:</strong> объяснять окна TCP, рассчитывать BDP/MSS, локализовать DNS и PMTU, различать ARP и ND. <a href="#lab07">L07A/B</a>, <a href="#ch18">измерения</a>.</p>
 <h3 id="_14">Теория</h3>
 <p>UDP передаёт датаграммы и не предоставляет встроенный надёжный упорядоченный поток. Приложение само решает вопросы повторов и согласования, если они нужны. TCP предоставляет поток байтов: границы вызовов <code>send</code> не сохраняются как границы сообщений. Приложению нужны длина, разделитель или собственное кадрирование. Порядковые номера и подтверждения позволяют обнаруживать потери и упорядочивать поток; повторная доставка байтов TCP не означает повторное выполнение прикладной транзакции, но повтор запроса самим клиентом может его вызвать.</p>
-<p>В типичном установлении соединения клиент проходит SYN-SENT, сервер — SYN-RECEIVED, затем стороны переходят в ESTABLISHED. Закрытие полудуплексно: направления могут завершаться отдельно. TIME-WAIT помогает отделять старые сегменты от нового использования соединения. Протокол и состояния определены в <a href="https://www.rfc-editor.org/rfc/rfc9293">RFC 9293</a>. Успех рукопожатия проверяет небольшой обмен пакетами, а не авторизацию, TLS или обработку большого ответа.</p>
+<p>В типичном установлении соединения клиент проходит SYN-SENT, сервер — SYN-RECEIVED, затем стороны переходят в ESTABLISHED. Закрытие полудуплексно: направления могут завершаться отдельно. TIME-WAIT помогает отделять старые сегменты от нового использования соединения. Протокол и состояния определены в <a href="https://www.rfc-editor.org/rfc/rfc9293.html">RFC 9293</a>. Успех рукопожатия проверяет небольшой обмен пакетами, а не авторизацию, TLS или обработку большого ответа.</p>
 <p>Управление потоком защищает получателя через окно приёма; управление перегрузкой ограничивает нагрузку на сеть через окно перегрузки. Приближённо число байтов «в полёте» ограничено меньшим из окон. Для полной загрузки канала нужно достаточное произведение полосы на задержку: BDP = полоса·RTT. Большой буфер может повысить пропускную способность и одновременно увеличить задержку очереди. Тайм-аут повторной передачи, быстрая повторная передача и конкретный алгоритм управления перегрузкой влияют на восстановление после потерь.</p>
 <p>MTU ограничивает размер пакета IP на данном участке, MSS — объём данных TCP в сегменте. Для IPv4 без опций MSS часто ≤ MTU−20−20. Туннель добавляет накладные расходы. Обнаружение MTU пути находит минимальный MTU; потерянные сообщения ICMP могут создать «чёрную дыру»: маленькие пакеты проходят, крупные — нет. Снижение MSS — возможный обход, но сначала устанавливают реальную границу и причину.</p>
 <p>DNS — распределённая система имён: авторитетный сервер хранит зону, рекурсивный резолвер выполняет поиск и кеширует ответы с учётом TTL. NXDOMAIN означает отсутствие имени в полученном ответе, SERVFAIL — невозможность успешно завершить обработку. NSS может использовать <code>/etc/hosts</code>, DNS и другие источники; <code>getent</code> ближе к системному разрешению имён, <code>dig</code> проверяет DNS напрямую. DHCPv4 согласует адрес и параметры аренды обменом Discover/Offer/Request/Ack; статически назначенный адрес не доказывает корректность шлюза и резолвера.</p>
-<p>IPv6 использует 128-битные адреса и базовый заголовок 40 байт. Широковещание заменено соответствующими многоадресными механизмами; ND поверх ICMPv6 выполняет разрешение адресов соседей и связанные функции. Router Advertisement сообщает параметры маршрутизатора и префиксы; DHCPv6 не является универсальной заменой RA. Маршрутизаторы IPv6 не фрагментируют транзитные пакеты: важны Packet Too Big и обнаружение MTU пути. Основы: <a href="https://www.rfc-editor.org/rfc/rfc8200">RFC 8200</a>; при практическом внедрении учитывают обновления RFC и спецификации ND/SLAAC.</p>
+<p>IPv6 использует 128-битные адреса и базовый заголовок 40 байт. Широковещание заменено соответствующими многоадресными механизмами; ND поверх ICMPv6 выполняет разрешение адресов соседей и связанные функции. Router Advertisement сообщает параметры маршрутизатора и префиксы; DHCPv6 не является универсальной заменой RA. Маршрутизаторы IPv6 не фрагментируют транзитные пакеты: важны Packet Too Big и обнаружение MTU пути. Основы: <a href="https://www.rfc-editor.org/rfc/rfc8200.html">RFC 8200</a>; при практическом внедрении учитывают обновления RFC и спецификации ND/SLAAC.</p>
 <h3 id="_15">Разобранные примеры</h3>
 <p><strong>E07.1. BDP.</strong> 10 Gbit/s и RTT 20 мс требуют около 25 MB данных в полёте. Окно 1 MB ограничивает идеальную скорость примерно 50 MB/s при том же RTT.</p>
 <p><strong>E07.2. MSS.</strong> При эффективном IP MTU 1420 и IPv4/TCP без опций MSS ≤ 1380 байт. Для базового IPv6/TCP — 1360. Опции и инкапсуляция требуют отдельного учёта.</p>
@@ -10401,7 +10401,7 @@ application
 <li><a href="https://www.rfc-editor.org/rfc/rfc1035.html" rel="noreferrer">RFC 1035 — DNS, формат сообщений и поведение</a> — <code>https://www.rfc-editor.org/rfc/rfc1035.html</code></li>
 <li><a href="https://www.rfc-editor.org/rfc/rfc2131.html" rel="noreferrer">RFC 2131 — DHCP</a> — <code>https://www.rfc-editor.org/rfc/rfc2131.html</code></li>
 <li><a href="https://wiki.linuxfoundation.org/networking/iproute2" rel="noreferrer">iproute2 — исходники и документация</a> — <code>https://wiki.linuxfoundation.org/networking/iproute2</code></li>
-<li><a href="https://wiki.nftables.org/" rel="noreferrer">nftables wiki</a> — <code>https://wiki.nftables.org/</code></li>
+<li><a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page" rel="noreferrer">nftables wiki</a> — <code>https://wiki.nftables.org/wiki-nftables/index.php/Main_Page</code></li>
 <li>Документация конкретного вендора коммутатора и сетевой карты</li>
 </ul>
 <p>RFC лучше читать не подряд, а под конкретную диагностическую задачу: терминология, конечный автомат, точное поведение протокола в спорном случае.</p>
@@ -10411,7 +10411,7 @@ application
 <li><a href="https://nvmexpress.org/specifications/" rel="noreferrer">Спецификации NVM Express</a> — <code>https://nvmexpress.org/specifications/</code></li>
 <li><a href="https://github.com/linux-nvme/nvme-cli" rel="noreferrer">nvme-cli</a> — <code>https://github.com/linux-nvme/nvme-cli</code></li>
 <li><a href="https://sourceware.org/lvm2/" rel="noreferrer">Документация LVM и device-mapper (sourceware LVM2)</a> — <code>https://sourceware.org/lvm2/</code></li>
-<li><a href="https://raid.wiki.kernel.org/" rel="noreferrer">RAID Wiki (mdadm, mdraid)</a> — <code>https://raid.wiki.kernel.org/</code></li>
+<li><a href="https://docs.kernel.org/admin-guide/md.html" rel="noreferrer">Программный RAID в ядре Linux (mdraid)</a> — <code>https://docs.kernel.org/admin-guide/md.html</code></li>
 <li><a href="https://openzfs.github.io/openzfs-docs/" rel="noreferrer">OpenZFS documentation</a> — <code>https://openzfs.github.io/openzfs-docs/</code></li>
 <li><a href="https://docs.ceph.com/en/latest/" rel="noreferrer">Ceph documentation</a> — <code>https://docs.ceph.com/en/latest/</code></li>
 <li><a href="https://sg.danny.cz/sg/sg3_utils.html" rel="noreferrer">Linux SCSI generic utilities (sg3_utils)</a> — <code>https://sg.danny.cz/sg/sg3_utils.html</code></li>
@@ -10425,7 +10425,7 @@ application
 </ul>
 <h2 id="b33-s095">Мониторинг</h2>
 <ul>
-<li><a href="https://prometheus.io/docs/" rel="noreferrer">Prometheus documentation</a> — <code>https://prometheus.io/docs/</code></li>
+<li><a href="https://prometheus.io/docs/introduction/overview/" rel="noreferrer">Prometheus documentation</a> — <code>https://prometheus.io/docs/introduction/overview/</code></li>
 <li><a href="https://prometheus.io/docs/prometheus/latest/querying/basics/" rel="noreferrer">PromQL — основы запросов</a> — <code>https://prometheus.io/docs/prometheus/latest/querying/basics/</code></li>
 <li><a href="https://grafana.com/docs/grafana/latest/" rel="noreferrer">Grafana documentation</a> — <code>https://grafana.com/docs/grafana/latest/</code></li>
 <li><a href="https://www.zabbix.com/documentation/current/en" rel="noreferrer">Zabbix documentation</a> — <code>https://www.zabbix.com/documentation/current/en</code></li>
@@ -10451,7 +10451,7 @@ application
 <h2 id="b33-s098">Прошивки</h2>
 <ul>
 <li><a href="https://uefi.org/specifications" rel="noreferrer">UEFI, PI и ACPI — официальные спецификации UEFI Forum</a> — <code>https://uefi.org/specifications</code></li>
-<li><a href="https://github.com/tianocore/tianocore.github.io/wiki/EDK-II" rel="noreferrer">TianoCore EDK II — документация</a> — <code>https://github.com/tianocore/tianocore.github.io/wiki/EDK-II</code></li>
+<li><a href="https://tianocore-docs.github.io/" rel="noreferrer">TianoCore EDK II — документация</a> — <code>https://tianocore-docs.github.io/</code></li>
 <li><a href="https://github.com/tianocore/edk2" rel="noreferrer">TianoCore EDK II — исходный код</a> — <code>https://github.com/tianocore/edk2</code></li>
 <li><a href="https://pcisig.com/specifications" rel="noreferrer">PCI-SIG — спецификации PCI Express</a> — <code>https://pcisig.com/specifications</code></li>
 <li><a href="https://www.dmtf.org/standards/redfish" rel="noreferrer">DMTF Redfish</a> — <code>https://www.dmtf.org/standards/redfish</code></li>
@@ -12232,11 +12232,11 @@ clat percentiles (usec):
 </tr>
 <tr>
 <td>TCP</td>
-<td><a href="https://www.rfc-editor.org/rfc/rfc9293">RFC 9293</a>: поток и конечный автомат</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc9293.html">RFC 9293</a>: поток и конечный автомат</td>
 </tr>
 <tr>
 <td>IPv6</td>
-<td><a href="https://www.rfc-editor.org/rfc/rfc8200">RFC 8200</a>: заголовок и фрагментация; смотреть актуальные обновления</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc8200.html">RFC 8200</a>: заголовок и фрагментация; смотреть актуальные обновления</td>
 </tr>
 <tr>
 <td>cgroups</td>
