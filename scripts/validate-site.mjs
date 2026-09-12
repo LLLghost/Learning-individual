@@ -59,7 +59,11 @@ if (!siteJs.includes('recordQuickCheck') || !siteCss.includes('.chapter-trainer'
 // Полнотекстовый поиск: индекс собран по всем маршрутам и доступен с каждой страницы.
 if (!siteJs.includes('loadSearchIndex') || !siteCss.includes('.search-panel')) failures.push('assets: missing full-text search behavior or styles');
 try {
-  const searchIndex = JSON.parse(await readFile(resolve(root, 'assets', 'search.json'), 'utf8'));
+  // Индекс хранится компактно: страницы отдельной таблицей, раздел — массивом.
+  // Правила работают на развёрнутом виде, чтобы не повторять формат в двух местах.
+  const packed = JSON.parse(await readFile(resolve(root, 'assets', 'search.json'), 'utf8'));
+  if (packed.v !== 2 || !Array.isArray(packed.p) || !Array.isArray(packed.s)) throw new Error('shape');
+  const searchIndex = packed.s.map(([page, anchor, heading, text]) => ({ u: packed.p[page]?.[0], t: packed.p[page]?.[1], a: anchor, h: heading, x: text }));
   const indexedRoutes = new Set(searchIndex.map((entry) => entry.u));
   if (searchIndex.length < 400) failures.push(`search index: only ${searchIndex.length} sections`);
   if (indexedRoutes.size !== htmlFiles.length) failures.push(`search index: covers ${indexedRoutes.size} of ${htmlFiles.length} routes`);
@@ -109,6 +113,26 @@ else {
   if (clashes.length) failures.push(`term base: one spelling claimed twice — ${clashes.slice(0, 6).join('; ')}`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
+// Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и
+// остальной клиентский код: синтаксическая ошибка в нём проходит молча, а сайт
+// после этого просто перестаёт открываться офлайн — в разметке ни следа.
+{
+  let worker = null;
+  try { worker = await readFile(resolve(root, 'sw.js'), 'utf8'); } catch { failures.push('build: missing sw.js'); }
+  if (worker) {
+    try { new Function(worker); } catch (error) { failures.push(`sw.js: syntax error — ${error.message}`); }
+    if (!/const VERSION='[0-9a-f]{8,}'/.test(worker)) failures.push('sw.js: cache version is missing, a new build would not replace the old copy');
+    const listed = new Set(JSON.parse(worker.match(/const ROUTES=(\[[^\]]*\])/)?.[1] ?? '[]'));
+    const missing = htmlFiles
+      .map((file) => file.slice(root.length).replace(/index\.html$/, '').replace(/\\/g, '/'))
+      .map((url) => (BASE ? BASE + url : url))
+      .filter((url) => !listed.has(url));
+    if (missing.length) failures.push(`sw.js: ${missing.length} routes are not saved for offline use, first ${missing[0]}`);
+    if (!siteJs.includes('serviceWorker.register')) failures.push('site.js: service worker is never registered');
+    const page = cache.get(resolve(root, 'index.html')) ?? '';
+    if (!page.includes("worker-src 'self'")) failures.push('index.html: the policy forbids the service worker it registers');
+  }
+}
 for (let number = 0; number < 34; number += 1) {
   const chapter = cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html'));
   if (!chapter?.includes(`data-chapter-trainer="${number}"`)) failures.push(`chapter ${number}: missing quick trainer`);

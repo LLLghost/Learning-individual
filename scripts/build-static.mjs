@@ -240,6 +240,7 @@ const sealPolicy = (html) => {
     "style-src 'self'",
     "img-src 'self'",
     "connect-src 'self'",
+    "worker-src 'self'",
     "base-uri 'none'",
     "form-action 'none'",
   ].join('; ');
@@ -564,6 +565,12 @@ const route = pageShell({
 <div class="route-head"><h2 id="route-calendar-title">Календарь</h2><p>Дни, в которые что-то было впервые зачтено. Календарь только показывает: изменить дату через интерфейс нельзя.</p></div>
 <div data-route-months class="route-months"></div>
 <ol class="route-log" data-route-log></ol>
+</section>
+<section class="compact-prose" aria-labelledby="route-offline">
+<h2 id="route-offline">Учебник без сети</h2>
+<p>Прочитанные страницы браузер оставляет у себя и открывает их без интернета. Одной кнопкой можно положить в память сразу весь курс — 47 страниц и поиск по ним: после этого учебник работает там, где связи нет, а страницы открываются мгновенно.</p>
+<div class="route-backup"><button type="button" class="button primary" data-offline-save>Сохранить учебник для работы без сети</button></div>
+<p class="route-note" data-offline-status role="status">Около шести мегабайт. Копия обновится сама, когда выйдет новая версия учебника.</p>
 </section>
 <section class="compact-prose" aria-labelledby="route-backup">
 <h2 id="route-backup">Резервная копия</h2>
@@ -1172,7 +1179,7 @@ const fold=text=>String(text).toLowerCase().replace(/ё/g,'е');
 let searchIndex=null,searchRequest=null,searchTimer=0,searchReturnFocus=null;
 const loadSearchIndex=()=>{
   if(searchIndex)return Promise.resolve(searchIndex);
-  if(!searchRequest)searchRequest=fetch('${BASE}/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.map(entry=>({...entry,f:fold(entry.h+' '+entry.x)}));return searchIndex});
+  if(!searchRequest)searchRequest=fetch('${BASE}/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.s.map(row=>{const page=data.p[row[0]];return{u:page[0],t:page[1],a:row[1],h:row[2],x:row[3],f:fold(row[2]+' '+row[3])}});return searchIndex});
   return searchRequest;
 };
 const markTerms=(raw,terms)=>{
@@ -1403,6 +1410,27 @@ if(readProgress&&readMain){
   drawProgress();
 }
 
+/* Работа без сети: обслуживающий скрипт регистрируется тихо. Если браузер его
+   не поддерживает или страница открыта не по http(s), сайт работает как прежде. */
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>{navigator.serviceWorker.register('${BASE}/sw.js').catch(()=>{})});
+const offlineSave=document.querySelector('[data-offline-save]'),offlineStatus=document.querySelector('[data-offline-status]');
+if(offlineSave&&offlineStatus){
+  if(!('serviceWorker' in navigator)){offlineSave.disabled=true;offlineStatus.textContent='Этот браузер не умеет хранить страницы для работы без сети.'}
+  else{
+    navigator.serviceWorker.addEventListener('message',event=>{
+      const data=event.data||{};
+      if(data.type==='save-progress')offlineStatus.textContent='Сохранено '+data.done+' из '+data.total+'…';
+      if(data.type==='save-done'){offlineSave.disabled=false;offlineStatus.textContent=data.failed?('Сохранено, но '+data.failed+' файлов скачать не удалось. Повторите при устойчивой связи.'):('Готово: '+data.total+' файлов в памяти браузера — все страницы курса и поиск по ним. Учебник открывается без сети.')}
+    });
+    offlineSave.addEventListener('click',async()=>{
+      offlineSave.disabled=true;offlineStatus.textContent='Сохраняем…';
+      const registration=await navigator.serviceWorker.ready.catch(()=>null);
+      if(!registration||!registration.active){offlineStatus.textContent='Хранилище ещё готовится. Обновите страницу и повторите.';offlineSave.disabled=false;return}
+      registration.active.postMessage({type:'save-all'});
+    });
+  }
+}
+
 /* Место чтения. Курс на 123 000 слов читают месяцами, и до сих пор не было
    единственного, что нужно после перерыва: вернуться туда, где остановился.
    Хранится одна запись — адрес, заголовок страницы, ближайший раздел и доля
@@ -1556,17 +1584,83 @@ const indexPage = (url, html) => {
     const text = readable(block.body);
     if (text.length < 40) continue;
     const heading = readable(block.heading);
-    searchDocuments.push({ u: url, t: title, a: block.anchor, h: heading, x: text });
+    searchDocuments.push([url, title, block.anchor, heading, text]);
   }
   // Страница целиком из интерактивных блоков (тренажёр A1) не даёт ни одного раздела —
   // она всё равно должна находиться по названию, иначе маршрут выпадает из поиска.
-  if (searchDocuments.length === before) searchDocuments.push({ u: url, t: title, a: '', h: title, x: readable(main) });
+  if (searchDocuments.length === before) searchDocuments.push([url, title, '', title, readable(main)]);
 };
 indexPage('/', home);
 indexPage('/curriculum/', curriculum);
 for (const [url, html] of outputs) indexPage(url, html);
 if (searchDocuments.length < 400) throw new Error(`Search index too small: ${searchDocuments.length} sections`);
-await writeFile(resolve(output, 'assets', 'search.json'), JSON.stringify(searchDocuments));
+// Адрес и заголовок страницы повторялись в каждом из 1567 разделов: страница
+// вынесена в отдельную таблицу, раздел стал массивом вместо объекта с ключами.
+// Текст раздела не режется — поиск полнотекстовый, и обрезка стоила бы находок.
+const searchPages = [];
+const searchPageIndex = new Map();
+const searchRows = searchDocuments.map(([url, title, anchor, heading, text]) => {
+  const key = url + '\u0000' + title;
+  if (!searchPageIndex.has(key)) { searchPageIndex.set(key, searchPages.length); searchPages.push([url, title]); }
+  return [searchPageIndex.get(key), anchor, heading, text];
+});
+await writeFile(resolve(output, 'assets', 'search.json'), JSON.stringify({ v: 2, p: searchPages, s: searchRows }));
+
+// ---------- Работа без сети ----------
+// Книга обещает, что интернет нужен только для внешних ссылок, а сайт этого не
+// давал: при обрыве связи открывалась только уже загруженная вкладка, и индекс
+// поиска в 1,6 МБ скачивался заново в каждой новой сессии. Обслуживающий скрипт
+// отдаёт из кэша и обновляет в фоне, а кнопка на «Маршруте» кладёт в память все
+// страницы сразу. Версия кэша считается по исходнику и собранным файлам: новая
+// публикация обязана вытеснить старую копию, иначе читатель останется на ней.
+const routeList = ['/', '/curriculum/', ...outputs.map(([url]) => url)].map((url) => `${BASE}${url}`);
+const buildId = sha256(source + css + js).slice(0, 12);
+const serviceWorker = `/* Собирается build-static.mjs. Правьте генератор, а не этот файл. */
+const VERSION='${buildId}';
+const CACHE='course-'+VERSION;
+const ROUTES=${JSON.stringify(routeList)};
+const SHELL=['${BASE}/assets/site.css','${BASE}/assets/site.js','${BASE}/assets/favicon.svg','${BASE}/'];
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()).catch(()=>self.skipWaiting()))});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
+/* Отдаём копию сразу и обновляем её в фоне: страница открывается мгновенно и
+   без сети, а следующее открытие уже получает свежую версию. */
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET')return;
+  const url=new URL(request.url);
+  if(url.origin!==self.location.origin)return;
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE);
+    const cached=await cache.match(request,{ignoreSearch:true});
+    const network=fetch(request).then(response=>{
+      if(response&&response.ok&&response.type==='basic')cache.put(request,response.clone()).catch(()=>{});
+      return response;
+    }).catch(()=>null);
+    if(cached){event.waitUntil(network);return cached}
+    const response=await network;
+    return response||new Response('Нет сети, и копии этой страницы в памяти браузера тоже нет.',{status:504,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+  })());
+});
+/* Сохранение всего учебника по кнопке: скачиваем по одному адресу и говорим
+   странице, сколько уже готово, — иначе кнопка на несколько мегабайт молчит. */
+self.addEventListener('message',event=>{
+  if(event.data&&event.data.type==='save-all'){
+    const client=event.source;
+    event.waitUntil((async()=>{
+      const cache=await caches.open(CACHE);
+      const all=[...ROUTES,'${BASE}/assets/search.json',...SHELL];
+      let done=0,failed=0;
+      for(const address of all){
+        try{const response=await fetch(address,{cache:'reload'});if(response.ok)await cache.put(address,response.clone());else failed+=1}catch{failed+=1}
+        done+=1;
+        if(client)client.postMessage({type:'save-progress',done,total:all.length});
+      }
+      if(client)client.postMessage({type:'save-done',total:all.length,failed});
+    })());
+  }
+});
+`;
+await writeFile(resolve(output, 'sw.js'), serviceWorker);
 
 const htmlFiles = ['index.html', 'curriculum/index.html', ...outputs.map(([url]) => `${url.slice(1)}index.html`)];
 for (const relative of htmlFiles) {
