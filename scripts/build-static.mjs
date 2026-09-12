@@ -330,6 +330,7 @@ const studyModuleByChapter = chapterModules.map((modules) => modules[0]);
 // модели главы, второй о её «типичной ошибке мышления». Уровень другой —
 // «прочитал и понял», тогда как кабинет спрашивает применение механизма.
 const chapterQuick = scriptJson('chapter-quick-data');
+const lessonQuick = scriptJson('lesson-quick-data');
 
 // Номер верного ответа не должен читаться в исходном коде страницы. В разметку попадает
 // контрольная сумма пары «идентификатор вопроса + номер варианта»; скрипт сверяет с ней
@@ -365,19 +366,44 @@ const chapterRecall = (chapter) => {
 </section>`;
 };
 
-const chapterTrainer = (number) => {
-  const module = studyModuleByChapter[number];
-  const items = chapterQuick[String(number)] ?? [];
-  if (items.length !== 2) throw new Error(`Expected two quick-check questions for chapter ${number}`);
+// Мини-тренажёр общий для глав и вводных уроков: ярус один и тот же, меняются
+// только вопросы, подпись и то, куда ведёт ссылка. Ключ отметки в календаре
+// (`data-chapter-trainer`) для главы — её номер, для урока — «sN»: шкалы разные
+// и пересечься не должны.
+const quickTrainer = ({ scope, seed, items, eyebrow, title, lead, doneText, footerHref, footerText }) => {
+  if (items.length !== 2) throw new Error(`Expected two quick-check questions for ${scope}`);
   const questions = items.map((item, questionIndex) => {
-    const trainerId = `Q${pad(number)}-${questionIndex}`;
-    const shift = (number + questionIndex) % item.options.length;
+    const trainerId = `Q${scope}-${questionIndex}`;
+    const shift = (seed + questionIndex) % item.options.length;
     const options = [...item.options.slice(shift), ...item.options.slice(0, shift)];
     const answer = (item.answer - shift + item.options.length) % item.options.length;
     return `<fieldset class="trainer-question" data-trainer-question="${trainerId}" data-answer="${answerDigest(trainerId, answer)}"><legend><span>${questionIndex + 1}</span>${escape(item.stem)}</legend><div class="trainer-options">${options.map((option, optionIndex) => `<label><input type="radio" name="trainer-${trainerId}" value="${optionIndex}"><span>${escape(option)}</span></label>`).join('')}</div><div class="trainer-actions"><button type="button" data-trainer-check>Проверить</button><p class="trainer-feedback" data-trainer-feedback hidden data-explanation="${escape(item.explanation)}" role="status"></p></div></fieldset>`;
   }).join('');
-  return `<section class="chapter-trainer" data-chapter-trainer="${number}" aria-labelledby="trainer-title-${number}"><header><div><p class="eyebrow">Сразу после главы</p><h2 id="trainer-title-${number}">Мини-тренажёр главы</h2><p>Два вопроса по главным утверждениям этой главы: прочитана и понята. Мгновенная проверка, результат сохраняется в этом браузере.</p></div><strong data-trainer-score>0 / 2</strong></header>${questions}<footer><span data-trainer-summary>Ответьте на оба вопроса.</span><a href="/assessment/?module=${module}">Проверка знаний · модуль U${pad(module)} →</a></footer></section>`;
+  return `<section class="chapter-trainer" data-chapter-trainer="${scope}" data-trainer-done="${escape(doneText)}" aria-labelledby="trainer-title-${scope}"><header><div><p class="eyebrow">${escape(eyebrow)}</p><h2 id="trainer-title-${scope}">${escape(title)}</h2><p>${escape(lead)}</p></div><strong data-trainer-score>0 / 2</strong></header>${questions}<footer><span data-trainer-summary>Ответьте на оба вопроса.</span><a href="${footerHref}">${escape(footerText)}</a></footer></section>`;
 };
+
+const chapterTrainer = (number) => {
+  const module = studyModuleByChapter[number];
+  return quickTrainer({
+    scope: String(number), seed: number, items: chapterQuick[String(number)] ?? [],
+    eyebrow: 'Сразу после главы', title: 'Мини-тренажёр главы',
+    lead: 'Два вопроса по главным утверждениям этой главы: прочитана и понята. Мгновенная проверка, результат сохраняется в этом браузере.',
+    doneText: 'Глава закреплена. Можно переходить дальше.',
+    footerHref: `/assessment/?module=${module}`, footerText: `Проверка знаний · модуль U${pad(module)} →`,
+  });
+};
+
+// Вводные уроки жили вне всех трёх ярусов: свёрнутый блок «Проверьте себя» есть,
+// но он ничего не проверяет и никуда не идёт. Человек, пришедший с нуля, первые
+// пять шагов проходил без единой отметки.
+const lessonTrainer = (lesson) => quickTrainer({
+  scope: `s${lesson.number}`, seed: lesson.number, items: lessonQuick[String(lesson.number)] ?? [],
+  eyebrow: 'Сразу после урока', title: 'Мини-тренажёр урока',
+  lead: 'Два вопроса по главным утверждениям этого урока. Мгновенная проверка, результат сохраняется в этом браузере.',
+  doneText: 'Урок закреплён. Можно переходить дальше.',
+  footerHref: lesson.number < lessons.length ? lessons[lesson.number].url : '/chapters/00/',
+  footerText: lesson.number < lessons.length ? `Урок ${lesson.number + 1} →` : 'Глава 00 · сборка стенда →',
+});
 
 // Обратная связка «глава → её академические модули»: без неё главы 3, 5, 11 и 25
 // оставались тупиками — из них не было пути ни в практикум, ни в проверку знаний.
@@ -411,7 +437,7 @@ const lessonPage = (lesson) => {
     ? `<a href="${next.url}">Урок ${next.number} →</a>`
     : '<a href="/chapters/00/">Глава 00 →</a>';
   const pager = `<nav class="pager" aria-label="Переход между уроками">${previous ? `<a href="${previous.url}">← Урок ${previous.number}</a>` : '<a href="/about/">← О курсе</a>'}<a class="assessment-link" href="/curriculum/">Вся программа</a>${forward}</nav>`;
-  const body = `<article class="prose chapter-prose">${rewriteLinks(lesson.intro + lesson.content, lesson.url)}</article>${pager}`;
+  const body = `<article class="prose chapter-prose">${rewriteLinks(lesson.intro + lesson.content, lesson.url)}</article>${lessonTrainer(lesson)}${pager}`;
   return pageShell({
     title: lesson.title, eyebrow: `Начало · урок ${lesson.number} из ${LESSON_COUNT}`,
     body, sidebar: `<a class="back-link" href="/curriculum/">← Вся программа</a><div class="sidebar-scroll">${lessonNav(lesson.number)}</div>`,
@@ -514,13 +540,13 @@ const route = pageShell({
 <section class="compact-prose" aria-labelledby="route-order">
 <h2 id="route-order">Порядок работы</h2>
 <ol class="route-order">
-<li><strong>Если администрировать не приходилось — начните с вводной части.</strong> Пять уроков <a href="/start/01/">«Начало»</a> объясняют, из чего собрана система и как про неё думать. Они читаются за вечер, стенд для них не нужен. У кого опыт есть — шаг пропускается.</li>
+<li><strong>Если администрировать не приходилось — начните с вводной части.</strong> Пять уроков <a href="/start/01/">«Начало»</a> объясняют, из чего собрана система и как про неё думать. Они читаются за вечер, стенд для них не нужен, а в конце каждого — мини-тренажёр из двух вопросов. У кого опыт есть — шаг пропускается.</li>
 <li><strong>Соберите стенд по главе 00.</strong> Весь курс стоит на нём: без стенда лаборатории и работы практикума выполнить не на чем.</li>
 <li><strong>Идите по главам подряд.</strong> Каждая опирается на предыдущие, а «Перед началом» прямо связывает новую тему с уже разобранной.</li>
 <li><strong>Читайте главу целиком</strong> — до разобранного примера и типичной ошибки мышления. Они дают метод, а не факты.</li>
 <li><strong>Выполните лабораторию главы</strong> на стенде, а не мысленно.</li>
 <li><strong>Решите мини-тренажёр</strong> в конце главы: два вопроса, мгновенная проверка. Это первая отметка в календаре.</li>
-<li><strong>Сдайте модуль U в кабинете:</strong> задания на механизм, расчёт и сценарий по шагам. Это вторая отметка.</li>
+<li><strong>Сдайте модуль U в кабинете</strong> — не в тот же день, а хотя бы через сутки: задания на механизм, расчёт и сценарий по шагам. Это вторая отметка. Дальше кабинет вернёт слабые задания сам через 2, 7 и 21 день.</li>
 <li><strong>Сделайте обе работы практикума</strong> — A (воспроизвести механизм) и B (сломанный стенд). Работу B не пропускайте: навык формируется именно там.</li>
 <li><strong>Запишите результат в свой репозиторий:</strong> учебник заводит его в разделе 0.17 и дальше опирается на него как на рабочий инструмент.</li>
 </ol>
@@ -1138,7 +1164,7 @@ const answerDigest=(id,index)=>{let hash=0x811c9dc5;for(const character of id+'|
 const answerIndex=question=>{const id=question.dataset.trainerQuestion,digest=question.dataset.answer,total=question.querySelectorAll('input[type=radio]').length;for(let index=0;index<total;index+=1)if(answerDigest(id,index)===digest)return index;return -1};
 /* Длительности читаются из тех же токенов движения, что и CSS, чтобы не разъезжались. */
 const motionMs=(name,fallback)=>{const value=parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));return Number.isFinite(value)?value:fallback};
-document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const renderScore=done=>{const group=document.createElement('span');group.className='t-digit-group';const digit=document.createElement('span');digit.className='t-digit';digit.textContent=String(done);group.append(digit);score.replaceChildren(group,document.createTextNode(' / '+questions.length));void group.offsetWidth;group.classList.add('is-animating')};const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;renderScore(done);summary.textContent=done===questions.length?'Глава закреплена. Можно переходить дальше.':done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length);if(done===questions.length)stampTimeline('chapter:'+trainer.dataset.chapterTrainer)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=answerIndex(question),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const check=document.createElement('span');check.className='trainer-check';check.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';button.after(check);const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){check.classList.remove('is-shown');void check.offsetWidth;check.classList.add('is-shown')}else{const shakeMs=motionMs('--shake-dur-a',80)*2+motionMs('--shake-dur-b',60)*2;question.classList.remove('is-shaking');void question.offsetWidth;question.classList.add('is-shaking');setTimeout(()=>question.classList.remove('is-shaking'),shakeMs+20)}if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
+document.querySelectorAll('[data-chapter-trainer]').forEach(trainer=>{const questions=[...trainer.querySelectorAll('[data-trainer-question]')],score=trainer.querySelector('[data-trainer-score]'),summary=trainer.querySelector('[data-trainer-summary]');const renderScore=done=>{const group=document.createElement('span');group.className='t-digit-group';const digit=document.createElement('span');digit.className='t-digit';digit.textContent=String(done);group.append(digit);score.replaceChildren(group,document.createTextNode(' / '+questions.length));void group.offsetWidth;group.classList.add('is-animating')};const refresh=()=>{const done=questions.filter(question=>quickRecords[question.dataset.trainerQuestion]?.correct).length;renderScore(done);summary.textContent=done===questions.length?(trainer.dataset.trainerDone||'Глава закреплена. Можно переходить дальше.'):done?'Верно: '+done+' из '+questions.length+'. Завершите мини-тренажёр.':'Ответьте на оба вопроса.';trainer.classList.toggle('is-complete',done===questions.length);if(done===questions.length)stampTimeline('chapter:'+trainer.dataset.chapterTrainer)};questions.forEach(question=>{const id=question.dataset.trainerQuestion,answer=answerIndex(question),button=question.querySelector('[data-trainer-check]'),feedback=question.querySelector('[data-trainer-feedback]'),inputs=[...question.querySelectorAll('input[type=radio]')],labels=[...question.querySelectorAll('.trainer-options label')];const check=document.createElement('span');check.className='trainer-check';check.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';button.after(check);const showResult=(correct,restored=false)=>{labels.forEach(label=>label.classList.remove('is-correct','is-wrong'));labels[answer]?.classList.add('is-correct');const chosen=inputs.find(input=>input.checked);if(chosen&&!correct)chosen.closest('label')?.classList.add('is-wrong');feedback.hidden=false;feedback.className='trainer-feedback '+(correct?'is-correct':'is-wrong');feedback.textContent=(restored?'Ранее отвечено верно. ':correct?'Верно. ':'Пока неверно. ')+feedback.dataset.explanation;if(correct){check.classList.remove('is-shown');void check.offsetWidth;check.classList.add('is-shown')}else{const shakeMs=motionMs('--shake-dur-a',80)*2+motionMs('--shake-dur-b',60)*2;question.classList.remove('is-shaking');void question.offsetWidth;question.classList.add('is-shaking');setTimeout(()=>question.classList.remove('is-shaking'),shakeMs+20)}if(correct){inputs.forEach(input=>input.disabled=true);button.disabled=true;button.textContent='Засчитано'}else{button.textContent='Проверить ещё раз'}};if(quickRecords[id]?.correct){inputs[answer].checked=true;showResult(true,true)}button.addEventListener('click',()=>{const selected=inputs.find(input=>input.checked);if(!selected){feedback.hidden=false;feedback.className='trainer-feedback is-wrong';feedback.textContent='Сначала выберите вариант ответа.';return}const correct=Number(selected.value)===answer;recordQuickCheck(id,correct);showResult(correct);refresh()})});refresh()});
 /* Полнотекстовый поиск. Индекс лежит отдельным файлом и загружается один раз при
    первом открытии панели, поэтому страница не тяжелеет от 76 тысяч слов. */
 const searchOverlay=document.querySelector('[data-search-overlay]'),searchInput=document.querySelector('[data-search-input]'),searchStatus=document.querySelector('[data-search-status]'),searchResults=document.querySelector('[data-search-results]');
@@ -1277,7 +1303,7 @@ if(routeBoard){
   /* Календарь: только вывод. Показываем месяцы от первой отметки до текущего. */
   const calendar=document.querySelector('[data-route-calendar]'),monthsBox=calendar?.querySelector('[data-route-months]'),log=calendar?.querySelector('[data-route-log]');
   if(monthsBox&&log){
-    const names={};document.querySelectorAll('[data-route-row]').forEach(row=>{names['chapter:'+row.dataset.routeRow]='Глава '+String(row.dataset.routeRow).padStart(2,'0')+' закреплена';row.dataset.own.split(',').filter(Boolean).forEach(module=>{names['module:'+module]='Модуль U'+String(module).padStart(2,'0')+' сдан'})});
+    const names={};for(let lesson=1;lesson<=${lessons.length};lesson+=1)names['chapter:s'+lesson]='Урок '+lesson+' закреплён';document.querySelectorAll('[data-route-row]').forEach(row=>{names['chapter:'+row.dataset.routeRow]='Глава '+String(row.dataset.routeRow).padStart(2,'0')+' закреплена';row.dataset.own.split(',').filter(Boolean).forEach(module=>{names['module:'+module]='Модуль U'+String(module).padStart(2,'0')+' сдан'})});
     const byDay=new Map();
     for(const [key,date] of Object.entries(events)){if(!byDay.has(date))byDay.set(date,[]);byDay.get(date).push(names[key]||key)}
     const days=[...byDay.keys()].sort();

@@ -72,8 +72,6 @@ BASE_PATH=/Learning-individual node scripts/build-static.mjs
 | `scripts/build-static.mjs` | Генератор: режет учебник на 47 маршрутов, собирает навигацию, поиск, кабинет, CSS и JS. |
 | `scripts/validate-site.mjs` | Проверка собранного сайта. |
 | `scripts/text-nodes.mjs`, `scripts/study-strings.mjs` | Правка прозы и банка заданий без риска повредить разметку и ответы. |
-| `static-src/index.html` | Обёртка с iframe для предпросмотра. |
-| `app/` | React-обёртка от шаблона хостинга; в сборку сайта не входит. |
 | `build/` | Результат сборки, в Git не хранится. |
 
 ## Подробности

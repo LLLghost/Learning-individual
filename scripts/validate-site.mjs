@@ -254,16 +254,22 @@ const body = course.slice(mainStart, mainEnd);
   else {
     const positions = new Map();
     const words = (text) => new Set(String(text).toLowerCase().replace(/ё/g, 'е').split(/[^a-zа-я0-9]+/).filter((word) => word.length > 3));
+    // Короткая формулировка («Зачем нужен scrub?») состоит из двух значимых слов,
+    // и доля совпадения у неё скачет до единицы от одного общего слова. Поэтому
+    // кроме доли требуется и абсолютное число совпавших слов.
     const overlap = (left, right) => {
       let common = 0;
       for (const word of left) if (right.has(word)) common += 1;
-      return common / (Math.min(left.size, right.size) || 1);
+      return common >= 4 ? common / (Math.min(left.size, right.size) || 1) : 0;
     };
     const bank = (data?.items ?? []).map((item) => ({ id: item.id, words: words(item.stem) }));
-    for (let number = 0; number < 34; number += 1) {
-      const items = quick[String(number)];
+    const lessonQuick = JSON.parse(course.match(/id="lesson-quick-data"[^>]*>([\s\S]*?)<\/script>/)?.[1] ?? 'null');
+    if (!lessonQuick) failures.push('course.html: missing lesson-quick-data block');
+    const sets = [['chapter', quick, 34, 0], ['lesson', lessonQuick ?? {}, 5, 1]];
+    for (const [kind, source, count, from] of sets) for (let number = from; number < from + count; number += 1) {
+      const items = source[String(number)];
       if (!Array.isArray(items) || items.length !== 2) {
-        failures.push(`chapter ${number}: expected two own quick questions`);
+        failures.push(`${kind} ${number}: expected two own quick questions`);
         continue;
       }
       for (const item of items) {
@@ -286,8 +292,9 @@ const body = course.slice(mainStart, mainEnd);
     }
     // Тот же урок, что и с банком: собранный по привычке набор проходится
     // выбором одного и того же номера.
+    const total = [...positions.values()].reduce((sum, value) => sum + value, 0);
     const most = Math.max(...positions.values());
-    if (most > 68 * 0.45) failures.push(`chapter-quick-data: ${most} of 68 correct answers sit at one position`);
+    if (most > total * 0.45) failures.push(`quick data: ${most} of ${total} correct answers sit at one position`);
   }
 }
 const bodyText = body
