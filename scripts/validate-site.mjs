@@ -1014,6 +1014,21 @@ for (const [file, html] of cache) {
       // Работа, которой нет в реестре скрипта, не подготовится и не соберётся.
       if (!code.includes(`'${lab.id}': {'kind'`)) failures.push(`${where}: not registered in course_lab.py`);
     }
+    // Автопроверка обещана в каждом модуле: пропуск не виден ни в сборке, ни в
+    // разметке — вид модуля просто не покажет карточку, и читатель решит, что
+    // так и задумано.
+    const covered = new Set(labs.map((lab) => lab.module));
+    const uncovered = [...Array(37).keys()].filter((module) => !covered.has(module));
+    if (uncovered.length) failures.push(`lab-data: modules without an automatic check: ${uncovered.join(', ')}`);
+    // Число работ без автопроверки названо в книге прозой. Оно уже расходилось
+    // бы с данными после каждой добавленной работы, а проверить его глазами
+    // нельзя: работы лежат в JSON, а счёт — в тексте главы о проверке.
+    const aboutPage = cache.get(resolve(root, 'about', 'index.html')) ?? '';
+    const stated = aboutPage.match(/Остальные (\d+) работ автоматической проверки не имеют/);
+    if (!stated) failures.push('about: the count of works without an automatic check is gone from the prose');
+    else if (Number(stated[1]) !== 74 - labs.length) {
+      failures.push(`about: prose says ${stated[1]} works without an automatic check, lab-data leaves ${74 - labs.length}`);
+    }
     // Тот же урок, что и с банком заданий: верный вариант, поставленный по
     // привычке первым, делает вопрос проходимым без чтения.
     if (labs.length > 1 && answerIndexes.size === 1) {
