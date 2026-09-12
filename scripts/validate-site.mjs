@@ -113,6 +113,26 @@ else {
   if (clashes.length) failures.push(`term base: one spelling claimed twice — ${clashes.slice(0, 6).join('; ')}`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
+// «Что нового» на странице «О курсе» собирается из верхней записи CHANGELOG.md.
+// Файл и страница расходятся молча: в репозитории запись есть, а на сайте
+// осталась прошлая — читатель узнаёт об изменениях последним.
+{
+  const about = cache.get(resolve(root, 'about', 'index.html')) ?? '';
+  const changelog = await readFile(resolve(process.cwd(), 'CHANGELOG.md'), 'utf8').catch(() => '');
+  if (!changelog) failures.push('build: CHANGELOG.md is missing');
+  else {
+    const latest = changelog.match(/\n## ([^\n]+)\n([\s\S]*?)(?=\n## |$)/);
+    const items = [...(latest?.[2] ?? '').matchAll(/^- (.+)$/gm)].map((match) => match[1]);
+    if (items.length < 3) failures.push(`CHANGELOG.md: the newest entry has ${items.length} lines, expected at least three`);
+    if (!about.includes('id="whats-new"')) failures.push('/about/: missing the "what is new" block');
+    else if (latest && !about.includes(latest[1])) failures.push(`/about/: shows an entry other than the newest one (${latest[1]})`);
+    const shown = [...about.matchAll(/<li>([^<]{20,})<\/li>/g)].map((match) => match[1]);
+    const first = items[0]?.replace(/\*\*/g, '').slice(0, 40);
+    if (first && !shown.some((line) => line.startsWith(first.slice(0, 30)))) {
+      failures.push('/about/: the "what is new" block does not match the newest CHANGELOG entry');
+    }
+  }
+}
 // Метаданные страницы. Без og-разметки ссылка на главу, отправленная в
 // мессенджер, остаётся голым адресом — и заметить это по самой странице нельзя.
 // Описание не должно повторять заголовок: в выдаче поисковика тогда две
