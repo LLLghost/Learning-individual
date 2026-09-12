@@ -32,13 +32,20 @@ jobs:
 
       # Страницы проекта живут в подкаталоге /<репозиторий>/, личный сайт
       # <владелец>.github.io — в корне. Свой домен тоже отдаётся из корня:
-      # в этом случае оставьте BASE_PATH пустым.
+      # в этом случае оставьте BASE_PATH пустым, а в SITE_URL впишите домен.
+      # SITE_URL нужен для canonical, og:url и карты сайта: они требуют
+      # абсолютных адресов, и без переменной просто не выпускаются.
+      # Имя владельца приводится к нижнему регистру — адреса github.io
+      # регистрозависимы, и ссылка с заглавной буквой ведёт в никуда.
       - name: Определить базовый путь
         run: |
-          if [ "${{ github.event.repository.name }}" = "${{ github.repository_owner }}.github.io" ]; then
+          owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          if [ "${{ github.event.repository.name }}" = "$owner.github.io" ]; then
             echo "BASE_PATH=" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://$owner.github.io" >> "$GITHUB_ENV"
           else
             echo "BASE_PATH=/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://$owner.github.io/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
           fi
 
       # Генератор и проверка используют только стандартную библиотеку Node,

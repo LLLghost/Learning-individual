@@ -113,6 +113,39 @@ else {
   if (clashes.length) failures.push(`term base: one spelling claimed twice — ${clashes.slice(0, 6).join('; ')}`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
+// Метаданные страницы. Без og-разметки ссылка на главу, отправленная в
+// мессенджер, остаётся голым адресом — и заметить это по самой странице нельзя.
+// Описание не должно повторять заголовок: в выдаче поисковика тогда две
+// одинаковые строки вместо строки и пояснения.
+{
+  let robots = null;
+  try { robots = await readFile(resolve(root, 'robots.txt'), 'utf8'); } catch { failures.push('build: missing robots.txt'); }
+  const site = (process.env.SITE_URL ?? '').replace(/\/+$/, '');
+  if (site) {
+    let sitemap = null;
+    try { sitemap = await readFile(resolve(root, 'sitemap.xml'), 'utf8'); } catch { failures.push('build: SITE_URL is set but sitemap.xml is missing'); }
+    if (sitemap) {
+      const listed = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]));
+      const missing = htmlFiles
+        .map((file) => site + file.slice(root.length).replace(/index\.html$/, '').replace(/\\/g, '/'))
+        .filter((url) => !listed.has(url));
+      if (missing.length) failures.push(`sitemap.xml: ${missing.length} routes are missing, first ${missing[0]}`);
+    }
+    if (robots && !robots.includes('Sitemap:')) failures.push('robots.txt: no Sitemap line while SITE_URL is set');
+  }
+  const thin = [];
+  for (const [file, html] of cache) {
+    if (!html.includes('property="og:title"')) { failures.push(`${file.slice(root.length)}: missing link preview tags`); break; }
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.replace(/ · Серверная инфраструктура$/, '');
+    const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1];
+    if (title && description === title) thin.push(file.slice(root.length));
+  }
+  // Служебные страницы (тренажёр, справочник) описываются своим заголовком
+  // осмысленно; правило ловит случай, когда так живут все 34 главы.
+  if (thin.filter((file) => file.includes('chapters/')).length) {
+    failures.push(`chapters: ${thin.filter((file) => file.includes('chapters/')).length} pages describe themselves with their own title`);
+  }
+}
 // Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и
 // остальной клиентский код: синтаксическая ошибка в нём проходит молча, а сайт
 // после этого просто перестаёт открываться офлайн — в разметке ни следа.

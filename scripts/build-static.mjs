@@ -59,6 +59,12 @@ const followingScript = (id) => {
 // на GitHub Pages задают BASE_PATH=/имя-репозитория: маршруты и файлы остаются
 // прежними, префикс появляется только в ссылках, которые видит браузер.
 const BASE = (process.env.BASE_PATH ?? '').replace(/\/+$/, '');
+// Полный адрес сайта. Без него ссылка на главу, отправленная в мессенджер,
+// остаётся голым адресом: карточку предпросмотра собирают по og-разметке, а
+// она требует абсолютных адресов. Когда SITE_URL не задан (сборка на своей
+// машине), canonical, og:url и карта сайта просто не выпускаются — врать
+// поисковику о том, где страница живёт, хуже, чем молчать.
+const SITE = (process.env.SITE_URL ?? '').replace(/\/+$/, '');
 if (BASE && !/^\/[A-Za-z0-9._~-]+(?:\/[A-Za-z0-9._~-]+)*$/.test(BASE)) {
   throw new Error(`BASE_PATH должен начинаться со «/» и не содержать пробелов: ${BASE}`);
 }
@@ -249,10 +255,31 @@ const sealPolicy = (html) => {
 
 // Считать хеши до подстановки BASE_PATH нельзя: она меняет пути внутри
 // скриптов, а вместе с ними и хеш.
-const finishPage = (html) => sealPolicy(withBase(html));
+// Метаданные страницы подставляются в момент записи: сам pageShell своего адреса
+// не знает, а прокидывать его через десяток вызовов ради двух тегов не стоит.
+const pageMeta = (url, title, description) => {
+  const full = `${escape(title)} · Серверная инфраструктура`;
+  const tags = [
+    `<meta property="og:type" content="${url === '/' ? 'website' : 'article'}">`,
+    '<meta property="og:site_name" content="Серверная инфраструктура">',
+    '<meta property="og:locale" content="ru_RU">',
+    `<meta property="og:title" content="${full}">`,
+    `<meta property="og:description" content="${escape(description)}">`,
+    '<meta name="twitter:card" content="summary">',
+  ];
+  if (SITE) {
+    tags.push(`<meta property="og:url" content="${SITE}${url}">`, `<link rel="canonical" href="${SITE}${url}">`);
+  }
+  return tags.join('');
+};
+const finishPage = (html, url = '/') => {
+  const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.replace(/ · Серверная инфраструктура$/, '') ?? 'Серверная инфраструктура';
+  const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? title;
+  return sealPolicy(withBase(html.replace('__page-meta__', pageMeta(url, decode(title), decode(description)))));
+};
 
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policySlot}"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
+<html lang="ru"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policySlot}"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24">__page-meta__<script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
 <body><a class="skip-link" href="#main">К основному тексту</a><div class="read-progress" data-read-progress aria-hidden="true"></div><header class="topbar">${globalNav}<div class="read-size" data-read-size-group role="group" aria-label="Размер текста" hidden><button type="button" data-read-size="s" aria-pressed="false" title="Мелкий текст">А</button><button type="button" data-read-size="m" aria-pressed="true" title="Обычный текст">А</button><button type="button" data-read-size="l" aria-pressed="false" title="Крупный текст">А</button></div><button class="search-toggle" type="button" data-search-open aria-haspopup="dialog"><span aria-hidden="true">⌕</span><span>Поиск</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary><span class="menu-label">Разделы</span></summary><div>${globalNav}</div></details></header>
 <div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main" id="main" tabindex="-1">${sectionRail(body.replace(/<div id="lab-texts"[\s\S]*?<\/div>/, ' '))}<p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 ${readerTools}<script src="/assets/site.js"></script></body></html>`;
@@ -424,7 +451,13 @@ const chapterPage = (chapter) => {
   const pager = `<nav class="pager" aria-label="Переход между главами">${previous ? `<a href="${previous.url}">← Глава ${pad(previous.number)}</a>` : '<span></span>'}<a class="assessment-link" href="/assessment/?module=${studyModuleByChapter[chapter.number]}">Проверить знания</a>${next ? `<a href="${next.url}">Глава ${pad(next.number)} →</a>` : '<span></span>'}</nav>`;
   const sidebar = `<a class="back-link" href="/curriculum/">← Вся программа</a><div class="sidebar-scroll">${curriculumLinks(chapter.number)}</div>`;
   const body = `<article class="prose chapter-prose">${rewriteLinks(chapter.intro + chapter.content, chapter.url)}</article>${chapterRecall(chapter)}${chapterTrainer(chapter.number)}${chapterPractice(chapter.number)}${pager}`;
-  return pageShell({ title: chapter.title, eyebrow: `Глава ${pad(chapter.number)} · университетский курс`, body, sidebar, className: 'with-sidebar' });
+  // Описание страницы — первый абзац главы, а не её же заголовок: именно оно
+  // уходит в карточку предпросмотра и в выдачу поисковика.
+  const lead = [...chapter.content.matchAll(/<p>([\s\S]*?)<\/p>/g)]
+    .map((match) => strip(match[1]).replace(/\s+/g, ' ').trim())
+    .find((text) => text.length >= 120 && !text.startsWith('Академическое продолжение')) ?? '';
+  const description = lead.length > 40 ? `${lead.slice(0, 180).replace(/[\s,;:]+\S*$/, '')}…` : chapter.title;
+  return pageShell({ title: chapter.title, eyebrow: `Глава ${pad(chapter.number)} · университетский курс`, body, sidebar, className: 'with-sidebar', description });
 };
 
 const lessonNav = (active) => `<p class="side-title">Начало · вводные уроки</p>${lessons.map((item) => `<a ${active === item.number ? 'aria-current="page"' : ''} href="${item.url}"><span>${item.number}</span>${escape(item.title.replace(/^Урок \d+\.\s*/, ''))}</a>`).join('')}<p class="side-title">Дальше</p><a href="/chapters/00/"><span>00</span>Учебная лаборатория</a><a href="/curriculum/"><span>—</span>Вся программа</a>`;
@@ -1538,8 +1571,8 @@ register({name:'open_course_module',title:'Открыть модуль курс�
 await rm(output, { recursive: true, force: true });
 await mkdir(resolve(output, 'assets'), { recursive: true });
 await Promise.all([
-  writeFile(resolve(output, 'index.html'), finishPage(home)),
-  writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum)).catch(async () => { await mkdir(resolve(output, 'curriculum'), { recursive: true }); await writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum)); }),
+  writeFile(resolve(output, 'index.html'), finishPage(home, '/')),
+  writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum, '/curriculum/')).catch(async () => { await mkdir(resolve(output, 'curriculum'), { recursive: true }); await writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum, '/curriculum/')); }),
   writeFile(resolve(output, 'assets', 'site.css'), css),
   writeFile(resolve(output, 'assets', 'site.js'), js),
   cp(resolve(root, 'public', 'favicon.svg'), resolve(output, 'assets', 'favicon.svg')),
@@ -1553,7 +1586,7 @@ const outputs = [
 for (const [url, html] of outputs) {
   const file = resolve(output, url.slice(1), 'index.html');
   await mkdir(dirname(file), { recursive: true });
-  await writeFile(file, finishPage(html));
+  await writeFile(file, finishPage(html, url));
 }
 
 // ---------- Индекс полнотекстового поиска ----------
@@ -1661,6 +1694,17 @@ self.addEventListener('message',event=>{
 });
 `;
 await writeFile(resolve(output, 'sw.js'), serviceWorker);
+
+// Карта сайта и robots: без них поисковик обходит 47 страниц наугад, а часть
+// маршрутов (например работы практикума за параметром) не находит вовсе.
+// Карта требует абсолютных адресов, поэтому выпускается только при SITE_URL.
+if (SITE) {
+  const urls = ['/', '/curriculum/', ...outputs.map(([url]) => url)]
+    .map((url) => `  <url><loc>${SITE}${url}</loc><lastmod>${new Date().toISOString().slice(0, 10)}</lastmod></url>`)
+    .join('\n');
+  await writeFile(resolve(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
+}
+await writeFile(resolve(output, 'robots.txt'), `User-agent: *\nAllow: /\n${SITE ? `Sitemap: ${SITE}/sitemap.xml\n` : ''}`);
 
 const htmlFiles = ['index.html', 'curriculum/index.html', ...outputs.map(([url]) => `${url.slice(1)}index.html`)];
 for (const relative of htmlFiles) {
