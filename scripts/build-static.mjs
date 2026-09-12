@@ -760,6 +760,21 @@ h1,h2,h3,h4{text-wrap:balance}
 .prose code{overflow-wrap:break-word}
 .prose table{display:block;overflow-x:auto;max-width:100%}
 .prose abbr[title]{text-decoration:underline dotted;text-underline-offset:2px;cursor:help}
+
+/* Схемы. Рисунок наследует цвет текста (stroke:currentColor в самой разметке),
+   поэтому в тёмной теме ничего переключать не нужно. Ширину задаёт колонка:
+   у SVG есть viewBox и нет width, иначе схема вылезала бы за меру строки. */
+.prose figure.scheme{margin:26px 0;padding:0;overflow-x:auto;overscroll-behavior-x:contain}
+/* Схема не ужимается до нечитаемого: на узкой колонке она прокручивается вбок,
+   как таблицы и листинги. При width:100% без min-width подписи внутри рисунка
+   на телефоне сжимались до шести пикселей — картинка есть, прочесть нельзя. */
+.prose figure.scheme svg{display:block;width:100%;min-width:560px;max-width:640px;height:auto;margin:0 auto}
+.prose figure.scheme .zone{stroke:var(--line)}
+.prose figure.scheme .accent{stroke:var(--teal);stroke-width:2}
+.prose figure.scheme .dim{stroke:var(--muted);fill:var(--muted)}
+.prose figure.scheme text{stroke:none;fill:var(--ink);font-family:inherit}
+.prose figure.scheme text.dim{stroke:none;fill:var(--muted)}
+.prose figcaption{margin-top:10px;color:var(--muted);font-size:13.5px;line-height:1.55;text-align:center}
 [data-trainer-score],[data-notes-count],[data-notes-badge],.hero-stats strong,.side-nav a span{font-variant-numeric:tabular-nums}
 .search-field input,.study-app .answer-field,.search input{font-size:max(16px,1rem)}
 

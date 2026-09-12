@@ -385,6 +385,26 @@ const bodyText = body
   .replace(/<[^>]+>/g, ' ')
   .replace(/&[a-z]+;/g, ' ');
 
+// Схемы. Рисунок в учебнике — единственное место, где смысл лежит вне текста,
+// поэтому у каждой схемы обязаны быть <title> и <desc> для экранного диктора
+// и подпись для всех остальных. Идентификаторы внутри SVG — общие для всего
+// документа: четыре схемы с одинаковым id="tip" уже сложились в четыре
+// одинаковых идентификатора, и стрелки во второй схеме просто исчезали бы,
+// если бы браузер разошёлся с валидатором. Ширина у SVG не задаётся: схема
+// тянется по колонке через viewBox, иначе она вылезает за меру строки.
+{
+  const figures = [...body.matchAll(/<figure class="scheme">([\s\S]*?)<\/figure>/g)].map((match) => match[1]);
+  if (figures.length < 4) failures.push(`course.html: expected at least 4 schemes, found ${figures.length}`);
+  for (const figure of figures) {
+    const name = (figure.match(/<title[^>]*>([^<]*)/) ?? [, '(без заголовка)'])[1];
+    if (!/<svg[^>]+role="img"/.test(figure)) failures.push(`scheme "${name}": <svg> without role="img"`);
+    if (!/<desc[^>]*>/.test(figure)) failures.push(`scheme "${name}": no <desc> — a screen reader gets nothing but the caption`);
+    if (!/<figcaption>/.test(figure)) failures.push(`scheme "${name}": no <figcaption>`);
+    if (/<svg[^>]+\swidth=/.test(figure)) failures.push(`scheme "${name}": fixed width on <svg> — it must scale with the column`);
+    if (/style="/.test(figure)) failures.push(`scheme "${name}": style= attribute is blocked by the content policy`);
+  }
+}
+
 // Справочник A: разделы A.1–A.24 на месте, и у каждой команды, которая меняет
 // состояние, стоит пометка «Осторожно». Справочник читают в спешке и наискось —
 // команда без предупреждения там опаснее, чем её отсутствие.

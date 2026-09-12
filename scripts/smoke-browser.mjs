@@ -43,11 +43,19 @@ await new Promise((done) => server.listen(0, '127.0.0.1', done));
 const origin = `http://127.0.0.1:${server.address().port}`;
 
 let chromium;
+// playwright-core — тот же API без загрузчика браузеров; в окружениях, где
+// Chromium уже стоит рядом, полного пакета может не быть, а обход нужен.
 try { ({ chromium } = await import('playwright')); }
-catch { console.error('Нужен playwright: npm i -D playwright && npx playwright install chromium'); process.exit(2); }
+catch {
+  try { ({ chromium } = await import('playwright-core')); }
+  catch { console.error('Нужен playwright: npm i -D playwright && npx playwright install chromium'); process.exit(2); }
+}
 
 const routes = await walk(root);
-const browser = await chromium.launch();
+// Установленный Chromium может не совпадать по номеру сборки с тем, которого
+// ждёт пакет: тогда обычный запуск падает на «Executable doesn't exist».
+// CHROMIUM_PATH позволяет указать уже стоящий браузер вместо скачивания.
+const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 const page = await browser.newPage();
 const problems = [];
 let checked = 0;

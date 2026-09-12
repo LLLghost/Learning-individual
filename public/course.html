@@ -556,38 +556,7 @@ echo $?        # напечатает не ноль
 <p>Формально обе книги сообщили один и тот же факт. Но во втором случае у читателя уже есть объект, к которому можно прикрепить понятие. В дальнейшем, когда появятся VLAN, tap-интерфейсы, виртуальные маршрутизаторы и межсетевые экраны, они будут расширять знакомую систему, а не висеть в воздухе.</p>
 <p>Поэтому наш первый учебный объект — не команда Linux. Это <strong>маленький ЦОД внутри одного физического компьютера</strong>.</p>
 <p>К концу Части 0 у нас будет:</p>
-<pre><code class="language-text">                         домашняя/рабочая LAN
-                                |
-                         физический Ethernet
-                                |
-                         +------v-------+
-                         |   lab-host   |
-                         |  Proxmox VE  |
-                         +------+-------+
-                                |
-             +------------------+------------------+
-             |                  |                  |
-          vmbr10             vmbr20             vmbr30
-        CLIENT-NET          SERVER-NET          STORAGE-NET
-       10.10.10/24         10.10.20/24          10.10.30/24
-             |                  |                  |
-        +----+----+       +-----+------+      +----+-----+
-        | linux1  |       | linux2     |      | storage  |
-        +---------+       | monitoring |      +----------+
-                          | automation |
-                          +------------+
-             \                  |                  /
-              \                 |                 /
-               +----------------+----------------+
-                                |
-                           +----+----+
-                           | router  |
-                           +----+----+
-                                |
-                             vmbr0
-                                |
-                            Internet
-</code></pre>
+<figure class="scheme"><svg class="diagram" viewBox="0 0 620 446" role="img" aria-labelledby="fig-t-stand fig-d-stand" fill="none" stroke="currentColor" stroke-width="1.4"><title id="fig-t-stand">Карта стенда</title><desc id="fig-d-stand">Физический Ethernet домашней сети приходит на хост Proxmox VE; на нём заведены три моста — CLIENT, SERVER и STORAGE, — в которых работают виртуальные машины linux1, linux2 с мониторингом и автоматизацией и storage; все три сети сходятся на маршрутизаторе, который через vmbr0 выходит в интернет.</desc><defs><marker id="tip-stand" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" stroke="none"/></marker></defs><rect x="200" y="12" width="220" height="40" rx="6"/><text x="310" y="29" text-anchor="middle" font-size="14">домашняя или рабочая LAN</text><text x="310" y="46" text-anchor="middle" font-size="11" class="dim">физический Ethernet</text><path d="M310 52 L310 71" marker-end="url(#tip-stand)"/><rect x="190" y="78" width="240" height="44" rx="6" class="accent"/><text x="310" y="97" text-anchor="middle" font-size="14">lab-host</text><text x="310" y="114" text-anchor="middle" font-size="11" class="dim">Proxmox VE</text><path d="M310 122 L105 155" marker-end="url(#tip-stand)"/><rect x="12" y="162" width="186" height="44" rx="6"/><text x="105" y="181" text-anchor="middle" font-size="14">vmbr10 · CLIENT</text><text x="105" y="198" text-anchor="middle" font-size="11" class="dim">10.10.10.0/24</text><path d="M105 206 L105 223" marker-end="url(#tip-stand)"/><rect x="12" y="230" width="186" height="44" rx="6"/><text x="105" y="257" text-anchor="middle" font-size="14">linux1</text><path d="M105 274 L310 313"/><path d="M310 122 L310 155" marker-end="url(#tip-stand)"/><rect x="217" y="162" width="186" height="44" rx="6"/><text x="310" y="181" text-anchor="middle" font-size="14">vmbr20 · SERVER</text><text x="310" y="198" text-anchor="middle" font-size="11" class="dim">10.10.20.0/24</text><path d="M310 206 L310 223" marker-end="url(#tip-stand)"/><rect x="217" y="230" width="186" height="44" rx="6"/><text x="310" y="249" text-anchor="middle" font-size="14">linux2</text><text x="310" y="266" text-anchor="middle" font-size="11" class="dim">monitoring · automation</text><path d="M310 274 L310 313"/><path d="M310 122 L515 155" marker-end="url(#tip-stand)"/><rect x="422" y="162" width="186" height="44" rx="6"/><text x="515" y="181" text-anchor="middle" font-size="14">vmbr30 · STORAGE</text><text x="515" y="198" text-anchor="middle" font-size="11" class="dim">10.10.30.0/24</text><path d="M515 206 L515 223" marker-end="url(#tip-stand)"/><rect x="422" y="230" width="186" height="44" rx="6"/><text x="515" y="257" text-anchor="middle" font-size="14">storage</text><path d="M515 274 L310 313"/><rect x="225" y="320" width="170" height="44" rx="6"/><text x="310" y="339" text-anchor="middle" font-size="14">router</text><text x="310" y="356" text-anchor="middle" font-size="11" class="dim">маршруты и NAT</text><path d="M310 364 L310 385" marker-end="url(#tip-stand)"/><rect x="225" y="392" width="170" height="40" rx="6"/><text x="310" y="417" text-anchor="middle" font-size="14">vmbr0 → интернет</text></svg><figcaption>Три сети стенда нужны, чтобы отказ и настройка были видны на границе, а не внутри одной плоской сети.</figcaption></figure>
 <p>На схеме много новых слов. Сейчас их не нужно заучивать. Важно увидеть роли:</p>
 <ul>
 <li><strong>lab-host</strong> предоставляет CPU, RAM, диски и физическую сеть;</li>
@@ -1761,18 +1730,7 @@ close(fd)
 <p>Поэтому одна строка в командной оболочке может затронуть множество слоёв:</p>
 <pre><code class="language-bash">cat /data/report.txt
 </code></pre>
-<pre><code class="language-text">shell
-→ fork/exec cat
-→ openat()
-→ VFS
-→ ext4/xfs
-→ page cache
-→ block layer (если cache miss)
-→ dm/LVM/mdraid (если используются)
-→ driver
-→ controller
-→ storage media
-</code></pre>
+<figure class="scheme"><svg class="diagram" viewBox="0 0 620 580" role="img" aria-labelledby="fig-t-io-path fig-d-io-path" fill="none" stroke="currentColor" stroke-width="1.4"><title id="fig-t-io-path">Путь чтения файла по слоям</title><desc id="fig-d-io-path">Оболочка и cat работают в пространстве пользователя; за границей системного вызова запрос проходит VFS, файловую систему, страничный кэш, блочный слой, при наличии dm, LVM или mdraid — их, затем драйвер, контроллер и носитель.</desc><defs><marker id="tip-io-path" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" stroke="none"/></marker></defs><rect x="16" y="452" width="120" height="108" rx="6" class="zone"/><text x="76" y="511" text-anchor="middle" font-size="12" class="dim">устройство</text><rect x="16" y="140" width="120" height="316" rx="6" class="zone"/><text x="76" y="303" text-anchor="middle" font-size="12" class="dim">ядро</text><rect x="16" y="36" width="120" height="108" rx="6" class="zone"/><text x="76" y="102" text-anchor="middle" font-size="12" class="dim">пользователя</text><text x="76" y="88" text-anchor="middle" font-size="12" class="dim">пространство</text><rect x="150" y="44" width="320" height="40" rx="6"/><text x="310" y="61" text-anchor="middle" font-size="14">оболочка</text><text x="310" y="78" text-anchor="middle" font-size="11" class="dim">запускает cat</text><rect x="150" y="96" width="320" height="40" rx="6"/><text x="310" y="113" text-anchor="middle" font-size="14">cat: openat(), read()</text><text x="310" y="130" text-anchor="middle" font-size="11" class="dim">просит ядро, а не диск</text><path d="M310 84 L310 89" marker-end="url(#tip-io-path)"/><rect x="150" y="148" width="320" height="40" rx="6"/><text x="310" y="165" text-anchor="middle" font-size="14">VFS</text><text x="310" y="182" text-anchor="middle" font-size="11" class="dim">общий интерфейс файлов</text><path d="M310 136 L310 141" marker-end="url(#tip-io-path)"/><rect x="150" y="200" width="320" height="40" rx="6"/><text x="310" y="217" text-anchor="middle" font-size="14">ext4 / XFS</text><text x="310" y="234" text-anchor="middle" font-size="11" class="dim">где лежат блоки файла</text><path d="M310 188 L310 193" marker-end="url(#tip-io-path)"/><rect x="150" y="252" width="320" height="40" rx="6" class="accent"/><text x="310" y="269" text-anchor="middle" font-size="14">страничный кэш</text><text x="310" y="286" text-anchor="middle" font-size="11" class="dim">если данные тут — дальше не идём</text><path d="M310 240 L310 245" marker-end="url(#tip-io-path)"/><rect x="150" y="304" width="320" height="40" rx="6"/><text x="310" y="321" text-anchor="middle" font-size="14">блочный слой</text><text x="310" y="338" text-anchor="middle" font-size="11" class="dim">очередь и планировщик запросов</text><path d="M310 292 L310 297" marker-end="url(#tip-io-path)"/><rect x="150" y="356" width="320" height="40" rx="6"/><text x="310" y="373" text-anchor="middle" font-size="14">dm / LVM / mdraid</text><text x="310" y="390" text-anchor="middle" font-size="11" class="dim">если стек собран из слоёв</text><path d="M310 344 L310 349" marker-end="url(#tip-io-path)"/><rect x="150" y="408" width="320" height="40" rx="6"/><text x="310" y="425" text-anchor="middle" font-size="14">драйвер</text><text x="310" y="442" text-anchor="middle" font-size="11" class="dim">команды конкретному контроллеру</text><path d="M310 396 L310 401" marker-end="url(#tip-io-path)"/><rect x="150" y="460" width="320" height="40" rx="6"/><text x="310" y="485" text-anchor="middle" font-size="14">контроллер</text><path d="M310 448 L310 453" marker-end="url(#tip-io-path)"/><rect x="150" y="512" width="320" height="40" rx="6"/><text x="310" y="537" text-anchor="middle" font-size="14">носитель</text><path d="M310 500 L310 505" marker-end="url(#tip-io-path)"/><path d="M24 134 L596 134" stroke-dasharray="5 4" class="dim"/><text x="594" y="128" text-anchor="end" font-size="11" class="dim">граница системного вызова</text></svg><figcaption>Путь чтения файла: за границей системного вызова запрос проходит слой за слоем, и остановиться он может на любом из них.</figcaption></figure>
 <p>Такая модель позже позволит понимать, почему <code>cat</code> может «висеть», хотя CPU свободен.</p>
 <h2 id="b02-s005">2.3. Программа, процесс и поток</h2>
 <p><strong>Программа</strong> — набор инструкций, обычно файл на диске.<br>
@@ -2858,16 +2816,7 @@ Host A stores neighbor entry
 <p>Если запрос ARP уходит, но ответа нет, маршрут до локального получателя уже не главная проблема.</p>
 <h2 id="b06-s007">6.5. Шлюз — следующий узел, а не «сервер интернета»</h2>
 <p>Для адреса за пределами локальной сети хост выбирает маршрут со следующим узлом. Затем ARP выполняется <strong>не для конечного удалённого IP</strong>, а для адреса следующего шлюза в локальном сегменте.</p>
-<pre><code class="language-text">Host 192.168.10.34/24
-wants 8.8.8.8
-   ↓
-route: default via 192.168.10.1
-   ↓
-ARP for 192.168.10.1
-   ↓
-Ethernet dst MAC = gateway MAC
-IP dst = 8.8.8.8
-</code></pre>
+<figure class="scheme"><svg class="diagram" viewBox="0 0 620 262" role="img" aria-labelledby="fig-t-packet-path fig-d-packet-path" fill="none" stroke="currentColor" stroke-width="1.4"><title id="fig-t-packet-path">Путь пакета до удалённого адреса</title><desc id="fig-d-packet-path">Хост сравнивает адрес назначения со своим префиксом, выбирает по таблице маршрутизации следующий узел, разрешает по ARP адрес второго уровня именно этого узла и отправляет кадр, в котором адрес второго уровня — шлюза, а адрес назначения третьего уровня остаётся конечным.</desc><defs><marker id="tip-packet-path" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" stroke="none"/></marker></defs><rect x="20" y="20" width="580" height="48" rx="6"/><text x="310" y="41" text-anchor="middle" font-size="14">Хост 192.168.10.34/24 хочет 8.8.8.8</text><text x="310" y="58" text-anchor="middle" font-size="11" class="dim">адрес назначения вне своего префикса</text><rect x="20" y="82" width="580" height="48" rx="6"/><text x="310" y="103" text-anchor="middle" font-size="14">Таблица маршрутизации: default via 192.168.10.1</text><text x="310" y="120" text-anchor="middle" font-size="11" class="dim">выбран следующий узел, а не получатель</text><path d="M310.0 68 L310.0 75" marker-end="url(#tip-packet-path)"/><rect x="20" y="144" width="580" height="48" rx="6"/><text x="310" y="165" text-anchor="middle" font-size="14">ARP для 192.168.10.1</text><text x="310" y="182" text-anchor="middle" font-size="11" class="dim">спрашиваем адрес соседа, а не адресата</text><path d="M310.0 130 L310.0 137" marker-end="url(#tip-packet-path)"/><rect x="20" y="206" width="580" height="48" rx="6" class="accent"/><text x="310" y="227" text-anchor="middle" font-size="14">Кадр: получатель — MAC шлюза, IP назначения — 8.8.8.8</text><text x="310" y="244" text-anchor="middle" font-size="11" class="dim">второй уровень меняется, третий нет</text><path d="M310.0 192 L310.0 199" marker-end="url(#tip-packet-path)"/></svg><figcaption>Адрес второго уровня относится к одному шагу, адрес третьего — ко всему маршруту.</figcaption></figure>
 <p>Адрес назначения IP сохраняется как 8.8.8.8; получателем Ethernet на первом переходе будет маршрутизатор.</p>
 <h2 id="b06-s008">6.6. Таблица маршрутизации и самый длинный совпадающий префикс</h2>
 <p>Пример:</p>
@@ -3071,12 +3020,7 @@ tcpdump -ni eth0 arp           # уходит ли запрос и приход�
 </code></pre>
 <h2 id="b07-s004">7.2. Рукопожатие TCP</h2>
 <p>Перед передачей данных приложения TCP обычно устанавливает соединение:</p>
-<pre><code class="language-text">Client                           Server
-  | -------- SYN -------------&gt;   |
-  | &lt;----- SYN,ACK ------------   |
-  | -------- ACK -------------&gt;   |
-  |       connection established  |
-</code></pre>
+<figure class="scheme"><svg class="diagram" viewBox="0 0 620 296" role="img" aria-labelledby="fig-t-handshake fig-d-handshake" fill="none" stroke="currentColor" stroke-width="1.4"><title id="fig-t-handshake">Установление соединения TCP</title><desc id="fig-d-handshake">Клиент отправляет SYN, сервер отвечает SYN с подтверждением, клиент подтверждает ответ; только после третьего сегмента соединение считается установленным.</desc><defs><marker id="tip-handshake" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" stroke="none"/></marker></defs><rect x="60" y="12" width="140" height="36" rx="6"/><text x="130" y="35" text-anchor="middle" font-size="14">клиент</text><rect x="420" y="12" width="140" height="36" rx="6"/><text x="490" y="35" text-anchor="middle" font-size="14">сервер</text><path d="M130 48 L130 232" stroke-dasharray="4 5" class="dim"/><path d="M490 48 L490 232" stroke-dasharray="4 5" class="dim"/><path d="M130 92 L483 92" marker-end="url(#tip-handshake)"/><text x="310" y="84" text-anchor="middle" font-size="13" class="">SYN</text><text x="310" y="107" text-anchor="middle" font-size="11" class="dim">хочу открыть соединение</text><path d="M490 142 L137 142" marker-end="url(#tip-handshake)"/><text x="310" y="134" text-anchor="middle" font-size="13" class="">SYN, ACK</text><text x="310" y="157" text-anchor="middle" font-size="11" class="dim">готов, и ваш SYN получен</text><path d="M130 192 L483 192" marker-end="url(#tip-handshake)"/><text x="310" y="184" text-anchor="middle" font-size="13" class="">ACK</text><text x="310" y="207" text-anchor="middle" font-size="11" class="dim">ответ получен</text><rect x="200" y="244" width="220" height="38" rx="6" class="accent"/><text x="310" y="268" text-anchor="middle" font-size="14">соединение установлено</text></svg><figcaption>Соединение существует только после третьего сегмента: SYN, SYN с подтверждением, ACK.</figcaption></figure>
 <p>Эта последовательность превращает <code>tcpdump</code> в диагностический инструмент.</p>
 <h3 id="b07-s005">Только SYN, ответа нет</h3>
 <p>Возможные области:</p>
@@ -3349,12 +3293,7 @@ ip addr add 10.20.0.10/24 dev eno1.20
 </code></pre>
 <h2 id="b08-s005">8.3. Мост Linux</h2>
 <p>Мост работает на втором уровне и концептуально похож на программный коммутатор. Он связывает порты в один широковещательный домен и обучается MAC-адресам.</p>
-<pre><code class="language-text">           +------ br0 ------+
-           |                 |
-         eno1              tap0
-                             |
-                            VM
-</code></pre>
+<figure class="scheme"><svg class="diagram" viewBox="0 0 620 284" role="img" aria-labelledby="fig-t-bridge fig-d-bridge" fill="none" stroke="currentColor" stroke-width="1.4"><title id="fig-t-bridge">Мост Linux и его порты</title><desc id="fig-d-bridge">Мост br0 объединяет физический интерфейс eno1 и интерфейс виртуальной машины tap0 в один домен второго уровня; виртуальная машина подключена через tap0 и имеет собственный сетевой стек.</desc><defs><marker id="tip-bridge" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" stroke="none"/></marker></defs><rect x="180" y="20" width="260" height="44" rx="6" class="accent"/><text x="310" y="39" text-anchor="middle" font-size="14">br0</text><text x="310" y="56" text-anchor="middle" font-size="11" class="dim">мост: один домен второго уровня</text><rect x="40" y="130" width="200" height="44" rx="6"/><text x="140" y="149" text-anchor="middle" font-size="14">eno1</text><text x="140" y="166" text-anchor="middle" font-size="11" class="dim">физический интерфейс</text><rect x="380" y="130" width="200" height="44" rx="6"/><text x="480" y="149" text-anchor="middle" font-size="14">tap0</text><text x="480" y="166" text-anchor="middle" font-size="11" class="dim">интерфейс виртуальной машины</text><rect x="380" y="220" width="200" height="44" rx="6"/><text x="480" y="239" text-anchor="middle" font-size="14">VM</text><text x="480" y="256" text-anchor="middle" font-size="11" class="dim">её собственный стек</text><path d="M240 64 L140 123" marker-end="url(#tip-bridge)"/><path d="M380 64 L480 123" marker-end="url(#tip-bridge)"/><path d="M480 174 L480 213" marker-end="url(#tip-bridge)"/></svg><figcaption>Мост объединяет физический интерфейс и интерфейс виртуальной машины в один домен второго уровня: кадры он пересылает между портами, а адрес на самом мосте нужен хосту, а не пересылке.</figcaption></figure>
 <p>VM за мостом может получить адрес из той же сети второго уровня, что и физический NIC, без маршрутизации на хосте.</p>
 <p>Проверки:</p>
 <pre><code class="language-bash">bridge link
@@ -4013,17 +3952,7 @@ ls /sys/bus/pci/devices/0000:81:00.0/       # driver, numa_node, resource
 <h2 id="b11-s003">11.1. BMC — отдельный управляющий компьютер</h2>
 <p>Baseboard Management Controller — микроконтроллер или система на кристалле на серверной плате со своей прошивкой, сетевым стеком и доступом к сигналам управления платформой. Он способен оставаться доступным, когда основной процессор выключен, пока есть дежурное питание.</p>
 <p>Упрощённо:</p>
-<pre><code class="language-text">           management network
-                  |
-                 BMC
-       +----------+----------+
-       |          |          |
-    sensors     power      SEL/event log
-       |          |          |
-       +------ motherboard --+
-                  |
-              host CPU/OS
-</code></pre>
+<figure class="scheme"><svg class="diagram" viewBox="0 0 620 352" role="img" aria-labelledby="fig-t-bmc fig-d-bmc" fill="none" stroke="currentColor" stroke-width="1.4"><title id="fig-t-bmc">Что видит BMC</title><desc id="fig-d-bmc">BMC подключён к управляющей сети отдельно от ОС, собирает показания датчиков, управляет питанием и ведёт журнал событий; всё это относится к материнской плате, на которой работают CPU и операционная система хоста.</desc><defs><marker id="tip-bmc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" stroke="none"/></marker></defs><rect x="210" y="14" width="200" height="38" rx="6"/><text x="310" y="38" text-anchor="middle" font-size="14">управляющая сеть</text><path d="M310 52 L310 77" marker-end="url(#tip-bmc)"/><rect x="210" y="84" width="200" height="44" rx="6" class="accent"/><text x="310" y="103" text-anchor="middle" font-size="14">BMC</text><text x="310" y="120" text-anchor="middle" font-size="11" class="dim">живёт отдельно от ОС</text><rect x="20" y="158" width="175" height="44" rx="6"/><text x="108" y="177" text-anchor="middle" font-size="14">датчики</text><text x="108" y="194" text-anchor="middle" font-size="11" class="dim">температура, обороты</text><path d="M310 128 L108 151" marker-end="url(#tip-bmc)"/><path d="M108 202 L108 225" marker-end="url(#tip-bmc)"/><rect x="225" y="158" width="175" height="44" rx="6"/><text x="312" y="177" text-anchor="middle" font-size="14">питание</text><text x="312" y="194" text-anchor="middle" font-size="11" class="dim">включение и сброс</text><path d="M310 128 L313 151" marker-end="url(#tip-bmc)"/><path d="M313 202 L313 225" marker-end="url(#tip-bmc)"/><rect x="430" y="158" width="175" height="44" rx="6"/><text x="518" y="177" text-anchor="middle" font-size="14">журнал SEL</text><text x="518" y="194" text-anchor="middle" font-size="11" class="dim">события железа</text><path d="M310 128 L518 151" marker-end="url(#tip-bmc)"/><path d="M518 202 L518 225" marker-end="url(#tip-bmc)"/><rect x="150" y="232" width="320" height="40" rx="6"/><text x="310" y="257" text-anchor="middle" font-size="14">материнская плата</text><path d="M310 272 L310 293" marker-end="url(#tip-bmc)"/><rect x="210" y="300" width="200" height="40" rx="6"/><text x="310" y="325" text-anchor="middle" font-size="14">CPU и ОС хоста</text></svg><figcaption>BMC доступен, когда ОС уже не отвечает: это отдельный компьютер внутри сервера.</figcaption></figure>
 <p>Поэтому «сервер выключен» не обязательно означает «BMC недоступен».</p>
 <h2 id="b11-s004">11.2. IPMI</h2>
 <p>IPMI определяет интерфейс и команды управления, широко используемые для датчиков, журнала SEL, управления корпусом и данных FRU.</p>
@@ -4282,14 +4211,7 @@ ls /sys/fs/pstore/              # сохранил ли ядро panic в NVRAM/
 <h2 id="b12-s004">12.2. SATA и SAS</h2>
 <p>SATA ориентирован на прямое подключение и обычно использует набор команд ATA. SAS использует архитектуру SCSI, поддерживает более богатую топологию, устройства с двумя портами и экспандеры.</p>
 <p>Упрощённый путь SAS:</p>
-<pre><code class="language-text">HBA
- |
-SAS cable
- |
-expander/backplane
- |   |   |   |
-D0  D1  D2  D3
-</code></pre>
+<figure class="scheme"><svg class="diagram" viewBox="0 0 620 328" role="img" aria-labelledby="fig-t-sas fig-d-sas" fill="none" stroke="currentColor" stroke-width="1.4"><title id="fig-t-sas">Топология SAS от контроллера до дисков</title><desc id="fig-d-sas">Контроллер HBA соединён кабелем SAS с экспандером объединительной платы, а к экспандеру подключены четыре диска: между контроллером и дисками стоит общий элемент.</desc><defs><marker id="tip-sas" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" stroke="none"/></marker></defs><rect x="210" y="16" width="200" height="44" rx="6"/><text x="310" y="35" text-anchor="middle" font-size="14">HBA</text><text x="310" y="52" text-anchor="middle" font-size="11" class="dim">контроллер в хосте</text><rect x="210" y="100" width="200" height="40" rx="6"/><text x="310" y="125" text-anchor="middle" font-size="14">кабель SAS</text><rect x="140" y="184" width="340" height="44" rx="6" class="accent"/><text x="310" y="211" text-anchor="middle" font-size="14">экспандер / объединительная плата</text><path d="M310 60 L310 93" marker-end="url(#tip-sas)"/><path d="M310 140 L310 177" marker-end="url(#tip-sas)"/><rect x="40" y="272" width="110" height="40" rx="6"/><text x="95" y="297" text-anchor="middle" font-size="14">диск 0</text><path d="M310 228 L95 265" marker-end="url(#tip-sas)"/><rect x="180" y="272" width="110" height="40" rx="6"/><text x="235" y="297" text-anchor="middle" font-size="14">диск 1</text><path d="M310 228 L235 265" marker-end="url(#tip-sas)"/><rect x="320" y="272" width="110" height="40" rx="6"/><text x="375" y="297" text-anchor="middle" font-size="14">диск 2</text><path d="M310 228 L375 265" marker-end="url(#tip-sas)"/><rect x="460" y="272" width="110" height="40" rx="6"/><text x="515" y="297" text-anchor="middle" font-size="14">диск 3</text><path d="M310 228 L515 265" marker-end="url(#tip-sas)"/></svg><figcaption>Между контроллером и дисками стоит общий элемент: кабель, экспандер и питание объединительной платы. Исчезновение всех дисков разом — обычно отказ этого элемента, а не четырёх дисков сразу.</figcaption></figure>
 <p>Экспандер функционально ближе к коммутирующей фабрике для SAS, чем к простому «разветвителю кабеля».</p>
 <h2 id="b12-s005">12.3. SCSI как логическая модель</h2>
 <p>В Linux многие устройства хранения представлены через подсистему SCSI, даже когда нижележащий транспорт различается. Поэтому встречаются идентификаторы вида хост:канал:цель:LUN и утилиты вроде <code>lsscsi</code>.</p>
