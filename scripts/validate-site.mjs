@@ -113,6 +113,59 @@ else {
   if (clashes.length) failures.push(`term base: one spelling claimed twice — ${clashes.slice(0, 6).join('; ')}`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
+// «Что нового» на странице «О курсе» собирается из верхней записи CHANGELOG.md.
+// Файл и страница расходятся молча: в репозитории запись есть, а на сайте
+// осталась прошлая — читатель узнаёт об изменениях последним.
+{
+  const about = cache.get(resolve(root, 'about', 'index.html')) ?? '';
+  const changelog = await readFile(resolve(process.cwd(), 'CHANGELOG.md'), 'utf8').catch(() => '');
+  if (!changelog) failures.push('build: CHANGELOG.md is missing');
+  else {
+    const latest = changelog.match(/\n## ([^\n]+)\n([\s\S]*?)(?=\n## |$)/);
+    const items = [...(latest?.[2] ?? '').matchAll(/^- (.+)$/gm)].map((match) => match[1]);
+    if (items.length < 3) failures.push(`CHANGELOG.md: the newest entry has ${items.length} lines, expected at least three`);
+    if (!about.includes('id="whats-new"')) failures.push('/about/: missing the "what is new" block');
+    else if (latest && !about.includes(latest[1])) failures.push(`/about/: shows an entry other than the newest one (${latest[1]})`);
+    const shown = [...about.matchAll(/<li>([^<]{20,})<\/li>/g)].map((match) => match[1]);
+    const first = items[0]?.replace(/\*\*/g, '').slice(0, 40);
+    if (first && !shown.some((line) => line.startsWith(first.slice(0, 30)))) {
+      failures.push('/about/: the "what is new" block does not match the newest CHANGELOG entry');
+    }
+  }
+}
+// Метаданные страницы. Без og-разметки ссылка на главу, отправленная в
+// мессенджер, остаётся голым адресом — и заметить это по самой странице нельзя.
+// Описание не должно повторять заголовок: в выдаче поисковика тогда две
+// одинаковые строки вместо строки и пояснения.
+{
+  let robots = null;
+  try { robots = await readFile(resolve(root, 'robots.txt'), 'utf8'); } catch { failures.push('build: missing robots.txt'); }
+  const site = (process.env.SITE_URL ?? '').replace(/\/+$/, '');
+  if (site) {
+    let sitemap = null;
+    try { sitemap = await readFile(resolve(root, 'sitemap.xml'), 'utf8'); } catch { failures.push('build: SITE_URL is set but sitemap.xml is missing'); }
+    if (sitemap) {
+      const listed = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]));
+      const missing = htmlFiles
+        .map((file) => site + file.slice(root.length).replace(/index\.html$/, '').replace(/\\/g, '/'))
+        .filter((url) => !listed.has(url));
+      if (missing.length) failures.push(`sitemap.xml: ${missing.length} routes are missing, first ${missing[0]}`);
+    }
+    if (robots && !robots.includes('Sitemap:')) failures.push('robots.txt: no Sitemap line while SITE_URL is set');
+  }
+  const thin = [];
+  for (const [file, html] of cache) {
+    if (!html.includes('property="og:title"')) { failures.push(`${file.slice(root.length)}: missing link preview tags`); break; }
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.replace(/ · Серверная инфраструктура$/, '');
+    const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1];
+    if (title && description === title) thin.push(file.slice(root.length));
+  }
+  // Служебные страницы (тренажёр, справочник) описываются своим заголовком
+  // осмысленно; правило ловит случай, когда так живут все 34 главы.
+  if (thin.filter((file) => file.includes('chapters/')).length) {
+    failures.push(`chapters: ${thin.filter((file) => file.includes('chapters/')).length} pages describe themselves with their own title`);
+  }
+}
 // Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и
 // остальной клиентский код: синтаксическая ошибка в нём проходит молча, а сайт
 // после этого просто перестаёт открываться офлайн — в разметке ни следа.
@@ -331,6 +384,26 @@ const bodyText = body
   .replace(/<script[\s\S]*?<\/script>/g, ' ')
   .replace(/<[^>]+>/g, ' ')
   .replace(/&[a-z]+;/g, ' ');
+
+// Схемы. Рисунок в учебнике — единственное место, где смысл лежит вне текста,
+// поэтому у каждой схемы обязаны быть <title> и <desc> для экранного диктора
+// и подпись для всех остальных. Идентификаторы внутри SVG — общие для всего
+// документа: четыре схемы с одинаковым id="tip" уже сложились в четыре
+// одинаковых идентификатора, и стрелки во второй схеме просто исчезали бы,
+// если бы браузер разошёлся с валидатором. Ширина у SVG не задаётся: схема
+// тянется по колонке через viewBox, иначе она вылезает за меру строки.
+{
+  const figures = [...body.matchAll(/<figure class="scheme">([\s\S]*?)<\/figure>/g)].map((match) => match[1]);
+  if (figures.length < 4) failures.push(`course.html: expected at least 4 schemes, found ${figures.length}`);
+  for (const figure of figures) {
+    const name = (figure.match(/<title[^>]*>([^<]*)/) ?? [, '(без заголовка)'])[1];
+    if (!/<svg[^>]+role="img"/.test(figure)) failures.push(`scheme "${name}": <svg> without role="img"`);
+    if (!/<desc[^>]*>/.test(figure)) failures.push(`scheme "${name}": no <desc> — a screen reader gets nothing but the caption`);
+    if (!/<figcaption>/.test(figure)) failures.push(`scheme "${name}": no <figcaption>`);
+    if (/<svg[^>]+\swidth=/.test(figure)) failures.push(`scheme "${name}": fixed width on <svg> — it must scale with the column`);
+    if (/style="/.test(figure)) failures.push(`scheme "${name}": style= attribute is blocked by the content policy`);
+  }
+}
 
 // Справочник A: разделы A.1–A.24 на месте, и у каждой команды, которая меняет
 // состояние, стоит пометка «Осторожно». Справочник читают в спешке и наискось —
@@ -940,6 +1013,21 @@ for (const [file, html] of cache) {
       }
       // Работа, которой нет в реестре скрипта, не подготовится и не соберётся.
       if (!code.includes(`'${lab.id}': {'kind'`)) failures.push(`${where}: not registered in course_lab.py`);
+    }
+    // Автопроверка обещана в каждом модуле: пропуск не виден ни в сборке, ни в
+    // разметке — вид модуля просто не покажет карточку, и читатель решит, что
+    // так и задумано.
+    const covered = new Set(labs.map((lab) => lab.module));
+    const uncovered = [...Array(37).keys()].filter((module) => !covered.has(module));
+    if (uncovered.length) failures.push(`lab-data: modules without an automatic check: ${uncovered.join(', ')}`);
+    // Число работ без автопроверки названо в книге прозой. Оно уже расходилось
+    // бы с данными после каждой добавленной работы, а проверить его глазами
+    // нельзя: работы лежат в JSON, а счёт — в тексте главы о проверке.
+    const aboutPage = cache.get(resolve(root, 'about', 'index.html')) ?? '';
+    const stated = aboutPage.match(/Остальные (\d+) работ автоматической проверки не имеют/);
+    if (!stated) failures.push('about: the count of works without an automatic check is gone from the prose');
+    else if (Number(stated[1]) !== 74 - labs.length) {
+      failures.push(`about: prose says ${stated[1]} works without an automatic check, lab-data leaves ${74 - labs.length}`);
     }
     // Тот же урок, что и с банком заданий: верный вариант, поставленный по
     // привычке первым, делает вопрос проходимым без чтения.

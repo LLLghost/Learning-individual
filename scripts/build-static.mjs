@@ -59,6 +59,12 @@ const followingScript = (id) => {
 // на GitHub Pages задают BASE_PATH=/имя-репозитория: маршруты и файлы остаются
 // прежними, префикс появляется только в ссылках, которые видит браузер.
 const BASE = (process.env.BASE_PATH ?? '').replace(/\/+$/, '');
+// Полный адрес сайта. Без него ссылка на главу, отправленная в мессенджер,
+// остаётся голым адресом: карточку предпросмотра собирают по og-разметке, а
+// она требует абсолютных адресов. Когда SITE_URL не задан (сборка на своей
+// машине), canonical, og:url и карта сайта просто не выпускаются — врать
+// поисковику о том, где страница живёт, хуже, чем молчать.
+const SITE = (process.env.SITE_URL ?? '').replace(/\/+$/, '');
 if (BASE && !/^\/[A-Za-z0-9._~-]+(?:\/[A-Za-z0-9._~-]+)*$/.test(BASE)) {
   throw new Error(`BASE_PATH должен начинаться со «/» и не содержать пробелов: ${BASE}`);
 }
@@ -249,10 +255,31 @@ const sealPolicy = (html) => {
 
 // Считать хеши до подстановки BASE_PATH нельзя: она меняет пути внутри
 // скриптов, а вместе с ними и хеш.
-const finishPage = (html) => sealPolicy(withBase(html));
+// Метаданные страницы подставляются в момент записи: сам pageShell своего адреса
+// не знает, а прокидывать его через десяток вызовов ради двух тегов не стоит.
+const pageMeta = (url, title, description) => {
+  const full = `${escape(title)} · Серверная инфраструктура`;
+  const tags = [
+    `<meta property="og:type" content="${url === '/' ? 'website' : 'article'}">`,
+    '<meta property="og:site_name" content="Серверная инфраструктура">',
+    '<meta property="og:locale" content="ru_RU">',
+    `<meta property="og:title" content="${full}">`,
+    `<meta property="og:description" content="${escape(description)}">`,
+    '<meta name="twitter:card" content="summary">',
+  ];
+  if (SITE) {
+    tags.push(`<meta property="og:url" content="${SITE}${url}">`, `<link rel="canonical" href="${SITE}${url}">`);
+  }
+  return tags.join('');
+};
+const finishPage = (html, url = '/') => {
+  const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.replace(/ · Серверная инфраструктура$/, '') ?? 'Серверная инфраструктура';
+  const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? title;
+  return sealPolicy(withBase(html.replace('__page-meta__', pageMeta(url, decode(title), decode(description)))));
+};
 
 const pageShell = ({ title, eyebrow, body, sidebar = '', className = '', description = title }) => `<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policySlot}"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24"><script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
+<html lang="ru"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policySlot}"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(description)}"><meta name="theme-color" content="#081a24">__page-meta__<script>try{const saved=localStorage.getItem('server-infrastructure-theme');document.documentElement.dataset.theme=saved||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script><title>${escape(title)} · Серверная инфраструктура</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"></head>
 <body><a class="skip-link" href="#main">К основному тексту</a><div class="read-progress" data-read-progress aria-hidden="true"></div><header class="topbar">${globalNav}<div class="read-size" data-read-size-group role="group" aria-label="Размер текста" hidden><button type="button" data-read-size="s" aria-pressed="false" title="Мелкий текст">А</button><button type="button" data-read-size="m" aria-pressed="true" title="Обычный текст">А</button><button type="button" data-read-size="l" aria-pressed="false" title="Крупный текст">А</button></div><button class="search-toggle" type="button" data-search-open aria-haspopup="dialog"><span aria-hidden="true">⌕</span><span>Поиск</span><kbd>Ctrl K</kbd></button><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"><span aria-hidden="true" data-theme-icon>◐</span><span data-theme-label>Тёмная тема</span></button><button class="notes-toggle" type="button" data-notes-toggle aria-expanded="false"><span aria-hidden="true">✎</span><span>Заметки</span><strong data-notes-badge hidden>0</strong></button><details class="mobile-menu"><summary><span class="menu-label">Разделы</span></summary><div>${globalNav}</div></details></header>
 <div class="page-layout ${className}">${sidebar ? `<aside class="side-nav">${sidebar}</aside>` : ''}<main class="page-main" id="main" tabindex="-1">${sectionRail(body.replace(/<div id="lab-texts"[\s\S]*?<\/div>/, ' '))}<p class="eyebrow">${escape(eyebrow)}</p>${body}</main></div>
 ${readerTools}<script src="/assets/site.js"></script></body></html>`;
@@ -424,7 +451,13 @@ const chapterPage = (chapter) => {
   const pager = `<nav class="pager" aria-label="Переход между главами">${previous ? `<a href="${previous.url}">← Глава ${pad(previous.number)}</a>` : '<span></span>'}<a class="assessment-link" href="/assessment/?module=${studyModuleByChapter[chapter.number]}">Проверить знания</a>${next ? `<a href="${next.url}">Глава ${pad(next.number)} →</a>` : '<span></span>'}</nav>`;
   const sidebar = `<a class="back-link" href="/curriculum/">← Вся программа</a><div class="sidebar-scroll">${curriculumLinks(chapter.number)}</div>`;
   const body = `<article class="prose chapter-prose">${rewriteLinks(chapter.intro + chapter.content, chapter.url)}</article>${chapterRecall(chapter)}${chapterTrainer(chapter.number)}${chapterPractice(chapter.number)}${pager}`;
-  return pageShell({ title: chapter.title, eyebrow: `Глава ${pad(chapter.number)} · университетский курс`, body, sidebar, className: 'with-sidebar' });
+  // Описание страницы — первый абзац главы, а не её же заголовок: именно оно
+  // уходит в карточку предпросмотра и в выдачу поисковика.
+  const lead = [...chapter.content.matchAll(/<p>([\s\S]*?)<\/p>/g)]
+    .map((match) => strip(match[1]).replace(/\s+/g, ' ').trim())
+    .find((text) => text.length >= 120 && !text.startsWith('Академическое продолжение')) ?? '';
+  const description = lead.length > 40 ? `${lead.slice(0, 180).replace(/[\s,;:]+\S*$/, '')}…` : chapter.title;
+  return pageShell({ title: chapter.title, eyebrow: `Глава ${pad(chapter.number)} · университетский курс`, body, sidebar, className: 'with-sidebar', description });
 };
 
 const lessonNav = (active) => `<p class="side-title">Начало · вводные уроки</p>${lessons.map((item) => `<a ${active === item.number ? 'aria-current="page"' : ''} href="${item.url}"><span>${item.number}</span>${escape(item.title.replace(/^Урок \d+\.\s*/, ''))}</a>`).join('')}<p class="side-title">Дальше</p><a href="/chapters/00/"><span>00</span>Учебная лаборатория</a><a href="/curriculum/"><span>—</span>Вся программа</a>`;
@@ -583,7 +616,24 @@ const route = pageShell({
 const referenceCards = `<div class="reference-cards"><a href="/reference/archive/"><span>Аттестация</span><strong>Экзаменационный банк и рубрики</strong></a><a href="/assessment/"><span>Интерактив</span><strong>Автоматическая проверка</strong></a><a href="/curriculum/"><span>Навигация</span><strong>Все 34 главы курса</strong></a></div>`;
 const reference = pageShell({ title: 'Справочник и приложения', eyebrow: 'Команды · runbook · глоссарий', body: `<header class="catalog-head"><h1>Справочник и приложения</h1><p>Материалы для работы рядом с терминалом и повторения после курса.</p></header>${referenceCards}<article class="prose">${rewriteLinks(source.slice(appendicesStart, selftestStart), '/reference/')}</article>` });
 const archive = pageShell({ title: 'Аттестация и архив материалов', eyebrow: 'Экзамены · ключи · рубрики', body: `<header class="catalog-head"><h1>Аттестация и архив</h1><p>Полная справочная модель очной аттестации, исходный экзаменационный банк и преподавательские ключи.</p></header><article class="prose">${rewriteLinks(source.slice(assessmentReferenceStart, mainEnd), '/reference/archive/')}</article>` });
-const about = pageShell({ title: 'О курсе', eyebrow: 'Как учиться самостоятельно', body: `<article class="prose">${rewriteLinks(aboutSource, '/about/')}</article>` });
+// Что нового. Учебник меняется, а читатель до сих пор не мог узнать, что
+// изменилось с прошлого захода: «версия 6.0» в предисловии стоит неподвижно.
+// Берём верхнюю запись CHANGELOG.md — вести её в двух местах никто не станет.
+const changelog = await readFile(resolve(root, 'CHANGELOG.md'), 'utf8');
+const latest = changelog.match(/\n## ([^\n]+)\n([\s\S]*?)(?=\n## |$)/);
+if (!latest) throw new Error('CHANGELOG.md: не найдено ни одной записи вида «## дата»');
+const changelogItems = [...latest[2].matchAll(/^- (.+)$/gm)].map((match) => match[1]);
+if (!changelogItems.length) throw new Error(`CHANGELOG.md: запись «${latest[1]}» без единого пункта`);
+// Разметка в пунктах — только **жирный**: полноценный разбор markdown здесь
+// не нужен и превратился бы в ещё один источник расхождений.
+const inline = (text) => escape(text).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+const built = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).replace(/\s*г\.$/, '');
+const whatsNew = `<section class="compact-prose" aria-labelledby="whats-new">
+<h2 id="whats-new">Что нового</h2>
+<p class="route-note">Версия 6.0 · запись от ${escape(latest[1])} · сборка от ${escape(built)}</p>
+<ul>${changelogItems.map((item) => `<li>${inline(item)}</li>`).join('')}</ul>
+</section>`;
+const about = pageShell({ title: 'О курсе', eyebrow: 'Как учиться самостоятельно', body: `<article class="prose">${rewriteLinks(aboutSource, '/about/')}</article>${whatsNew}` });
 
 const css = `
 :root{--ink:#102733;--muted:#5b6d76;--navy:#071a24;--navy2:#0d2c38;--teal:#1aa698;--teal2:#8ce0d6;--paper:#f5f0e6;--white:#fffdf9;--line:#d9d4c8;--amber:#e2a947;--link:#087e75;--soft:#faf9f4;--code:#e4e2d9;--quote:#fff8e9;--success:#e9f5f3;--selected:#e7f6f3;--page:1600px;color-scheme:light}html[data-theme=dark]{--ink:#e8f0ed;--muted:#9fb1b2;--navy:#06151d;--navy2:#0d2a35;--teal:#45c8bb;--teal2:#94e5dc;--paper:#07171f;--white:#0d222b;--line:#29414a;--amber:#e2ae58;--link:#69d6ca;--soft:#102832;--code:#18323a;--quote:#2b281e;--success:#12362f;--selected:#113a36;color-scheme:dark}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;transition:background-color .2s,color .2s}.topbar{height:68px;background:var(--navy);color:white;display:flex;align-items:center;padding:0 max(24px,calc((100vw - var(--page))/2));gap:48px;position:sticky;top:0;z-index:20;border-bottom:1px solid #ffffff18}.brand{display:flex;align-items:baseline;gap:7px;color:white;text-decoration:none;letter-spacing:.08em}.brand span{font-size:11px;color:var(--teal2)}.brand strong{font-size:19px}.topbar>nav{display:flex;gap:28px}.topbar nav a{color:#d7e7e8;text-decoration:none;font-size:14px}.topbar nav a:hover{color:white}.theme-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #ffffff35;background:#ffffff0b;color:white;font:600 12px/1.2 inherit;cursor:pointer}.theme-toggle:hover{border-color:var(--teal2);background:#ffffff14}.theme-toggle:focus-visible{outline:2px solid var(--teal2);outline-offset:3px}.theme-toggle [data-theme-icon]{font-size:16px}.mobile-menu{display:none}.page-layout{max-width:var(--page);margin:auto;min-height:calc(100vh - 68px)}.page-main{min-width:0;padding:54px clamp(24px,5vw,76px) 90px}.with-sidebar{display:grid;grid-template-columns:300px minmax(0,1fr)}.side-nav{height:calc(100vh - 68px);position:sticky;top:68px;overflow:auto;padding:34px 24px;background:#0b2430;color:white}.side-nav a{display:grid;grid-template-columns:35px 1fr;gap:8px;padding:8px 9px;color:#bcd0d3;text-decoration:none;font-size:12px;line-height:1.35;border-radius:5px}.side-nav a span{color:#6ec9bf;font-variant-numeric:tabular-nums}.side-nav a:hover,.side-nav a[aria-current=page]{background:#173b47;color:white}.side-nav .back-link{display:block;margin-bottom:22px;color:white}.nav-group{margin:20px 0}.nav-group p,.side-title{margin:0 8px 8px;color:#6f9199;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.sidebar-scroll{padding-bottom:40px}.eyebrow{margin:0 0 12px;color:var(--teal);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.7fr);gap:72px;align-items:end;padding:58px 0 74px}.hero h1,.catalog-head h1,.tool-intro h1{font-family:Georgia,serif;font-size:clamp(42px,6vw,84px);line-height:.94;letter-spacing:-.04em;margin:0}.hero h1 em{color:var(--teal);font-weight:400}.hero>div>p{max-width:720px;font-size:19px;line-height:1.6;color:var(--muted)}.hero-actions{display:flex;gap:12px;margin-top:30px}.button{display:inline-block;border:1px solid #77979b;padding:12px 18px;text-decoration:none;color:var(--ink);font-weight:700;font-size:14px}.button.primary{background:var(--navy);color:white;border-color:#31505a}.hero-stats{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:var(--white)}.hero-stats div{padding:25px;border:1px solid var(--line)}.hero-stats strong{display:block;font-family:Georgia,serif;font-size:42px}.hero-stats span{font-size:12px;color:var(--muted)}.lead-note{max-width:720px;margin:0 0 26px;color:var(--muted);font-size:15px;line-height:1.65}.progress-card{background:var(--navy2);color:white;padding:26px 30px;display:flex;align-items:center;justify-content:space-between}.progress-card p{margin:6px 0;color:#b7d1d2}.progress-card a{color:var(--teal2)}.resume-line{margin:10px 0 0;font-size:14px}.resume-line em{color:#9fc3c4;font-style:normal;font-size:12px}.section-head{display:flex;align-items:end;justify-content:space-between;margin:70px 0 22px}.section-head h2{font-family:Georgia,serif;font-size:36px;margin:0}.section-head a{color:var(--ink)}.part-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.part-card{min-height:178px;padding:23px;background:var(--white);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:.18s}.part-card:hover,.chapter-card:hover{border-color:var(--teal);transform:translateY(-2px)}.part-card span{color:var(--teal);font-size:11px;font-weight:800;text-transform:uppercase}.part-card h2{font-family:Georgia,serif;font-size:23px}.part-card p{color:var(--muted);font-size:12px}.catalog-head{max-width:900px;margin-bottom:46px}.catalog-head h1,.tool-intro h1{font-size:clamp(40px,6vw,68px)}.catalog-head>p,.tool-intro>p{font-size:18px;line-height:1.6;color:var(--muted)}.search{display:block;margin-top:28px}.search span{display:block;font-size:12px;font-weight:700;margin-bottom:7px}.search input{width:min(560px,100%);padding:14px 16px;border:1px solid #69878b;background:var(--white);color:var(--ink);font:inherit}.catalog-part{display:grid;grid-template-columns:210px 1fr;gap:35px;border-top:1px solid var(--line);padding:32px 0}.catalog-part>div>p{color:var(--teal);font-size:11px;font-weight:800;text-transform:uppercase}.catalog-part h2{font-family:Georgia,serif;font-size:26px}.chapter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.chapter-card{padding:18px;background:var(--white);border:1px solid var(--line);text-decoration:none;color:var(--ink)}.chapter-card>span{color:var(--teal);font-family:ui-monospace,monospace}.chapter-card h3{font-size:16px;line-height:1.35}.chapter-card p{font-size:11px;color:var(--muted)}.chapter-prose,.prose{max-width:900px;margin:auto}.prose h1{font-family:Georgia,serif;font-size:clamp(34px,5vw,58px);line-height:1.06;letter-spacing:-.025em;margin:0 0 36px}.prose h2{font-family:Georgia,serif;font-size:32px;margin:62px 0 18px;padding-top:10px;border-top:1px solid var(--line)}.prose h3{font-size:20px;margin:38px 0 12px}.prose h4{font-size:16px}.prose p,.prose li{font-size:16px;line-height:1.72}.prose p{margin:13px 0}.prose a{color:var(--link)}.prose pre{overflow:auto;background:var(--navy);color:#d9eeee;padding:18px;border-left:4px solid var(--teal);font-size:13px;line-height:1.55}.prose code{font-family:"Cascadia Code",Consolas,monospace;background:var(--code);padding:.08em .28em}.prose pre code{background:none;padding:0}.prose table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white)}.prose th,.prose td{padding:10px;border:1px solid var(--line);text-align:left}.prose th.num,.prose td.num{text-align:right}.prose blockquote{margin:24px 0;padding:5px 20px;border-left:4px solid var(--amber);background:var(--quote)}.prose details{margin:20px 0;padding:16px;border:1px solid var(--line);background:var(--white)}.prose img{max-width:100%}.pager{max-width:900px;margin:60px auto 0;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;border-top:1px solid var(--line);padding-top:24px}.pager a{color:var(--ink);text-decoration:none;font-weight:700}.pager a:last-child{text-align:right}.assessment-link{color:var(--teal)!important}.tool-intro{max-width:950px;margin:0 auto 35px}.study-surface,.compact-prose{max-width:980px;margin:0 auto 38px;background:var(--white);border:1px solid var(--line);padding:clamp(18px,4vw,42px)}.study-app .controls{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}.study-app button,.study-surface button,.study-app select,.file-label{padding:10px 14px;border:1px solid #63858a;background:var(--white);color:var(--ink);cursor:pointer;font:inherit}.study-app .navbtn[aria-pressed=true]{background:var(--navy);color:white}.study-app .card,.quiz{padding:20px;margin:18px 0;border:1px solid var(--line);background:var(--soft)}.study-app label.option,.quiz label{display:block;padding:10px;margin:8px 0;background:var(--white);border:1px solid var(--line);cursor:pointer}.study-app label.option:has(input:checked){border-color:var(--teal);background:var(--selected)}.study-app .answer-field{display:block;width:100%;max-width:320px;padding:10px;margin-top:6px;background:var(--white);color:var(--ink);border:1px solid var(--line)}.study-app .result{padding:12px;border-left:4px solid var(--teal);background:var(--success)}.study-app .ok{color:var(--teal)}.study-app .bad{color:#e07961}.study-app progress{width:100%}.study-app table{width:100%;border-collapse:collapse}.study-app td,.study-app th{padding:9px;border:1px solid var(--line)}.study-app .hidden-input{display:none}.study-app .confidence{margin:14px 0 4px;padding:10px 12px;border:1px dashed var(--line);background:var(--white);display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}.study-app .confidence legend{padding:0 6px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.study-app label.conf-option{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid transparent;font-size:14px;cursor:pointer}.study-app label.conf-option:has(input:checked){border-color:var(--teal);background:var(--selected)}.study-app label.conf-option:has(input:disabled){opacity:.65;cursor:default}.study-app .reason-tier{margin:16px 0 4px;padding:14px 16px;border:1px solid var(--line);background:var(--white)}.study-app .reason-tier h4{margin:0 0 4px;font-size:15px}.study-app .reason-tier .note{margin:0 0 10px}.study-app .error-entry{border-left:4px solid #e07961}.study-app .error-entry.is-done{border-left-color:var(--teal);opacity:.72}.reference-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:900px;margin:0 auto 44px}.reference-cards a{padding:22px;background:var(--navy2);color:white;text-decoration:none}.reference-cards span{display:block;color:var(--teal2);font-size:11px;text-transform:uppercase;margin-bottom:8px}.reference-cards strong{font-family:Georgia,serif;font-size:20px}@media(max-width:900px){.topbar{gap:18px}.topbar>nav{display:none}.theme-toggle{margin-left:auto}.mobile-menu{display:block}.mobile-menu summary{cursor:pointer}.mobile-menu>div{position:absolute;right:16px;top:58px;background:var(--navy2);padding:18px;box-shadow:0 12px 30px #0008}.mobile-menu .brand{display:none}.mobile-menu nav{display:grid;gap:14px}.with-sidebar{display:block}.side-nav{display:none}.hero{grid-template-columns:1fr;gap:30px}.part-grid{grid-template-columns:1fr 1fr}.catalog-part{grid-template-columns:1fr}.chapter-grid{grid-template-columns:1fr}.reference-cards{grid-template-columns:1fr}.page-main{padding-top:35px}}@media(max-width:560px){.theme-toggle [data-theme-label]{display:none}.part-grid{grid-template-columns:1fr}.hero h1{font-size:44px}.hero-actions{flex-direction:column}.pager{grid-template-columns:1fr}.pager a:last-child{text-align:left}.study-surface{padding:14px}.topbar{padding:0 18px}}@media print{.topbar,.side-nav,.pager{display:none}.with-sidebar{display:block}.page-main{padding:0}.prose{width:auto;max-width:none}}
@@ -710,6 +760,21 @@ h1,h2,h3,h4{text-wrap:balance}
 .prose code{overflow-wrap:break-word}
 .prose table{display:block;overflow-x:auto;max-width:100%}
 .prose abbr[title]{text-decoration:underline dotted;text-underline-offset:2px;cursor:help}
+
+/* Схемы. Рисунок наследует цвет текста (stroke:currentColor в самой разметке),
+   поэтому в тёмной теме ничего переключать не нужно. Ширину задаёт колонка:
+   у SVG есть viewBox и нет width, иначе схема вылезала бы за меру строки. */
+.prose figure.scheme{margin:26px 0;padding:0;overflow-x:auto;overscroll-behavior-x:contain}
+/* Схема не ужимается до нечитаемого: на узкой колонке она прокручивается вбок,
+   как таблицы и листинги. При width:100% без min-width подписи внутри рисунка
+   на телефоне сжимались до шести пикселей — картинка есть, прочесть нельзя. */
+.prose figure.scheme svg{display:block;width:100%;min-width:560px;max-width:640px;height:auto;margin:0 auto}
+.prose figure.scheme .zone{stroke:var(--line)}
+.prose figure.scheme .accent{stroke:var(--teal);stroke-width:2}
+.prose figure.scheme .dim{stroke:var(--muted);fill:var(--muted)}
+.prose figure.scheme text{stroke:none;fill:var(--ink);font-family:inherit}
+.prose figure.scheme text.dim{stroke:none;fill:var(--muted)}
+.prose figcaption{margin-top:10px;color:var(--muted);font-size:13.5px;line-height:1.55;text-align:center}
 [data-trainer-score],[data-notes-count],[data-notes-badge],.hero-stats strong,.side-nav a span{font-variant-numeric:tabular-nums}
 .search-field input,.study-app .answer-field,.search input{font-size:max(16px,1rem)}
 
@@ -1538,8 +1603,8 @@ register({name:'open_course_module',title:'Открыть модуль курс�
 await rm(output, { recursive: true, force: true });
 await mkdir(resolve(output, 'assets'), { recursive: true });
 await Promise.all([
-  writeFile(resolve(output, 'index.html'), finishPage(home)),
-  writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum)).catch(async () => { await mkdir(resolve(output, 'curriculum'), { recursive: true }); await writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum)); }),
+  writeFile(resolve(output, 'index.html'), finishPage(home, '/')),
+  writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum, '/curriculum/')).catch(async () => { await mkdir(resolve(output, 'curriculum'), { recursive: true }); await writeFile(resolve(output, 'curriculum', 'index.html'), finishPage(curriculum, '/curriculum/')); }),
   writeFile(resolve(output, 'assets', 'site.css'), css),
   writeFile(resolve(output, 'assets', 'site.js'), js),
   cp(resolve(root, 'public', 'favicon.svg'), resolve(output, 'assets', 'favicon.svg')),
@@ -1553,7 +1618,7 @@ const outputs = [
 for (const [url, html] of outputs) {
   const file = resolve(output, url.slice(1), 'index.html');
   await mkdir(dirname(file), { recursive: true });
-  await writeFile(file, finishPage(html));
+  await writeFile(file, finishPage(html, url));
 }
 
 // ---------- Индекс полнотекстового поиска ----------
@@ -1661,6 +1726,17 @@ self.addEventListener('message',event=>{
 });
 `;
 await writeFile(resolve(output, 'sw.js'), serviceWorker);
+
+// Карта сайта и robots: без них поисковик обходит 47 страниц наугад, а часть
+// маршрутов (например работы практикума за параметром) не находит вовсе.
+// Карта требует абсолютных адресов, поэтому выпускается только при SITE_URL.
+if (SITE) {
+  const urls = ['/', '/curriculum/', ...outputs.map(([url]) => url)]
+    .map((url) => `  <url><loc>${SITE}${url}</loc><lastmod>${new Date().toISOString().slice(0, 10)}</lastmod></url>`)
+    .join('\n');
+  await writeFile(resolve(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
+}
+await writeFile(resolve(output, 'robots.txt'), `User-agent: *\nAllow: /\n${SITE ? `Sitemap: ${SITE}/sitemap.xml\n` : ''}`);
 
 const htmlFiles = ['index.html', 'curriculum/index.html', ...outputs.map(([url]) => `${url.slice(1)}index.html`)];
 for (const relative of htmlFiles) {

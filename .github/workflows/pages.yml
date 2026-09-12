@@ -32,13 +32,20 @@ jobs:
 
       # Страницы проекта живут в подкаталоге /<репозиторий>/, личный сайт
       # <владелец>.github.io — в корне. Свой домен тоже отдаётся из корня:
-      # в этом случае оставьте BASE_PATH пустым.
+      # в этом случае оставьте BASE_PATH пустым, а в SITE_URL впишите домен.
+      # SITE_URL нужен для canonical, og:url и карты сайта: они требуют
+      # абсолютных адресов, и без переменной просто не выпускаются.
+      # Имя владельца приводится к нижнему регистру — адреса github.io
+      # регистрозависимы, и ссылка с заглавной буквой ведёт в никуда.
       - name: Определить базовый путь
         run: |
-          if [ "${{ github.event.repository.name }}" = "${{ github.repository_owner }}.github.io" ]; then
+          owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          if [ "${{ github.event.repository.name }}" = "$owner.github.io" ]; then
             echo "BASE_PATH=" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://$owner.github.io" >> "$GITHUB_ENV"
           else
             echo "BASE_PATH=/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://$owner.github.io/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
           fi
 
       # Генератор и проверка используют только стандартную библиотеку Node,
@@ -53,8 +60,42 @@ jobs:
         with:
           path: build
 
+  # Валидатор читает разметку и не видит того, что ломается только при
+  # исполнении: упавший обработчик, не найденный элемент. Такой обход делался
+  # руками, то есть не делался, когда о нём забывали. Отдельной работой — чтобы
+  # сборка и публикация по-прежнему обходились одной стандартной библиотекой.
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Определить базовый путь
+        run: |
+          owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          if [ "${{ github.event.repository.name }}" = "$owner.github.io" ]; then
+            echo "BASE_PATH=" >> "$GITHUB_ENV"
+          else
+            echo "BASE_PATH=/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
+          fi
+
+      # Обход идёт по сайту, собранному без базового пути: локальный сервер
+      # отдаёт его из корня, а ссылки с префиксом там вели бы в пустоту.
+      - name: Собрать сайт для обхода
+        run: BASE_PATH= node scripts/build-static.mjs
+
+      - name: Поставить браузер
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Пройти сайт браузером
+        run: node scripts/smoke-browser.mjs
+
   deploy:
-    needs: build
+    needs: [build, smoke]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
