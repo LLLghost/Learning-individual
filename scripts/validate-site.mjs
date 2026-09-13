@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { gunzipSync } from 'node:zlib';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, relative, resolve } from 'node:path';
 
@@ -50,6 +51,10 @@ for (const [file, html] of cache) {
   }
 }
 
+// Страница всей книги повторяет прозу глав целиком: она для печати, PDF и
+// читалки. В индексе поиска она удвоила бы каждую находку и сам файл
+// (1,6 → 2,9 МБ), а в офлайн-копии — её объём, ничего не добавив читателю.
+const DUPLICATE_ROUTES = new Set(['/book/']);
 const assessment = cache.get(resolve(root, 'assessment', 'index.html'));
 const siteJs = await readFile(resolve(root, 'assets', 'site.js'), 'utf8');
 const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
@@ -66,7 +71,8 @@ try {
   const searchIndex = packed.s.map(([page, anchor, heading, text]) => ({ u: packed.p[page]?.[0], t: packed.p[page]?.[1], a: anchor, h: heading, x: text }));
   const indexedRoutes = new Set(searchIndex.map((entry) => entry.u));
   if (searchIndex.length < 400) failures.push(`search index: only ${searchIndex.length} sections`);
-  if (indexedRoutes.size !== htmlFiles.length) failures.push(`search index: covers ${indexedRoutes.size} of ${htmlFiles.length} routes`);
+  if (indexedRoutes.size !== htmlFiles.length - DUPLICATE_ROUTES.size) failures.push(`search index: covers ${indexedRoutes.size} of ${htmlFiles.length - DUPLICATE_ROUTES.size} routes`);
+  for (const url of DUPLICATE_ROUTES) if (indexedRoutes.has(url)) failures.push(`search index: ${url} repeats prose that is already indexed`);
   const malformed = searchIndex.filter((entry) => !entry.u || !entry.h || !entry.x);
   if (malformed.length) failures.push(`search index: ${malformed.length} sections without url, heading or text`);
   for (const entry of searchIndex) {
@@ -76,6 +82,18 @@ try {
     }
   }
 } catch { failures.push('assets: missing or invalid search.json'); }
+// Рядом с индексом лежит он же сжатым: офлайн-копия хранит именно его, и
+// расхождение между файлами не видно ниоткуда — поиск без сети просто начнёт
+// отвечать по устаревшей книге. Сверяем не размер, а сами байты.
+try {
+  const plain = await readFile(resolve(root, 'assets', 'search.json'));
+  const packed = await readFile(resolve(root, 'assets', 'search.json.gz'));
+  if (!gunzipSync(packed).equals(plain)) failures.push('assets: search.json.gz does not unpack to search.json');
+  if (packed.length >= plain.length) failures.push('assets: search.json.gz is not smaller than the plain index');
+  if (!siteJs.includes('DecompressionStream')) failures.push('site.js: the search does not try the packed index');
+} catch (error) {
+  failures.push(`assets: search.json.gz is missing or broken (${error.message})`);
+}
 for (const [file, html] of cache) {
   if (!html.includes('data-search-open')) failures.push(`${file}: missing site search entry point`);
 }
@@ -113,6 +131,43 @@ else {
   if (clashes.length) failures.push(`term base: one spelling claimed twice — ${clashes.slice(0, 6).join('; ')}`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
+// Контраст текста к фону. Цвет — единственное место в оформлении, где дефект
+// не виден именно тому, кто его вносит: правка палитры выглядит нормально на
+// хорошем экране, а порог WCAG она уже не проходит. Проверка axe нашла 187
+// таких узлов: ссылка в прозе давала 4.34 при нужных 4.5, а надзаголовок
+// «ЧАСТЬ I» бирюзовым по кремовому — 2.66. Тёмная тема при этом была чиста,
+// то есть глазами расхождение между темами не ловится вовсе.
+{
+  const luminance = (hex) => {
+    const channels = [0, 2, 4].map((at) => {
+      const value = parseInt(hex.slice(1 + at, 3 + at), 16) / 255;
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  };
+  const contrast = (fg, bg) => {
+    const [high, low] = [luminance(fg), luminance(bg)].sort((a, b) => b - a);
+    return (high + 0.05) / (low + 0.05);
+  };
+  const tokens = (block) => Object.fromEntries([...block.matchAll(/--([a-z0-9-]+):(#[0-9a-f]{6})/g)].map((m) => [m[1], m[2]]));
+  const themes = {
+    'светлая': tokens(siteCss.slice(siteCss.indexOf(':root{'), siteCss.indexOf('}', siteCss.indexOf(':root{')))),
+    'тёмная': tokens(siteCss.slice(siteCss.indexOf('html[data-theme=dark]{'), siteCss.indexOf('}', siteCss.indexOf('html[data-theme=dark]{')))),
+  };
+  // Цвета текста и поверхности, на которых этот текст действительно стоит.
+  for (const [theme, palette] of Object.entries(themes)) {
+    for (const ink of ['ink', 'muted', 'link', 'teal-ink']) {
+      for (const surface of ['paper', 'white', 'soft']) {
+        const fg = palette[ink];
+        const bg = palette[surface];
+        if (!fg || !bg) { failures.push(`site.css: ${theme} theme lost token --${fg ? surface : ink}`); continue; }
+        const value = contrast(fg, bg);
+        if (value < 4.5) failures.push(`site.css: ${theme} тема, --${ink} на --${surface} даёт контраст ${value.toFixed(2)} при нужных 4.5`);
+      }
+    }
+  }
+}
+
 // «Что нового» на странице «О курсе» собирается из верхней записи CHANGELOG.md.
 // Файл и страница расходятся молча: в репозитории запись есть, а на сайте
 // осталась прошлая — читатель узнаёт об изменениях последним.
@@ -126,7 +181,7 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
     if (items.length < 3) failures.push(`CHANGELOG.md: the newest entry has ${items.length} lines, expected at least three`);
     if (!about.includes('id="whats-new"')) failures.push('/about/: missing the "what is new" block');
     else if (latest && !about.includes(latest[1])) failures.push(`/about/: shows an entry other than the newest one (${latest[1]})`);
-    const shown = [...about.matchAll(/<li>([^<]{20,})<\/li>/g)].map((match) => match[1]);
+    const shown = [...about.matchAll(/<li>([\s\S]{20,}?)<\/li>/g)].map((match) => match[1].replace(/<[^>]+>/g, ''));
     const first = items[0]?.replace(/\*\*/g, '').slice(0, 40);
     if (first && !shown.some((line) => line.startsWith(first.slice(0, 30)))) {
       failures.push('/about/: the "what is new" block does not match the newest CHANGELOG entry');
@@ -148,7 +203,7 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       const listed = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]));
       const missing = htmlFiles
         .map((file) => site + file.slice(root.length).replace(/index\.html$/, '').replace(/\\/g, '/'))
-        .filter((url) => !listed.has(url));
+        .filter((url) => !listed.has(url) && !DUPLICATE_ROUTES.has(BASE ? url.slice(BASE.length) : url));
       if (missing.length) failures.push(`sitemap.xml: ${missing.length} routes are missing, first ${missing[0]}`);
     }
     if (robots && !robots.includes('Sitemap:')) failures.push('robots.txt: no Sitemap line while SITE_URL is set');
@@ -179,7 +234,7 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
     const missing = htmlFiles
       .map((file) => file.slice(root.length).replace(/index\.html$/, '').replace(/\\/g, '/'))
       .map((url) => (BASE ? BASE + url : url))
-      .filter((url) => !listed.has(url));
+      .filter((url) => !listed.has(url) && !DUPLICATE_ROUTES.has(BASE ? url.slice(BASE.length) : url));
     if (missing.length) failures.push(`sw.js: ${missing.length} routes are not saved for offline use, first ${missing[0]}`);
     if (!siteJs.includes('serviceWorker.register')) failures.push('site.js: service worker is never registered');
     const page = cache.get(resolve(root, 'index.html')) ?? '';
@@ -1020,14 +1075,14 @@ for (const [file, html] of cache) {
     const covered = new Set(labs.map((lab) => lab.module));
     const uncovered = [...Array(37).keys()].filter((module) => !covered.has(module));
     if (uncovered.length) failures.push(`lab-data: modules without an automatic check: ${uncovered.join(', ')}`);
-    // Число работ без автопроверки названо в книге прозой. Оно уже расходилось
-    // бы с данными после каждой добавленной работы, а проверить его глазами
-    // нельзя: работы лежат в JSON, а счёт — в тексте главы о проверке.
+    // Число работ с автопроверкой названо в книге прозой. Оно расходится с
+    // данными после каждой добавленной работы, а проверить его глазами нельзя:
+    // работы лежат в JSON, а счёт — в тексте главы о проверке.
     const aboutPage = cache.get(resolve(root, 'about', 'index.html')) ?? '';
-    const stated = aboutPage.match(/Остальные (\d+) работ автоматической проверки не имеют/);
-    if (!stated) failures.push('about: the count of works without an automatic check is gone from the prose');
-    else if (Number(stated[1]) !== 74 - labs.length) {
-      failures.push(`about: prose says ${stated[1]} works without an automatic check, lab-data leaves ${74 - labs.length}`);
+    const stated = aboutPage.match(/Автоматическая проверка есть у всех (\d+)/);
+    if (!stated) failures.push('about: the count of works with an automatic check is gone from the prose');
+    else if (Number(stated[1]) !== labs.length) {
+      failures.push(`about: prose says ${stated[1]} works have an automatic check, lab-data has ${labs.length}`);
     }
     // Тот же урок, что и с банком заданий: верный вариант, поставленный по
     // привычке первым, делает вопрос проходимым без чтения.
@@ -1042,6 +1097,32 @@ for (const [file, html] of cache) {
   }
 }
 
-if (htmlFiles.length !== 47) failures.push(`expected 47 routes, got ${htmlFiles.length}`);
+// Вся книга одной страницей. Полнота здесь не видна ниоткуда: страница
+// собирается срезами, и выпавшая глава выглядит как просто более короткий
+// свиток. Проверяем состав, отсутствие интерактивных блоков (на бумаге они
+// пусты, потому что их рисует скрипт) и то, что перекрёстная ссылка ведёт
+// внутрь страницы, а не уводит с листа обратно на сайт.
+{
+  const book = cache.get(resolve(root, 'book', 'index.html')) ?? '';
+  if (!book) failures.push('book: the whole-book page is missing');
+  else {
+    for (let number = 0; number <= 33; number += 1) {
+      if (!book.includes(`id="b${String(number).padStart(2, '0')}"`)) failures.push(`book: chapter ${number} is not on the page`);
+    }
+    for (let lesson = 1; lesson <= 5; lesson += 1) {
+      if (!book.includes(`id="start0${lesson}"`)) failures.push(`book: lesson ${lesson} is not on the page`);
+    }
+    if (!book.includes('id="b33-s044"')) failures.push('book: the appendices are not on the page');
+    for (const live of ['data-chapter-trainer', 'data-chapter-recall', 'class="chapter-practice"']) {
+      if (book.includes(live)) failures.push(`book: ${live} belongs to the site, not to print`);
+    }
+    const ids = new Set([...book.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]));
+    const strayAnchors = [...book.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]).filter((id) => !ids.has(id));
+    if (strayAnchors.length) failures.push(`book: ${strayAnchors.length} local links point nowhere, first #${strayAnchors[0]}`);
+    if (!siteCss.includes('.book-prose h1{break-before:page')) failures.push('site.css: chapters do not start a new sheet when printed');
+    if (!siteCss.includes('.book-prose a[href^="http"]::after')) failures.push('site.css: printed pages lose the addresses of external links');
+  }
+}
+if (htmlFiles.length !== 48) failures.push(`expected 48 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
