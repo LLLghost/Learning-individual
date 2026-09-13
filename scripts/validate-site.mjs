@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { gunzipSync } from 'node:zlib';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, relative, resolve } from 'node:path';
 
@@ -76,6 +77,18 @@ try {
     }
   }
 } catch { failures.push('assets: missing or invalid search.json'); }
+// Рядом с индексом лежит он же сжатым: офлайн-копия хранит именно его, и
+// расхождение между файлами не видно ниоткуда — поиск без сети просто начнёт
+// отвечать по устаревшей книге. Сверяем не размер, а сами байты.
+try {
+  const plain = await readFile(resolve(root, 'assets', 'search.json'));
+  const packed = await readFile(resolve(root, 'assets', 'search.json.gz'));
+  if (!gunzipSync(packed).equals(plain)) failures.push('assets: search.json.gz does not unpack to search.json');
+  if (packed.length >= plain.length) failures.push('assets: search.json.gz is not smaller than the plain index');
+  if (!siteJs.includes('DecompressionStream')) failures.push('site.js: the search does not try the packed index');
+} catch (error) {
+  failures.push(`assets: search.json.gz is missing or broken (${error.message})`);
+}
 for (const [file, html] of cache) {
   if (!html.includes('data-search-open')) failures.push(`${file}: missing site search entry point`);
 }

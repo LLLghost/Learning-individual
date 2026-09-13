@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
@@ -1245,7 +1246,8 @@ const fold=text=>String(text).toLowerCase().replace(/ё/g,'е');
 let searchIndex=null,searchRequest=null,searchTimer=0,searchReturnFocus=null;
 const loadSearchIndex=()=>{
   if(searchIndex)return Promise.resolve(searchIndex);
-  if(!searchRequest)searchRequest=fetch('${BASE}/assets/search.json').then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json()}).then(data=>{searchIndex=data.s.map(row=>{const page=data.p[row[0]];return{u:page[0],t:page[1],a:row[1],h:row[2],x:row[3],f:fold(row[2]+' '+row[3])}});return searchIndex});
+  const unpack=async response=>{if(!response.ok)throw new Error('HTTP '+response.status);const buffer=await response.arrayBuffer();const head=new Uint8Array(buffer,0,Math.min(2,buffer.byteLength));if(head[0]!==0x1f||head[1]!==0x8b)return JSON.parse(new TextDecoder().decode(buffer));return await new Response(new Blob([buffer]).stream().pipeThrough(new DecompressionStream('gzip'))).json();};
+ if(!searchRequest)searchRequest=(typeof DecompressionStream==='function'?fetch('${BASE}/assets/search.json.gz').then(unpack).catch(()=>fetch('${BASE}/assets/search.json').then(unpack)):fetch('${BASE}/assets/search.json').then(unpack)).then(data=>{searchIndex=data.s.map(row=>{const page=data.p[row[0]];return{u:page[0],t:page[1],a:row[1],h:row[2],x:row[3],f:fold(row[2]+' '+row[3])}});return searchIndex});
   return searchRequest;
 };
 const markTerms=(raw,terms)=>{
@@ -1678,7 +1680,13 @@ const searchRows = searchDocuments.map(([url, title, anchor, heading, text]) => 
   if (!searchPageIndex.has(key)) { searchPageIndex.set(key, searchPages.length); searchPages.push([url, title]); }
   return [searchPageIndex.get(key), anchor, heading, text];
 });
-await writeFile(resolve(output, 'assets', 'search.json'), JSON.stringify({ v: 2, p: searchPages, s: searchRows }));
+const searchIndex = JSON.stringify({ v: 2, p: searchPages, s: searchRows });
+// Индекс — это сам текст книги: 91% его объёма приходится на разделы, и
+// обрезать их нельзя, поиск полнотекстовый. Зато рядом лежит он же сжатым.
+// По сети выигрыша нет — GitHub Pages жмёт и так, — но офлайн-копия хранит
+// расжатое: 1,6 МБ из 5,2 МБ всего сохранённого курса уходило на один файл.
+await writeFile(resolve(output, 'assets', 'search.json'), searchIndex);
+await writeFile(resolve(output, 'assets', 'search.json.gz'), gzipSync(Buffer.from(searchIndex, 'utf8'), { level: 9 }));
 
 // ---------- Работа без сети ----------
 // Книга обещает, что интернет нужен только для внешних ссылок, а сайт этого не
@@ -1722,7 +1730,7 @@ self.addEventListener('message',event=>{
     const client=event.source;
     event.waitUntil((async()=>{
       const cache=await caches.open(CACHE);
-      const all=[...ROUTES,'${BASE}/assets/search.json',...SHELL];
+      const all=[...ROUTES,typeof DecompressionStream==='function'?'${BASE}/assets/search.json.gz':'${BASE}/assets/search.json',...SHELL];
       let done=0,failed=0;
       for(const address of all){
         try{const response=await fetch(address,{cache:'reload'});if(response.ok)await cache.put(address,response.clone());else failed+=1}catch{failed+=1}
