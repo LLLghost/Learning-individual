@@ -1075,14 +1075,14 @@ for (const [file, html] of cache) {
     const covered = new Set(labs.map((lab) => lab.module));
     const uncovered = [...Array(37).keys()].filter((module) => !covered.has(module));
     if (uncovered.length) failures.push(`lab-data: modules without an automatic check: ${uncovered.join(', ')}`);
-    // Число работ без автопроверки названо в книге прозой. Оно уже расходилось
-    // бы с данными после каждой добавленной работы, а проверить его глазами
-    // нельзя: работы лежат в JSON, а счёт — в тексте главы о проверке.
+    // Число работ с автопроверкой названо в книге прозой. Оно расходится с
+    // данными после каждой добавленной работы, а проверить его глазами нельзя:
+    // работы лежат в JSON, а счёт — в тексте главы о проверке.
     const aboutPage = cache.get(resolve(root, 'about', 'index.html')) ?? '';
-    const stated = aboutPage.match(/Остальные (\d+) работ автоматической проверки не имеют/);
-    if (!stated) failures.push('about: the count of works without an automatic check is gone from the prose');
-    else if (Number(stated[1]) !== 74 - labs.length) {
-      failures.push(`about: prose says ${stated[1]} works without an automatic check, lab-data leaves ${74 - labs.length}`);
+    const stated = aboutPage.match(/Автоматическая проверка есть у всех (\d+)/);
+    if (!stated) failures.push('about: the count of works with an automatic check is gone from the prose');
+    else if (Number(stated[1]) !== labs.length) {
+      failures.push(`about: prose says ${stated[1]} works have an automatic check, lab-data has ${labs.length}`);
     }
     // Тот же урок, что и с банком заданий: верный вариант, поставленный по
     // привычке первым, делает вопрос проходимым без чтения.
