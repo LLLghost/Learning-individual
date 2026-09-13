@@ -113,6 +113,43 @@ else {
   if (clashes.length) failures.push(`term base: one spelling claimed twice — ${clashes.slice(0, 6).join('; ')}`);
 }
 if (!siteCss.includes('.define-card')) failures.push('site.css: missing definition card styles');
+// Контраст текста к фону. Цвет — единственное место в оформлении, где дефект
+// не виден именно тому, кто его вносит: правка палитры выглядит нормально на
+// хорошем экране, а порог WCAG она уже не проходит. Проверка axe нашла 187
+// таких узлов: ссылка в прозе давала 4.34 при нужных 4.5, а надзаголовок
+// «ЧАСТЬ I» бирюзовым по кремовому — 2.66. Тёмная тема при этом была чиста,
+// то есть глазами расхождение между темами не ловится вовсе.
+{
+  const luminance = (hex) => {
+    const channels = [0, 2, 4].map((at) => {
+      const value = parseInt(hex.slice(1 + at, 3 + at), 16) / 255;
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  };
+  const contrast = (fg, bg) => {
+    const [high, low] = [luminance(fg), luminance(bg)].sort((a, b) => b - a);
+    return (high + 0.05) / (low + 0.05);
+  };
+  const tokens = (block) => Object.fromEntries([...block.matchAll(/--([a-z0-9-]+):(#[0-9a-f]{6})/g)].map((m) => [m[1], m[2]]));
+  const themes = {
+    'светлая': tokens(siteCss.slice(siteCss.indexOf(':root{'), siteCss.indexOf('}', siteCss.indexOf(':root{')))),
+    'тёмная': tokens(siteCss.slice(siteCss.indexOf('html[data-theme=dark]{'), siteCss.indexOf('}', siteCss.indexOf('html[data-theme=dark]{')))),
+  };
+  // Цвета текста и поверхности, на которых этот текст действительно стоит.
+  for (const [theme, palette] of Object.entries(themes)) {
+    for (const ink of ['ink', 'muted', 'link', 'teal-ink']) {
+      for (const surface of ['paper', 'white', 'soft']) {
+        const fg = palette[ink];
+        const bg = palette[surface];
+        if (!fg || !bg) { failures.push(`site.css: ${theme} theme lost token --${fg ? surface : ink}`); continue; }
+        const value = contrast(fg, bg);
+        if (value < 4.5) failures.push(`site.css: ${theme} тема, --${ink} на --${surface} даёт контраст ${value.toFixed(2)} при нужных 4.5`);
+      }
+    }
+  }
+}
+
 // «Что нового» на странице «О курсе» собирается из верхней записи CHANGELOG.md.
 // Файл и страница расходятся молча: в репозитории запись есть, а на сайте
 // осталась прошлая — читатель узнаёт об изменениях последним.

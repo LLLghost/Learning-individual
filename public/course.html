@@ -13081,7 +13081,7 @@ function practice(){panel.append(el('h3','Четыре программные р
  const upload=el('div',undefined,'controls');panel.append(upload);upload.append(fileInput('Загрузить отчёт практикума',async data=>{if(!practiceValid(data))throw Error('Ожидается отчёт текущего checker с ровно 28 известными тестами и hash кода.');state.practice=data;save();render();}));if(state.practice){panel.append(el('p',`Пройдено ${state.practice.passed}/28. Код SHA-256: ${state.practice.code_sha256}`));for(const f of ['subnet','metrics','percentile','capacity']){const rows=state.practice.tests.filter(x=>x.function===f);panel.append(el('p',f+': '+rows.filter(x=>x.pass).length+'/7'));}}}
 function labCard(lab,parent){
  const saved=state.labs[lab.id],card=el('div',undefined,'card lab-card');
- card.append(el('h4','Автопроверка · '+lab.id),el('p',lab.intro),el('pre',lab.commands));
+ card.append(el('h3','Автопроверка · '+lab.id),el('p',lab.intro),el('pre',lab.commands));
  if(lab.kind==='stand')card.append(el('p','Стендовая работа: подготовка меняет настройки учебного стенда и требует root. Скрипт откажется работать без метки /etc/course-lab-stand, не трогает управляющую сеть и умеет вернуть изменённое.','note'));
  const tools=el('div',undefined,'controls');card.append(tools);
  tools.append(button('Скачать course_lab.py',()=>download('course_lab.py',JSON.parse(document.getElementById('lab-code-data').textContent),'text/x-python;charset=utf-8')));
