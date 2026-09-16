@@ -821,6 +821,67 @@ if (data?.items && data?.cases) {
   }
 }
 
+// Длина варианта как подсказка. Позицию верного ответа проверка выше уже
+// перемешивает, но оставался второй признак того же рода: развёрнутое
+// рассуждение писалось только в верный вариант, а неверные оставались
+// короткими отмашками. По измерению до правки выбор самого длинного варианта
+// проходил 89% заданий банка, 99% вторых ярусов, 95% шагов сценариев и 100%
+// вопросов о механизме работ — кабинет мерил счёт символов, а не понимание.
+// В разметке это не видно: вопросы там настоящие, длина просто коррелирует.
+//
+// Порог — редакционный, а не научный: при четырёх вариантах случайный выбор
+// даёт 25%, и планка в 45% оставляет запас на темы, где верный ответ
+// действительно требует оговорки, но закрывает систематическую привычку.
+{
+  const banks = [];
+  const push = (name, rows) => rows.length && banks.push([name, rows]);
+  if (data?.items) {
+    push('банк: ответ', data.items.filter((item) => Array.isArray(item.options)).map((item) => [item.id, item.options, item.answer]));
+    push('банк: объяснение', data.items.filter((item) => item.reason).map((item) => [item.id, item.reason.options, item.reason.answer]));
+  }
+  if (data?.cases) {
+    push('сценарии', data.cases.flatMap((scenario) => scenario.stages
+      .filter((stage) => Array.isArray(stage.options))
+      .map((stage, order) => [`${scenario.id}:${order}`, stage.options, stage.answer])));
+  }
+  const labData = assessment && JSON.parse(assessment.match(/id="lab-data">([\s\S]*?)<\/script>/)?.[1] ?? '{"labs":[]}');
+  push('работы: механизм', (labData?.labs ?? []).filter((lab) => lab.why).map((lab) => [lab.id, lab.why.options, lab.why.answer]));
+  for (const [id, source] of [['тренажёр глав', 'chapter-quick-data'], ['тренажёр уроков', 'lesson-quick-data']]) {
+    const raw = course.match(new RegExp(`id="${source}">([\\s\\S]*?)</script>`))?.[1];
+    if (raw) push(id, Object.entries(JSON.parse(raw)).flatMap(([key, list]) => list.map((quiz, order) => [`${key}.${order}`, quiz.options, quiz.answer])));
+  }
+
+  // Подсказкой длина становится не при любой разнице, а при заметной: два
+  // лишних знака читатель не использует. Отрывом считаем 12 знаков или 15%
+  // — что больше. Без этого порога измерение балансирует на острие и любая
+  // правка перекидывает его в зеркальный перекос «верный самый короткий».
+  const notable = (right, others, longer) => {
+    const bound = longer ? Math.max(...others) : Math.min(...others);
+    const margin = Math.max(12, Math.round(bound * 0.15));
+    return longer ? right >= bound + margin : right + margin <= bound;
+  };
+  const report = [];
+  for (const [name, rows] of banks) {
+    let long = 0, short = 0;
+    const suspects = [];
+    for (const [id, options, answer] of rows) {
+      const right = options[answer].length;
+      const others = options.filter((_, index) => index !== answer).map((option) => option.length);
+      if (notable(right, others, true)) { long += 1; suspects.push(id); }
+      if (notable(right, others, false)) short += 1;
+    }
+    const share = (count) => Math.round((count / rows.length) * 100);
+    report.push(`  ${name}: ${rows.length} вопросов, заметно длиннее ${long} (${share(long)}%), заметно короче ${short} (${share(short)}%)`);
+    for (const [kind, count, ids] of [['длинного', long, suspects], ['короткого', short, []]]) {
+      if (count / rows.length > 0.25) {
+        failures.push(`${name}: выбор заметно более ${kind} варианта проходит ${share(count)}% вопросов (${count} из ${rows.length})`
+          + (ids.length ? `; первые: ${ids.slice(0, 5).join(', ')}` : ''));
+      }
+    }
+  }
+  if (process.env.ANSWER_LENGTH_REPORT) console.log('Подсказка по длине варианта:\n' + report.join('\n'));
+}
+
 // Кабинет считает модули по одной константе. Пока их было несколько, копии
 // расходились при каждом расширении курса: вариант собирался на 37 вопросов,
 // записывался как 31 и отбрасывался проверкой на 28 — попытка исчезала при
