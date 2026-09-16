@@ -602,7 +602,7 @@ const route = pageShell({
 </section>
 <section class="compact-prose" aria-labelledby="route-offline">
 <h2 id="route-offline">Учебник без сети</h2>
-<p>Прочитанные страницы браузер оставляет у себя и открывает их без интернета. Одной кнопкой можно положить в память сразу весь курс — 47 страниц и поиск по ним: после этого учебник работает там, где связи нет, а страницы открываются мгновенно.</p>
+<p>Прочитанные страницы браузер оставляет у себя и открывает их без интернета. Одной кнопкой можно положить в память сразу весь курс — __offline-count__ страниц и поиск по ним: после этого учебник работает там, где связи нет, а страницы открываются мгновенно.</p>
 <p>Если нужен не браузер, а бумага или читалка — <a href="/book/">вся книга лежит одной страницей</a>: печать, «Сохранить как PDF» или сохранение файла для читалки. Проверки и практикум туда не попадают, они работают только на сайте.</p>
 <div class="route-backup"><button type="button" class="button primary" data-offline-save>Сохранить учебник для работы без сети</button></div>
 <p class="route-note" data-offline-status role="status">Около шести мегабайт. Копия обновится сама, когда выйдет новая версия учебника.</p>
@@ -1678,11 +1678,7 @@ const outputs = [
   ...chapters.map((item) => [item.url, chapterPage(item)]),
   ['/about/', about], ['/route/', route], ['/assessment/', assessment], ['/assessment/a1/', a1], ['/reference/', reference], ['/reference/archive/', archive], ['/book/', bookPage],
 ];
-for (const [url, html] of outputs) {
-  const file = resolve(output, url.slice(1), 'index.html');
-  await mkdir(dirname(file), { recursive: true });
-  await writeFile(file, finishPage(html, url));
-}
+const pagesToWrite = outputs;
 
 // ---------- Индекс полнотекстового поиска ----------
 // Единица поиска — раздел, а не страница: результат ведёт сразу к нужному месту главы.
@@ -1748,6 +1744,15 @@ await writeFile(resolve(output, 'assets', 'search.json.gz'), gzipSync(Buffer.fro
 // страницы сразу. Версия кэша считается по исходнику и собранным файлам: новая
 // публикация обязана вытеснить старую копию, иначе читатель останется на ней.
 const routeList = ['/', '/curriculum/', ...outputs.map(([url]) => url).filter((url) => url !== '/book/')].map((url) => `${BASE}${url}`);
+
+// Число страниц в тексте про офлайн берётся из самого списка кэширования:
+// маршрутов 48, в копию идёт 47 — «/book/» исключён намеренно, и написанное
+// рукой число расходилось бы с набором молча.
+for (const [url, html] of pagesToWrite) {
+  const file = resolve(output, url.slice(1), 'index.html');
+  await mkdir(dirname(file), { recursive: true });
+  await writeFile(file, finishPage(html.replace('__offline-count__', String(routeList.length)), url));
+}
 const buildId = sha256(source + css + js).slice(0, 12);
 const serviceWorker = `/* Собирается build-static.mjs. Правьте генератор, а не этот файл. */
 const VERSION='${buildId}';
@@ -1796,7 +1801,7 @@ self.addEventListener('message',event=>{
 `;
 await writeFile(resolve(output, 'sw.js'), serviceWorker);
 
-// Карта сайта и robots: без них поисковик обходит 47 страниц наугад, а часть
+// Карта сайта и robots: без них поисковик обходит все 48 страниц наугад, а часть
 // маршрутов (например работы практикума за параметром) не находит вовсе.
 // Карта требует абсолютных адресов, поэтому выпускается только при SITE_URL.
 if (SITE) {

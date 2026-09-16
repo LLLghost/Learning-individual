@@ -236,6 +236,14 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       .map((url) => (BASE ? BASE + url : url))
       .filter((url) => !listed.has(url) && !DUPLICATE_ROUTES.has(BASE ? url.slice(BASE.length) : url));
     if (missing.length) failures.push(`sw.js: ${missing.length} routes are not saved for offline use, first ${missing[0]}`);
+    // Число страниц в офлайн-копии названо на «Маршруте» прозой. Оно не равно
+    // числу маршрутов: «/book/» в кэш не идёт намеренно. Написанное рукой, оно
+    // разошлось бы с манифестом молча — читатель видит одно число, кнопка кладёт
+    // другое.
+    const route = cache.get(resolve(root, 'route', 'index.html')) ?? '';
+    const promised = route.match(/весь курс — ([0-9]+) страниц/)?.[1];
+    if (!promised) failures.push('route: the offline section never says how many pages the button saves');
+    else if (Number(promised) !== listed.size) failures.push(`route: promises ${promised} offline pages, sw.js caches ${listed.size}`);
     if (!siteJs.includes('serviceWorker.register')) failures.push('site.js: service worker is never registered');
     const page = cache.get(resolve(root, 'index.html')) ?? '';
     if (!page.includes("worker-src 'self'")) failures.push('index.html: the policy forbids the service worker it registers');
