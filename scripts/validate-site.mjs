@@ -1158,6 +1158,40 @@ for (const [file, html] of cache) {
     if (labs.length > 1 && answerIndexes.size === 1) {
       failures.push('lab-data: every mechanism answer sits at the same position');
     }
+    // Две шкалы. Работа на выданном наборе данных подтверждает разбор, а не
+    // работу руками, и практическим навыком не становится ни при каком числе
+    // верных фактов. Метка стоит в данных отдельным полем, а не выводится из
+    // вида работы: сбор фактов тоже подтверждает лишь то, что перечислено в
+    // его сверке, — так L16B проверял четыре факта из десяти обещанных.
+    const bench = labs.filter((lab) => lab.bench === true);
+    for (const lab of labs) {
+      if (lab.kind === 'dataset' && lab.bench) failures.push(`lab-data ${lab.id}: a dataset work cannot prove bench practice`);
+      if (lab.bench && !lab.chain) failures.push(`lab-data ${lab.id}: bench work without a chain`);
+      // Граница у каждой работы своя: «проверка пройдена» без неё читается
+      // как подтверждение всего, что описано в тексте работы.
+      if (lab.bench && !(lab.proof?.length > 40)) failures.push(`lab-data ${lab.id}: bench work does not say what its report proves`);
+    }
+    if (!bench.length) failures.push('lab-data: no work feeds the bench scale at all');
+    // Обе шкалы считаются в кабинете раздельно и обе показываются на общем
+    // экране. Слитый счёт выглядит в разметке точно так же, как раздельный.
+    for (const [needle, what] of [
+      ['const BENCH_LABS=LABDB.labs.filter(x=>x.bench===true)', 'the bench scale is not limited to bench works'],
+      ['function benchInfo(', 'the bench scale is not computed apart from modules'],
+      ['Практика на стенде подтверждена', 'the common screen never states the bench result'],
+      ['Теория и тренажёры', 'the common screen never names the theory scale'],
+      // Расширенная сверка не засчитывается по отчёту прежнего контракта.
+      ['criteria:labCriteria(LABS.get(data.lab))', 'an accepted report is not stamped with the criteria it passed'],
+      ['stale:(Number(saved.criteria)||1)<labCriteria(lab)', 'reports taken under the old contract are not marked'],
+    ]) if (assessment && !assessment.includes(needle)) failures.push(`assessment: ${what}`);
+    // Оба числа названы в книге прозой и расходятся с данными молча: работы
+    // лежат в JSON, а счёт — в тексте главы о проверке.
+    const onData = aboutPage.match(/У (\d+) работ стенд не нужен вовсе/);
+    const onStand = aboutPage.match(/Оставшиеся (\d+) снимают факты с настоящего стенда/);
+    if (!onData || !onStand) failures.push('about: the prose no longer splits works into bench and dataset');
+    else {
+      if (Number(onData[1]) !== labs.length - bench.length) failures.push(`about: prose says ${onData[1]} works need no bench, lab-data has ${labs.length - bench.length}`);
+      if (Number(onStand[1]) !== bench.length) failures.push(`about: prose says ${onStand[1]} works collect bench facts, lab-data has ${bench.length}`);
+    }
   }
   // Результаты работ живут внутри ключа прогресса: отдельный ключ пришлось бы
   // вносить в BACKUP_KEYS, иначе перенос в другой браузер терял бы их молча.
