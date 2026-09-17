@@ -61,6 +61,19 @@ const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
 if (!siteJs.includes('server-infrastructure-reader-v1') || !siteJs.includes('data-highlight-color')) failures.push('site.js: missing reader notebook behavior');
 if (!siteCss.includes('.notes-panel') || !siteCss.includes('.reader-highlight')) failures.push('site.css: missing reader notebook styles');
 if (!siteJs.includes('recordQuickCheck') || !siteCss.includes('.chapter-trainer')) failures.push('assets: missing chapter trainer behavior or styles');
+// Промах не показывает ни верный вариант, ни разбор: он меняет вопрос внутри
+// слота. Раньше неверный ответ подсвечивал верный и печатал разбор — и кнопка
+// «Проверить ещё раз» не значила ничего, оставалось повторить увиденное. В
+// разметке эта разница не видна: подсветку ставит класс, а разбор берётся из
+// data-атрибута, и оба места выглядят одинаково при любом исходе.
+if (!siteJs.includes('data-trainer-variant')) failures.push('site.js: the trainer never swaps the question after a miss');
+for (const [pattern, what] of [
+  [/dataset\.explanation/g, 'the explanation is read outside the two correct-answer branches'],
+  [/classList\.add\('is-correct'\)/g, 'the correct option is marked outside the two correct-answer branches'],
+]) {
+  const hits = siteJs.match(pattern)?.length ?? 0;
+  if (hits !== 2) failures.push(`site.js: ${what} (${hits} places instead of 2)`);
+}
 // Полнотекстовый поиск: индекс собран по всем маршрутам и доступен с каждой страницы.
 if (!siteJs.includes('loadSearchIndex') || !siteCss.includes('.search-panel')) failures.push('assets: missing full-text search behavior or styles');
 try {
@@ -219,6 +232,53 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
   // осмысленно; правило ловит случай, когда так живут все 34 главы.
   if (thin.filter((file) => file.includes('chapters/')).length) {
     failures.push(`chapters: ${thin.filter((file) => file.includes('chapters/')).length} pages describe themselves with their own title`);
+  }
+}
+// Скрипт стенда и глава 0 описывают одну топологию. Разъехавшись, они не
+// ломают ни сборку, ни разметку: стенд поднимется, просто не тот, о котором
+// написаны работы, — и читатель будет искать ошибку у себя.
+{
+  let stand = null;
+  try { stand = await readFile(resolve(root, '..', 'scripts', 'stand', 'course-stand.sh'), 'utf8'); } catch { failures.push('build: missing scripts/stand/course-stand.sh'); }
+  const chapter0 = cache.get(resolve(root, 'chapters', '00', 'index.html')) ?? '';
+  if (stand) {
+    const table = stand.match(/STAND_NODES=\(([\s\S]*?)\n\)/)?.[1] ?? '';
+    const rows = [...table.matchAll(/'([a-z0-9]+)\|[^']*'/g)].map((match) => match[1]);
+    if (rows.length !== 6) failures.push(`course-stand.sh: expected six nodes in the address table, got ${rows.length}`);
+    for (const address of new Set([...table.matchAll(/\d+\.\d+\.\d+\.\d+\/\d+/g)].map((match) => match[0]))) {
+      if (!chapter0.includes(address)) failures.push(`course-stand.sh: ${address} is not in the chapter 0 address plan`);
+    }
+    // Имя узла проверяется вместе со всеми его адресами: «ansible» встречается
+    // в главе прозой, и простая проверка вхождения пропустила бы переименованный
+    // узел. Порядок адресов в строке главы свой — он идёт от смысла интерфейса,
+    // а не от номера, поэтому сверяется состав, а не последовательность.
+    for (const row of table.split('\n')) {
+      const node = row.match(/'([a-z0-9]+)\|(?:[^|]*\|){4}([^']*)'/);
+      if (!node) continue;
+      const [name, links] = [node[1], node[2]];
+      if (name === 'router') continue;
+      const line = chapter0.match(new RegExp(`${name}\\s*-&gt;([^<]*)`))?.[1];
+      if (!line) { failures.push(`course-stand.sh: chapter 0 never gives ${name} an address`); continue; }
+      for (const address of links.match(/\d+\.\d+\.\d+\.\d+\/\d+/g) ?? []) {
+        if (!line.includes(address)) failures.push(`course-stand.sh: chapter 0 does not give ${name} the address ${address}`);
+      }
+    }
+    for (const bridge of ['vmbr10', 'vmbr20', 'vmbr30']) {
+      if (!stand.includes(bridge) || !chapter0.includes(bridge)) failures.push(`course-stand.sh: bridge ${bridge} is missing from the script or from chapter 0`);
+    }
+    // Строка из книги должна вести в существующий файл: переименованный скрипт
+    // оставляет в главе команду, которая скачивает пустоту.
+    const link = chapter0.match(/raw\.githubusercontent\.com\/[^"<)\s]+/)?.[0];
+    if (!link) failures.push('chapter 0: the one-line stand command is gone from the prose');
+    else if (!link.endsWith('/scripts/stand/course-stand.sh')) failures.push(`chapter 0: the one-line command points at ${link}`);
+    // Скрипт меняет чужую машину, поэтому обязан показывать план прежде
+    // действия, не трогать чужие идентификаторы и убирать только своё.
+    for (const [needle, what] of [
+      ['ACTION="${1:-${STAND_ACTION:-plan}}"', 'plan is not the default action'],
+      ['идентификаторы заняты', 'existing VMIDs are not refused'],
+      ['не наша машина', 'destroy does not skip machines without the tag'],
+      ['не меняется: на нём живёт управление', 'the management bridge is not declared untouched'],
+    ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
   }
 }
 // Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и
@@ -416,10 +476,17 @@ const body = course.slice(mainStart, mainEnd);
     for (const [kind, source, count, from] of sets) for (let number = from; number < from + count; number += 1) {
       const items = source[String(number)];
       if (!Array.isArray(items) || items.length !== 2) {
-        failures.push(`${kind} ${number}: expected two own quick questions`);
+        failures.push(`${kind} ${number}: expected two own quick slots`);
         continue;
       }
-      for (const item of items) {
+      // Слот — пул смежных вопросов об одном утверждении: промах меняет вопрос,
+      // а не открывает верный вариант. Пул из одного вопроса возвращал бы тот же
+      // вопрос с уже отмеченным неверным ответом — это не вторая попытка.
+      if (!items.every((pool) => Array.isArray(pool) && pool.length >= 2)) {
+        failures.push(`${kind} ${number}: each slot needs a pool of at least two questions`);
+        continue;
+      }
+      for (const item of items.flat()) {
         if (!item.stem || !Array.isArray(item.options) || item.options.length !== 4) {
           failures.push(`quick ${item.id ?? number}: need a stem and four options`);
           continue;
@@ -436,6 +503,16 @@ const body = course.slice(mainStart, mainEnd);
           }
         }
       }
+    }
+    // Все варианты слота обязаны доехать до страницы: подмена вопроса после
+    // промаха идёт без сети, и недостающий вариант вернул бы тот же вопрос.
+    for (let number = 0; number < 34; number += 1) {
+      const pools = quick[String(number)];
+      if (!Array.isArray(pools)) continue;
+      const expected = pools.reduce((sum, pool) => sum + (Array.isArray(pool) ? pool.length : 0), 0);
+      const page = cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html')) ?? '';
+      const printed = page.match(/data-trainer-variant=/g)?.length ?? 0;
+      if (printed !== expected) failures.push(`chapter ${number}: ${printed} question variants on the page, ${expected} in the pool`);
     }
     // Тот же урок, что и с банком: собранный по привычке набор проходится
     // выбором одного и того же номера.
@@ -863,7 +940,7 @@ if (data?.items && data?.cases) {
   push('работы: механизм', (labData?.labs ?? []).filter((lab) => lab.why).map((lab) => [lab.id, lab.why.options, lab.why.answer]));
   for (const [id, source] of [['тренажёр глав', 'chapter-quick-data'], ['тренажёр уроков', 'lesson-quick-data']]) {
     const raw = course.match(new RegExp(`id="${source}">([\\s\\S]*?)</script>`))?.[1];
-    if (raw) push(id, Object.entries(JSON.parse(raw)).flatMap(([key, list]) => list.map((quiz, order) => [`${key}.${order}`, quiz.options, quiz.answer])));
+    if (raw) push(id, Object.entries(JSON.parse(raw)).flatMap(([key, slots]) => slots.flatMap((pool, order) => pool.map((quiz, variant) => [`${key}.${order}/${variant}`, quiz.options, quiz.answer]))));
   }
 
   // Подсказкой длина становится не при любой разнице, а при заметной: два
