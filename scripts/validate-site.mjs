@@ -308,6 +308,33 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // рукой, она отстала от кода: режим трансляции заводит ещё один мост и
       // правило на хосте, а строка об этом молчала.
       ['for entry in "${STAND_BRIDGES[@]}"; do touched=', 'the summary of what changes is written by hand'],
+      // «running» говорит лишь то, что процесс машины жив: про готовность гостя
+      // оно не говорит ничего — тот же урок, что и с «Up» у контейнера в главе
+      // 22. Настройка гостя заканчивается установкой агента, поэтому его ответ
+      // и есть признак того, что гость настроился, а не просто включился.
+      ['qm agent "$id" ping', 'status calls a machine ready when its process is merely running'],
+      // Диск cloud-init лежит на SCSI, а не на ide2 из документации Proxmox. В
+      // машине q35 привод ide2 висит на AHCI, а в облачном ядре Debian собраны
+      // драйверы только виртуальных устройств: диска с меткой cidata в госте
+      // нет, ds-identify источник данных не находит и снимает все юниты
+      // cloud-init с загрузки. Шесть машин при этом поднимаются до конца и
+      // молча — без имени, без пользователя и без адреса, и ни create, ни
+      // журнал гостя об этом не говорят ничего.
+      ['"--scsi${CI_SLOT}" "$STORAGE:cloudinit"', 'the cloud-init drive is not on the bus of the root disk'],
+      // Прерванная сборка и стенд, собранный прежней версией скрипта, — это
+      // заведённые машины, которым не хватает настройки. Пересоздавать их
+      // значит терять то, что читатель на них успел сделать, а отказываться по
+      // занятому идентификатору — оставлять его без стенда. Чужие машины при
+      // этом по-прежнему не трогаются вовсе.
+      ['машина уже есть — донастраиваю', 'create recreates machines that already exist instead of configuring them'],
+      ['&& ! ours "$id"', 'the busy-VMID refusal does not tell our own machines from foreign ones'],
+      // Прежняя версия ставила диск cloud-init на ide2. Оставить оба — значит
+      // оставить гостю два источника данных, и выберет он не тот.
+      ['ci_slots()', 'a cloud-init drive left in the old slot is not moved'],
+      // План печатается для того, чтобы его прочитали и переслали, — и пароль от
+      // всех шести машин уезжал вместе с ним: в переписку, в историю терминала,
+      // в вырезку на экране. Выполняется настоящее значение, скрыт только показ.
+      ['[ "$prev" = --cipassword ]', 'the printed command shows the cloud-init password in clear text'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
@@ -318,6 +345,10 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
     // другом хранилище зашитый путь развёл бы файлы и то место, где их ищет qm,
     // и гость поднялся бы вообще без настройки.
     if (/^[^#\n]*\/var\/lib\/vz\/snippets/m.test(stand)) failures.push('course-stand.sh: the snippets directory is hard-coded instead of read from the storage');
+    // Тот же случай с другой стороны: вернуть привод на ide2 — значит вернуть
+    // шесть молча недонастроенных машин. Ищем флаг в команде, а не где угодно:
+    // в комментарии рядом он назван тем же текстом.
+    if (/^[^#\n]*--ide2/m.test(stand)) failures.push('course-stand.sh: the cloud-init drive is back on ide2, where the cloud kernel never sees it');
   }
 }
 // Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и
