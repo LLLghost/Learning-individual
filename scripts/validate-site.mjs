@@ -236,6 +236,14 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       .map((url) => (BASE ? BASE + url : url))
       .filter((url) => !listed.has(url) && !DUPLICATE_ROUTES.has(BASE ? url.slice(BASE.length) : url));
     if (missing.length) failures.push(`sw.js: ${missing.length} routes are not saved for offline use, first ${missing[0]}`);
+    // Число страниц в офлайн-копии названо на «Маршруте» прозой. Оно не равно
+    // числу маршрутов: «/book/» в кэш не идёт намеренно. Написанное рукой, оно
+    // разошлось бы с манифестом молча — читатель видит одно число, кнопка кладёт
+    // другое.
+    const route = cache.get(resolve(root, 'route', 'index.html')) ?? '';
+    const promised = route.match(/весь курс — ([0-9]+) страниц/)?.[1];
+    if (!promised) failures.push('route: the offline section never says how many pages the button saves');
+    else if (Number(promised) !== listed.size) failures.push(`route: promises ${promised} offline pages, sw.js caches ${listed.size}`);
     if (!siteJs.includes('serviceWorker.register')) failures.push('site.js: service worker is never registered');
     const page = cache.get(resolve(root, 'index.html')) ?? '';
     if (!page.includes("worker-src 'self'")) failures.push('index.html: the policy forbids the service worker it registers');
@@ -821,6 +829,67 @@ if (data?.items && data?.cases) {
   }
 }
 
+// Длина варианта как подсказка. Позицию верного ответа проверка выше уже
+// перемешивает, но оставался второй признак того же рода: развёрнутое
+// рассуждение писалось только в верный вариант, а неверные оставались
+// короткими отмашками. По измерению до правки выбор самого длинного варианта
+// проходил 89% заданий банка, 99% вторых ярусов, 95% шагов сценариев и 100%
+// вопросов о механизме работ — кабинет мерил счёт символов, а не понимание.
+// В разметке это не видно: вопросы там настоящие, длина просто коррелирует.
+//
+// Порог — редакционный, а не научный: при четырёх вариантах случайный выбор
+// даёт 25%, и планка в 45% оставляет запас на темы, где верный ответ
+// действительно требует оговорки, но закрывает систематическую привычку.
+{
+  const banks = [];
+  const push = (name, rows) => rows.length && banks.push([name, rows]);
+  if (data?.items) {
+    push('банк: ответ', data.items.filter((item) => Array.isArray(item.options)).map((item) => [item.id, item.options, item.answer]));
+    push('банк: объяснение', data.items.filter((item) => item.reason).map((item) => [item.id, item.reason.options, item.reason.answer]));
+  }
+  if (data?.cases) {
+    push('сценарии', data.cases.flatMap((scenario) => scenario.stages
+      .filter((stage) => Array.isArray(stage.options))
+      .map((stage, order) => [`${scenario.id}:${order}`, stage.options, stage.answer])));
+  }
+  const labData = assessment && JSON.parse(assessment.match(/id="lab-data">([\s\S]*?)<\/script>/)?.[1] ?? '{"labs":[]}');
+  push('работы: механизм', (labData?.labs ?? []).filter((lab) => lab.why).map((lab) => [lab.id, lab.why.options, lab.why.answer]));
+  for (const [id, source] of [['тренажёр глав', 'chapter-quick-data'], ['тренажёр уроков', 'lesson-quick-data']]) {
+    const raw = course.match(new RegExp(`id="${source}">([\\s\\S]*?)</script>`))?.[1];
+    if (raw) push(id, Object.entries(JSON.parse(raw)).flatMap(([key, list]) => list.map((quiz, order) => [`${key}.${order}`, quiz.options, quiz.answer])));
+  }
+
+  // Подсказкой длина становится не при любой разнице, а при заметной: два
+  // лишних знака читатель не использует. Отрывом считаем 12 знаков или 15%
+  // — что больше. Без этого порога измерение балансирует на острие и любая
+  // правка перекидывает его в зеркальный перекос «верный самый короткий».
+  const notable = (right, others, longer) => {
+    const bound = longer ? Math.max(...others) : Math.min(...others);
+    const margin = Math.max(12, Math.round(bound * 0.15));
+    return longer ? right >= bound + margin : right + margin <= bound;
+  };
+  const report = [];
+  for (const [name, rows] of banks) {
+    let long = 0, short = 0;
+    const suspects = [];
+    for (const [id, options, answer] of rows) {
+      const right = options[answer].length;
+      const others = options.filter((_, index) => index !== answer).map((option) => option.length);
+      if (notable(right, others, true)) { long += 1; suspects.push(id); }
+      if (notable(right, others, false)) short += 1;
+    }
+    const share = (count) => Math.round((count / rows.length) * 100);
+    report.push(`  ${name}: ${rows.length} вопросов, заметно длиннее ${long} (${share(long)}%), заметно короче ${short} (${share(short)}%)`);
+    for (const [kind, count, ids] of [['длинного', long, suspects], ['короткого', short, []]]) {
+      if (count / rows.length > 0.25) {
+        failures.push(`${name}: выбор заметно более ${kind} варианта проходит ${share(count)}% вопросов (${count} из ${rows.length})`
+          + (ids.length ? `; первые: ${ids.slice(0, 5).join(', ')}` : ''));
+      }
+    }
+  }
+  if (process.env.ANSWER_LENGTH_REPORT) console.log('Подсказка по длине варианта:\n' + report.join('\n'));
+}
+
 // Кабинет считает модули по одной константе. Пока их было несколько, копии
 // расходились при каждом расширении курса: вариант собирался на 37 вопросов,
 // записывался как 31 и отбрасывался проверкой на 28 — попытка исчезала при
@@ -1088,6 +1157,40 @@ for (const [file, html] of cache) {
     // привычке первым, делает вопрос проходимым без чтения.
     if (labs.length > 1 && answerIndexes.size === 1) {
       failures.push('lab-data: every mechanism answer sits at the same position');
+    }
+    // Две шкалы. Работа на выданном наборе данных подтверждает разбор, а не
+    // работу руками, и практическим навыком не становится ни при каком числе
+    // верных фактов. Метка стоит в данных отдельным полем, а не выводится из
+    // вида работы: сбор фактов тоже подтверждает лишь то, что перечислено в
+    // его сверке, — так L16B проверял четыре факта из десяти обещанных.
+    const bench = labs.filter((lab) => lab.bench === true);
+    for (const lab of labs) {
+      if (lab.kind === 'dataset' && lab.bench) failures.push(`lab-data ${lab.id}: a dataset work cannot prove bench practice`);
+      if (lab.bench && !lab.chain) failures.push(`lab-data ${lab.id}: bench work without a chain`);
+      // Граница у каждой работы своя: «проверка пройдена» без неё читается
+      // как подтверждение всего, что описано в тексте работы.
+      if (lab.bench && !(lab.proof?.length > 40)) failures.push(`lab-data ${lab.id}: bench work does not say what its report proves`);
+    }
+    if (!bench.length) failures.push('lab-data: no work feeds the bench scale at all');
+    // Обе шкалы считаются в кабинете раздельно и обе показываются на общем
+    // экране. Слитый счёт выглядит в разметке точно так же, как раздельный.
+    for (const [needle, what] of [
+      ['const BENCH_LABS=LABDB.labs.filter(x=>x.bench===true)', 'the bench scale is not limited to bench works'],
+      ['function benchInfo(', 'the bench scale is not computed apart from modules'],
+      ['Практика на стенде подтверждена', 'the common screen never states the bench result'],
+      ['Теория и тренажёры', 'the common screen never names the theory scale'],
+      // Расширенная сверка не засчитывается по отчёту прежнего контракта.
+      ['criteria:labCriteria(LABS.get(data.lab))', 'an accepted report is not stamped with the criteria it passed'],
+      ['stale:(Number(saved.criteria)||1)<labCriteria(lab)', 'reports taken under the old contract are not marked'],
+    ]) if (assessment && !assessment.includes(needle)) failures.push(`assessment: ${what}`);
+    // Оба числа названы в книге прозой и расходятся с данными молча: работы
+    // лежат в JSON, а счёт — в тексте главы о проверке.
+    const onData = aboutPage.match(/У (\d+) работ стенд не нужен вовсе/);
+    const onStand = aboutPage.match(/Оставшиеся (\d+) снимают факты с настоящего стенда/);
+    if (!onData || !onStand) failures.push('about: the prose no longer splits works into bench and dataset');
+    else {
+      if (Number(onData[1]) !== labs.length - bench.length) failures.push(`about: prose says ${onData[1]} works need no bench, lab-data has ${labs.length - bench.length}`);
+      if (Number(onStand[1]) !== bench.length) failures.push(`about: prose says ${onStand[1]} works collect bench facts, lab-data has ${bench.length}`);
     }
   }
   // Результаты работ живут внутри ключа прогресса: отдельный ключ пришлось бы
