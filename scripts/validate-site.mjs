@@ -291,6 +291,13 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // версия печатала его с подстановкой $(…): у читателя она разворачивалась
       // в несколько слов, и pvesm отвечал «too many arguments».
       ['storage_field "$SNIPPETS" content', 'the snippets refusal does not print a ready command'],
+      // qm set принимает несуществующий мост молча: отказ всплывает только на
+      // qm start, когда машина уже создана. Поэтому и мост управления, и мосты
+      // стенда проверяются по /sys/class/net до запуска, а имя vmbr0 не
+      // зашивается: оно частое, но не обязательное.
+      ['detect_wan()', 'the management bridge is hard-coded instead of detected'],
+      ['моста $WAN_BRIDGE на хосте нет', 'create does not check that the management bridge exists'],
+      ['так и не поднялся', 'the lab bridges are not verified after the network reload'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.

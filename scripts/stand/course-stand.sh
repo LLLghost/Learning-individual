@@ -19,7 +19,7 @@ MARK='# course-stand: мосты учебного стенда, добавлен
 # требовать редактирования файла.
 ACTION="${1:-${STAND_ACTION:-plan}}"
 VMID_BASE="${STAND_VMID_BASE:-9000}"
-WAN_BRIDGE="${STAND_WAN_BRIDGE:-vmbr0}"
+WAN_BRIDGE="${STAND_WAN_BRIDGE:-}"
 STORAGE="${STAND_STORAGE:-local-lvm}"
 SNIPPETS="${STAND_SNIPPETS:-local}"
 IMAGE_URL="${STAND_IMAGE_URL:-https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2}"
@@ -80,6 +80,22 @@ need_proxmox() {
 
 image_path() { printf '%s/%s' "$IMAGE_DIR" "$(basename "$IMAGE_URL")"; }
 
+is_bridge() { [ -d "/sys/class/net/$1/bridge" ]; }
+
+# Мост управления не зашивается именем: vmbr0 — частое, но не обязательное имя,
+# а qm set несуществующий мост принимает молча — отказ вылезает только на
+# qm start, когда машина уже создана. Берём тот мост, через который у хоста
+# идёт маршрут по умолчанию.
+detect_wan() {
+  if [ -n "$WAN_BRIDGE" ]; then printf '%s' "$WAN_BRIDGE"; return 0; fi
+  local guess=''
+  if command -v ip >/dev/null 2>&1; then
+    guess=$(ip -4 route show default 2>/dev/null | awk '{print $5; exit}')
+  fi
+  if [ -n "$guess" ] && is_bridge "$guess"; then printf '%s' "$guess"; return 0; fi
+  printf 'vmbr0'
+}
+
 # Поле хранилища из /etc/pve/storage.cfg. Разбор идёт по секциям, а не поиском
 # по всему файлу: строка «content» есть у каждого хранилища, и взятая не из той
 # секции она даёт список чужих типов.
@@ -122,6 +138,11 @@ show_bridges() {
     fi
   done
   say "  $WAN_BRIDGE не меняется: на нём живёт управление хостом"
+  if [ -e "/sys/class/net/$WAN_BRIDGE" ]; then
+    say "  внешний мост найден на хосте"
+  else
+    say "  ! моста $WAN_BRIDGE на хосте нет — задайте STAND_WAN_BRIDGE"
+  fi
 }
 
 make_bridges() {
@@ -147,6 +168,12 @@ make_bridges() {
       say '! ifreload не найден: примените сетевую конфигурацию вручную'
     fi
   fi
+  # Проверяем результат, а не факт записи в файл: qm set несуществующий мост
+  # принимает молча, и отказ всплыл бы только на запуске готовой машины.
+  for entry in "${STAND_BRIDGES[@]}"; do
+    name=$(field "$entry" 1)
+    [ -e "/sys/class/net/$name" ] || die "мост $name так и не поднялся — примените сетевую конфигурацию и повторите"
+  done
 }
 
 # Настройка гостя отдаётся cloud-init. Две вещи сделаны не так, как просит
@@ -317,6 +344,16 @@ do_create() {
     die "идентификаторы заняты:$busy. Уберите прежний стенд (destroy) или задайте STAND_VMID_BASE"
   fi
   pvesm status --storage "$STORAGE" >/dev/null 2>&1 || die "хранилище $STORAGE не найдено: задайте STAND_STORAGE"
+  # Отсутствующий мост управления обнаруживается до создания машин: qm set
+  # принимает любое имя, и первая же машина упала бы уже на qm start.
+  if ! is_bridge "$WAN_BRIDGE"; then
+    local bridges=''
+    for interface in /sys/class/net/*; do
+      is_bridge "$(basename "$interface")" && bridges="$bridges $(basename "$interface")"
+    done
+    die "моста $WAN_BRIDGE на хосте нет. Мосты хоста:$bridges
+  Задайте нужный: STAND_WAN_BRIDGE=имя"
+  fi
   # Без пароля и без ключа у пользователя course нет ни того, ни другого: в
   # консоль Proxmox он тоже не войдёт. Шесть машин поднимутся и окажутся
   # недоступны — а это ровно тот случай, ради которого скрипт и писался.
@@ -350,6 +387,10 @@ do_create() {
     [ "$answer" = yes ] || die 'отменено'
   fi
   DRY=0
+  # Прерванная на середине сборка оставляет недоделанную машину, и следующий
+  # запуск упрётся в занятый идентификатор. Говорим об этом сразу, а не оставляем
+  # читателя разбираться с непонятным отказом.
+  trap 'say ""; say "Сборка прервана. Недоделанные машины стенда убираются аргументом destroy."' EXIT
   say ''
   make_bridges
   mkdir -p "$IMAGE_DIR"
@@ -357,6 +398,7 @@ do_create() {
   local node
   for node in "${STAND_NODES[@]}"; do node_plan "$node"; done
   say ''
+  trap - EXIT
   say 'Стенд собран. Проверьте его командой status.'
 }
 
@@ -405,6 +447,9 @@ do_destroy() {
   say 'могут быть подключены ваши собственные машины. Уберите их вручную —'
   say 'копия файла лежит рядом как /etc/network/interfaces.course-stand.*'
 }
+
+# Имя моста управления вычисляется после объявления функций и до первой команды.
+WAN_BRIDGE=$(detect_wan)
 
 case "$ACTION" in
   plan) do_plan ;;
