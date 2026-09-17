@@ -19,7 +19,15 @@ MARK='# course-stand: мосты учебного стенда, добавлен
 # требовать редактирования файла.
 ACTION="${1:-${STAND_ACTION:-plan}}"
 VMID_BASE="${STAND_VMID_BASE:-9000}"
-WAN_BRIDGE="${STAND_WAN_BRIDGE:-vmbr0}"
+WAN_BRIDGE="${STAND_WAN_BRIDGE:-}"
+# Внешняя сеть стенда. auto — подключить router к мосту хоста, как в главе 0;
+# nat — поднять отдельный мост с трансляцией на самом хосте. Второй режим нужен
+# там, где управление живёт не на мосту, а на обычном интерфейсе: подключить к
+# нему виртуальную машину нельзя, а перекладывать управляющий интерфейс в мост
+# по чужому совету — верный способ потерять доступ к хосту.
+WAN_MODE="${STAND_WAN_MODE:-auto}"
+NAT_BRIDGE="${STAND_NAT_BRIDGE:-vmbr90}"
+NAT_NET="${STAND_NAT_NET:-10.10.90}"
 STORAGE="${STAND_STORAGE:-local-lvm}"
 SNIPPETS="${STAND_SNIPPETS:-local}"
 IMAGE_URL="${STAND_IMAGE_URL:-https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2}"
@@ -80,6 +88,29 @@ need_proxmox() {
 
 image_path() { printf '%s/%s' "$IMAGE_DIR" "$(basename "$IMAGE_URL")"; }
 
+is_bridge() { [ -d "/sys/class/net/$1/bridge" ]; }
+
+# Мост управления не зашивается именем: vmbr0 — частое, но не обязательное имя,
+# а qm set несуществующий мост принимает молча — отказ вылезает только на
+# qm start, когда машина уже создана. Берём тот мост, через который у хоста
+# идёт маршрут по умолчанию.
+detect_wan() {
+  if [ -n "$WAN_BRIDGE" ]; then printf '%s' "$WAN_BRIDGE"; return 0; fi
+  if [ "$WAN_MODE" = nat ]; then printf '%s' "$NAT_BRIDGE"; return 0; fi
+  local guess
+  guess=$(uplink)
+  if [ -n "$guess" ] && is_bridge "$guess"; then printf '%s' "$guess"; return 0; fi
+  printf ''
+}
+
+# Интерфейс хоста с маршрутом по умолчанию: через него уходит трансляция в
+# режиме nat и по нему же определяется мост в режиме auto.
+uplink() {
+  if command -v ip >/dev/null 2>&1; then
+    ip -4 route show default 2>/dev/null | awk '{print $5; exit}'
+  fi
+}
+
 # Поле хранилища из /etc/pve/storage.cfg. Разбор идёт по секциям, а не поиском
 # по всему файлу: строка «content» есть у каждого хранилища, и взятая не из той
 # секции она даёт список чужих типов.
@@ -121,12 +152,35 @@ show_bridges() {
       say "  $name ($note) — bridge-ports none, без адреса, автозапуск"
     fi
   done
-  say "  $WAN_BRIDGE не меняется: на нём живёт управление хостом"
+  if [ "$WAN_MODE" = nat ]; then
+    say "  $NAT_BRIDGE (внешняя сеть с трансляцией) — адрес $NAT_NET.1/24 на хосте, выход через $(uplink)"
+    say "  управляющий интерфейс хоста не меняется: на нём живёт ваш доступ"
+  elif [ -z "$WAN_BRIDGE" ]; then
+    say "  ! моста для внешней сети на хосте нет: маршрут по умолчанию идёт через $(uplink),"
+    say "    а это не мост. Задайте STAND_WAN_BRIDGE=имя или STAND_WAN_MODE=nat"
+  else
+    say "  $WAN_BRIDGE не меняется: на нём живёт управление хостом"
+    if [ -e "/sys/class/net/$WAN_BRIDGE" ]; then
+      say "  внешний мост найден на хосте"
+    else
+      say "  ! моста $WAN_BRIDGE на хосте нет — задайте STAND_WAN_BRIDGE"
+    fi
+  fi
+}
+
+nat_stanza() {
+  local out
+  out=$(uplink)
+  [ -n "$out" ] || die 'у хоста нет маршрута по умолчанию: не через что делать трансляцию'
+  printf 'auto %s\niface %s inet static\n\taddress %s.1/24\n\tbridge-ports none\n\tbridge-stp off\n\tbridge-fd 0\n\tpost-up echo 1 >/proc/sys/net/ipv4/ip_forward\n\tpost-up iptables -t nat -A POSTROUTING -s %s.0/24 -o %s -j MASQUERADE\n\tpost-down iptables -t nat -D POSTROUTING -s %s.0/24 -o %s -j MASQUERADE\n\n' \
+    "$NAT_BRIDGE" "$NAT_BRIDGE" "$NAT_NET" "$NAT_NET" "$out" "$NAT_NET" "$out"
 }
 
 make_bridges() {
   local entry name added=0
-  for entry in "${STAND_BRIDGES[@]}"; do
+  local planned=("${STAND_BRIDGES[@]}")
+  if [ "$WAN_MODE" = nat ]; then planned+=("$NAT_BRIDGE|внешняя сеть с трансляцией"); fi
+  for entry in "${planned[@]}"; do
     name=$(field "$entry" 1)
     if grep -qE "^iface[[:space:]]+$name[[:space:]]" /etc/network/interfaces 2>/dev/null; then
       say "= $name уже описан в /etc/network/interfaces, пропускаю"
@@ -137,7 +191,11 @@ make_bridges() {
       printf '\n%s\n' "$MARK" >>/etc/network/interfaces
       added=1
     fi
-    printf 'auto %s\niface %s inet manual\n\tbridge-ports none\n\tbridge-stp off\n\tbridge-fd 0\n\n' "$name" "$name" >>/etc/network/interfaces
+    if [ "$name" = "$NAT_BRIDGE" ]; then
+      nat_stanza >>/etc/network/interfaces
+    else
+      printf 'auto %s\niface %s inet manual\n\tbridge-ports none\n\tbridge-stp off\n\tbridge-fd 0\n\n' "$name" "$name" >>/etc/network/interfaces
+    fi
     say "+ $name добавлен в /etc/network/interfaces"
   done
   if [ "$added" = 1 ]; then
@@ -147,6 +205,12 @@ make_bridges() {
       say '! ifreload не найден: примените сетевую конфигурацию вручную'
     fi
   fi
+  # Проверяем результат, а не факт записи в файл: qm set несуществующий мост
+  # принимает молча, и отказ всплыл бы только на запуске готовой машины.
+  for entry in "${planned[@]}"; do
+    name=$(field "$entry" 1)
+    [ -e "/sys/class/net/$name" ] || die "мост $name так и не поднялся — примените сетевую конфигурацию и повторите"
+  done
 }
 
 # Настройка гостя отдаётся cloud-init. Две вещи сделаны не так, как просит
@@ -243,7 +307,14 @@ node_plan() {
     address=${link#*:}
     gateway=''
     case "$address" in *,gw=*) gateway=${address##*,gw=}; address=${address%%,gw=*};; esac
-    if [ "$bridge" = WAN ]; then bridge="$WAN_BRIDGE"; fi
+    if [ "$bridge" = WAN ]; then
+      bridge="$WAN_BRIDGE"
+      # В режиме трансляции внешняя сеть своя, и адрес в ней статический:
+      # выдавать его некому, DHCP-сервера на этом мосту нет.
+      if [ "$WAN_MODE" = nat ] && [ "$address" = dhcp ]; then
+        address="$NAT_NET.2/24"; gateway="$NAT_NET.1"
+      fi
+    fi
     run qm set "$id" "--net${index}" "virtio,bridge=$bridge"
     if [ "$address" = dhcp ]; then
       run qm set "$id" "--ipconfig${index}" 'ip=dhcp'
@@ -292,7 +363,7 @@ node_plan() {
 do_plan() {
   DRY=1
   say 'course-stand · план. Ничего не изменено.'
-  say "хранилище $STORAGE · базовый VMID $VMID_BASE · внешний мост $WAN_BRIDGE"
+  say "хранилище $STORAGE · базовый VMID $VMID_BASE · внешняя сеть: ${WAN_BRIDGE:-не найдена}${WAN_MODE:+ · режим $WAN_MODE}"
   show_bridges
   head2 'образ гостя'
   say "  $IMAGE_URL"
@@ -317,6 +388,20 @@ do_create() {
     die "идентификаторы заняты:$busy. Уберите прежний стенд (destroy) или задайте STAND_VMID_BASE"
   fi
   pvesm status --storage "$STORAGE" >/dev/null 2>&1 || die "хранилище $STORAGE не найдено: задайте STAND_STORAGE"
+  # Отсутствующий мост управления обнаруживается до создания машин: qm set
+  # принимает любое имя, и первая же машина упала бы уже на qm start.
+  if [ "$WAN_MODE" != nat ] && ! is_bridge "$WAN_BRIDGE"; then
+    local bridges=''
+    for interface in /sys/class/net/*; do
+      is_bridge "$(basename "$interface")" && bridges="$bridges $(basename "$interface")"
+    done
+    die "моста $WAN_BRIDGE на хосте нет, подключить внешний интерфейс router не к чему.
+  Мосты хоста:$bridges
+  Маршрут по умолчанию идёт через $(uplink) — если это не мост, есть два пути:
+    STAND_WAN_MODE=nat — поднять отдельный мост $NAT_BRIDGE с трансляцией на хосте;
+                         управляющий интерфейс при этом не трогается вовсе
+    STAND_WAN_BRIDGE=имя — указать существующий мост, если он у вас есть"
+  fi
   # Без пароля и без ключа у пользователя course нет ни того, ни другого: в
   # консоль Proxmox он тоже не войдёт. Шесть машин поднимутся и окажутся
   # недоступны — а это ровно тот случай, ради которого скрипт и писался.
@@ -350,6 +435,10 @@ do_create() {
     [ "$answer" = yes ] || die 'отменено'
   fi
   DRY=0
+  # Прерванная на середине сборка оставляет недоделанную машину, и следующий
+  # запуск упрётся в занятый идентификатор. Говорим об этом сразу, а не оставляем
+  # читателя разбираться с непонятным отказом.
+  trap 'say ""; say "Сборка прервана. Недоделанные машины стенда убираются аргументом destroy."' EXIT
   say ''
   make_bridges
   mkdir -p "$IMAGE_DIR"
@@ -357,6 +446,7 @@ do_create() {
   local node
   for node in "${STAND_NODES[@]}"; do node_plan "$node"; done
   say ''
+  trap - EXIT
   say 'Стенд собран. Проверьте его командой status.'
 }
 
@@ -401,10 +491,13 @@ do_destroy() {
     run qm destroy "$id" --purge
   done
   say ''
-  say 'Мосты vmbr10/20/30 и строки в /etc/network/interfaces оставлены: к ним'
+  say 'Мосты стенда и строки в /etc/network/interfaces оставлены: к ним'
   say 'могут быть подключены ваши собственные машины. Уберите их вручную —'
   say 'копия файла лежит рядом как /etc/network/interfaces.course-stand.*'
 }
+
+# Имя моста управления вычисляется после объявления функций и до первой команды.
+WAN_BRIDGE=$(detect_wan)
 
 case "$ACTION" in
   plan) do_plan ;;
