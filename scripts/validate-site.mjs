@@ -313,6 +313,14 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // 22. Настройка гостя заканчивается установкой агента, поэтому его ответ
       // и есть признак того, что гость настроился, а не просто включился.
       ['qm agent "$id" ping', 'status calls a machine ready when its process is merely running'],
+      // Диск cloud-init лежит на SCSI, а не на ide2 из документации Proxmox. В
+      // машине q35 привод ide2 висит на AHCI, а в облачном ядре Debian собраны
+      // драйверы только виртуальных устройств: диска с меткой cidata в госте
+      // нет, ds-identify источник данных не находит и снимает все юниты
+      // cloud-init с загрузки. Шесть машин при этом поднимаются до конца и
+      // молча — без имени, без пользователя и без адреса, и ни create, ни
+      // журнал гостя об этом не говорят ничего.
+      ['"--scsi${CI_SLOT}" "$STORAGE:cloudinit"', 'the cloud-init drive is not on the bus of the root disk'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
@@ -323,6 +331,10 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
     // другом хранилище зашитый путь развёл бы файлы и то место, где их ищет qm,
     // и гость поднялся бы вообще без настройки.
     if (/^[^#\n]*\/var\/lib\/vz\/snippets/m.test(stand)) failures.push('course-stand.sh: the snippets directory is hard-coded instead of read from the storage');
+    // Тот же случай с другой стороны: вернуть привод на ide2 — значит вернуть
+    // шесть молча недонастроенных машин. Ищем флаг в команде, а не где угодно:
+    // в комментарии рядом он назван тем же текстом.
+    if (/^[^#\n]*--ide2/m.test(stand)) failures.push('course-stand.sh: the cloud-init drive is back on ide2, where the cloud kernel never sees it');
   }
 }
 // Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и

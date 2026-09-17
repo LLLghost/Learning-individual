@@ -41,6 +41,16 @@ ASSUME_YES="${STAND_YES:-}"
 START_AFTER="${STAND_START:-1}"
 ROUTER_WAIT="${STAND_ROUTER_WAIT:-60}"
 
+# Слот SCSI для диска cloud-init. Документация Proxmox советует ide2, и именно
+# так стенд не поднимался ни разу: в машине q35 привод ide2 висит на AHCI, а в
+# облачном ядре Debian собраны драйверы только виртуальных устройств — диска с
+# меткой cidata в госте не появляется вовсе. ds-identify источник данных не
+# находит и снимает все юниты cloud-init с этой загрузки. Шесть машин при этом
+# загружаются молча и до конца: без имени, без пользователя и без адреса, а
+# ошибки нет ни одной — ни в выводе create, ни в журнале гостя. На шине
+# корневого диска драйвер поднят ещё в initramfs, и привод виден сразу.
+CI_SLOT=1
+
 # Адресный план главы 0. Одна таблица на весь скрипт: разъехавшись с книгой,
 # стенд перестаёт отвечать тексту работ, и по выводу этого не увидеть — машины
 # поднимутся, просто не те. Валидатор сверяет эту таблицу с таблицей главы.
@@ -298,7 +308,7 @@ node_plan() {
   # Последовательная консоль добавляется, но экраном по умолчанию не становится:
   # с --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустоту, и
   # читатель, у которого это первый гипервизор, решает, что машина не завелась.
-  run qm set "$id" --ide2 "$STORAGE:cloudinit" --boot order=scsi0 --serial0 socket
+  run qm set "$id" "--scsi${CI_SLOT}" "$STORAGE:cloudinit" --boot order=scsi0 --serial0 socket
 
   local index=0 link bridge address gateway links
   IFS=';' read -r -a links <<<"$nets"
@@ -338,10 +348,13 @@ node_plan() {
   # Диски для глав про RAID, LVM и multipath: без них работы этих глав выполнять
   # не на чем, а добавить их задним числом читателю неоткуда.
   if [ "$name" = storage ] && [ "$EXTRA_DISKS" -gt 0 ]; then
-    local slot=1
-    while [ "$slot" -le "$EXTRA_DISKS" ]; do
-      run qm set "$id" "--scsi${slot}" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${slot}"
-      slot=$(( slot + 1 ))
+    # Слоты сдвинуты на диск cloud-init, а серийные номера — нет: работы глав
+    # про RAID и multipath называют диски COURSE-DISK-1…4, и эти имена читатель
+    # видит в /dev/disk/by-id.
+    local disk_no=1
+    while [ "$disk_no" -le "$EXTRA_DISKS" ]; do
+      run qm set "$id" "--scsi$(( CI_SLOT + disk_no ))" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${disk_no}"
+      disk_no=$(( disk_no + 1 ))
     done
   fi
   if [ "$START_AFTER" = 1 ]; then
