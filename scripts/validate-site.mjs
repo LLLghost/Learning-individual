@@ -308,6 +308,11 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // рукой, она отстала от кода: режим трансляции заводит ещё один мост и
       // правило на хосте, а строка об этом молчала.
       ['for entry in "${STAND_BRIDGES[@]}"; do touched=', 'the summary of what changes is written by hand'],
+      // «running» говорит лишь то, что процесс машины жив: про готовность гостя
+      // оно не говорит ничего — тот же урок, что и с «Up» у контейнера в главе
+      // 22. Настройка гостя заканчивается установкой агента, поэтому его ответ
+      // и есть признак того, что гость настроился, а не просто включился.
+      ['qm agent "$id" ping', 'status calls a machine ready when its process is merely running'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.

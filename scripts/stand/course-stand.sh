@@ -461,24 +461,37 @@ do_create() {
 
 do_status() {
   need_proxmox
-  local node name id state mine
-  printf '%-12s %-6s %-10s %s\n' 'узел' 'vmid' 'состояние' 'наш'
+  # «running» говорит лишь то, что процесс машины жив, — про готовность гостя
+  # оно не говорит ничего, ровно как «Up» у контейнера в главе 22. Настройка
+  # гостя заканчивается установкой агента, поэтому ответ агента и есть признак
+  # того, что гость настроился, а не просто включился.
+  local node name id state mine ready
+  printf '%-12s %-6s %-10s %-5s %s\n' 'узел' 'vmid' 'состояние' 'наш' 'гость настроен'
   for node in "${STAND_NODES[@]}"; do
     name=$(field "$node" 1); id=$(vmid_of "$(field "$node" 2)")
-    if qm config "$id" >/dev/null 2>&1; then
-      state=$(qm status "$id" 2>/dev/null | awk '{print $2}')
-      if ours "$id"; then mine=да; else mine=нет; fi
-      printf '%-12s %-6s %-10s %s\n' "$name" "$id" "$state" "$mine"
-    else
-      printf '%-12s %-6s %-10s %s\n' "$name" "$id" 'нет' '-'
+    if ! qm config "$id" >/dev/null 2>&1; then
+      printf '%-12s %-6s %-10s %-5s %s\n' "$name" "$id" 'нет' '-' '-'
+      continue
     fi
+    state=$(qm status "$id" 2>/dev/null | awk '{print $2}')
+    if ours "$id"; then mine=да; else mine=нет; fi
+    if qm agent "$id" ping >/dev/null 2>&1; then ready='да'; else ready='ещё нет'; fi
+    printf '%-12s %-6s %-10s %-5s %s\n' "$name" "$id" "$state" "$mine" "$ready"
   done
-  local entry bridge
-  for entry in "${STAND_BRIDGES[@]}"; do
+  # Мосты берутся из того же списка, что и при сборке: перечисленные руками, они
+  # умолчали бы про мост трансляции — тот самый, без которого стенд без сети.
+  local entry bridge shown=("${STAND_BRIDGES[@]}")
+  if [ "$WAN_MODE" = nat ]; then shown+=("$NAT_BRIDGE|внешняя сеть с трансляцией"); fi
+  printf '\n'
+  for entry in "${shown[@]}"; do
     bridge=$(field "$entry" 1)
     if [ -e "/sys/class/net/$bridge" ]; then state=поднят; else state=нет; fi
     printf '%-12s %s\n' "$bridge" "$state"
   done
+  printf '\n'
+  say 'Гость настраивается после запуска: ждёт связи через router, ставит пакеты,'
+  say 'последним включает агента. Первые минуты «ещё нет» — это нормально.'
+  say 'Если не проходит долго: qm terminal <vmid>, внутри journalctl -t course-stand -b'
 }
 
 # Убирает только машины со своей меткой. Машина без метки под тем же номером —
