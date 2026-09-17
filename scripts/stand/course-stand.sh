@@ -80,6 +80,25 @@ need_proxmox() {
 
 image_path() { printf '%s/%s' "$IMAGE_DIR" "$(basename "$IMAGE_URL")"; }
 
+# Поле хранилища из /etc/pve/storage.cfg. Разбор идёт по секциям, а не поиском
+# по всему файлу: строка «content» есть у каждого хранилища, и взятая не из той
+# секции она даёт список чужих типов.
+storage_field() {
+  awk -v want="$1" -v key="$2" '
+    /^[a-z]+: /{ section = $2; next }
+    section == want && $1 == key { print $2; exit }
+  ' /etc/pve/storage.cfg 2>/dev/null
+}
+
+# Каталог сниппетов берётся из настройки хранилища, а не зашивается: с
+# STAND_SNIPPETS на другом хранилище файлы легли бы в /var/lib/vz, а qm искал бы
+# их в другом месте — и гость поднялся бы вообще без настройки.
+snippet_dir() {
+  local base
+  base=$(storage_field "$SNIPPETS" path)
+  printf '%s/snippets' "${base:-/var/lib/vz}"
+}
+
 ours() { qm config "$1" 2>/dev/null | grep -q "tags:.*${TAG}"; }
 
 busy_ids() {
@@ -145,8 +164,10 @@ write_snippet() {
   # подставилось бы значение вызывающей функции — с set -u это либо обрыв, либо
   # тихо чужое имя.
   local name="$1"
-  local path="/var/lib/vz/snippets/course-stand-$name.yaml"
-  mkdir -p /var/lib/vz/snippets
+  local dir
+  dir=$(snippet_dir)
+  local path="$dir/course-stand-$name.yaml"
+  mkdir -p "$dir"
   {
     cat <<'YAML'
 #cloud-config
@@ -307,9 +328,20 @@ do_create() {
   # Чужую настройку хранилища скрипт не правит: он говорит, какой командой её
   # расширить, и останавливается.
   if ! pvesm status --storage "$SNIPPETS" --content snippets >/dev/null 2>&1; then
-    die "у хранилища $SNIPPETS не включён тип snippets — он нужен для настройки гостей.
+    # Команда печатается готовой, со списком типов этого хранилища. Первая
+    # версия печатала её с подстановкой $(…): у читателя она разворачивалась в
+    # несколько слов, и pvesm отвечал «too many arguments».
+    local content
+    content=$(storage_field "$SNIPPETS" content)
+    if [ -n "$content" ]; then
+      die "у хранилища $SNIPPETS не включён тип snippets — он нужен для настройки гостей.
   Включите одной командой и повторите:
-    pvesm set $SNIPPETS --content \$(grep -A9 \"^dir: $SNIPPETS\\$\" /etc/pve/storage.cfg | sed -n 's/^[[:space:]]*content //p'),snippets"
+    pvesm set $SNIPPETS --content $content,snippets"
+    fi
+    die "у хранилища $SNIPPETS не включён тип snippets — он нужен для настройки гостей.
+  Список типов у него не записан в /etc/pve/storage.cfg явно. Добавьте Snippets
+  в «Datacenter → Storage → $SNIPPETS → Content» и повторите, либо укажите другое
+  хранилище: STAND_SNIPPETS=имя"
   fi
   do_plan
   if [ -z "$ASSUME_YES" ]; then
