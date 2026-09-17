@@ -283,6 +283,10 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // гости остались бы без агента и tcpdump, а сообщение об этом ушло бы в
       // журнал гостя, куда читатель не смотрит.
       ['getent hosts', 'guest setup does not wait for the router to come up'],
+      // Без пароля и без ключа у гостя нет ни того, ни другого: в консоль
+      // Proxmox он тоже не войдёт. Шесть недоступных машин — ровно тот случай,
+      // ради которого скрипт и писался.
+      ['нечем входить в гостей', 'create does not refuse when there is no way to log into the guests'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.

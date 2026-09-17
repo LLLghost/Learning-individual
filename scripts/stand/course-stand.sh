@@ -279,6 +279,10 @@ do_plan() {
   local node
   for node in "${STAND_NODES[@]}"; do node_plan "$node"; done
   head2 'что дальше'
+  if [ -z "$CIPASS" ] && [ -z "$SSHKEYS" ]; then
+    say '  ! входить в гостей нечем: задайте STAND_PASSWORD или STAND_SSHKEYS,'
+    say '    иначе у пользователя course не будет ни пароля, ни ключа'
+  fi
   say '  собрать: та же строка с аргументом create'
   say '  посмотреть: аргумент status · убрать: аргумент destroy'
   say "  скрипт трогает только VMID $VMID_BASE–$(vmid_of 5), мосты vmbr10/20/30 и свои файлы cloud-init"
@@ -292,6 +296,14 @@ do_create() {
     die "идентификаторы заняты:$busy. Уберите прежний стенд (destroy) или задайте STAND_VMID_BASE"
   fi
   pvesm status --storage "$STORAGE" >/dev/null 2>&1 || die "хранилище $STORAGE не найдено: задайте STAND_STORAGE"
+  # Без пароля и без ключа у пользователя course нет ни того, ни другого: в
+  # консоль Proxmox он тоже не войдёт. Шесть машин поднимутся и окажутся
+  # недоступны — а это ровно тот случай, ради которого скрипт и писался.
+  if [ -z "$CIPASS" ] && [ -z "$SSHKEYS" ]; then
+    die "нечем входить в гостей: задайте пароль или ключ, иначе машины поднимутся недоступными.
+    STAND_PASSWORD='пароль' bash -c \"\$(curl -fsSL …)\" -- create
+    STAND_SSHKEYS=/root/.ssh/id_ed25519.pub bash -c \"\$(curl -fsSL …)\" -- create"
+  fi
   # Чужую настройку хранилища скрипт не правит: он говорит, какой командой её
   # расширить, и останавливается.
   if ! pvesm status --storage "$SNIPPETS" --content snippets >/dev/null 2>&1; then
