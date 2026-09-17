@@ -31,6 +31,7 @@ EXTRA_DISKS="${STAND_EXTRA_DISKS:-4}"
 EXTRA_DISK_SIZE="${STAND_EXTRA_DISK_SIZE:-8}"
 ASSUME_YES="${STAND_YES:-}"
 START_AFTER="${STAND_START:-1}"
+ROUTER_WAIT="${STAND_ROUTER_WAIT:-60}"
 
 # Адресный план главы 0. Одна таблица на весь скрипт: разъехавшись с книгой,
 # стенд перестаёт отвечать тексту работ, и по выводу этого не увидеть — машины
@@ -68,6 +69,13 @@ need_proxmox() {
     command -v "$tool" >/dev/null 2>&1 || die "команда $tool не найдена: это не хост Proxmox VE"
   done
   [ -d /etc/pve ] || die 'каталог /etc/pve не найден: это не хост Proxmox VE'
+  # qm set --scsi0 …,import-from= появился в Proxmox VE 8.0. На семёрке команда
+  # просто не поймёт параметр, и стенд встанет на первой же машине.
+  local major
+  major=$(pveversion 2>/dev/null | sed -n 's#.*pve-manager/\([0-9]*\)\..*#\1#p')
+  if [ -n "$major" ] && [ "$major" -lt 8 ]; then
+    die "нужен Proxmox VE 8 или новее: импорт образа диска на $major не поддерживается"
+  fi
 }
 
 image_path() { printf '%s/%s' "$IMAGE_DIR" "$(basename "$IMAGE_URL")"; }
@@ -122,11 +130,16 @@ make_bridges() {
   fi
 }
 
-# Настройка гостя отдаётся cloud-init: у router это пересылка и трансляция
-# адресов, у остальных — наблюдательные пакеты книги. Внешний интерфейс
-# вычисляется по маршруту по умолчанию, а не зашивается именем: в гостях
-# Proxmox он называется ens18, а не eth0, и зашитое имя дало бы стенд без
-# выхода в сеть — читатель начал бы чинить то, чего никто не настраивал.
+# Настройка гостя отдаётся cloud-init. Две вещи сделаны не так, как просит
+# документация, и обе — из-за порядка запуска.
+#
+# Пакеты ставятся не списком packages, а сценарием с ожиданием связи: список
+# выполняется один раз и без повторов, а в этот момент router ещё загружается и
+# трансляции нет. Гость оставался бы без qemu-guest-agent и tcpdump, и cloud-init
+# сообщил бы об ошибке там, куда читатель не смотрит.
+#
+# Внешний интерфейс router вычисляется по маршруту по умолчанию, а не зашивается
+# именем: в гостях Proxmox он называется ens18, а не eth0.
 write_snippet() {
   # Два отдельных объявления: в одном local значение $name ещё не присвоено и
   # подставилось бы значение вызывающей функции — с set -u это либо обрыв, либо
@@ -137,46 +150,50 @@ write_snippet() {
   {
     cat <<'YAML'
 #cloud-config
-package_update: true
-packages:
-  - qemu-guest-agent
-  - curl
-  - vim
-  - git
-  - tcpdump
-  - traceroute
-  - mtr-tiny
-  - dnsutils
-YAML
-    if [ "$name" = router ]; then
-      cat <<'YAML'
-  - nftables
 write_files:
-  - path: /usr/local/sbin/course-stand-nat
+  - path: /usr/local/sbin/course-stand-setup
     permissions: '0755'
     content: |
       #!/bin/sh
-      set -eu
+      # Ждём связи. У пяти узлов она появляется только после того, как router
+      # поднимет трансляцию, у самого router есть сразу. Ждём до десяти минут,
+      # потом сдаёмся с записью в журнал: молча недонастроенный гость хуже отказа.
+      set -u
+      ready=0
+      i=1
+      while [ "$i" -le 60 ]; do
+        if getent hosts deb.debian.org >/dev/null 2>&1; then ready=1; break; fi
+        sleep 10
+        i=$((i + 1))
+      done
+      if [ "$ready" != 1 ]; then
+        echo 'course-stand: сети нет, пакеты не установлены' | systemd-cat -t course-stand -p err
+        exit 1
+      fi
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y qemu-guest-agent curl vim git tcpdump traceroute mtr-tiny dnsutils
+      systemctl enable --now qemu-guest-agent
+YAML
+    if [ "$name" = router ]; then
+      cat <<'YAML'
+      apt-get install -y nftables
       wan=$(ip -4 route show default | awk '{print $5; exit}')
-      [ -n "$wan" ] || { echo 'нет маршрута по умолчанию: трансляция не настроена' >&2; exit 1; }
+      [ -n "$wan" ] || { echo 'course-stand: нет маршрута по умолчанию' | systemd-cat -t course-stand -p err; exit 1; }
       echo net.ipv4.ip_forward=1 >/etc/sysctl.d/99-course-stand.conf
       sysctl --system
       nft add table ip nat
       nft add chain ip nat postrouting '{ type nat hook postrouting priority 100 ; }'
       nft add rule ip nat postrouting oifname "$wan" masquerade
-      nft list ruleset >/etc/nftables.conf
+      { echo '#!/usr/sbin/nft -f'; echo 'flush ruleset'; nft list ruleset; } >/etc/nftables.conf
+      chmod 0755 /etc/nftables.conf
+      systemctl enable nftables
 YAML
     fi
     cat <<'YAML'
 runcmd:
-  - [ systemctl, enable, --now, qemu-guest-agent ]
+  - [ sh, -c, '/usr/local/sbin/course-stand-setup' ]
 YAML
-    if [ "$name" = router ]; then
-      cat <<'YAML'
-  - [ /usr/local/sbin/course-stand-nat ]
-  - [ systemctl, enable, nftables ]
-YAML
-    fi
   } >"$path"
   printf '%s' "$path"
 }
@@ -193,7 +210,10 @@ node_plan() {
   run qm set "$id" --efidisk0 "$STORAGE:1,efitype=4m,pre-enrolled-keys=0"
   run qm set "$id" --scsi0 "$STORAGE:0,import-from=$image"
   run qm disk resize "$id" scsi0 "${disk}G"
-  run qm set "$id" --ide2 "$STORAGE:cloudinit" --boot order=scsi0 --serial0 socket --vga serial0
+  # Последовательная консоль добавляется, но экраном по умолчанию не становится:
+  # с --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустоту, и
+  # читатель, у которого это первый гипервизор, решает, что машина не завелась.
+  run qm set "$id" --ide2 "$STORAGE:cloudinit" --boot order=scsi0 --serial0 socket
 
   local index=0 link bridge address gateway links
   IFS=';' read -r -a links <<<"$nets"
@@ -232,7 +252,20 @@ node_plan() {
       slot=$(( slot + 1 ))
     done
   fi
-  if [ "$START_AFTER" = 1 ]; then run qm start "$id"; fi
+  if [ "$START_AFTER" = 1 ]; then
+    run qm start "$id"
+    # Остальные узлы выходят в сеть только через router, а он в этот момент ещё
+    # загружается. Пауза не обязательна — настройка гостя ждёт связи сама, — но
+    # без неё пять машин первые минуты стучатся в неподнятую трансляцию.
+    if [ "$name" = router ] && [ "$ROUTER_WAIT" -gt 0 ]; then
+      if [ "$DRY" = 1 ]; then
+        printf '  # пауза %s с: остальные узлы выходят в сеть через router\n' "$ROUTER_WAIT"
+      else
+        say "= жду $ROUTER_WAIT с, пока router поднимет трансляцию"
+        sleep "$ROUTER_WAIT"
+      fi
+    fi
+  fi
 }
 
 do_plan() {

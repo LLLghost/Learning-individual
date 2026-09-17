@@ -278,7 +278,17 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       ['идентификаторы заняты', 'existing VMIDs are not refused'],
       ['не наша машина', 'destroy does not skip machines without the tag'],
       ['не меняется: на нём живёт управление', 'the management bridge is not declared untouched'],
+      // Пять узлов выходят в сеть через router, а он в этот момент ещё
+      // загружается. Список packages выполняется один раз и без повторов —
+      // гости остались бы без агента и tcpdump, а сообщение об этом ушло бы в
+      // журнал гостя, куда читатель не смотрит.
+      ['getent hosts', 'guest setup does not wait for the router to come up'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
+    // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
+    // и первый гипервизор выглядит сломанным.
+    // Ищем флаг в команде, а не где угодно: в комментарии рядом он назван тем
+    // же текстом, и простая проверка вхождения срабатывала на объяснении.
+    if (/^[^#\n]*--vga serial0/m.test(stand)) failures.push('course-stand.sh: the web console is turned off by --vga serial0');
   }
 }
 // Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и
