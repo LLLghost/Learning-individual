@@ -331,6 +331,10 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // Прежняя версия ставила диск cloud-init на ide2. Оставить оба — значит
       // оставить гостю два источника данных, и выберет он не тот.
       ['ci_slots()', 'a cloud-init drive left in the old slot is not moved'],
+      // План печатается для того, чтобы его прочитали и переслали, — и пароль от
+      // всех шести машин уезжал вместе с ним: в переписку, в историю терминала,
+      // в вырезку на экране. Выполняется настоящее значение, скрыт только показ.
+      ['[ "$prev" = --cipassword ]', 'the printed command shows the cloud-init password in clear text'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
