@@ -61,6 +61,19 @@ const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
 if (!siteJs.includes('server-infrastructure-reader-v1') || !siteJs.includes('data-highlight-color')) failures.push('site.js: missing reader notebook behavior');
 if (!siteCss.includes('.notes-panel') || !siteCss.includes('.reader-highlight')) failures.push('site.css: missing reader notebook styles');
 if (!siteJs.includes('recordQuickCheck') || !siteCss.includes('.chapter-trainer')) failures.push('assets: missing chapter trainer behavior or styles');
+// Промах не показывает ни верный вариант, ни разбор: он меняет вопрос внутри
+// слота. Раньше неверный ответ подсвечивал верный и печатал разбор — и кнопка
+// «Проверить ещё раз» не значила ничего, оставалось повторить увиденное. В
+// разметке эта разница не видна: подсветку ставит класс, а разбор берётся из
+// data-атрибута, и оба места выглядят одинаково при любом исходе.
+if (!siteJs.includes('data-trainer-variant')) failures.push('site.js: the trainer never swaps the question after a miss');
+for (const [pattern, what] of [
+  [/dataset\.explanation/g, 'the explanation is read outside the two correct-answer branches'],
+  [/classList\.add\('is-correct'\)/g, 'the correct option is marked outside the two correct-answer branches'],
+]) {
+  const hits = siteJs.match(pattern)?.length ?? 0;
+  if (hits !== 2) failures.push(`site.js: ${what} (${hits} places instead of 2)`);
+}
 // Полнотекстовый поиск: индекс собран по всем маршрутам и доступен с каждой страницы.
 if (!siteJs.includes('loadSearchIndex') || !siteCss.includes('.search-panel')) failures.push('assets: missing full-text search behavior or styles');
 try {
@@ -416,10 +429,17 @@ const body = course.slice(mainStart, mainEnd);
     for (const [kind, source, count, from] of sets) for (let number = from; number < from + count; number += 1) {
       const items = source[String(number)];
       if (!Array.isArray(items) || items.length !== 2) {
-        failures.push(`${kind} ${number}: expected two own quick questions`);
+        failures.push(`${kind} ${number}: expected two own quick slots`);
         continue;
       }
-      for (const item of items) {
+      // Слот — пул смежных вопросов об одном утверждении: промах меняет вопрос,
+      // а не открывает верный вариант. Пул из одного вопроса возвращал бы тот же
+      // вопрос с уже отмеченным неверным ответом — это не вторая попытка.
+      if (!items.every((pool) => Array.isArray(pool) && pool.length >= 2)) {
+        failures.push(`${kind} ${number}: each slot needs a pool of at least two questions`);
+        continue;
+      }
+      for (const item of items.flat()) {
         if (!item.stem || !Array.isArray(item.options) || item.options.length !== 4) {
           failures.push(`quick ${item.id ?? number}: need a stem and four options`);
           continue;
@@ -436,6 +456,16 @@ const body = course.slice(mainStart, mainEnd);
           }
         }
       }
+    }
+    // Все варианты слота обязаны доехать до страницы: подмена вопроса после
+    // промаха идёт без сети, и недостающий вариант вернул бы тот же вопрос.
+    for (let number = 0; number < 34; number += 1) {
+      const pools = quick[String(number)];
+      if (!Array.isArray(pools)) continue;
+      const expected = pools.reduce((sum, pool) => sum + (Array.isArray(pool) ? pool.length : 0), 0);
+      const page = cache.get(resolve(root, 'chapters', String(number).padStart(2, '0'), 'index.html')) ?? '';
+      const printed = page.match(/data-trainer-variant=/g)?.length ?? 0;
+      if (printed !== expected) failures.push(`chapter ${number}: ${printed} question variants on the page, ${expected} in the pool`);
     }
     // Тот же урок, что и с банком: собранный по привычке набор проходится
     // выбором одного и того же номера.
@@ -863,7 +893,7 @@ if (data?.items && data?.cases) {
   push('работы: механизм', (labData?.labs ?? []).filter((lab) => lab.why).map((lab) => [lab.id, lab.why.options, lab.why.answer]));
   for (const [id, source] of [['тренажёр глав', 'chapter-quick-data'], ['тренажёр уроков', 'lesson-quick-data']]) {
     const raw = course.match(new RegExp(`id="${source}">([\\s\\S]*?)</script>`))?.[1];
-    if (raw) push(id, Object.entries(JSON.parse(raw)).flatMap(([key, list]) => list.map((quiz, order) => [`${key}.${order}`, quiz.options, quiz.answer])));
+    if (raw) push(id, Object.entries(JSON.parse(raw)).flatMap(([key, slots]) => slots.flatMap((pool, order) => pool.map((quiz, variant) => [`${key}.${order}/${variant}`, quiz.options, quiz.answer]))));
   }
 
   // Подсказкой длина становится не при любой разнице, а при заметной: два
