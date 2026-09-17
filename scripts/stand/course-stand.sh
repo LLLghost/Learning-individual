@@ -49,7 +49,10 @@ ROUTER_WAIT="${STAND_ROUTER_WAIT:-60}"
 # загружаются молча и до конца: без имени, без пользователя и без адреса, а
 # ошибки нет ни одной — ни в выводе create, ни в журнале гостя. На шине
 # корневого диска драйвер поднят ещё в initramfs, и привод виден сразу.
-CI_SLOT=1
+#
+# Слот берётся за дисками работ, а не перед ними: иначе донастройка уже
+# собранного стенда двигала бы диски главы про RAID, а это чужие данные.
+CI_SLOT=$(( EXTRA_DISKS + 1 ))
 
 # Адресный план главы 0. Одна таблица на весь скрипт: разъехавшись с книгой,
 # стенд перестаёт отвечать тексту работ, и по выводу этого не увидеть — машины
@@ -142,14 +145,31 @@ snippet_dir() {
 
 ours() { qm config "$1" 2>/dev/null | grep -q "tags:.*${TAG}"; }
 
+# Занятые идентификаторы, которые скрипту не принадлежат. Свои машины он
+# донастраивает, чужие не трогает вовсе — это единственный вид занятости,
+# на котором сборка обязана остановиться.
 busy_ids() {
   local node id out=''
   for node in "${STAND_NODES[@]}"; do
     id=$(vmid_of "$(field "$node" 2)")
-    if qm config "$id" >/dev/null 2>&1; then out="$out $id"; fi
+    if qm config "$id" >/dev/null 2>&1 && ! ours "$id"; then out="$out $id"; fi
   done
   printf '%s' "$out"
 }
+
+# Машина уже заведена. Проверка идёт и в плане тоже, поэтому смотрим сначала,
+# есть ли вообще qm: план обязан работать и не на Proxmox.
+node_exists() { command -v qm >/dev/null 2>&1 && qm config "$1" >/dev/null 2>&1; }
+
+node_running() { [ "$(qm status "$1" 2>/dev/null | awk '{print $2}')" = running ]; }
+
+# Занят ли слот: донастройка не пересоздаёт то, что уже есть.
+has_slot() { qm config "$1" 2>/dev/null | grep -q "^$2:"; }
+
+# Слоты, где у машины висит диск cloud-init. Их может оказаться несколько:
+# прежняя версия скрипта ставила его на ide2, и оставить оба — значит оставить
+# гостю два источника данных, из которых он выберет не тот.
+ci_slots() { qm config "$1" 2>/dev/null | awk -F: '/vm-[0-9]+-cloudinit/{print $1}'; }
 
 show_bridges() {
   head2 'мосты стенда'
@@ -299,16 +319,38 @@ node_plan() {
   memory=$(field "$node" 4); disk=$(field "$node" 5); nets=$(field "$node" 6)
   id=$(vmid_of "$offset"); image=$(image_path)
   head2 "$name (VMID $id)"
-  run qm create "$id" --name "$name" --cores "$cores" --memory "$memory" \
-    --cpu host --machine q35 --bios ovmf --agent enabled=1 \
-    --ostype l26 --scsihw virtio-scsi-single --tags "$TAG"
-  run qm set "$id" --efidisk0 "$STORAGE:1,efitype=4m,pre-enrolled-keys=0"
-  run qm set "$id" --scsi0 "$STORAGE:0,import-from=$image"
-  run qm disk resize "$id" scsi0 "${disk}G"
+  # Уже заведённую машину скрипт не пересоздаёт: он накладывает на неё
+  # настройку и оставляет диск с системой в покое. Так чинится стенд, собранный
+  # прежней версией скрипта, и так же переживается прерванная сборка — повторный
+  # запуск доводит до конца то, что успело завестись.
+  local known=0
+  if node_exists "$id"; then known=1; fi
+  if [ "$known" = 1 ]; then
+    say '  машина уже есть — донастраиваю, диск с системой не трогаю'
+    # Настройка накладывается на остановленной машине: cloud-init читает свой
+    # диск при загрузке, и правка на ходу до гостя не доехала бы.
+    if node_running "$id"; then run qm shutdown "$id" --timeout 60 --forceStop 1; fi
+    local stale
+    for stale in $(ci_slots "$id"); do
+      if [ "$stale" = "scsi${CI_SLOT}" ]; then continue; fi
+      say "  диск cloud-init стоит в слоте $stale — переношу"
+      run qm set "$id" --delete "$stale"
+    done
+  else
+    run qm create "$id" --name "$name" --cores "$cores" --memory "$memory" \
+      --cpu host --machine q35 --bios ovmf --agent enabled=1 \
+      --ostype l26 --scsihw virtio-scsi-single --tags "$TAG"
+    run qm set "$id" --efidisk0 "$STORAGE:1,efitype=4m,pre-enrolled-keys=0"
+    run qm set "$id" --scsi0 "$STORAGE:0,import-from=$image"
+    run qm disk resize "$id" scsi0 "${disk}G"
+  fi
   # Последовательная консоль добавляется, но экраном по умолчанию не становится:
   # с --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустоту, и
   # читатель, у которого это первый гипервизор, решает, что машина не завелась.
-  run qm set "$id" "--scsi${CI_SLOT}" "$STORAGE:cloudinit" --boot order=scsi0 --serial0 socket
+  if ! has_slot "$id" "scsi${CI_SLOT}"; then
+    run qm set "$id" "--scsi${CI_SLOT}" "$STORAGE:cloudinit"
+  fi
+  run qm set "$id" --boot order=scsi0 --serial0 socket
 
   local index=0 link bridge address gateway links
   IFS=';' read -r -a links <<<"$nets"
@@ -348,13 +390,16 @@ node_plan() {
   # Диски для глав про RAID, LVM и multipath: без них работы этих глав выполнять
   # не на чем, а добавить их задним числом читателю неоткуда.
   if [ "$name" = storage ] && [ "$EXTRA_DISKS" -gt 0 ]; then
-    # Слоты сдвинуты на диск cloud-init, а серийные номера — нет: работы глав
-    # про RAID и multipath называют диски COURSE-DISK-1…4, и эти имена читатель
-    # видит в /dev/disk/by-id.
-    local disk_no=1
-    while [ "$disk_no" -le "$EXTRA_DISKS" ]; do
-      run qm set "$id" "--scsi$(( CI_SLOT + disk_no ))" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${disk_no}"
-      disk_no=$(( disk_no + 1 ))
+    local slot=1
+    while [ "$slot" -le "$EXTRA_DISKS" ]; do
+      # Уже заведённый диск не трогаем: донастройка не должна пересоздавать то,
+      # на чём читатель мог собрать массив.
+      if has_slot "$id" "scsi${slot}"; then
+        say "  scsi${slot} уже есть — оставляю как есть"
+      else
+        run qm set "$id" "--scsi${slot}" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${slot}"
+      fi
+      slot=$(( slot + 1 ))
     done
   fi
   if [ "$START_AFTER" = 1 ]; then
@@ -400,6 +445,7 @@ do_plan() {
   if [ "$WAN_MODE" = nat ]; then
     say "  плюс мост $NAT_BRIDGE: адрес $NAT_NET.1/24 на хосте, пересылка и правило трансляции через $(uplink)"
   fi
+  say '  уже заведённые машины стенда пересоздаваться не будут: им достанется только настройка'
   say '  всё остальное на хосте остаётся нетронутым'
 }
 
@@ -407,7 +453,8 @@ do_create() {
   need_proxmox
   local busy; busy=$(busy_ids)
   if [ -n "$busy" ]; then
-    die "идентификаторы заняты:$busy. Уберите прежний стенд (destroy) или задайте STAND_VMID_BASE"
+    die "идентификаторы заняты чужими машинами:$busy. Скрипт их не трогает —
+  уберите их сами или задайте STAND_VMID_BASE. Свои машины он донастраивает."
   fi
   pvesm status --storage "$STORAGE" >/dev/null 2>&1 || die "хранилище $STORAGE не найдено: задайте STAND_STORAGE"
   # Отсутствующий мост управления обнаруживается до создания машин: qm set

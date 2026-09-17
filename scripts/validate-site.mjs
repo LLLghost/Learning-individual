@@ -321,6 +321,16 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // молча — без имени, без пользователя и без адреса, и ни create, ни
       // журнал гостя об этом не говорят ничего.
       ['"--scsi${CI_SLOT}" "$STORAGE:cloudinit"', 'the cloud-init drive is not on the bus of the root disk'],
+      // Прерванная сборка и стенд, собранный прежней версией скрипта, — это
+      // заведённые машины, которым не хватает настройки. Пересоздавать их
+      // значит терять то, что читатель на них успел сделать, а отказываться по
+      // занятому идентификатору — оставлять его без стенда. Чужие машины при
+      // этом по-прежнему не трогаются вовсе.
+      ['машина уже есть — донастраиваю', 'create recreates machines that already exist instead of configuring them'],
+      ['&& ! ours "$id"', 'the busy-VMID refusal does not tell our own machines from foreign ones'],
+      // Прежняя версия ставила диск cloud-init на ide2. Оставить оба — значит
+      // оставить гостю два источника данных, и выберет он не тот.
+      ['ci_slots()', 'a cloud-init drive left in the old slot is not moved'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
