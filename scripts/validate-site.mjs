@@ -288,6 +288,13 @@ for (let number = 1; number <= LESSON_COUNT; number += 1) {
   // Урок без разбора — это чтение без проверки: свёрнутый блок «Проверьте себя»
   // единственное место, где читатель может убедиться, что понял.
   if (!lesson.includes('<summary>Проверьте себя</summary>')) failures.push(`lesson ${number}: missing the self-check block`);
+  // Разбор прячется за своим катом внутри блока. Лежащий рядом с вопросами, он
+  // читается раньше попытки вспомнить — а попытка и есть то, ради чего блок
+  // стоит. В разметке разница не видна: текст тот же, на месте.
+  const cut = /<details class="answer-cut">\s*<summary>Показать разбор<\/summary>\s*<p><strong>Разбор\.<\/strong>/;
+  if (lesson.includes('<strong>Разбор.</strong>') && !cut.test(lesson)) {
+    failures.push(`lesson ${number}: the answer sits next to the questions instead of behind its own cut`);
+  }
 }
 // Последний урок обязан вести в главу 00: вводная часть кончается там, где
 // начинается курс, и тупика в конце быть не должно.
