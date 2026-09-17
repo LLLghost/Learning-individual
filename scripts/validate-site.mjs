@@ -298,6 +298,11 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       ['detect_wan()', 'the management bridge is hard-coded instead of detected'],
       ['моста $WAN_BRIDGE на хосте нет', 'create does not check that the management bridge exists'],
       ['так и не поднялся', 'the lab bridges are not verified after the network reload'],
+      // Управление хоста может жить не на мосту, а на обычном интерфейсе:
+      // подключить к нему машину нельзя, а перекладывать управляющий интерфейс
+      // в мост по чужому совету — верный способ потерять доступ к хосту.
+      ['[ "$WAN_MODE" = nat ]', 'there is no way out for a host whose management is not on a bridge'],
+      ['MASQUERADE', 'the nat mode does not actually translate addresses'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
