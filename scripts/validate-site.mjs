@@ -303,6 +303,11 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // в мост по чужому совету — верный способ потерять доступ к хосту.
       ['[ "$WAN_MODE" = nat ]', 'there is no way out for a host whose management is not on a bridge'],
       ['MASQUERADE', 'the nat mode does not actually translate addresses'],
+      // Сводка «что изменится» печатается прямо перед вопросом «нажимать ли
+      // yes», поэтому собирается из тех же данных, что и действия. Написанная
+      // рукой, она отстала от кода: режим трансляции заводит ещё один мост и
+      // правило на хосте, а строка об этом молчала.
+      ['for entry in "${STAND_BRIDGES[@]}"; do touched=', 'the summary of what changes is written by hand'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
