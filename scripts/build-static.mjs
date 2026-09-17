@@ -858,6 +858,12 @@ h1,h2,h3,h4{text-wrap:balance}
 .t-acc-chevron{display:inline-flex;flex:0 0 auto;color:var(--teal-ink);transform:scaleY(1);transform-origin:center;transition:transform var(--acc-chevron) var(--acc-ease)}
 .t-acc-chevron path{vector-effect:non-scaling-stroke}
 .t-acc[data-open="true"] .t-acc-chevron{transform:scaleY(-1)}
+/* Разбор внутри «Проверьте себя» — свой кат. Коробка в коробке читается как
+   ошибка вёрстки, поэтому вложенный блок идёт без рамки и полей: только строка
+   с шевроном и текст под ней. */
+.prose details .answer-cut{margin:18px 0 0;padding:14px 0 0;border:0;border-top:1px solid var(--line);background:none}
+.prose details .answer-cut>summary{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.prose details .answer-cut p:last-child{margin-bottom:0}
 
 /* Карточка определения и панель выделения: короткое появление, мгновенный уход. */
 .define-card:not([hidden]),.selection-toolbar:not([hidden]){animation:t-tt-in var(--tt-in-dur) var(--tt-in-ease) var(--tt-delay) both}
