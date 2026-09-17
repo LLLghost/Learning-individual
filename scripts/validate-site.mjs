@@ -287,12 +287,20 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // Proxmox он тоже не войдёт. Шесть недоступных машин — ровно тот случай,
       // ради которого скрипт и писался.
       ['нечем входить в гостей', 'create does not refuse when there is no way to log into the guests'],
+      // Совет, который читателю надо выполнить, печатается готовым. Первая
+      // версия печатала его с подстановкой $(…): у читателя она разворачивалась
+      // в несколько слов, и pvesm отвечал «too many arguments».
+      ['storage_field "$SNIPPETS" content', 'the snippets refusal does not print a ready command'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
     // Ищем флаг в команде, а не где угодно: в комментарии рядом он назван тем
     // же текстом, и простая проверка вхождения срабатывала на объяснении.
     if (/^[^#\n]*--vga serial0/m.test(stand)) failures.push('course-stand.sh: the web console is turned off by --vga serial0');
+    // Каталог сниппетов берётся из настройки хранилища: с STAND_SNIPPETS на
+    // другом хранилище зашитый путь развёл бы файлы и то место, где их ищет qm,
+    // и гость поднялся бы вообще без настройки.
+    if (/^[^#\n]*\/var\/lib\/vz\/snippets/m.test(stand)) failures.push('course-stand.sh: the snippets directory is hard-coded instead of read from the storage');
   }
 }
 // Работа без сети. Обслуживающий скрипт не разбирается сборкой так же, как и
