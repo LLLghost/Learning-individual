@@ -1434,7 +1434,24 @@ for (const [file, html] of cache) {
       // поля: на узле без источника разбор проходит точно так же.
       ["fields[13].strip() == 'Normal'", 'L31A calls a host synchronised when chronyc merely answered'],
       ['def cert_field(', 'the L30B probe never looks at who issued the certificate'],
+      // df показывает пригодное место, а не размер файловой системы: у ext4 на
+      // томе в гигабайт разница 33 МиБ, и «ФС догнала том» не сходилось даже
+      // после честного resize2fs — работа не сдавалась никогда.
+      ['def fs_size_mib(', 'L13B measures the filesystem with df, which reports usable space, not its size'],
+      // Целый массив выглядит одинаково и после восстановления, и до всякой
+      // аварии. Деградацию видно только в журнале ядра, и создание массива
+      // даёт там resync, а не recovery.
+      ['recovery of RAID array', 'L14B cannot tell a recovered array from one that was never broken'],
+      // Запись FAILED в таблице соседей — след прошлых попыток разрешения: она
+      // остаётся и после того, как маршрут снова пошёл через шлюз.
+      ["'FAILED' not in (entry.get('state') or [])", 'L06B counts a stale FAILED neighbour entry as an ARP attempt'],
     ]) if (!code.includes(needle)) failures.push(`lab-code-data: ${what}`);
+    // Базовая линия — единственное, чем работа отличает сделанное от того, что
+    // на стенде и так было. L13B без неё засчитывалась за нерасширенный том,
+    // L14B — за нетронутый массив.
+    for (const id of ['L13B', 'L14B', 'L16B']) {
+      if (!code.includes(`def baseline_${id}(`)) failures.push(`lab-code-data: ${id} takes no baseline, so its facts describe the stand rather than the work`);
+    }
     // Обе шкалы считаются в кабинете раздельно и обе показываются на общем
     // экране. Слитый счёт выглядит в разметке точно так же, как раздельный.
     for (const [needle, what] of [
