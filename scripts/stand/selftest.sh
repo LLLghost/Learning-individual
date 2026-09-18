@@ -74,7 +74,23 @@ esac
 exit 0
 STUB
 
-chmod +x "$WORK/bin/qm" "$WORK/bin/pvesm" "$WORK/bin/ip"
+# Версия хоста и права: нужны, чтобы дойти до отказов need_proxmox. Отказ на
+# слишком старой версии иначе проверялся бы только там, где он и срабатывает, —
+# у читателя со старым хостом, то есть никогда.
+cat >"$WORK/bin/pveversion" <<'STUB'
+#!/bin/sh
+printf 'pve-manager/%s.1.4/abcdef (running kernel: 6.8.0)\n' "${STUB_PVE:-9}"
+exit 0
+STUB
+
+cat >"$WORK/bin/id" <<'STUB'
+#!/bin/sh
+if [ "$1" = -u ]; then printf '0\n'; else /usr/bin/id "$@"; fi
+exit 0
+STUB
+
+chmod +x "$WORK/bin/qm" "$WORK/bin/pvesm" "$WORK/bin/ip" "$WORK/bin/pveversion" "$WORK/bin/id"
+mkdir -p "$WORK/pve"
 
 # ---------- прогон и утверждения ----------
 
@@ -91,6 +107,17 @@ plan() {
     FAILED=$(( FAILED + 1 ))
     return 0
   }
+}
+
+# Действие, отличное от плана: нужно, чтобы дойти до проверок хоста. Каталог
+# Proxmox подставной, права root изображает подставной id — сам скрипт при этом
+# обычный, без единой поблажки для проверки.
+act() {
+  local action="$1"; shift
+  LOG="$WORK/calls.log"
+  : >"$LOG"
+  OUT=$(env PATH="$WORK/bin:$PATH" STUB_LOG="$LOG" STAND_PVE_DIR="$WORK/pve" "$@" \
+    bash "$STAND" "$action" 2>&1) || true
 }
 
 case_name() { printf '\n== %s\n' "$*"; }
@@ -209,6 +236,22 @@ expect_not 'диск не пересоздаётся' 'serial=COURSE-DISK-1'
 case_name 'предупреждение, когда входить в гостей нечем'
 plan STAND_WAN_BRIDGE=vmbr0
 expect 'план говорит о пароле и ключе' 'входить в гостей нечем'
+
+case_name 'старый хост получает внятный отказ, а не непонятую команду'
+# qm set --scsi0 …,import-from= появился в Proxmox VE 8. На семёрке стенд встал
+# бы на первой машине с сообщением от qm, а не от скрипта. Настоящая семёрка для
+# этого не нужна и не нужна нарочно: ставить снятый с поддержки гипервизор ради
+# одного сообщения — худшее, что можно посоветовать читателю.
+act status STUB_PVE=7
+expect 'семёрка отклонена' 'нужен Proxmox VE 8 или новее'
+expect 'названа найденная версия' 'импорт образа диска на 7 не поддерживается'
+act status STUB_PVE=9
+expect_not 'девятка проходит' 'нужен Proxmox VE 8'
+
+case_name 'машина не Proxmox: скрипт говорит об этом, а не падает'
+LOG="$WORK/calls.log"; : >"$LOG"
+OUT=$(env PATH="/usr/bin:/bin" STUB_LOG="$LOG" bash "$STAND" status 2>&1) || true
+expect 'сказано, чего не хватает' 'это не хост Proxmox VE'
 
 printf '\n%s\n' '----------------------------------------'
 printf 'Проверок пройдено: %s, не пройдено: %s\n' "$PASSED" "$FAILED"
