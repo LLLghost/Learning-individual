@@ -32,6 +32,8 @@ STORAGE="${STAND_STORAGE:-local-lvm}"
 SNIPPETS="${STAND_SNIPPETS:-local}"
 IMAGE_URL="${STAND_IMAGE_URL:-https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2}"
 IMAGE_DIR="${STAND_IMAGE_DIR:-/var/lib/vz/template/cache}"
+STAND_ID_FILE="${STAND_ID_FILE:-/etc/course-stand-id}"
+STAND_CARD="${STAND_CARD:-/root/course-stand.json}"
 CIUSER="${STAND_USER:-course}"
 CIPASS="${STAND_PASSWORD:-}"
 SSHKEYS="${STAND_SSHKEYS:-}"
@@ -39,7 +41,13 @@ EXTRA_DISKS="${STAND_EXTRA_DISKS:-4}"
 EXTRA_DISK_SIZE="${STAND_EXTRA_DISK_SIZE:-8}"
 ASSUME_YES="${STAND_YES:-}"
 START_AFTER="${STAND_START:-1}"
-ROUTER_WAIT="${STAND_ROUTER_WAIT:-60}"
+# Сколько ждать готовности router, прежде чем запускать остальные пять машин.
+# Это не пауза, а предел ожидания: сборка идёт дальше, как только router
+# ответит агентом. Фиксированной паузы в минуту не хватало — и не могло хватать:
+# router поднимает трансляцию после установки пакетов, то есть через две-три
+# минуты, а гость, запущенный в эту щель, уходит в apt по ещё не работающей
+# сети и там зависает (см. wait_router).
+ROUTER_WAIT="${STAND_ROUTER_WAIT:-600}"
 
 # Слот SCSI для диска cloud-init. Документация Proxmox советует ide2, и именно
 # так стенд не поднимался ни разу: в машине q35 привод ide2 висит на AHCI, а в
@@ -128,6 +136,70 @@ detect_wan() {
   guess=$(uplink)
   if [ -n "$guess" ] && is_bridge "$guess"; then printf '%s' "$guess"; return 0; fi
   printf ''
+}
+
+# Proxmox по умолчанию просит cloud-init обновить систему на первой загрузке
+# (ciupgrade=1, в user-data это package_upgrade: true). Модуль, который это
+# делает, выполняется раньше runcmd, а значит раньше нашего ожидания связи — и
+# уходит в apt тогда, когда router ещё не поднял трансляцию. Пойманное на живом
+# хосте: apt-get update, начатый за пятнадцать секунд до появления трансляции,
+# не отваливается по таймауту, а висит — гость просидел в нём двадцать минут, и
+# в это время ни cloud-init, ни наш сценарий не двинулись ни на шаг. Ни create,
+# ни журнал хоста об этом не говорят ничего: машина «running», гость молчит.
+#
+# Поэтому штатный апгрейд выключается, и единственный apt в госте — наш, после
+# проверки связи. Параметр появился в Proxmox VE 8.2; на 8.0 и 8.1 его нет, и
+# qm set отказал бы. Там, где qm нет вовсе (план на своей машине), считаем, что
+# параметр есть: план печатается для сегодняшнего хоста, а не для вчерашнего.
+ciupgrade_supported() {
+  command -v qm >/dev/null 2>&1 || return 0
+  qm help set --verbose 2>/dev/null | grep -q -- '--ciupgrade'
+}
+
+# Номер стенда. Работы практикума меняют настройки машины, а метка
+# /etc/course-lab-stand одна на всех и лежит по известному пути: сама по себе она
+# отличает стенд только от машины, где её забыли завести. Номер кладётся в
+# гостей, учебник подставляет его в скачиваемый course_lab.py, и скрипт,
+# выпущенный для одного стенда, на другом отказывается работать.
+#
+# Номер случайный, а не выведенный из хоста: из machine-id он не давал бы ничего
+# сверх случайного, зато стал бы отпечатком хоста и уезжал бы в файлах, которые
+# читатель пересылает. Заведённый однажды, он переиспользуется: destroy и create
+# не должны обесценивать уже скачанные скрипты.
+stand_id() {
+  if [ -s "$STAND_ID_FILE" ]; then
+    tr -dc '0-9a-f' <"$STAND_ID_FILE" | cut -c1-16
+    return 0
+  fi
+  printf ''
+}
+
+new_stand_id() {
+  local id
+  id=$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')
+  printf '%s' "$id"
+}
+
+# Заводит номер, если его ещё нет, и пишет карточку — файл, который читатель
+# загрузит в учебник. Карточка в JSON, потому что учебник читает JSON; сам номер
+# лежит отдельной строкой, потому что его сверяет гость обычным сравнением.
+STAND_ID=''
+ensure_stand_id() {
+  STAND_ID=$(stand_id)
+  if [ -n "$STAND_ID" ]; then
+    say "= номер стенда $STAND_ID (из $STAND_ID_FILE)"
+  elif [ "$DRY" = 1 ]; then
+    say "= номер стенда будет заведён при сборке и положен в $STAND_ID_FILE"
+    say "  карточка для учебника — $STAND_CARD"
+    STAND_ID=''
+    return 0
+  else
+    STAND_ID=$(new_stand_id)
+    run sh -c "printf '%s\n' '$STAND_ID' >'$STAND_ID_FILE'"
+    say "= номер стенда $STAND_ID заведён"
+  fi
+  run sh -c "printf '{\"schema\":\"course-stand\",\"stand\":\"%s\"}\n' '$STAND_ID' >'$STAND_CARD'"
+  say "  карточка для учебника — $STAND_CARD, загрузите её в кабинете"
 }
 
 # Интерфейс хоста с маршрутом по умолчанию: через него уходит трансляция в
@@ -257,13 +329,19 @@ make_bridges() {
   done
 }
 
-# Настройка гостя отдаётся cloud-init. Две вещи сделаны не так, как просит
-# документация, и обе — из-за порядка запуска.
+# Настройка гостя отдаётся cloud-init. Три вещи сделаны не так, как просит
+# документация, и все три — из-за порядка запуска.
 #
 # Пакеты ставятся не списком packages, а сценарием с ожиданием связи: список
 # выполняется один раз и без повторов, а в этот момент router ещё загружается и
 # трансляции нет. Гость оставался бы без qemu-guest-agent и tcpdump, и cloud-init
 # сообщил бы об ошибке там, куда читатель не смотрит.
+#
+# Агент ставится последним, отдельной командой, и на router — уже после
+# трансляции. Ответ агента — единственный признак готовности, по которому судят
+# и status, и ожидание перед запуском остальных машин: попади агент в общий
+# список пакетов, он отвечал бы с середины настройки, и «гость настроен»
+# означало бы «гость на полпути».
 #
 # Внешний интерфейс router вычисляется по маршруту по умолчанию, а не зашивается
 # именем: в гостях Proxmox он называется ens18, а не eth0.
@@ -300,24 +378,53 @@ write_files:
         exit 1
       fi
       export DEBIAN_FRONTEND=noninteractive
-      apt-get update
-      apt-get install -y qemu-guest-agent curl vim git tcpdump traceroute mtr-tiny dnsutils
-      systemctl enable --now qemu-guest-agent
+      # Таймауты и повторы заданы явно: соединение, начатое в щель между
+      # запуском гостя и появлением трансляции, у apt не отваливается само —
+      # на живом хосте гость провисел в таком apt-get update двадцать минут.
+      apt="apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30"
+      $apt update
+      $apt install -y curl vim git tcpdump traceroute mtr-tiny dnsutils
 YAML
     if [ "$name" = router ]; then
       cat <<'YAML'
-      apt-get install -y nftables
+      $apt install -y nftables
       wan=$(ip -4 route show default | awk '{print $5; exit}')
       [ -n "$wan" ] || { echo 'course-stand: нет маршрута по умолчанию' | systemd-cat -t course-stand -p err; exit 1; }
       echo net.ipv4.ip_forward=1 >/etc/sysctl.d/99-course-stand.conf
       sysctl --system
-      nft add table ip nat
-      nft add chain ip nat postrouting '{ type nat hook postrouting priority 100 ; }'
-      nft add rule ip nat postrouting oifname "$wan" masquerade
-      { echo '#!/usr/sbin/nft -f'; echo 'flush ruleset'; nft list ruleset; } >/etc/nftables.conf
+      # Правила описываются файлом и применяются из него, а не добавляются
+      # командой nft add. Найдено на живом стенде: add кладёт ещё одно такое же
+      # правило поверх уже существующего, и повторная настройка гостя — её
+      # делает повторный create — множит строку masquerade; прежняя версия
+      # вдобавок сохраняла получившийся дубль в /etc/nftables.conf, так что он
+      # переживал перезагрузку. Трансляция при этом работает, и заметить это
+      # можно только одним способом: сравнить nft list ruleset с тем, что
+      # напечатано в книге.
+      { printf '#!/usr/sbin/nft -f\n'
+        printf 'flush ruleset\n'
+        printf 'table ip nat {\n'
+        printf '  chain postrouting {\n'
+        printf '    type nat hook postrouting priority 100; policy accept;\n'
+        printf '    oifname "%s" masquerade\n' "$wan"
+        printf '  }\n'
+        printf '}\n'; } >/etc/nftables.conf
       chmod 0755 /etc/nftables.conf
+      nft -f /etc/nftables.conf
       systemctl enable nftables
 YAML
+    fi
+    # Агент — последней командой сценария: до него настройка ещё идёт, после
+    # него она закончена. На router это ещё и означает «трансляция поднята», а
+    # именно этого ждёт сборка, прежде чем запускать остальные пять машин.
+    cat <<'YAML'
+      $apt install -y qemu-guest-agent
+      systemctl enable --now qemu-guest-agent
+YAML
+    # Метка стенда с его номером. Работы практикума меняют машину, на которой
+    # их запустили, и отказываются работать без этой метки; номер отличает
+    # этот стенд от чужой машины, где метку завели руками.
+    if [ -n "$STAND_ID" ]; then
+      printf '  - path: /etc/course-lab-stand\n    permissions: %s\n    content: |\n      %s\n' "'0644'" "$STAND_ID"
     fi
     cat <<'YAML'
 runcmd:
@@ -325,6 +432,36 @@ runcmd:
 YAML
   } >"$path"
   printf '%s' "$path"
+}
+
+# Остальные пять узлов выходят в сеть только через router, поэтому запускать их
+# раньше, чем он поднимет трансляцию, нельзя. Фиксированная пауза здесь не
+# работает, и живой хост показал почему: router тратит на свою настройку две-три
+# минуты, а гость, запущенный в оставшуюся щель, уходит в apt по неработающей
+# сети и там зависает насмерть — минутная пауза просто сдвигала щель.
+#
+# Ждём не время, а признак: агент router отвечает только после того, как
+# сценарий гостя поднял трансляцию (он ставится последней командой). Предел
+# ожидания есть, но сборка идёт дальше сразу, как только router готов.
+wait_router() {
+  local id="$1" waited=0
+  if [ "$DRY" = 1 ]; then
+    printf '  # ждать ответа агента router: трансляция поднята (не дольше %s с)\n' "$ROUTER_WAIT"
+    return 0
+  fi
+  say "= жду router: агент отвечает, когда трансляция поднята (не дольше $ROUTER_WAIT с)"
+  while [ "$waited" -lt "$ROUTER_WAIT" ]; do
+    if qm agent "$id" ping >/dev/null 2>&1; then
+      say "= router готов через $waited с, запускаю остальные машины"
+      return 0
+    fi
+    sleep 10
+    waited=$(( waited + 10 ))
+  done
+  # Не отказ: стенд собирается дальше, а гости ждут связи сами. Но сказать об
+  # этом надо здесь, а не оставлять читателя гадать, почему пусто в status.
+  say "! router не ответил за $ROUTER_WAIT с — остальные узлы будут ждать связи сами."
+  say "  Посмотрите его консоль: qm terminal $id, внутри journalctl -t course-stand -b"
 }
 
 node_plan() {
@@ -392,7 +529,11 @@ node_plan() {
     index=$(( index + 1 ))
   done
 
-  run qm set "$id" --ciuser "$CIUSER" --nameserver 1.1.1.1 --searchdomain lab
+  local ciopts=(--ciuser "$CIUSER" --nameserver 1.1.1.1 --searchdomain lab)
+  # Штатный апгрейд выключается: он идёт раньше нашего ожидания связи и вешает
+  # гостя в apt по ещё не работающей сети (см. ciupgrade_supported).
+  if [ -n "$CIUPGRADE" ]; then ciopts+=(--ciupgrade 0); fi
+  run qm set "$id" "${ciopts[@]}"
   if [ -n "$CIPASS" ]; then run qm set "$id" --cipassword "$CIPASS"; fi
   if [ -n "$SSHKEYS" ]; then run qm set "$id" --sshkeys "$SSHKEYS"; fi
   if [ "$DRY" = 1 ]; then
@@ -411,24 +552,23 @@ node_plan() {
       if has_slot "$id" "scsi${slot}"; then
         say "  scsi${slot} уже есть — оставляю как есть"
       else
-        run qm set "$id" "--scsi${slot}" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${slot}"
+        # Кроме серийного номера диску задаётся WWN, и вот почему. Книга учит
+        # адресовать диски по /dev/disk/by-id, потому что буквы sd* между
+        # загрузками переставляются — на этом самом стенде они переставлялись
+        # при каждой перезагрузке storage. Но udev берёт идентификатор со
+        # страницы VPD 0x83, куда QEMU кладёт имя слота, а не серийный номер со
+        # страницы 0x80: без WWN в by-id лежат ссылки вида
+        # scsi-0QEMU_QEMU_HARDDISK_drive-scsi1 — имя слота, то есть ровно то,
+        # чего упражнение про устойчивые имена избегает. Серийник при этом
+        # виден в lsblk, и расхождения не заметить, пока не выполнишь ls by-id.
+        run qm set "$id" "--scsi${slot}" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${slot},wwn=0x$(printf '%016x' $(( 0x5000c0de00000000 + slot )))"
       fi
       slot=$(( slot + 1 ))
     done
   fi
   if [ "$START_AFTER" = 1 ]; then
     run qm start "$id"
-    # Остальные узлы выходят в сеть только через router, а он в этот момент ещё
-    # загружается. Пауза не обязательна — настройка гостя ждёт связи сама, — но
-    # без неё пять машин первые минуты стучатся в неподнятую трансляцию.
-    if [ "$name" = router ] && [ "$ROUTER_WAIT" -gt 0 ]; then
-      if [ "$DRY" = 1 ]; then
-        printf '  # пауза %s с: остальные узлы выходят в сеть через router\n' "$ROUTER_WAIT"
-      else
-        say "= жду $ROUTER_WAIT с, пока router поднимет трансляцию"
-        sleep "$ROUTER_WAIT"
-      fi
-    fi
+    if [ "$name" = router ] && [ "$ROUTER_WAIT" -gt 0 ]; then wait_router "$id"; fi
   fi
 }
 
@@ -440,6 +580,8 @@ do_plan() {
   head2 'образ гостя'
   say "  $IMAGE_URL"
   say "  → $(image_path) (скачивается один раз и переиспользуется)"
+  head2 'номер стенда'
+  ensure_stand_id
   local node
   for node in "${STAND_NODES[@]}"; do node_plan "$node"; done
   head2 'что дальше'
@@ -524,6 +666,7 @@ do_create() {
   trap 'say ""; say "Сборка прервана. Недоделанные машины стенда убираются аргументом destroy."' EXIT
   say ''
   make_bridges
+  ensure_stand_id
   mkdir -p "$IMAGE_DIR"
   if [ ! -s "$(image_path)" ]; then run curl -fSL --retry 3 -o "$(image_path)" "$IMAGE_URL"; fi
   local node
@@ -539,7 +682,14 @@ do_status() {
   # оно не говорит ничего, ровно как «Up» у контейнера в главе 22. Настройка
   # гостя заканчивается установкой агента, поэтому ответ агента и есть признак
   # того, что гость настроился, а не просто включился.
-  local node name id state mine ready
+  local node name id state mine ready here
+  here=$(stand_id)
+  if [ -n "$here" ]; then
+    say "номер стенда $here · карточка для учебника $STAND_CARD"
+  else
+    say "номер стенда не заведён: его создаёт create"
+  fi
+  say ''
   printf '%-12s %-6s %-10s %-5s %s\n' 'узел' 'vmid' 'состояние' 'наш' 'гость настроен'
   for node in "${STAND_NODES[@]}"; do
     name=$(field "$node" 1); id=$(vmid_of "$(field "$node" 2)")
@@ -594,6 +744,10 @@ do_destroy() {
 
 # Имя моста управления вычисляется после объявления функций и до первой команды.
 WAN_BRIDGE=$(detect_wan)
+# Спрашиваем хост один раз: qm help разбирает всю схему и идёт заметно дольше
+# самих qm set, а ответ один на все шесть машин.
+CIUPGRADE=''
+if ciupgrade_supported; then CIUPGRADE=1; fi
 
 case "$ACTION" in
   plan) do_plan ;;
