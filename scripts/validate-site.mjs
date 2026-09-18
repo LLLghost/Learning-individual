@@ -335,7 +335,30 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // всех шести машин уезжал вместе с ним: в переписку, в историю терминала,
       // в вырезку на экране. Выполняется настоящее значение, скрыт только показ.
       ['[ "$prev" = --cipassword ]', 'the printed command shows the cloud-init password in clear text'],
+      // Proxmox по умолчанию просит cloud-init обновить систему на первой
+      // загрузке, и делает это раньше runcmd — то есть раньше нашего ожидания
+      // связи. Пойманное на живом хосте: гость, запущенный за пятнадцать секунд
+      // до того, как router поднял трансляцию, ушёл в apt по неработающей сети
+      // и провисел в нём двадцать минут. Сам apt при этом не отвалился ни по
+      // какому таймауту, а cloud-init не двинулся дальше: машина «running»,
+      // гость молчит, в журнале хоста ни строки. Единственный apt в госте
+      // должен быть наш — после проверки связи.
+      ['--ciupgrade 0', 'the cloud-init package upgrade runs before the guest has checked for network'],
+      // Фиксированной паузы после запуска router не хватало и не могло хватать:
+      // он поднимает трансляцию после установки пакетов, через две-три минуты.
+      // Ждать надо признак, а не время — агент router отвечает только тогда,
+      // когда трансляция уже есть.
+      ['wait_router', 'the stand waits a fixed number of seconds for router instead of waiting for it to be ready'],
+      ['qm agent "$id" ping >/dev/null 2>&1', 'the wait for router does not ask the guest agent whether it is ready'],
+      // Агент ставится отдельной командой и последним. Попади он в общий список
+      // пакетов, он отвечал бы с середины настройки — и «гость настроен» в
+      // status, и ожидание router означали бы «гость на полпути», а у router —
+      // что трансляции ещё нет.
+      ['$apt install -y qemu-guest-agent', 'the guest agent is not the last thing the guest setup installs'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
+    // Тот же случай с другой стороны: агент в общем списке пакетов снова начнёт
+    // отвечать до конца настройки, и оба признака готовности станут ложными.
+    if (/apt install -y [^\n]*qemu-guest-agent[^\n]+/.test(stand)) failures.push('course-stand.sh: the guest agent is installed together with the other packages, so it answers before the setup is over');
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
     // Ищем флаг в команде, а не где угодно: в комментарии рядом он назван тем
