@@ -406,6 +406,15 @@ YAML
       modprobe zfs || echo 'course-stand: модуль zfs не загрузился' | systemd-cat -t course-stand -p err
 YAML
     fi
+    if [ "$name" = automation ]; then
+      cat <<'YAML'
+      # Ansible для работ главы 21: узел управления без него бесполезен, а
+      # ставить его посреди работы читателю — то же самое, что выяснять
+      # отсутствие chrony в работе про время. sshpass нужен один раз, чтобы
+      # разложить ключ по управляемым узлам: дальше вход только по ключу.
+      $apt install -y ansible sshpass
+YAML
+    fi
     if [ "$name" = router ]; then
       cat <<'YAML'
       $apt install -y nftables
