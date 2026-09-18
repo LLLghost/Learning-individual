@@ -550,7 +550,7 @@ if (!dataMatch) failures.push('assessment: missing study-data');
 else {
   data = JSON.parse(dataMatch[1]);
   bankSize = { items: data.items?.length ?? 0, cases: data.cases?.length ?? 0 };
-  if (data.items?.length !== 111) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
+  if (data.items?.length !== 148) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
   if (data.cases?.length !== 37) failures.push(`assessment: expected 37 cases, got ${data.cases?.length}`);
   // Тип задания обязан соответствовать его форме: «Расчёт» без числовых полей —
   // обычный вопрос с выбором, и обещание расчёта в таком задании ложно.
