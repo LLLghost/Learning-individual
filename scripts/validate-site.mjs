@@ -348,17 +348,27 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // он поднимает трансляцию после установки пакетов, через две-три минуты.
       // Ждать надо признак, а не время — агент router отвечает только тогда,
       // когда трансляция уже есть.
-      ['wait_router', 'the stand waits a fixed number of seconds for router instead of waiting for it to be ready'],
+      // Ищем вызов, а не объявление: оставшаяся в файле функция выглядит в
+      // разметке скрипта точно так же, как работающая, — а сборка машин при
+      // этом снова идёт по слепой паузе.
+      ['wait_router "$id"', 'the stand waits a fixed number of seconds for router instead of waiting for it to be ready'],
       ['qm agent "$id" ping >/dev/null 2>&1', 'the wait for router does not ask the guest agent whether it is ready'],
       // Агент ставится отдельной командой и последним. Попади он в общий список
       // пакетов, он отвечал бы с середины настройки — и «гость настроен» в
       // status, и ожидание router означали бы «гость на полпути», а у router —
       // что трансляции ещё нет.
       ['$apt install -y qemu-guest-agent', 'the guest agent is not the last thing the guest setup installs'],
+      // Учебные диски получают WWN, а не только серийный номер. Книга учит
+      // адресовать диск по /dev/disk/by-id — «стабильные имена по WWN или
+      // серийнику», — а udev берёт идентификатор со страницы VPD 0x83, куда
+      // QEMU кладёт имя слота: без WWN упражнение показывает читателю ссылку
+      // drive-scsi1, то есть ровно то, от чего оно его отучает. В lsblk
+      // серийник при этом виден, и подмены не заметить.
+      ['wwn=0x', 'the lab disks have no WWN, so /dev/disk/by-id names them by slot instead of by identity'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // Тот же случай с другой стороны: агент в общем списке пакетов снова начнёт
     // отвечать до конца настройки, и оба признака готовности станут ложными.
-    if (/apt install -y [^\n]*qemu-guest-agent[^\n]+/.test(stand)) failures.push('course-stand.sh: the guest agent is installed together with the other packages, so it answers before the setup is over');
+    if (/install -y (?:\S+ )+qemu-guest-agent|install -y qemu-guest-agent[ \t]+\S/.test(stand)) failures.push('course-stand.sh: the guest agent is installed together with the other packages, so it answers before the setup is over');
     // С --vga serial0 кнопка «Console» в веб-интерфейсе показывает пустой экран,
     // и первый гипервизор выглядит сломанным.
     // Ищем флаг в команде, а не где угодно: в комментарии рядом он назван тем

@@ -483,7 +483,16 @@ node_plan() {
       if has_slot "$id" "scsi${slot}"; then
         say "  scsi${slot} уже есть — оставляю как есть"
       else
-        run qm set "$id" "--scsi${slot}" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${slot}"
+        # Кроме серийного номера диску задаётся WWN, и вот почему. Книга учит
+        # адресовать диски по /dev/disk/by-id, потому что буквы sd* между
+        # загрузками переставляются — на этом самом стенде они переставлялись
+        # при каждой перезагрузке storage. Но udev берёт идентификатор со
+        # страницы VPD 0x83, куда QEMU кладёт имя слота, а не серийный номер со
+        # страницы 0x80: без WWN в by-id лежат ссылки вида
+        # scsi-0QEMU_QEMU_HARDDISK_drive-scsi1 — имя слота, то есть ровно то,
+        # чего упражнение про устойчивые имена избегает. Серийник при этом
+        # виден в lsblk, и расхождения не заметить, пока не выполнишь ls by-id.
+        run qm set "$id" "--scsi${slot}" "$STORAGE:${EXTRA_DISK_SIZE},ssd=1,serial=COURSE-DISK-${slot},wwn=0x$(printf '%016x' $(( 0x5000c0de00000000 + slot )))"
       fi
       slot=$(( slot + 1 ))
     done
