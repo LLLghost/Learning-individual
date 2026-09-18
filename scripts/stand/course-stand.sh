@@ -392,11 +392,24 @@ YAML
       [ -n "$wan" ] || { echo 'course-stand: нет маршрута по умолчанию' | systemd-cat -t course-stand -p err; exit 1; }
       echo net.ipv4.ip_forward=1 >/etc/sysctl.d/99-course-stand.conf
       sysctl --system
-      nft add table ip nat
-      nft add chain ip nat postrouting '{ type nat hook postrouting priority 100 ; }'
-      nft add rule ip nat postrouting oifname "$wan" masquerade
-      { echo '#!/usr/sbin/nft -f'; echo 'flush ruleset'; nft list ruleset; } >/etc/nftables.conf
+      # Правила описываются файлом и применяются из него, а не добавляются
+      # командой nft add. Найдено на живом стенде: add кладёт ещё одно такое же
+      # правило поверх уже существующего, и повторная настройка гостя — её
+      # делает повторный create — множит строку masquerade; прежняя версия
+      # вдобавок сохраняла получившийся дубль в /etc/nftables.conf, так что он
+      # переживал перезагрузку. Трансляция при этом работает, и заметить это
+      # можно только одним способом: сравнить nft list ruleset с тем, что
+      # напечатано в книге.
+      { printf '#!/usr/sbin/nft -f\n'
+        printf 'flush ruleset\n'
+        printf 'table ip nat {\n'
+        printf '  chain postrouting {\n'
+        printf '    type nat hook postrouting priority 100; policy accept;\n'
+        printf '    oifname "%s" masquerade\n' "$wan"
+        printf '  }\n'
+        printf '}\n'; } >/etc/nftables.conf
       chmod 0755 /etc/nftables.conf
+      nft -f /etc/nftables.conf
       systemctl enable nftables
 YAML
     fi

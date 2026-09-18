@@ -358,6 +358,12 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // status, и ожидание router означали бы «гость на полпути», а у router —
       // что трансляции ещё нет.
       ['$apt install -y qemu-guest-agent', 'the guest agent is not the last thing the guest setup installs'],
+      // Правила трансляции применяются из файла. С nft add rule повторная
+      // настройка гостя — её делает повторный create — клала ещё одно такое же
+      // правило, и прежняя версия сохраняла дубль в /etc/nftables.conf, где он
+      // переживал перезагрузку. Трансляция работает и с дублем: заметить его
+      // можно только сравнив nft list ruleset с выводом, напечатанным в книге.
+      ['nft -f /etc/nftables.conf', 'the router adds nat rules instead of applying them from a file'],
       // Учебные диски получают WWN, а не только серийный номер. Книга учит
       // адресовать диск по /dev/disk/by-id — «стабильные имена по WWN или
       // серийнику», — а udev берёт идентификатор со страницы VPD 0x83, куда
@@ -1398,6 +1404,21 @@ for (const [file, html] of cache) {
       if (lab.bench && !(lab.proof?.length > 40)) failures.push(`lab-data ${lab.id}: bench work does not say what its report proves`);
     }
     if (!bench.length) failures.push('lab-data: no work feeds the bench scale at all');
+    // L04A спрашивает журнал, а не systemctl show. Найдено на живом стенде:
+    // юнит типа oneshot после завершения выгружается из памяти systemd, и show
+    // отвечает про него значениями по умолчанию — Result=success, нулевой
+    // статус, пустые отметки времени. У созданного и ни разу не запущенного
+    // юнита ровно то же самое, так что «юнит завершился успешно» засчитывало
+    // работу, в которой юнит только написали. Журнал спрашивается по
+    // MESSAGE_ID: текст сообщений systemd переводится на язык системы.
+    const l04a = labs.find((lab) => lab.id === 'L04A');
+    if (l04a) for (const fact of ['ran', 'succeeded']) {
+      if (!l04a.checks.some((check) => check.fact === fact)) failures.push(`lab-data L04A: nothing checks whether the unit actually ${fact === 'ran' ? 'ran' : 'succeeded'}; systemctl show says success about a unit that never started`);
+    }
+    for (const [needle, what] of [
+      ['UNIT_STARTING', 'the L04A probe reads the unit state from systemctl show, which reports defaults for an unloaded unit'],
+      ["json.loads(line).get('MESSAGE_ID')", 'the journal is matched by message text, which is translated on the reader machine'],
+    ]) if (!code.includes(needle)) failures.push(`lab-code-data: ${what}`);
     // Обе шкалы считаются в кабинете раздельно и обе показываются на общем
     // экране. Слитый счёт выглядит в разметке точно так же, как раздельный.
     for (const [needle, what] of [
