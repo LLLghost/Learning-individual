@@ -368,7 +368,7 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // время, обнаруживал, что chrony нет вовсе, а systemd-timesyncd
       // собственного дрейфа не ведёт: работа упиралась не в задачу, а в
       // комплектацию стенда. То же с lvm2, mdadm и ZFS.
-      ['$apt install -y chrony lvm2 mdadm', 'the stand does not install the tools its own works need'],
+      ['$apt install -y chrony lvm2 mdadm smartmontools sysstat xfsprogs gdisk fio', 'the stand does not install the tools its own works and labs need'],
       ['$apt install -y zfs-dkms zfsutils-linux', 'the storage node has no ZFS, and the works of chapter 15 cannot run'],
       // Учебные диски получают WWN, а не только серийный номер. Книга учит
       // адресовать диск по /dev/disk/by-id — «стабильные имена по WWN или

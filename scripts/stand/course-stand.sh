@@ -392,7 +392,7 @@ write_files:
       # Инструменты, без которых не выполняются работы практикума. Ставятся
       # сборщиком, а не читателем: выяснять посреди работы, что chrony нет и
       # своего дрейфа система не ведёт, — это не про время и не про хранение.
-      $apt install -y chrony lvm2 mdadm smartmontools sysstat
+      $apt install -y chrony lvm2 mdadm smartmontools sysstat xfsprogs gdisk fio
 YAML
     if [ "$name" = storage ]; then
       cat <<'YAML'
