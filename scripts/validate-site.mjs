@@ -1415,9 +1415,25 @@ for (const [file, html] of cache) {
     if (l04a) for (const fact of ['ran', 'succeeded']) {
       if (!l04a.checks.some((check) => check.fact === fact)) failures.push(`lab-data L04A: nothing checks whether the unit actually ${fact === 'ran' ? 'ran' : 'succeeded'}; systemctl show says success about a unit that never started`);
     }
+    // L30B отличает цепочку от одиночного сертификата издателем. Найдено на
+    // стенде: один самоподписанный сертификат, поданный и корнем, и цепочкой,
+    // проходит openssl verify -CAfile, не проходит без него и несёт имя в SAN —
+    // то есть выглядит в фактах ровно как настоящая цепочка, которой там нет.
+    const l30b = labs.find((lab) => lab.id === 'L30B');
+    if (l30b && !l30b.checks.some((check) => check.fact === 'server_self_signed')) {
+      failures.push('lab-data L30B: nothing tells a chain from a single self-signed certificate that is its own root');
+    }
     for (const [needle, what] of [
       ['UNIT_STARTING', 'the L04A probe reads the unit state from systemctl show, which reports defaults for an unloaded unit'],
       ["json.loads(line).get('MESSAGE_ID')", 'the journal is matched by message text, which is translated on the reader machine'],
+      // Файл дрейфа chrony называется по-разному: в Debian 12 chrony.drift, в
+      // других сборках drift. С зашитым именем факт оставался пустым даже на
+      // работающем chrony, и работа не сдавалась никогда.
+      ['def chrony_drift_file(', 'the L31A probe hard-codes the chrony drift file name, which differs between builds'],
+      // Признак синхронизации — Leap status, а не то, что вывод разобрался на
+      // поля: на узле без источника разбор проходит точно так же.
+      ["fields[13].strip() == 'Normal'", 'L31A calls a host synchronised when chronyc merely answered'],
+      ['def cert_field(', 'the L30B probe never looks at who issued the certificate'],
     ]) if (!code.includes(needle)) failures.push(`lab-code-data: ${what}`);
     // Обе шкалы считаются в кабинете раздельно и обе показываются на общем
     // экране. Слитый счёт выглядит в разметке точно так же, как раздельный.
