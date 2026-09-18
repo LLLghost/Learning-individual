@@ -365,6 +365,13 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // drive-scsi1, то есть ровно то, от чего оно его отучает. В lsblk
       // серийник при этом виден, и подмены не заметить.
       ['wwn=0x', 'the lab disks have no WWN, so /dev/disk/by-id names them by slot instead of by identity'],
+      // Номер стенда: заводится один раз, кладётся в каждого гостя и в карточку
+      // для кабинета. Без него метка /etc/course-lab-stand остаётся одинаковой
+      // у всех, и работа, ломающая настройки машины, запустится на любой, где
+      // метку завели руками.
+      ['ensure_stand_id\n', 'the stand number is defined but never used'],
+      ['- path: /etc/course-lab-stand', 'the stand number does not reach the guests'],
+      ['course-stand\\",\\"stand', 'the card the cabinet reads is not written'],
     ]) if (!stand.includes(needle)) failures.push(`course-stand.sh: ${what}`);
     // Тот же случай с другой стороны: агент в общем списке пакетов снова начнёт
     // отвечать до конца настройки, и оба признака готовности станут ложными.
@@ -1096,8 +1103,24 @@ if (assessment) {
 // Резервная копия обязана увозить всё локальное состояние: ключ, забытый здесь,
 // теряется молча — при переносе в другой браузер исчезает только часть работы.
 const backupKeys = siteJs.match(/BACKUP_KEYS=\[([^\]]*)\]/)?.[1] ?? '';
-for (const key of ['selfstudy-v6', 'chapter-trainers-v1', 'recall-v1', 'timeline-v1', 'reader-v1', 'reading-v1', 'quiz-a1-v1']) {
-  if (!backupKeys.includes(key)) failures.push(`site.js: backup does not cover server-infrastructure-${key}`);
+// Ключи берутся из самого кода, а не из списка рядом. Список был: он знал семь
+// ключей из девяти и ничего не сказал бы про десятый — а ключ, не попавший в
+// перенос, теряется молча: читатель переносит прогресс в другой браузер, файл
+// выглядит полноценным, и часть работы остаётся в старом. Смотрим там, где
+// ключи и заводятся: общий клиентский код и две страницы со своим — кабинет и
+// «Маршрут».
+{
+  const sources = [siteJs,
+    cache.get(resolve(root, 'assessment', 'index.html')) ?? '',
+    cache.get(resolve(root, 'route', 'index.html')) ?? ''];
+  const used = new Set();
+  for (const source of sources) {
+    for (const match of source.matchAll(/['"`](server-infrastructure-[a-z0-9-]+)['"`]/g)) used.add(match[1]);
+  }
+  if (used.size < 9) failures.push(`site.js: expected at least nine storage keys, found ${used.size}`);
+  for (const key of used) {
+    if (!backupKeys.includes(key)) failures.push(`site.js: backup does not cover ${key}`);
+  }
 }
 // Вёрстка для телефона: правила, без которых страница перестаёт помещаться в
 // экран. Браузер тогда расширяет область просмотра под самый широкий элемент и
@@ -1272,6 +1295,22 @@ for (const [file, html] of cache) {
     for (const guard of ['/etc/course-lab-stand', 'def cmd_restore', 'dry_run', 'управляющей сети']) {
       if (!code.includes(guard)) failures.push(`course_lab.py: safety guard missing (${guard})`);
     }
+    // Метка одна на всех и лежит по известному пути: она отличает стенд только
+    // от машины, где её забыли завести. Номер стенда кладёт в гостей сборщик, а
+    // в скачиваемый скрипт подставляет кабинет — и работа, выпущенная для
+    // одного стенда, на другой машине не запускается. Объявление без сверки
+    // выглядит в файле точно так же, как работающая привязка, поэтому спрашиваем
+    // и то и другое.
+    for (const [needle, what] of [
+      ["STAND_ID = ''", 'the stand number has no placeholder for the cabinet to fill in'],
+      ['if here != STAND_ID:', 'the stand number is declared but never compared with the marker'],
+    ]) if (!code.includes(needle)) failures.push(`course_lab.py: ${what}`);
+    // Кабинет обязан подставлять номер при скачивании и проверять его форму:
+    // номер попадает внутрь строки Python, и доверять загруженному файлу нельзя.
+    for (const [needle, what] of [
+      ['stampLab(JSON.parse(', 'the downloaded course_lab.py is not stamped with the stand number'],
+      ['function standValid(v){return /^[0-9a-f]{16}$/.test(v)}', 'the stand number is substituted without checking its shape'],
+    ]) if (!assessment.includes(needle)) failures.push(`assessment: ${what}`);
     // Сбор фактов и вердикт разделены: иначе ожидаемые значения уезжают к
     // читателю вместе со скриптом.
     if (/вердикт|засчитано|правильный ответ/i.test(code.replace(/вердикт выносит учебник|Отчёт не содержит вердикта/g, ''))) {

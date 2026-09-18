@@ -32,6 +32,8 @@ STORAGE="${STAND_STORAGE:-local-lvm}"
 SNIPPETS="${STAND_SNIPPETS:-local}"
 IMAGE_URL="${STAND_IMAGE_URL:-https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2}"
 IMAGE_DIR="${STAND_IMAGE_DIR:-/var/lib/vz/template/cache}"
+STAND_ID_FILE="${STAND_ID_FILE:-/etc/course-stand-id}"
+STAND_CARD="${STAND_CARD:-/root/course-stand.json}"
 CIUSER="${STAND_USER:-course}"
 CIPASS="${STAND_PASSWORD:-}"
 SSHKEYS="${STAND_SSHKEYS:-}"
@@ -152,6 +154,52 @@ detect_wan() {
 ciupgrade_supported() {
   command -v qm >/dev/null 2>&1 || return 0
   qm help set --verbose 2>/dev/null | grep -q -- '--ciupgrade'
+}
+
+# Номер стенда. Работы практикума меняют настройки машины, а метка
+# /etc/course-lab-stand одна на всех и лежит по известному пути: сама по себе она
+# отличает стенд только от машины, где её забыли завести. Номер кладётся в
+# гостей, учебник подставляет его в скачиваемый course_lab.py, и скрипт,
+# выпущенный для одного стенда, на другом отказывается работать.
+#
+# Номер случайный, а не выведенный из хоста: из machine-id он не давал бы ничего
+# сверх случайного, зато стал бы отпечатком хоста и уезжал бы в файлах, которые
+# читатель пересылает. Заведённый однажды, он переиспользуется: destroy и create
+# не должны обесценивать уже скачанные скрипты.
+stand_id() {
+  if [ -s "$STAND_ID_FILE" ]; then
+    tr -dc '0-9a-f' <"$STAND_ID_FILE" | cut -c1-16
+    return 0
+  fi
+  printf ''
+}
+
+new_stand_id() {
+  local id
+  id=$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')
+  printf '%s' "$id"
+}
+
+# Заводит номер, если его ещё нет, и пишет карточку — файл, который читатель
+# загрузит в учебник. Карточка в JSON, потому что учебник читает JSON; сам номер
+# лежит отдельной строкой, потому что его сверяет гость обычным сравнением.
+STAND_ID=''
+ensure_stand_id() {
+  STAND_ID=$(stand_id)
+  if [ -n "$STAND_ID" ]; then
+    say "= номер стенда $STAND_ID (из $STAND_ID_FILE)"
+  elif [ "$DRY" = 1 ]; then
+    say "= номер стенда будет заведён при сборке и положен в $STAND_ID_FILE"
+    say "  карточка для учебника — $STAND_CARD"
+    STAND_ID=''
+    return 0
+  else
+    STAND_ID=$(new_stand_id)
+    run sh -c "printf '%s\n' '$STAND_ID' >'$STAND_ID_FILE'"
+    say "= номер стенда $STAND_ID заведён"
+  fi
+  run sh -c "printf '{\"schema\":\"course-stand\",\"stand\":\"%s\"}\n' '$STAND_ID' >'$STAND_CARD'"
+  say "  карточка для учебника — $STAND_CARD, загрузите её в кабинете"
 }
 
 # Интерфейс хоста с маршрутом по умолчанию: через него уходит трансляция в
@@ -358,6 +406,14 @@ YAML
     cat <<'YAML'
       $apt install -y qemu-guest-agent
       systemctl enable --now qemu-guest-agent
+YAML
+    # Метка стенда с его номером. Работы практикума меняют машину, на которой
+    # их запустили, и отказываются работать без этой метки; номер отличает
+    # этот стенд от чужой машины, где метку завели руками.
+    if [ -n "$STAND_ID" ]; then
+      printf '  - path: /etc/course-lab-stand\n    permissions: %s\n    content: |\n      %s\n' "'0644'" "$STAND_ID"
+    fi
+    cat <<'YAML'
 runcmd:
   - [ sh, -c, '/usr/local/sbin/course-stand-setup' ]
 YAML
@@ -511,6 +567,8 @@ do_plan() {
   head2 'образ гостя'
   say "  $IMAGE_URL"
   say "  → $(image_path) (скачивается один раз и переиспользуется)"
+  head2 'номер стенда'
+  ensure_stand_id
   local node
   for node in "${STAND_NODES[@]}"; do node_plan "$node"; done
   head2 'что дальше'
@@ -595,6 +653,7 @@ do_create() {
   trap 'say ""; say "Сборка прервана. Недоделанные машины стенда убираются аргументом destroy."' EXIT
   say ''
   make_bridges
+  ensure_stand_id
   mkdir -p "$IMAGE_DIR"
   if [ ! -s "$(image_path)" ]; then run curl -fSL --retry 3 -o "$(image_path)" "$IMAGE_URL"; fi
   local node
@@ -610,7 +669,14 @@ do_status() {
   # оно не говорит ничего, ровно как «Up» у контейнера в главе 22. Настройка
   # гостя заканчивается установкой агента, поэтому ответ агента и есть признак
   # того, что гость настроился, а не просто включился.
-  local node name id state mine ready
+  local node name id state mine ready here
+  here=$(stand_id)
+  if [ -n "$here" ]; then
+    say "номер стенда $here · карточка для учебника $STAND_CARD"
+  else
+    say "номер стенда не заведён: его создаёт create"
+  fi
+  say ''
   printf '%-12s %-6s %-10s %-5s %s\n' 'узел' 'vmid' 'состояние' 'наш' 'гость настроен'
   for node in "${STAND_NODES[@]}"; do
     name=$(field "$node" 1); id=$(vmid_of "$(field "$node" 2)")
