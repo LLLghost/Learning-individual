@@ -388,7 +388,7 @@ write_files:
       # на живом хосте гость провисел в таком apt-get update двадцать минут.
       apt="apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30"
       $apt update
-      $apt install -y curl vim git tcpdump traceroute mtr-tiny dnsutils
+      $apt install -y curl vim git tcpdump traceroute iputils-tracepath mtr-tiny dnsutils
 YAML
     if [ "$name" = router ]; then
       cat <<'YAML'
