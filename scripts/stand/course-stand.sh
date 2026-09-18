@@ -32,6 +32,11 @@ STORAGE="${STAND_STORAGE:-local-lvm}"
 SNIPPETS="${STAND_SNIPPETS:-local}"
 IMAGE_URL="${STAND_IMAGE_URL:-https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2}"
 IMAGE_DIR="${STAND_IMAGE_DIR:-/var/lib/vz/template/cache}"
+# Каталог, по которому узнаётся хост Proxmox. Вынесен переменной ради одного:
+# отказы need_proxmox — отказ без прав, без qm, на слишком старой версии — иначе
+# проверялись бы только на настоящем хосте, а старая версия нашлась бы разве что
+# у читателя.
+PVE_DIR="${STAND_PVE_DIR:-/etc/pve}"
 STAND_ID_FILE="${STAND_ID_FILE:-/etc/course-stand-id}"
 STAND_CARD="${STAND_CARD:-/root/course-stand.json}"
 CIUSER="${STAND_USER:-course}"
@@ -111,7 +116,7 @@ need_proxmox() {
   for tool in qm pvesm; do
     command -v "$tool" >/dev/null 2>&1 || die "команда $tool не найдена: это не хост Proxmox VE"
   done
-  [ -d /etc/pve ] || die 'каталог /etc/pve не найден: это не хост Proxmox VE'
+  [ -d "$PVE_DIR" ] || die "каталог $PVE_DIR не найден: это не хост Proxmox VE"
   # qm set --scsi0 …,import-from= появился в Proxmox VE 8.0. На семёрке команда
   # просто не поймёт параметр, и стенд встанет на первой же машине.
   local major
