@@ -364,6 +364,12 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // переживал перезагрузку. Трансляция работает и с дублем: заметить его
       // можно только сравнив nft list ruleset с выводом, напечатанным в книге.
       ['nft -f /etc/nftables.conf', 'the router adds nat rules instead of applying them from a file'],
+      // Инструменты работ ставит сборщик. Читатель, дошедший до работы про
+      // время, обнаруживал, что chrony нет вовсе, а systemd-timesyncd
+      // собственного дрейфа не ведёт: работа упиралась не в задачу, а в
+      // комплектацию стенда. То же с lvm2, mdadm и ZFS.
+      ['$apt install -y chrony lvm2 mdadm smartmontools sysstat xfsprogs gdisk fio', 'the stand does not install the tools its own works and labs need'],
+      ['$apt install -y zfs-dkms zfsutils-linux', 'the storage node has no ZFS, and the works of chapter 15 cannot run'],
       // Учебные диски получают WWN, а не только серийный номер. Книга учит
       // адресовать диск по /dev/disk/by-id — «стабильные имена по WWN или
       // серийнику», — а udev берёт идентификатор со страницы VPD 0x83, куда
@@ -544,7 +550,7 @@ if (!dataMatch) failures.push('assessment: missing study-data');
 else {
   data = JSON.parse(dataMatch[1]);
   bankSize = { items: data.items?.length ?? 0, cases: data.cases?.length ?? 0 };
-  if (data.items?.length !== 111) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
+  if (data.items?.length !== 148) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
   if (data.cases?.length !== 37) failures.push(`assessment: expected 37 cases, got ${data.cases?.length}`);
   // Тип задания обязан соответствовать его форме: «Расчёт» без числовых полей —
   // обычный вопрос с выбором, и обещание расчёта в таком задании ложно.
@@ -747,7 +753,10 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
     'откройте', 'запустите', 'соберите', 'сломайте', 'поставьте', 'возьмите', 'посмотрите', 'найдите', 'сохраните',
     'покажите', 'объясните', 'назовите', 'сравните', 'проведите', 'добавьте', 'уберите', 'остановите', 'включите',
     'отключите', 'повторите', 'прочитайте', 'снимите', 'перейдите', 'ответьте', 'опишите', 'составьте', 'подключите',
-    'удалите', 'замените', 'пропустите', 'зафиксируйте', 'разверните', 'подсчитайте', 'выберите'];
+    'удалите', 'замените', 'пропустите', 'зафиксируйте', 'разверните', 'подсчитайте', 'выберите',
+    // «рисуй две карты» пережило три вычитки и правило: глагол употреблён на
+    // «ты» один-единственный раз, и пары во множественном числе у него не было.
+    'нарисуйте', 'рисуйте', 'считайте', 'смотрите', 'помните', 'учтите', 'начните', 'закончите', 'повторяйте'];
   for (const word of ORDERS) plural.add(word);
   const singles = new Set([...plural].map((word) => word.slice(0, -2)));
   const orders = [...prose.matchAll(/(?<![А-Яа-яЁё])([А-Яа-яЁё]{3,})(?![а-яё])/gi)]
@@ -1415,10 +1424,43 @@ for (const [file, html] of cache) {
     if (l04a) for (const fact of ['ran', 'succeeded']) {
       if (!l04a.checks.some((check) => check.fact === fact)) failures.push(`lab-data L04A: nothing checks whether the unit actually ${fact === 'ran' ? 'ran' : 'succeeded'}; systemctl show says success about a unit that never started`);
     }
+    // L30B отличает цепочку от одиночного сертификата издателем. Найдено на
+    // стенде: один самоподписанный сертификат, поданный и корнем, и цепочкой,
+    // проходит openssl verify -CAfile, не проходит без него и несёт имя в SAN —
+    // то есть выглядит в фактах ровно как настоящая цепочка, которой там нет.
+    const l30b = labs.find((lab) => lab.id === 'L30B');
+    if (l30b && !l30b.checks.some((check) => check.fact === 'server_self_signed')) {
+      failures.push('lab-data L30B: nothing tells a chain from a single self-signed certificate that is its own root');
+    }
     for (const [needle, what] of [
       ['UNIT_STARTING', 'the L04A probe reads the unit state from systemctl show, which reports defaults for an unloaded unit'],
       ["json.loads(line).get('MESSAGE_ID')", 'the journal is matched by message text, which is translated on the reader machine'],
+      // Файл дрейфа chrony называется по-разному: в Debian 12 chrony.drift, в
+      // других сборках drift. С зашитым именем факт оставался пустым даже на
+      // работающем chrony, и работа не сдавалась никогда.
+      ['def chrony_drift_file(', 'the L31A probe hard-codes the chrony drift file name, which differs between builds'],
+      // Признак синхронизации — Leap status, а не то, что вывод разобрался на
+      // поля: на узле без источника разбор проходит точно так же.
+      ["fields[13].strip() == 'Normal'", 'L31A calls a host synchronised when chronyc merely answered'],
+      ['def cert_field(', 'the L30B probe never looks at who issued the certificate'],
+      // df показывает пригодное место, а не размер файловой системы: у ext4 на
+      // томе в гигабайт разница 33 МиБ, и «ФС догнала том» не сходилось даже
+      // после честного resize2fs — работа не сдавалась никогда.
+      ['def fs_size_mib(', 'L13B measures the filesystem with df, which reports usable space, not its size'],
+      // Целый массив выглядит одинаково и после восстановления, и до всякой
+      // аварии. Деградацию видно только в журнале ядра, и создание массива
+      // даёт там resync, а не recovery.
+      ['recovery of RAID array', 'L14B cannot tell a recovered array from one that was never broken'],
+      // Запись FAILED в таблице соседей — след прошлых попыток разрешения: она
+      // остаётся и после того, как маршрут снова пошёл через шлюз.
+      ["'FAILED' not in (entry.get('state') or [])", 'L06B counts a stale FAILED neighbour entry as an ARP attempt'],
     ]) if (!code.includes(needle)) failures.push(`lab-code-data: ${what}`);
+    // Базовая линия — единственное, чем работа отличает сделанное от того, что
+    // на стенде и так было. L13B без неё засчитывалась за нерасширенный том,
+    // L14B — за нетронутый массив.
+    for (const id of ['L13B', 'L14B', 'L16B']) {
+      if (!code.includes(`def baseline_${id}(`)) failures.push(`lab-code-data: ${id} takes no baseline, so its facts describe the stand rather than the work`);
+    }
     // Обе шкалы считаются в кабинете раздельно и обе показываются на общем
     // экране. Слитый счёт выглядит в разметке точно так же, как раздельный.
     for (const [needle, what] of [

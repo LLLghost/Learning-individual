@@ -388,8 +388,24 @@ write_files:
       # на живом хосте гость провисел в таком apt-get update двадцать минут.
       apt="apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30"
       $apt update
-      $apt install -y curl vim git tcpdump traceroute mtr-tiny dnsutils
+      $apt install -y curl vim git tcpdump traceroute iputils-tracepath mtr-tiny dnsutils
+      # Инструменты, без которых не выполняются работы практикума. Ставятся
+      # сборщиком, а не читателем: выяснять посреди работы, что chrony нет и
+      # своего дрейфа система не ведёт, — это не про время и не про хранение.
+      $apt install -y chrony lvm2 mdadm smartmontools sysstat xfsprogs gdisk fio
 YAML
+    if [ "$name" = storage ]; then
+      cat <<'YAML'
+      # ZFS для работ главы 16: модуль собирается DKMS, поэтому нужны заголовки
+      # ядра и раздел contrib. Сборка идёт минуты, но она одна и на одном узле —
+      # читателю иначе пришлось бы делать это вручную и посреди работы.
+      sed -i 's/^Components: main$/Components: main contrib/' /etc/apt/sources.list.d/debian.sources
+      $apt update
+      $apt install -y "linux-headers-$(uname -r)" || $apt install -y linux-headers-amd64
+      $apt install -y zfs-dkms zfsutils-linux
+      modprobe zfs || echo 'course-stand: модуль zfs не загрузился' | systemd-cat -t course-stand -p err
+YAML
+    fi
     if [ "$name" = router ]; then
       cat <<'YAML'
       $apt install -y nftables
