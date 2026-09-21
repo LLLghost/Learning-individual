@@ -370,6 +370,10 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
       // комплектацию стенда. То же с lvm2, mdadm и ZFS.
       ['$apt install -y chrony lvm2 mdadm smartmontools sysstat xfsprogs gdisk fio', 'the stand does not install the tools its own works and labs need'],
       ['$apt install -y zfs-dkms zfsutils-linux', 'the storage node has no ZFS, and the works of chapter 15 cannot run'],
+      // Узел automation без Ansible — это узел управления, которым нельзя
+      // управлять: лаборатория главы 21 начинается с плейбука, и читатель
+      // выяснял бы это уже посреди работы. Замечено на живом стенде.
+      ['$apt install -y ansible sshpass', 'the automation node has no Ansible, and the lab of chapter 21 cannot run'],
       // Учебные диски получают WWN, а не только серийный номер. Книга учит
       // адресовать диск по /dev/disk/by-id — «стабильные имена по WWN или
       // серийнику», — а udev берёт идентификатор со страницы VPD 0x83, куда
