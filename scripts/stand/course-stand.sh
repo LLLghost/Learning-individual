@@ -635,6 +635,49 @@ do_plan() {
   say '  всё остальное на хосте остаётся нетронутым'
 }
 
+# После сборки читатель остаётся с шестью машинами и не знает о них двух вещей:
+# пользователь в гостях не root (у root в облачном образе пароля нет вовсе), а
+# мосты стенда подняты без портов — снаружи в 10.10.x.x пути нет, и первая же
+# попытка зайти по SSH с ноутбука упирается в тишину. Предупреждение об этом
+# стояло только в плане и только когда входить нечем: тот, кто пароль задал, не
+# видел его никогда и узнавал имя пользователя из кода скрипта.
+login_hint() {
+  head2 'как входить'
+  local what=''
+  if [ -n "$CIPASS" ]; then what='пароль из STAND_PASSWORD'; fi
+  if [ -n "$SSHKEYS" ]; then
+    if [ -n "$what" ]; then what="$what, ключ из $SSHKEYS"; else what="ключ из $SSHKEYS"; fi
+  fi
+  say "  пользователь $CIUSER — не root: у root в облачном образе пароля нет ($what)"
+  say '  заходить через консоль машины в веб-интерфейсе Proxmox: мосты стенда'
+  say '  подняты без портов, поэтому снаружи в сети 10.10.x.x пути нет вовсе,'
+  say '  а по SSH внутрь — только с router или между гостями'
+  local node
+  for node in "${STAND_NODES[@]}"; do
+    # Два отдельных local по той же причине, что и в write_snippet: в одном
+    # объявлении $node ещё не присвоен.
+    local name offset nets id link bridge address list links
+    name=$(field "$node" 1); offset=$(field "$node" 2); nets=$(field "$node" 6)
+    id=$(vmid_of "$offset"); list=''
+    IFS=';' read -r -a links <<<"$nets"
+    for link in "${links[@]}"; do
+      bridge=${link%%:*}
+      address=${link#*:}
+      address=${address%%,gw=*}
+      # Внешний адрес пропускаем: он либо выдаётся DHCP и заранее неизвестен,
+      # либо живёт в сети трансляции, через которую читатель и так не ходит.
+      if [ "$bridge" = WAN ] || [ "$address" = dhcp ]; then continue; fi
+      list="$list, ${address%%/*}"
+    done
+    say "  $id $name${list:+ — ${list#, }}"
+  done
+  if [ -n "$CIPASS" ]; then
+    say '  пароль не подошёл? он уехал в машины хешем, посмотреть его нельзя, но'
+    say "  можно задать заново: qm set VMID --cipassword '…' && qm cloudinit update VMID"
+    say '  и перезагрузить гостя — qm reboot VMID'
+  fi
+}
+
 do_create() {
   need_proxmox
   local busy; busy=$(busy_ids)
@@ -704,6 +747,7 @@ do_create() {
   say ''
   trap - EXIT
   say 'Стенд собран. Проверьте его командой status.'
+  login_hint
 }
 
 do_status() {
