@@ -67,7 +67,7 @@ node scripts/check-links.mjs      # нужна сеть, в обычный пр�
 `build-static.mjs` не разбирает HTML деревом. Он находит границы по идентификаторам: `marker('b07')` ищет `id="b07"` и отступает назад до `<`. Регионы идут в исходнике подряд и режутся срезами:
 
 ```
-title … start-part → уроки start01–start05 → b00 … b33 → b33-s044 (приложения)
+title … start-part → уроки start01–start06 → b00 … b33 → b33-s044 (приложения)
   → selftest → study-app → assessment → labs (lab00–lab36) → assessment-reference
 ```
 
