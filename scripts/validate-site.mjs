@@ -463,7 +463,7 @@ for (let number = 0; number < 34; number += 1) {
 // Вводная часть «Начало»: пять уроков для читателя без опыта. Она живёт вне
 // нумерации глав, поэтому обычные проверки глав её не касаются — и без
 // отдельных правил её падение осталось бы незамеченным.
-const LESSON_COUNT = 5;
+const LESSON_COUNT = 6;
 for (let number = 1; number <= LESSON_COUNT; number += 1) {
   const file = resolve(root, 'start', String(number).padStart(2, '0'), 'index.html');
   const lesson = cache.get(file);
@@ -484,9 +484,13 @@ for (let number = 1; number <= LESSON_COUNT; number += 1) {
 }
 // Последний урок обязан вести в главу 00: вводная часть кончается там, где
 // начинается курс, и тупика в конце быть не должно.
-const lastLesson = cache.get(resolve(root, 'start', '05', 'index.html')) ?? '';
+// Номер последнего урока берётся из их числа, а не пишется рядом: правило
+// было зашито на пятый урок и при добавлении шестого проверяло уже не тот —
+// у пятого перелистывание ведёт на следующий урок, и это верно.
+const lastNumber = String(LESSON_COUNT).padStart(2, '0');
+const lastLesson = cache.get(resolve(root, 'start', lastNumber, 'index.html')) ?? '';
 if (!/<nav class="pager"[^>]*>[\s\S]*?href="[^"]*\/chapters\/00\/"[\s\S]*?<\/nav>/.test(lastLesson)) {
-  failures.push('lesson 5: the pager must lead on to chapter 00');
+  failures.push(`lesson ${LESSON_COUNT}: the pager must lead on to chapter 00`);
 }
 // Вход в неё виден с главной и из программы, иначе часть существует, но её не находят.
 for (const [name, file] of [['home', resolve(root, 'index.html')], ['curriculum', resolve(root, 'curriculum', 'index.html')]]) {
@@ -774,7 +778,12 @@ for (const command of ['--delete', 'sed -i', '-w /tmp/capture.pcap', 'chmod -R 7
   // пережили две вычитки подряд. Окончание -ай/-яй/-уй/-юй само по себе почти
   // всегда глагол — существительных с ним считанные штуки, и они перечислены.
   const NOUNS = new Set(['случай', 'край', 'обычай', 'урожай', 'сарай', 'лишай', 'рай', 'бой', 'слой', 'строй', 'настрой']);
-  const informal = [...prose.matchAll(/(?<![А-Яа-яЁё])([А-ЯЁа-яё]{4,}(?:ай|яй|уй|юй))(?![а-яё])/g)]
+  // Возвратная форма пережила и это правило: «не приучайся считать снимок
+  // резервной копией» стояло в главе 0. Пары «приучайтесь» в книге нет, а от
+  // множественного числа единственное получается отбрасыванием «те» — у
+  // возвратных глаголов это даёт «приучайте», а не «приучайся». Хвост «ся»
+  // поэтому разрешён прямо здесь: множественное «‑айтесь» под шаблон не идёт.
+  const informal = [...prose.matchAll(/(?<![А-Яа-яЁё])([А-ЯЁа-яё]{4,}(?:ай|яй|уй|юй)(?:ся)?)(?![а-яё])/g)]
     .map((match) => match[1].toLowerCase())
     .filter((word) => !NOUNS.has(word));
   if (informal.length) {
@@ -1519,6 +1528,6 @@ for (const [file, html] of cache) {
     if (!siteCss.includes('.book-prose a[href^="http"]::after')) failures.push('site.css: printed pages lose the addresses of external links');
   }
 }
-if (htmlFiles.length !== 48) failures.push(`expected 48 routes, got ${htmlFiles.length}`);
+if (htmlFiles.length !== 49) failures.push(`expected 49 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);

@@ -101,7 +101,7 @@ const aboutSource = source.slice(frontStart, startPartStart).replace(/(?:\s*<hr\
 // Вводная часть «Начало» — пологий вход для читателя, который никогда не
 // администрировал систему. Это не главы: у неё своя нумерация уроков и свой
 // раздел сайта, поэтому 34 главы, 37 модулей и банк проверок остаются как есть.
-const LESSON_COUNT = 5;
+const LESSON_COUNT = 6;
 const lessonStarts = Array.from({ length: LESSON_COUNT }, (_, number) => marker(`start${pad(number + 1)}`));
 const lessons = lessonStarts.map((start, index) => {
   const number = index + 1;
