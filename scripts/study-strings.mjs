@@ -35,6 +35,7 @@ data.items.forEach((item, index) => {
   visible.push([`items[${index}].stem`, item.stem]);
   (item.options ?? []).forEach((option, position) => visible.push([`items[${index}].options[${position}]`, option]));
   if (item.explanation) visible.push([`items[${index}].explanation`, item.explanation]);
+  (item.reason?.options ?? []).forEach((option, position) => visible.push([`items[${index}].reason.options[${position}]`, option]));
   (item.fields ?? []).forEach((field, position) => visible.push([`items[${index}].fields[${position}].label`, field.label]));
 });
 data.cases.forEach((scenario, index) => {

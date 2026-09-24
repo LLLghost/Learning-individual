@@ -1,0 +1,57 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L16B",
+  "module": "U16",
+  "kind": "collect",
+  "seed": "a3939139",
+  "variant": 0,
+  "collected_utc": "2026-09-24T09:23:43.051950+00:00",
+  "facts": {
+    "health": "ONLINE",
+    "scrub_finished": true,
+    "scrub_is_new": true,
+    "errors_zero": true,
+    "snapshot_present": true,
+    "received_present": true,
+    "pools_differ": true,
+    "restored_readable": true,
+    "restored_pool": "backup",
+    "restored_on_target": true,
+    "source_sha256": "5fc7d85aa6c107fdae8282e21173acd6cd0a2ef181f091a432870d67d0197f79",
+    "restored_sha256": "5fc7d85aa6c107fdae8282e21173acd6cd0a2ef181f091a432870d67d0197f79"
+  },
+  "claim": {
+    "snapshot": "tank/app@repeat",
+    "received": "backup/app@repeat",
+    "restored_file": "/backup/app/control.bin"
+  },
+  "evidence": [
+    {
+      "cmd": "zpool get -H -o value health tank",
+      "rc": 0,
+      "sha256": "39978aec2486a58441cc2dd95cc4fbeffdcbfc7e2ba3e3a752f0b7c9ed9ad116",
+      "excerpt": "ONLINE"
+    },
+    {
+      "cmd": "zpool status tank",
+      "rc": 0,
+      "sha256": "86463c32d9f1a990e71c40f256aa06bfd8e1ac13bbffe4603c2a0f3616b22d83",
+      "excerpt": "  scan: scrub repaired 0B in 00:00:01 with 0 errors on Thu Sep 24 09:23:29 2026 / errors: No known data errors"
+    },
+    {
+      "cmd": "zfs list -H -t snapshot -o name",
+      "rc": 0,
+      "sha256": "52b8c933f4f729efa100fb63470d3084a313af1be45c38e1770d7621979ebdf9",
+      "excerpt": "backup/app@repeat / tank/app@repeat / tank/data@before"
+    },
+    {
+      "cmd": "zfs list -H -o name,mountpoint",
+      "rc": 0,
+      "sha256": "c87ed46265c561b5e1cb55a92a6d067bbdbf4ea51c87940ba67c3e46165c4970",
+      "excerpt": "backup\t/backup / backup/app\t/backup/app / tank\t/tank"
+    }
+  ],
+  "collector_sha256": "240bca095180ca497b1733efa364f97d9e3836d79764ffb1c313b134dfc4c884",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

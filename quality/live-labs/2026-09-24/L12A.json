@@ -1,0 +1,29 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L12A",
+  "module": "U12",
+  "kind": "collect",
+  "seed": "5c0efbac",
+  "variant": 0,
+  "collected_utc": "2026-09-24T09:22:37.424724+00:00",
+  "facts": {
+    "serial_of_claimed": "COURSE-QA-EMPTY",
+    "claimed_is_system_disk": false,
+    "claimed_exists": true
+  },
+  "claim": {
+    "device": "sdj",
+    "serial": "COURSE-QA-EMPTY"
+  },
+  "evidence": [
+    {
+      "cmd": "lsblk -J -o NAME,TYPE,SIZE,MODEL,SERIAL,WWN,FSTYPE,MOUNTPOINTS",
+      "rc": 0,
+      "sha256": "112f62a5faeec4336025b46b98fd34c836810259751a7d783ecbedbc9d50a348",
+      "excerpt": "         \"name\": \"sdj\","
+    }
+  ],
+  "collector_sha256": "240bca095180ca497b1733efa364f97d9e3836d79764ffb1c313b134dfc4c884",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

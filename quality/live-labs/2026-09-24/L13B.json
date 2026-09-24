@@ -1,0 +1,44 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L13B",
+  "module": "U13",
+  "kind": "collect",
+  "seed": "980cea58",
+  "variant": 0,
+  "collected_utc": "2026-09-24T09:23:02.522786+00:00",
+  "facts": {
+    "lv_size_mib": 768,
+    "fs_size_mib": 768,
+    "sizes_match": true,
+    "lv_grew": true,
+    "fs_grew": true,
+    "checksum_same": true
+  },
+  "claim": {
+    "lv_size_mib": 768,
+    "gap_seen": true
+  },
+  "evidence": [
+    {
+      "cmd": "sudo -n lvs --reportformat json --units m -o lv_path,lv_size",
+      "rc": 0,
+      "sha256": "d5a1ad68e6302222ea3ffb47ff81378b2a66cdcdde6891e08917dfab59ca5cef",
+      "excerpt": "                  {\"lv_path\":\"/dev/course/lvdata\", \"lv_size\":\"768.00m\"}, /                   {\"lv_path\":\"/dev/vg_lab/lv_app\", \"lv_size\":\"512.00m\"}, /                   {\"lv_path\":\"/dev/vg_lab/lv_cmp\", \"lv_size\":\"1024.00m\"},"
+    },
+    {
+      "cmd": "sudo -n tune2fs -l /dev/course/lvdata",
+      "rc": 0,
+      "sha256": "f9da201050864ade91f1a8f125235551422d2e923ea5b62b654fb90c47b6470a",
+      "excerpt": "tune2fs 1.47.0 (5-Feb-2023) / Filesystem volume name:   <none> / Last mounted on:          /mnt/course-lvm"
+    },
+    {
+      "cmd": "sha256sum /mnt/course-lvm/control.bin",
+      "rc": 0,
+      "sha256": "83c5fd2656bdc718d8042ecc62f7d7473466b53751ecf7eb3922d545464fc4d6",
+      "excerpt": "было 512 МиБ / стало 768 МиБ"
+    }
+  ],
+  "collector_sha256": "240bca095180ca497b1733efa364f97d9e3836d79764ffb1c313b134dfc4c884",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

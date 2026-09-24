@@ -165,6 +165,71 @@ await act('/assessment/?module=7', 'кабинет', async () => {
   return built.lab ? '' : 'работа практикума не показана в виде модуля';
 });
 
+await act('/assessment/', 'итоговый контроль', async () => {
+  await page.click('[data-tab="exam"]');
+  await page.getByRole('button', { name: 'Начать вариант' }).click();
+  const seeded = await page.evaluate(() => {
+    const db = JSON.parse(document.getElementById('study-data').textContent);
+    const key = 'server-infrastructure-selfstudy-v6';
+    const state = JSON.parse(localStorage.getItem(key));
+    const picks = Array.from({ length: 37 }, (_, module) => db.items.find((item) => item.module === module && item.kind === 'concept'));
+    if (picks.some((item) => !item?.reason)) return false;
+    state.exam.ids = picks.map((item) => item.id);
+    state.exam.responses = Object.fromEntries(picks.map((item) => [item.id, item.answer]));
+    state.exam.why = Object.fromEntries(picks.map((item) => [item.id, item.reason.answer]));
+    state.exam.conf = Object.fromEntries(picks.map((item) => [item.id, 2]));
+    localStorage.setItem(key, JSON.stringify(state));
+    return true;
+  });
+  if (!seeded) return 'не найден полный набор заданий с рассуждением';
+  await page.reload();
+  await page.click('[data-tab="exam"]');
+  await page.getByRole('button', { name: 'Отправить весь вариант на проверку' }).click();
+  const result = await page.locator('#study-panel').textContent();
+  return result.includes('Результат: 37/37') ? '' : 'полностью верный вариант не получил 37/37';
+});
+
+await act('/route/', 'резервная копия', async () => {
+  const key = 'server-infrastructure-selfstudy-v6';
+  const before = await page.evaluate((storageKey) => localStorage.getItem(storageKey), key);
+  if (!before) return 'нет прогресса для переноса';
+  const downloadPromise = page.waitForEvent('download');
+  await page.click('[data-backup-save]');
+  const download = await downloadPromise;
+  const file = await download.path();
+  if (!file) return 'файл резервной копии не создан';
+  await page.evaluate((storageKey) => localStorage.removeItem(storageKey), key);
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('[data-backup-load]').setInputFiles(file);
+  await page.waitForFunction((storageKey) => localStorage.getItem(storageKey) !== null, key);
+  const after = await page.evaluate((storageKey) => localStorage.getItem(storageKey), key);
+  return before === after ? '' : 'импорт не восстановил сохранённый прогресс';
+});
+
+await act('/chapters/13/', 'мобильное чтение', async () => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const width = await page.evaluate(() => ({ content: document.documentElement.scrollWidth, screen: innerWidth }));
+  await page.setViewportSize({ width: 1280, height: 800 });
+  return width.content <= width.screen + 1 ? '' : `горизонтальная прокрутка ${width.content}px при ширине ${width.screen}px`;
+});
+
+await act('/route/', 'работа без сети', async () => {
+  await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: 10000 }).catch(async () => {
+    await page.reload();
+    await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: 10000 });
+  });
+  await page.click('[data-offline-save]');
+  await page.waitForFunction(() => document.querySelector('[data-offline-status]')?.textContent.startsWith('Готово:'), null, { timeout: 30000 });
+  await page.context().setOffline(true);
+  try {
+    const response = await page.goto(origin + '/chapters/15/', { waitUntil: 'load' });
+    if (!response?.ok()) return `страница из кэша вернула ${response?.status()}`;
+    return (await page.locator('h1').first().textContent())?.includes('15.') ? '' : 'глава 15 не открылась из кэша';
+  } finally {
+    await page.context().setOffline(false);
+  }
+});
+
 await browser.close();
 server.close();
 

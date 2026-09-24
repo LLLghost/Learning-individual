@@ -1,0 +1,44 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L04A",
+  "module": "U04",
+  "kind": "collect",
+  "seed": "beb8c038",
+  "variant": 0,
+  "collected_utc": "2026-09-24T09:25:21.781780+00:00",
+  "facts": {
+    "verify_rc": 0,
+    "active_state": "inactive",
+    "result": "success",
+    "has_dropin": true,
+    "ran": true,
+    "succeeded": true,
+    "failure_seen": true
+  },
+  "claim": {
+    "exit_status": 200
+  },
+  "evidence": [
+    {
+      "cmd": "systemd-analyze verify /etc/systemd/system/course-report.service",
+      "rc": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "excerpt": ""
+    },
+    {
+      "cmd": "systemctl show -p ActiveState,SubState,Result,ExecMainStatus,DropInPaths,WorkingDirectory course-report.service",
+      "rc": 0,
+      "sha256": "2944f9a3f246f41ea697822133ad99267b1f245f1f40aa29337db2db0f952036",
+      "excerpt": "Result=success / ActiveState=inactive / DropInPaths=/etc/systemd/system/course-report.service.d/override.conf"
+    },
+    {
+      "cmd": "journalctl -u course-report.service -b -o json",
+      "rc": 0,
+      "sha256": "cc7cb1b808c7f320b873f7a9b54ebacc8b7b63f2769a9a483bffd25fbf5a4940",
+      "excerpt": "7d4958e842da4a758f6c1cdc7b36dcc5 / 641257651c1b4ec9a8624d7a40a9e1e7 / 98e322203f7a4ed290d09fe03c09fe15 / d9b373ed55a64feb8242e02dbe79a49c / be02cf6855d2428ba40df7e9d022f03d / 7d4958e842da4a758f6c1cdc7"
+    }
+  ],
+  "collector_sha256": "537d59aeb504f9205eb42e457abf990f5a31dbae8bc5cc108f29ec9684afb7e1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

@@ -501,7 +501,7 @@ const plural = (n, one, few, many) => {
 const homeCards = parts.map(([label, title, numbers]) => `<a class="part-card" href="${chapters[numbers[0]].url}"><span>${label}</span><h2>${title}</h2><p>${numbers.length} ${plural(numbers.length, 'модуль', 'модуля', 'модулей')} · ${numbers.map((number) => pad(number)).join(' · ')}</p></a>`).join('');
 const home = pageShell({
   title: 'Университетский курс', eyebrow: 'Самостоятельное обучение', className: 'landing',
-  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>34</strong><span>главы</span></div><div><strong>259</strong><span>автопроверок</span></div><div><strong>74</strong><span>полевые работы</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p><p class="resume-line" data-resume-line hidden>Продолжить чтение: <a data-resume-link href="/">—</a> <em data-resume-note></em></p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Если вы здесь впервые</p><h2>Пять уроков до начала курса</h2></div><a href="/start/01/">Начать с нуля →</a></section><p class="lead-note">Курс начинается со сборки стенда и предполагает, что терминал, виртуальная машина и сеть — знакомые слова. Если это не так, вводная часть объясняет их за вечер и без единой команды.</p><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>${parts.length} ${plural(parts.length, 'последовательная часть', 'последовательные части', 'последовательных частей')}</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
+  body: `<section class="hero"><div><h1>Серверная инфраструктура<br><em>от сигнала до системы</em></h1><p>Полный маршрут для самостоятельной подготовки: Linux, сети, серверное железо, хранение данных, автоматизация, контейнеры и firmware.</p><div class="hero-actions"><a class="button primary" href="/curriculum/">Открыть программу</a><a class="button" href="/assessment/">Продолжить обучение</a></div></div><div class="hero-stats"><div><strong>34</strong><span>главы</span></div><div><strong>259</strong><span>автопроверок</span></div><div><strong>74</strong><span>полевые работы</span></div><div><strong>28</strong><span>Python-тестов</span></div></div></section><section class="progress-card"><div><p class="eyebrow">Ваш прогресс</p><strong data-progress-title>Маршрут ещё не начат</strong><p data-progress-copy>Результаты сохраняются только в этом браузере.</p><p class="resume-line" data-resume-line hidden>Продолжить чтение: <a data-resume-link href="/">—</a> <em data-resume-note></em></p></div><a href="/assessment/">Открыть кабинет →</a></section><section class="section-head"><div><p class="eyebrow">Если вы здесь впервые</p><h2>Шесть уроков до начала курса</h2></div><a href="/start/01/">Начать с нуля →</a></section><p class="lead-note">Курс начинается со сборки стенда и предполагает, что терминал, виртуальная машина и сеть — знакомые слова. Если это не так, вводная часть объясняет их за вечер и без единой команды.</p><section class="section-head"><div><p class="eyebrow">Маршрут</p><h2>${parts.length} ${plural(parts.length, 'последовательная часть', 'последовательные части', 'последовательных частей')}</h2></div><a href="/curriculum/">Все главы →</a></section><div class="part-grid">${homeCards}</div>`,
   description: 'Многостраничный университетский курс по серверной инфраструктуре для самостоятельного обучения.',
 });
 
@@ -528,7 +528,8 @@ let studyScript = followingScript('checker-code-data')
   // проходит через rewriteLinks, поэтому её адрес подставляется здесь — иначе
   // она молча указывала бы на несуществующий якорь этой же страницы.
   .replace(/'#autopractice'/g, `'${BASE}/about/#autopractice'`)
-  .replace(/'#ch'\+pad\(([^)]+)\)/g, `'${BASE}/chapters/'+pad($1)+'/'`)
+  .replace('(()=>{', `(()=>{\nconst MODULE_CHAPTER=${JSON.stringify(moduleChapter)};\nfunction theoryUrl(n){return '${BASE}/chapters/'+String(MODULE_CHAPTER[n]).padStart(2,'0')+'/#ch'+String(n).padStart(2,'0');}`)
+  .replace(/'#ch'\+pad\(([^)]+)\)/g, 'theoryUrl($1)')
   // Перенос прогресса — один на весь курс, на «Маршруте»: кабинет только ведёт туда.
   .replace(/'#route-backup'/g, `'${BASE}/route/#route-backup'`)
   .replace(/render\(\);\s*\}\)\(\);\s*<\/script>$/, "const requested=new URLSearchParams(location.search).get('module');if(requested!==null&&/^\\d{1,2}$/.test(requested)&&Number(requested)<37){module=Number(requested);tab='learn';}\nrender();\n})();\n</script>");
@@ -583,7 +584,7 @@ const route = pageShell({
 <section class="compact-prose" aria-labelledby="route-order">
 <h2 id="route-order">Порядок работы</h2>
 <ol class="route-order">
-<li><strong>Если администрировать не приходилось — начните с вводной части.</strong> Пять уроков <a href="/start/01/">«Начало»</a> объясняют, из чего собрана система и как про неё думать. Они читаются за вечер, стенд для них не нужен, а в конце каждого — мини-тренажёр из двух вопросов. У кого опыт есть — шаг пропускается.</li>
+<li><strong>Если администрировать не приходилось — начните с вводной части.</strong> Шесть уроков <a href="/start/01/">«Начало»</a> объясняют, из чего собрана система и как про неё думать. Они читаются за вечер, стенд для них не нужен, а в конце каждого — мини-тренажёр из двух вопросов. У кого опыт есть — шаг пропускается.</li>
 <li><strong>Соберите стенд по главе 00.</strong> Весь курс стоит на нём: без стенда лаборатории и работы практикума выполнить не на чем.</li>
 <li><strong>Идите по главам подряд.</strong> Каждая опирается на предыдущие, а «Перед началом» прямо связывает новую тему с уже разобранной.</li>
 <li><strong>Читайте главу целиком</strong> — до разобранного примера и типичной ошибки мышления. Они дают метод, а не факты.</li>
@@ -1588,7 +1589,7 @@ if(readProgress&&readMain){
 
 /* Работа без сети: обслуживающий скрипт регистрируется тихо. Если браузер его
    не поддерживает или страница открыта не по http(s), сайт работает как прежде. */
-if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>{navigator.serviceWorker.register('${BASE}/sw.js').catch(()=>{})});
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))addEventListener('load',()=>{navigator.serviceWorker.register('${BASE}/sw.js').catch(()=>{})});
 const offlineSave=document.querySelector('[data-offline-save]'),offlineStatus=document.querySelector('[data-offline-status]');
 if(offlineSave&&offlineStatus){
   if(!('serviceWorker' in navigator)){offlineSave.disabled=true;offlineStatus.textContent='Этот браузер не умеет хранить страницы для работы без сети.'}

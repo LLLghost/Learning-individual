@@ -1,0 +1,33 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L06B",
+  "module": "U06",
+  "kind": "stand",
+  "seed": "qa06b",
+  "variant": 1,
+  "collected_utc": "2026-09-24T09:25:45.246303+00:00",
+  "facts": {
+    "route_via_gateway": true,
+    "arp_for_remote": false
+  },
+  "claim": {
+    "wrong_prefix": 16
+  },
+  "evidence": [
+    {
+      "cmd": "ip -j route get 10.10.20.12",
+      "rc": 0,
+      "sha256": "9c02b11c14f1abc60842fcaa5e88f103f9ee9907ff4d0659a4d9e84850adaf73",
+      "excerpt": "[{\"dst\":\"10.10.20.12\",\"gateway\":\"10.10.10.1\",\"dev\":\"eth0\",\"prefsrc\":\"10.10.10.11\",\"flags\":[],\"uid\":1000,\"cache\":[]}]"
+    },
+    {
+      "cmd": "ip -j neigh",
+      "rc": 0,
+      "sha256": "cef5a7f7107fe591b83ea80de9c15b92b512ddebb290cecda635b7b99081ddfc",
+      "excerpt": "[{\"dst\":\"10.10.10.1\",\"dev\":\"eth0\",\"lladdr\":\"bc:24:11:3c:d7:0b\",\"state\":[\"STALE\"]},{\"dst\":\"10.10.20.12\",\"dev\":\"eth0\",\"state\":[\"FAILED\"]}]"
+    }
+  ],
+  "collector_sha256": "537d59aeb504f9205eb42e457abf990f5a31dbae8bc5cc108f29ec9684afb7e1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

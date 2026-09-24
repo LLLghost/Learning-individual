@@ -266,11 +266,19 @@ if (!siteCss.includes('.define-card')) failures.push('site.css: missing definiti
     for (const bridge of ['vmbr10', 'vmbr20', 'vmbr30']) {
       if (!stand.includes(bridge) || !chapter0.includes(bridge)) failures.push(`course-stand.sh: bridge ${bridge} is missing from the script or from chapter 0`);
     }
-    // Строка из книги должна вести в существующий файл: переименованный скрипт
-    // оставляет в главе команду, которая скачивает пустоту.
+    // Команда из книги должна скачивать фиксированную версию и проверять
+    // именно тот файл, который находится в репозитории при этой сборке.
     const link = chapter0.match(/raw\.githubusercontent\.com\/[^"<)\s]+/)?.[0];
-    if (!link) failures.push('chapter 0: the one-line stand command is gone from the prose');
-    else if (!link.endsWith('/scripts/stand/course-stand.sh')) failures.push(`chapter 0: the one-line command points at ${link}`);
+    if (!link) failures.push('chapter 0: the stand download command is missing');
+    else if (!/\/[0-9a-f]{40}\/scripts\/stand\/course-stand\.sh$/.test(link)) failures.push(`chapter 0: the stand URL must pin a commit: ${link}`);
+    const digest = createHash('sha256').update(stand).digest('hex');
+    const readme = await readFile(resolve(root, '..', 'README.md'), 'utf8');
+    for (const [name, content] of [['chapter 0', chapter0], ['README.md', readme]]) {
+      if (!content.includes(link ?? '\0')) failures.push(`${name}: stand URL differs from chapter 0`);
+      if (!content.includes(`${digest}  course-stand.sh`)) failures.push(`${name}: stand SHA-256 differs from the local script`);
+      if (!content.includes('sha256sum -c -')) failures.push(`${name}: stand checksum is not checked before running`);
+      if (/bash -c ["']?\$\(curl/.test(content)) failures.push(`${name}: remote stand code is still executed directly`);
+    }
     // Скрипт меняет чужую машину, поэтому обязан показывать план прежде
     // действия, не трогать чужие идентификаторы и убирать только своё.
     for (const [needle, what] of [
@@ -460,7 +468,7 @@ for (let number = 0; number < 34; number += 1) {
     if (/^\d+$/.test(match[1])) failures.push(`chapter ${number}: quick trainer prints the answer index in the markup`);
   }
 }
-// Вводная часть «Начало»: пять уроков для читателя без опыта. Она живёт вне
+// Вводная часть «Начало»: шесть уроков для читателя без опыта. Она живёт вне
 // нумерации глав, поэтому обычные проверки глав её не касаются — и без
 // отдельных правил её падение осталось бы незамеченным.
 const LESSON_COUNT = 6;
@@ -558,7 +566,7 @@ if (!dataMatch) failures.push('assessment: missing study-data');
 else {
   data = JSON.parse(dataMatch[1]);
   bankSize = { items: data.items?.length ?? 0, cases: data.cases?.length ?? 0 };
-  if (data.items?.length !== 148) failures.push(`assessment: expected 111 items, got ${data.items?.length}`);
+  if (data.items?.length !== 148) failures.push(`assessment: expected 148 items, got ${data.items?.length}`);
   if (data.cases?.length !== 37) failures.push(`assessment: expected 37 cases, got ${data.cases?.length}`);
   // Тип задания обязан соответствовать его форме: «Расчёт» без числовых полей —
   // обычный вопрос с выбором, и обещание расчёта в таком задании ложно.
@@ -1530,4 +1538,5 @@ for (const [file, html] of cache) {
 }
 if (htmlFiles.length !== 49) failures.push(`expected 49 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
+await import('./check-coverage.mjs');
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);

@@ -1,0 +1,44 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L14B",
+  "module": "U14",
+  "kind": "collect",
+  "seed": "7cce322e",
+  "variant": 0,
+  "collected_utc": "2026-09-24T09:23:41.835216+00:00",
+  "facts": {
+    "degraded": "0",
+    "sync_action": "idle",
+    "level": "raid1",
+    "members": "2",
+    "failure_logged": true,
+    "recovery_logged": true,
+    "claimed_member_back": true
+  },
+  "claim": {
+    "failed_member": "/dev/sdi"
+  },
+  "evidence": [
+    {
+      "cmd": "sudo -n mdadm --detail --export /dev/md127",
+      "rc": 0,
+      "sha256": "74bd393dce37f748c7611fb09307502422159e957a285bedf871a38e23b05c67",
+      "excerpt": "MD_LEVEL=raid1 / MD_DEVICES=2"
+    },
+    {
+      "cmd": "/sys/block/md127/md/degraded",
+      "rc": 0,
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "excerpt": "degraded=0 sync_action=idle"
+    },
+    {
+      "cmd": "journalctl -k (события массива)",
+      "rc": 0,
+      "sha256": "f6b9eee63774bd3e08641ff718e3a434a9362847ce175820a748e4477b757d71",
+      "excerpt": "Operation continuing on 1 devices. / md: recovery of RAID array md127 / md: md127: recovery done."
+    }
+  ],
+  "collector_sha256": "240bca095180ca497b1733efa364f97d9e3836d79764ffb1c313b134dfc4c884",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

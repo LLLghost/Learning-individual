@@ -3,8 +3,8 @@
 // а чужой сайт может лежать по причинам, к учебнику отношения не имеющим.
 // Запускать руками — например перед выпуском: node scripts/check-links.mjs
 //
-// Мёртвая ссылка в учебнике — невыполненное обещание: читателя отправили к
-// первоисточнику, а первоисточника нет. Заметить это по самой книге нельзя.
+// Только подтверждённые 404/410 называем мёртвыми. Тайм-аут, DNS, TLS и
+// защита от роботов ничего не доказывают о доступности страницы для читателя.
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
@@ -20,7 +20,8 @@ console.log(`Внешних ссылок: ${links.size}`);
 // Часть сайтов отвечает на HEAD отказом, хотя страница есть, поэтому при
 // неуспехе повторяем обычным запросом. Тело не читаем: нужен только ответ.
 const probe = async (address) => {
-  for (const method of ['HEAD', 'GET']) {
+  let lastError;
+  for (const method of ['HEAD', 'GET', 'GET']) {
     try {
       const response = await fetch(address, {
         method,
@@ -33,10 +34,10 @@ const probe = async (address) => {
       if (response.ok) return { status: response.status, final: response.url };
       if (method === 'GET') return { status: response.status, final: response.url };
     } catch (error) {
-      if (method === 'GET') return { error: error.message };
+      lastError = error.cause?.code ?? error.code ?? error.message;
     }
   }
-  return { error: 'без ответа' };
+  return { error: lastError ?? 'без ответа' };
 };
 
 const limit = 6;
@@ -49,16 +50,16 @@ for (let start = 0; start < entries.length; start += limit) {
 }
 process.stdout.write('\n');
 
-const dead = results.filter((item) => item.error || item.status >= 400);
-// 403 и 429 у крупных сайтов — чаще защита от роботов, чем пропавшая страница.
-// Разделяем их от настоящих потерь, иначе проверка перестанет что-либо значить.
-const blocked = dead.filter((item) => item.status === 403 || item.status === 429);
-const broken = dead.filter((item) => !blocked.includes(item));
-const moved = results.filter((item) => item.final && item.final !== item.address && !dead.includes(item));
+const broken = results.filter((item) => item.status === 404 || item.status === 410);
+const blocked = results.filter((item) => item.status === 401 || item.status === 403 || item.status === 429);
+const uncertain = results.filter((item) => item.error || (item.status >= 400 && !broken.includes(item) && !blocked.includes(item)));
+const live = results.filter((item) => item.status >= 200 && item.status < 400);
+const moved = live.filter((item) => item.final && item.final !== item.address);
 
-for (const item of broken) console.log(`ОТКАЗ  ${item.status ?? item.error}  ${item.address}\n       ${item.label}`);
-for (const item of blocked) console.log(`ЗАКРЫТ ${item.status}  ${item.address} — вероятно защита от роботов, проверьте руками`);
+for (const item of broken) console.log(`МЁРТВА ${item.status}  ${item.address}\n        ${item.label}`);
+for (const item of blocked) console.log(`ЗАКРЫТ ${item.status}  ${item.address} — проверьте в браузере`);
+for (const item of uncertain) console.log(`НЕЯСНО ${item.status ?? item.error}  ${item.address} — повторите позже или проверьте в браузере`);
 for (const item of moved) console.log(`ПЕРЕЕЗД ${item.address}\n        → ${item.final}`);
 
-console.log(`\nЖивых: ${results.length - dead.length} · переездов: ${moved.length} · закрытых: ${blocked.length} · мёртвых: ${broken.length}`);
+console.log(`\nЖивых: ${live.length} · переездов: ${moved.length} · закрытых: ${blocked.length} · неясных: ${uncertain.length} · мёртвых: ${broken.length}`);
 if (broken.length) process.exitCode = 1;

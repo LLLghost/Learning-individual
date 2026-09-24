@@ -1,0 +1,49 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L30B",
+  "module": "U30",
+  "kind": "collect",
+  "seed": "0ad57260",
+  "variant": 0,
+  "collected_utc": "2026-09-24T09:24:07.389426+00:00",
+  "facts": {
+    "verify_ok": true,
+    "verify_without_root": false,
+    "san_present": true,
+    "server_self_signed": false,
+    "issued_by_root": true,
+    "root_is_ca": true
+  },
+  "claim": {
+    "error_without_root": "unable to get local issuer certificate"
+  },
+  "evidence": [
+    {
+      "cmd": "openssl verify -CAfile /home/course/course-qa/L30B-r2/root.pem /home/course/course-qa/L30B-r2/server.pem",
+      "rc": 0,
+      "sha256": "3ec8ec59c938ecb4efaaf9ca90fe9347f89db444e71c6384aba0ea1379c4b0b7",
+      "excerpt": "/home/course/course-qa/L30B-r2/server.pem: OK"
+    },
+    {
+      "cmd": "openssl verify /home/course/course-qa/L30B-r2/server.pem",
+      "rc": 2,
+      "sha256": "fe1edf51b4a629adc7ea49c0c2e335318aee834ed35f18dd4b16f878975e98a3",
+      "excerpt": "CN = course.example.test / error 20 at 0 depth lookup: unable to get local issuer certificate / error /home/course/course-qa/L30B-r2/server.pem: verification failed"
+    },
+    {
+      "cmd": "openssl x509 -noout -ext subjectAltName -in /home/course/course-qa/L30B-r2/server.pem",
+      "rc": 0,
+      "sha256": "f475c479e92c1dbfc77843e1230a701a2c5523200f008f8e90769431386cd986",
+      "excerpt": "    DNS:course.example.test"
+    },
+    {
+      "cmd": "openssl x509 -noout -subject -issuer -in /home/course/course-qa/L30B-r2/server.pem",
+      "rc": 0,
+      "sha256": "18c13c21c3bc61fa8c077bbe92e839818ed6565840dbd4229de6859332e289af",
+      "excerpt": "субъект: CN = course.example.test / издатель: CN = Course QA Root"
+    }
+  ],
+  "collector_sha256": "537d59aeb504f9205eb42e457abf990f5a31dbae8bc5cc108f29ec9684afb7e1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}
