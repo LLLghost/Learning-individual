@@ -28,7 +28,7 @@ const plain = (value) => value
   .replace(/<[^>]+>/g, ' ')
   .replace(/&#(\d+);/g, (_, number) => String.fromCodePoint(Number(number)))
   .replace(/&(?:nbsp|amp|lt|gt|quot);/g, (entity) => ({ '&nbsp;': ' ', '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"' })[entity])
-  .replace(/\s+/g, ' ').trim();
+  .replace(/\s+/g, ' ').replace(/\s+([.,:;!?])/g, '$1').trim();
 const pageFor = async (chapter) => {
   const key = String(chapter);
   if (!pageCache.has(key)) {
