@@ -11,6 +11,7 @@
 import { createServer } from 'node:http';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { resolve, extname, join } from 'node:path';
+import { launchBrowser } from './browser-launch.mjs';
 
 const root = resolve(process.cwd(), 'build');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -42,21 +43,14 @@ const server = createServer(async (request, response) => {
 await new Promise((done) => server.listen(0, '127.0.0.1', done));
 const origin = `http://127.0.0.1:${server.address().port}`;
 
-let chromium;
-// playwright-core — тот же API без загрузчика браузеров; в окружениях, где
-// Chromium уже стоит рядом, полного пакета может не быть, а обход нужен.
-try { ({ chromium } = await import('playwright')); }
-catch {
-  try { ({ chromium } = await import('playwright-core')); }
-  catch { console.error('Нужен playwright: npm i -D playwright && npx playwright install chromium'); process.exit(2); }
-}
-
-const routes = await walk(root);
-// Установленный Chromium может не совпадать по номеру сборки с тем, которого
-// ждёт пакет: тогда обычный запуск падает на «Executable doesn't exist».
-// CHROMIUM_PATH позволяет указать уже стоящий браузер вместо скачивания.
-const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+// Запуск браузера — общий с остальными проверками (scripts/browser-launch.mjs):
+// fallback на playwright-core и обход CHROMIUM_PATH для сред, где сборка
+// браузера разошлась с пакетом.
+let browser;
+try { browser = await launchBrowser(); }
+catch (error) { console.error(error.message); process.exit(2); }
 const page = await browser.newPage();
+const routes = await walk(root);
 const problems = [];
 let checked = 0, actions = 0;
 for (const route of routes) {

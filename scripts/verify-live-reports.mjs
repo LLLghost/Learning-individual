@@ -1,11 +1,13 @@
-import { chromium } from 'playwright';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { launchBrowser } from './browser-launch.mjs';
 
 const folder = resolve(process.argv[2] ?? 'quality/live-labs/2026-09-24');
 const ids = ['L04A', 'L06B', 'L07B', 'L12A', 'L13B', 'L14B', 'L16B', 'L30B', 'L31A'];
-const browser = await chromium.launch();
+let browser;
+try { browser = await launchBrowser(); }
+catch (error) { console.error(error.message); process.exit(2); }
 try {
   const page = await browser.newPage();
   await page.goto(pathToFileURL(resolve('build/assessment/index.html')).href);

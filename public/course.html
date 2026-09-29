@@ -14998,6 +14998,12 @@ const ORDER=(()=>{let h=0x811c9dc5;const feed=t=>{for(let i=0;i<t.length;i++){h^
 const emptyCalibration=()=>CONF.map(()=>({n:0,correct:0}));
 const newState=()=>({schema:'course-study-progress',version:DB.version,records:{},scenarios:{},exam:null,history:[],practice:null,calibration:emptyCalibration(),errors:[],labs:{}});
 let state=newState(),storageOK=true,module=0,tab='learn';
+// Почему прогресс не читается: ok — читается; foreign — другая версия банка;
+// corrupt — повреждённые данные; unavailable — недоступное хранилище. Три
+// случая раньше выглядели одним сообщением, и «не читается» молча
+// превращалось в перезапись прежних данных при первом же ответе.
+let storageWhy='ok',keptRaw=null,keptVersion='';
+const KEPT_KEY='server-infrastructure-selfstudy-kept-v1';
 const panel=document.getElementById('study-panel');
 const el=(tag,text,cls)=>{const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(cls)x.className=cls;return x;};
 const button=(text,fn)=>{const b=el('button',text);b.type='button';b.onclick=fn;return b;};
@@ -15083,13 +15089,37 @@ function validate(s){
  if(s.exam&&Array.isArray(s.exam.ids)&&s.exam.ids.length===MODULES&&new Set(s.exam.ids).size===MODULES&&s.exam.ids.every(id=>ITEMS.has(id))&&new Set(s.exam.ids.map(id=>ITEMS.get(id).module)).size===MODULES&&s.exam.responses&&typeof s.exam.responses==='object'&&s.exam.order===ORDER)clean.exam={ids:s.exam.ids,order:ORDER,responses:s.exam.responses,conf:plainObject(s.exam.conf),why:plainObject(s.exam.why),submitted:!!s.exam.submitted,started:Number(s.exam.started)||Date.now()};
  return clean;
 }
-try{const raw=localStorage.getItem(KEY);if(raw)state=validate(JSON.parse(raw));localStorage.setItem(KEY,JSON.stringify(state));}catch(e){storageOK=false;}
+// Прежние данные не перезаписываются при загрузке: нечитаемый прогресс
+// остаётся в хранилище нетронутым, пока читатель не начнёт новый (см. save).
+try{
+ const raw=localStorage.getItem(KEY);
+ if(raw!==null){
+  let parsed;try{parsed=JSON.parse(raw);}catch{parsed=null;}
+  if(parsed===null||parsed.schema!=='course-study-progress')storageWhy='corrupt';
+  else if(parsed.version!==DB.version){storageWhy='foreign';keptVersion=String(parsed.version);}
+  else{
+   try{state=validate(parsed);}catch{storageWhy='corrupt';}
+   if(storageWhy==='ok'){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){storageWhy='unavailable';}}
+  }
+  // Зачёты из другой версии не переносятся автоматически: совпадающие номера
+  // заданий не доказывают, что задания не изменились. Исходная строка
+  // сохраняется целиком — это и есть путь к восстановлению.
+  if(storageWhy==='foreign'||storageWhy==='corrupt'){keptRaw=raw;state=newState();}
+ }
+}catch(e){storageWhy='unavailable';}
+if(storageWhy==='unavailable')storageOK=false;
 /* Шкала времени: дата первого зачёта модуля. Только добавление — записанная дата не меняется, интерфейса правки нет. Те же функции есть в site.js. */
 const TIMELINE_KEY='server-infrastructure-timeline-v1';
 function readTimeline(){try{const value=JSON.parse(localStorage.getItem(TIMELINE_KEY)||'null');return value&&value.events&&typeof value.events==='object'&&!Array.isArray(value.events)?value:{schema:'course-timeline',events:{}}}catch{return{schema:'course-timeline',events:{}}}}
 function stampTimeline(key){const line=readTimeline();if(line.events[key])return;const now=new Date();line.events[key]=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);try{localStorage.setItem(TIMELINE_KEY,JSON.stringify(line))}catch{}}
 function stampPassedModules(){for(let n=0;n<MODULES;n++)if(moduleInfo(n).passed)stampTimeline('module:'+n);}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));storageOK=true;}catch{storageOK=false;}stampPassedModules();status();}
+// Первый save поверх нечитаемого прогресса — это переход: исходная строка
+// сначала копируется в отдельный раздел, и лишь затем пишется новый прогресс.
+// Не удалось сохранить копию — исходник не трогаем и честно об этом говорим.
+function save(){
+ if(keptRaw!==null){try{localStorage.setItem(KEPT_KEY,keptRaw);}catch{storageOK=false;storageWhy='unavailable';status();return;}}
+ try{localStorage.setItem(KEY,JSON.stringify(state));storageOK=true;keptRaw=null;storageWhy='ok';}catch{storageOK=false;storageWhy='unavailable';}
+ stampPassedModules();status();}
 // Механизм подтверждается вторым ярусом. Верный ответ без подтверждённого
 // механизма в зачёт не идёт и возвращается на повторение сразу: угадать один
 // вариант из четырёх нетрудно, а рассуждение из выбора не выводится.
@@ -15124,7 +15154,27 @@ function status(){const done=completed(),practice=state.practice?.passed||0,best
   el('div',`Модули: ${done}/${MODULES} · программные тесты: ${practice}/${PRACTICE_TESTS} · лучший итоговый: ${best}/${MODULES} (нужно ≥${EXAM_PASS}).`),
   el('strong',bench.done===bench.need?'Практика на стенде подтверждена.':'Практика на стенде подтверждена не полностью.'),
   el('div',`Стендовые работы: ${bench.done}/${bench.need}.${bench.left.length?' Незакрытые цепочки: '+bench.left.join(', ')+'.':''} Работы на готовых данных в эту шкалу не идут.`));
- const p=el('progress');p.max=MODULES;p.value=done;box.append(p);document.getElementById('storage-status').textContent=storageOK?'Прогресс сохраняется в этом браузере. Экспортируйте JSON перед переносом или очисткой данных.':'Локальное сохранение недоступно или предыдущий файл повреждён. Прогресс пока в памяти: обязательно экспортируйте JSON.';}
+ const p=el('progress');p.max=MODULES;p.value=done;box.append(p);
+ // Сообщение о хранилище различает три случая, которые раньше выглядели
+ // одинаково: смена версии банка, повреждённые данные и недоступное
+ // хранилище. Для первых двух прежние данные остаются в браузере —
+ // кабинет предлагает скачать копию и начать новый прогресс осознанно.
+ const note=document.getElementById('storage-status');note.replaceChildren();
+ if(storageWhy==='ok'&&storageOK){
+  note.textContent='Прогресс сохраняется в этом браузере. Экспортируйте JSON перед переносом или очисткой данных.';
+  let kept=null;try{kept=localStorage.getItem(KEPT_KEY);}catch{}
+  if(kept!==null)note.append(' Прежняя версия прогресса хранится отдельным разделом и входит в резервную копию.');
+ }else if(storageWhy==='foreign'||storageWhy==='corrupt'){
+  if(storageWhy==='foreign')note.append(el('strong','Банк заданий обновился: '),'сохранённый прогресс сделан другой версией курса (в браузере — '+keptVersion+', текущая — '+DB.version+'). ');
+  else note.append(el('strong','Сохранённый файл прогресса повреждён: '),'данные не читаются целиком. ');
+  note.append('Прежние данные не перезаписаны и в зачёт автоматически не переносятся: совпадающие номера заданий не доказывают, что задания не изменились. Скачайте копию прежних данных — по ней можно восстановиться после возврата нужной версии или перенести результаты вручную. ');
+  note.append(button('Скачать прежние данные (JSON)',()=>{download('course-progress-'+(storageWhy==='foreign'?keptVersion.replace(/[^a-z0-9.-]+/gi,'-'):'damaged')+'.json',keptRaw);}));
+  note.append(' Любой новый ответ начнёт прогресс заново; прежние данные при этом сохранятся отдельным разделом и попадут в резервную копию. ',button('Начать новый прогресс сейчас',()=>{save();render();}));
+ }else{
+  note.append('Локальное хранилище недоступно (запрет хранения или приватный режим). Прогресс этого сеанса не сохраняется');
+  if(keptRaw!==null)note.append(', исходные данные в хранилище не перезаписаны');
+  note.append('.');
+ }}
 function numericOK(value,field){if(value===undefined||value===null)return false;let v=String(value).trim();if(typeof field.answer==='string'){if(/^0[0-7]{3}$/.test(field.answer))v=v.padStart(4,'0');return v===field.answer;}v=v.replace(/\s/g,'').replace(',','.');if(!v||!/^[-+]?\d*(?:\.\d+)?(?:[eE][-+]?\d+)?$/.test(v))return false;const n=Number(v);if(!Number.isFinite(n))return false;const exact=/количество|majority|extents|L, запросов|бюджет ошибок/i.test(field.label);return exact?n===field.answer:Math.abs(n-field.answer)<=Math.max(0.005*Math.abs(field.answer),0.005);}
 function evaluate(item,response){if(item.fields)return Array.isArray(response)&&item.fields.every((f,i)=>numericOK(response[i],f));return Number.isInteger(response)&&response===item.answer;}
 function answerInputs(item,container,response,onchange){

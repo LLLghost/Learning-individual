@@ -1457,7 +1457,7 @@ if(searchOverlay){
 /* Страница маршрута: чек-лист, календарь и резервная копия. Все отметки
    выводятся из фактического прогресса — интерфейса, который проставляет дату,
    здесь нет. */
-const BACKUP_KEYS=['server-infrastructure-selfstudy-v6','server-infrastructure-place-v1','server-infrastructure-chapter-trainers-v1','server-infrastructure-recall-v1','server-infrastructure-timeline-v1','server-infrastructure-reader-v1','server-infrastructure-reading-v1','server-infrastructure-theme','server-infrastructure-quiz-a1-v1','server-infrastructure-stand-v1'];
+const BACKUP_KEYS=['server-infrastructure-selfstudy-v6','server-infrastructure-selfstudy-kept-v1','server-infrastructure-place-v1','server-infrastructure-chapter-trainers-v1','server-infrastructure-recall-v1','server-infrastructure-timeline-v1','server-infrastructure-reader-v1','server-infrastructure-reading-v1','server-infrastructure-theme','server-infrastructure-quiz-a1-v1','server-infrastructure-stand-v1'];
 const routeBoard=document.querySelector('[data-route-board]');
 if(routeBoard){
   const MONTHS=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
@@ -1540,7 +1540,9 @@ if(routeBoard){
       const keys=Object.keys(parsed.data).filter(key=>BACKUP_KEYS.includes(key));
       if(!keys.length)throw new Error('в файле нет известных разделов состояния');
       for(const key of keys)if(typeof parsed.data[key]!=='string')throw new Error('раздел '+key+' повреждён');
-      if(!confirm('Заменить прогресс в этом браузере данными из файла? Разделов: '+keys.length+'. Текущий прогресс будет потерян — сохраните его копию заранее.'))return;
+      // Загрузка — слияние, а не замена: ключи, отсутствующие в файле, в
+      // браузере не трогаются. Подтверждение обязано обещать ровно это.
+      if(!confirm('Загрузить разделы состояния из файла? Разделов: '+keys.length+'. Одноимённые разделы заменятся данными файла; разделы, которых в файле нет, останутся без изменений. Это слияние, а не полная замена: для чистого состояния сбросьте соответствующий раздел заранее (весь прогресс — кнопкой сброса в кабинете).'))return;
       for(const key of keys)localStorage.setItem(key,parsed.data[key]);
       say('Загружено разделов: '+keys.length+'. Обновляем страницу…');
       setTimeout(()=>location.reload(),400);
