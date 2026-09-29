@@ -659,6 +659,44 @@ const body = course.slice(mainStart, mainEnd);
     if (most > total * 0.45) failures.push(`quick data: ${most} of ${total} correct answers sit at one position`);
   }
 }
+// Ключи академических самопроверок: у каждого блока TNN в главе должен быть
+// полный блок ответов aNN в приложении. У четырёх модулей ответы однажды
+// «утекли» в атрибуты start вложенных списков: числовой ответ превратился в
+// <ol start="0600">, текст первого ответа остался без номера, и в разметке
+// это выглядело как обычный вложенный список. Читатель видел ответы не на все
+// вопросы, а ни сборка, ни остальные правила этого не замечали. Проверяем
+// источник: плоский список из одной записи, маркеры «2.»…«N.» по числу
+// вопросов и обратная ссылка на задания.
+{
+  const block = (id) => {
+    const at = course.indexOf(`id="${id}"`);
+    if (at < 0) return null;
+    const ol = course.indexOf('<ol>', at);
+    const close = course.indexOf('</ol>', ol);
+    return ol < 0 || close < 0 ? null : course.slice(ol + 4, close);
+  };
+  for (let module = 0; module < 37; module += 1) {
+    const tag = `T${String(module).padStart(2, '0')}`;
+    const questions = block(`t${String(module).padStart(2, '0')}`);
+    const answers = block(`a${String(module).padStart(2, '0')}`);
+    if (questions === null || answers === null) {
+      failures.push(`${tag}: missing the question or the answer block`);
+      continue;
+    }
+    const count = (questions.match(/<li>/g) ?? []).length;
+    if (answers.includes('<ol')) failures.push(`${tag}: the answer block has nested lists — answers leaked into start attributes`);
+    const entries = (answers.match(/<li>/g) ?? []).length;
+    if (entries !== 1) failures.push(`${tag}: answers must be one list entry, got ${entries}`);
+    const text = answers.replace(/<[^>]+>/g, ' ');
+    for (let index = 2; index <= count; index += 1) {
+      if (!text.includes(` ${index}. `)) {
+        failures.push(`${tag}: answer ${index} of ${count} is missing — the key does not cover every question`);
+        break;
+      }
+    }
+    if (!answers.includes(`href="#t${String(module).padStart(2, '0')}"`)) failures.push(`${tag}: answers do not link back to the questions`);
+  }
+}
 const bodyText = body
   // Подписи внешних ссылок — это названия чужих документов, а не проза книги:
   // «Red Hat Enterprise Linux documentation» давало слову documentation
