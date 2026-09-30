@@ -152,9 +152,14 @@ LVM2 001wevDiXZ2VZeMTRFOf1Z2bNn3dZtVOLoS</code></pre>
 <pre><code class="language-bash">sudo lvremove -f /dev/vg_lab/lv_app     # том исчез
 ls -lt /etc/lvm/archive/vg_lab_*.vg     # кандидаты: список имён ничего не доказывает
 sudo cat /etc/lvm/archive/vg_lab_00001-1766531299.vg | less   # читаем метаданные: vg_lab, UUID, lv_app
+</code></pre>
+<p>Само восстановление — сценарий, а не вставка в живую сессию: при вставке блока <code>read</code> съел бы следующие за ним команды, а <code>exit</code> при неудачной проверке закрыл бы саму сессию. Сохраните сценарий в файл и запустите его — тогда <code>read</code> спросит путь у вас, а <code>exit</code> завершит только сценарий:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# restore-lv.sh — восстановление lv_app в vg_lab из проверенного архива
+set -e    # остановка при любой ошибке: пустой выбор, неудачная проба --test, отказ vgcfgrestore
 read -r -p 'путь проверенного архива: ' archive
 [ -n "$archive" ] || { echo 'архив не выбран — восстановление отменено'; exit 1; }
-sudo vgcfgrestore --test -f "$archive" vg_lab || exit 1   # метаданные читаются и подходят vg_lab
+sudo vgcfgrestore --test -f "$archive" vg_lab   # метаданные читаются и подходят vg_lab
 sudo vgcfgrestore -f "$archive" vg_lab  # в восстановление идёт тот же проверенный путь
 sudo lvchange -ay /dev/vg_lab/lv_app
 sudo mount /dev/vg_lab/lv_app /mnt/lab &amp;&amp; cat /mnt/lab/marker.txt</code></pre>
