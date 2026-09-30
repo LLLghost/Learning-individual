@@ -54,7 +54,7 @@ for (const [file, html] of cache) {
 // Страница всей книги повторяет прозу глав целиком: она для печати, PDF и
 // читалки. В индексе поиска она удвоила бы каждую находку и сам файл
 // (1,6 → 2,9 МБ), а в офлайн-копии — её объём, ничего не добавив читателю.
-const DUPLICATE_ROUTES = new Set(['/book/']);
+const DUPLICATE_ROUTES = new Set(['/book/', '/about/']);
 const assessment = cache.get(resolve(root, 'assessment', 'index.html'));
 const siteJs = await readFile(resolve(root, 'assets', 'site.js'), 'utf8');
 const siteCss = await readFile(resolve(root, 'assets', 'site.css'), 'utf8');
@@ -502,8 +502,19 @@ if (!/<nav class="pager"[^>]*>[\s\S]*?href="[^"]*\/chapters\/00\/"[\s\S]*?<\/nav
 }
 // Вход в неё виден с главной и из программы, иначе часть существует, но её не находят.
 for (const [name, file] of [['home', resolve(root, 'index.html')], ['curriculum', resolve(root, 'curriculum', 'index.html')]]) {
-  if (!cache.get(file)?.includes('/start/01/')) failures.push(`${name}: no entry point into the introductory part`);
+  if (!cache.get(file)?.includes('/start/00/')) failures.push(`${name}: no entry point into the introductory part`);
 }
+// Обязательная подготовка должна быть связной: введение → уроки → стенд.
+const introduction = cache.get(resolve(root, 'start', '00', 'index.html')) ?? '';
+for (const id of ['front-s003', 'front-s015', 'how-checks-work', 'intro-check']) {
+  if (!introduction.includes(`id="${id}"`)) failures.push(`introduction: missing ${id}`);
+}
+for (const [from, to] of [['start/00', 'start/01'], ['start/01', 'start/00'], ['chapters/00', 'start/06']]) {
+  const html = cache.get(resolve(root, from, 'index.html')) ?? '';
+  const pager = html.match(/<nav class="pager"[^>]*>[\s\S]*?<\/nav>/)?.[0] ?? '';
+  if (!pager.includes(`/${to}/`)) failures.push(`${from}: missing lesson transition to ${to}`);
+}
+if (/шаг пропускается|пропустите эту часть/.test([...cache.values()].join(''))) failures.push('introductory part is still described as optional');
 // Заголовок части забирает первый урок: на странице «О курсе» ему делать нечего.
 if (cache.get(resolve(root, 'about', 'index.html'))?.includes('id="start-part"')) {
   failures.push('about: the introductory part heading leaked onto the about page');
@@ -1574,7 +1585,7 @@ for (const [file, html] of cache) {
     if (!siteCss.includes('.book-prose a[href^="http"]::after')) failures.push('site.css: printed pages lose the addresses of external links');
   }
 }
-if (htmlFiles.length !== 49) failures.push(`expected 49 routes, got ${htmlFiles.length}`);
+if (htmlFiles.length !== 50) failures.push(`expected 50 routes, got ${htmlFiles.length}`);
 if (failures.length) throw new Error(`Site validation failed:\n${failures.slice(0, 30).join('\n')}`);
 await import('./check-coverage.mjs');
 console.log(`Validated ${htmlFiles.length} routes: links, anchors, ${bankSize.items} items, ${bankSize.cases} scenarios.`);
