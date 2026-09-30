@@ -146,6 +146,16 @@ try{
   else if(parsed.version!==DB.version){storageWhy='foreign';keptVersion=String(parsed.version);}
   else{
    try{state=validate(parsed);}catch{storageWhy='corrupt';}
+   // Несовместимая попытка итогового контроля не переносится и не теряется:
+   // validate её отбрасывает — ответы хранятся номерами вариантов, и прежний
+   // отпечаток порядка не проверял варианты второго яруса, — поэтому исходная
+   // строка сохраняется отдельным разделом до любой перезаписи. Копию save
+   // не удалось — оригинал не перезаписываем; остальной прогресс читается
+   // и работает как обычно.
+   if(storageWhy==='ok'&&parsed.exam&&typeof parsed.exam==='object'&&!state.exam){
+    keptRaw=raw;
+    try{localStorage.setItem(KEPT_KEY,keptRaw);}catch(e){storageWhy='unavailable';}
+   }
    if(storageWhy==='ok'){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){storageWhy='unavailable';}}
   }
   // Зачёты из другой версии не переносятся автоматически: совпадающие номера
@@ -210,7 +220,14 @@ function status(){const done=completed(),practice=state.practice?.passed||0,best
  if(storageWhy==='ok'&&storageOK){
   note.textContent='Прогресс сохраняется в этом браузере. Экспортируйте JSON перед переносом или очисткой данных.';
   let kept=null;try{kept=localStorage.getItem(KEPT_KEY);}catch{}
-  if(kept!==null)note.append(' Прежняя версия прогресса хранится отдельным разделом и входит в резервную копию.');
+  let keptExam=null;if(kept!==null){try{keptExam=JSON.parse(kept);}catch{}}
+  // Отдельный раздел с попыткой того же банка — это сохранённая несовместимая
+  // попытка итогового контроля: без этого сообщения читатель не узнает, что
+  // она вообще была, а копия лежит мёртвым грузом. Переносу попытка не
+  // подлежит: номера вариантов привязаны к прежнему порядку.
+  if(keptExam&&keptExam.version===DB.version&&keptExam.exam){
+   note.append(' Незавершённая попытка итогового контроля не совпадает с текущим порядком вариантов банка (порядок входит в отпечаток попытки, прежний отпечаток не проверял варианты второго яруса) и в зачёт не перенесена. Её исходные данные сохранены отдельным разделом, входят в резервную копию и доступны ниже. ',button('Скачать данные с попыткой (JSON)',()=>{download('course-progress-exam-'+DB.version+'.json',kept);}));
+  }else if(kept!==null)note.append(' Прежняя версия прогресса хранится отдельным разделом и входит в резервную копию.');
  }else if(storageWhy==='foreign'||storageWhy==='corrupt'){
   if(storageWhy==='foreign')note.append(el('strong','Банк заданий обновился: '),'сохранённый прогресс сделан другой версией курса (в браузере — '+keptVersion+', текущая — '+DB.version+'). ');
   else note.append(el('strong','Сохранённый файл прогресса повреждён: '),'данные не читаются целиком. ');
