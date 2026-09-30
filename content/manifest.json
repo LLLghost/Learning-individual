@@ -426,8 +426,8 @@
     {
       "file": "appendices/appendix-h.html",
       "start": {
-        "kind": "marker",
-        "id": "b33-s110"
+        "kind": "tag",
+        "tag": "<details class=\"answer-section\" open=\"open\"><summary>Ключи к итоговым задачам</summary>"
       },
       "anchor": "b33-s110"
     },
