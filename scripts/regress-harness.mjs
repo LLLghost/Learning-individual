@@ -72,8 +72,16 @@ export async function regressHarness(label) {
     browser = await launchBrowser();
   } catch (error) {
     console.error(`Не удалось поднять окружение регрессий (${label}): ${error.message}`);
+    // Уборка наблюдаема до принудительного выхода: маркер печатает сам
+    // колбэк close, а не код рядом с exit. Принудительный выход сам по
+    // себе ничего не доказывает — он гасит и висящий сервер (r4145462744),
+    // поэтому доказательство уборки — маркер, которого без настоящего
+    // закрытия не бывает.
     if (browser) await browser.close().catch(() => {});
-    if (server) server.close();
+    if (server) await new Promise((done) => server.close(() => {
+      console.error('сервер окружения закрыт до выхода');
+      done();
+    }));
     process.exit(2);
   }
   const failures = [];
