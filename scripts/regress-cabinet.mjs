@@ -14,18 +14,19 @@
 // общий каркас regress-harness.mjs.
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { regressHarness, KEY, KEPT, seedState } from './regress-harness.mjs';
+import { regressHarness, KEY, KEPT, seedState, trackPageErrors } from './regress-harness.mjs';
 
 const { origin, browser, check, failures, finish } = await regressHarness('предметные регрессии кабинета');
 
+// Сбор клиентских исключений — общий со вторым прогоном помощник каркаса:
+// подписка обязана стоять до первой навигации страницы.
+const errors = [];
+
+try {
 // Service worker сайта отдаёт страницы из кэша в обход перехвата — для
 // подмены study-data его приходится блокировать в этом контексте.
 const context = await browser.newContext({ serviceWorkers: 'block' });
-const page = await context.newPage();
-const errors = [];
-page.on('pageerror', error => errors.push(`исключение: ${error.message}`));
-
-try {
+const page = trackPageErrors(await context.newPage(), errors);
 // 1. Evidence проверяется поэлементно (r4143417088): [null], массив или
 //    неверный тип cmd/excerpt отклоняются до сохранения, годный отчёт
 //    принимается, а отказ не портит уже записанный прогресс.
@@ -220,7 +221,8 @@ try {
 check('обход без клиентских исключений', errors.length === 0, errors.join(' | '));
 } catch (error) {
   // Отказ сценария — тоже проверка: он обязан попасть в отчёт, а не обрывать
-  // его без итоговой строки и уборки окружения.
+  // его без итоговой строки и уборки окружения. Сюда входит и отказ подъёма
+  // (newContext/newPage): он обязан пройти той же уборкой и ненулевым кодом.
   console.log(`FAIL аварийное завершение: ${error?.message ?? error}`);
   failures.push('аварийное завершение сценария');
 } finally {
