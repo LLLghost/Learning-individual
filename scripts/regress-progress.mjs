@@ -19,7 +19,7 @@
 import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { regressHarness, KEY, KEPT, seedState } from './regress-harness.mjs';
+import { regressHarness, KEY, KEPT, seedState, trackPageErrors, quotaPage } from './regress-harness.mjs';
 
 const { origin, browser, check, failures, finish } = await regressHarness('проверки сохранности прогресса');
 
@@ -46,12 +46,13 @@ async function seedLegacyExam(page, order) {
   }, [KEY, order]);
 }
 
-const context = await browser.newContext();
-const page = await context.newPage();
+// Сбор клиентских исключений общий для всех контекстов прогона: основной
+// страницы, блокированного хранилища и страниц с отказом записи.
 const errors = [];
-page.on('pageerror', error => errors.push(`исключение: ${error.message}`));
 
 try {
+const context = await browser.newContext();
+const page = trackPageErrors(await context.newPage(), errors);
 // 1. Базовый путь: данные текущей версии читаются и переживают перезагрузку.
 {
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
@@ -116,7 +117,9 @@ try {
   await blocked.addInitScript(() => {
     Object.defineProperty(window, 'localStorage', { configurable: true, get() { throw new DOMException('denied', 'SecurityError'); } });
   });
-  const page4 = await blocked.newPage();
+  // Исключения этой страницы идут и в локальную проверку сценария, и в
+  // общий итог: контекст отдельный, а требование к нему то же.
+  const page4 = trackPageErrors(await blocked.newPage(), errors);
   const seen4 = [];
   page4.on('pageerror', error => seen4.push(error.message));
   await page4.goto(origin + '/assessment/', { waitUntil: 'load' });
@@ -140,16 +143,7 @@ try {
     return raw;
   }, KEY);
   await page.evaluate(key => localStorage.removeItem(key), KEPT);
-  const failing = await browser.newContext();
-  await failing.addInitScript((seed) => {
-    const store = {
-      getItem: key => (key === seed.key ? seed.value : null),
-      setItem: () => { throw new DOMException('quota', 'QuotaExceededError'); },
-      removeItem: () => {}, clear: () => {}, key: () => null, length: 0,
-    };
-    Object.defineProperty(window, 'localStorage', { configurable: true, get: () => store });
-  }, { key: KEY, value: oldRaw });
-  const page5 = await failing.newPage();
+  const { context: failing, page: page5 } = await quotaPage(browser, { key: KEY, value: oldRaw }, errors);
   await page5.goto(origin + '/assessment/', { waitUntil: 'load' });
   const text = await note(page5).textContent();
   check('неудача сохранения: переход объясняет, что данные не перезаписаны', text.includes('не перезаписаны'), text);
@@ -256,16 +250,7 @@ try {
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
   await seedState(page);
   const rawFail = await seedLegacyExam(page, LEGACY_ORDER);
-  const failing = await browser.newContext();
-  await failing.addInitScript((seed) => {
-    const store = {
-      getItem: key => (key === seed.key ? seed.value : null),
-      setItem: () => { throw new DOMException('quota', 'QuotaExceededError'); },
-      removeItem: () => {}, clear: () => {}, key: () => null, length: 0,
-    };
-    Object.defineProperty(window, 'localStorage', { configurable: true, get: () => store });
-  }, { key: KEY, value: rawFail });
-  const page9 = await failing.newPage();
+  const { context: failing, page: page9 } = await quotaPage(browser, { key: KEY, value: rawFail }, errors);
   await page9.goto(origin + '/assessment/', { waitUntil: 'load' });
   const after = await page9.evaluate(key => localStorage.getItem(key), KEY);
   check('ошибка копии: исходная строка с попыткой не перезаписана', after === rawFail);
@@ -275,10 +260,11 @@ try {
   await failing.close();
 }
 
-check('обход без клиентских исключений', errors.length === 0, errors.join(' | '));
+check('обход без клиентских исключений во всех контекстах', errors.length === 0, errors.join(' | '));
 } catch (error) {
   // Отказ сценария — тоже проверка: он обязан попасть в отчёт, а не обрывать
-  // его без итоговой строки и уборки окружения.
+  // его без итоговой строки и уборки окружения. Сюда входит и отказ подъёма
+  // (newContext/newPage): он обязан пройти той же уборкой и ненулевым кодом.
   console.log(`FAIL аварийное завершение: ${error?.message ?? error}`);
   failures.push('аварийное завершение сценария');
 } finally {

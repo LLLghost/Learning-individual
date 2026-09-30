@@ -30,6 +30,34 @@ export async function seedState(page, patch) {
   }, [KEY, patch ?? {}]);
 }
 
+// Подписка на клиентские исключения ставится на каждую страницу до первой
+// навигации. Страниц за прогон несколько — основная, блокированное
+// хранилище, отказ записи, — и исключение в «чужой» странице молча
+// пропускало итоговую проверку: она видела ошибки только основной.
+export function trackPageErrors(page, sink) {
+  page.on('pageerror', error => sink.push(`исключение: ${error.message}`));
+  return page;
+}
+
+// Хранилище, чья запись всегда падает (переполнение квоты). Подмена у двух
+// сценариев была копией, а цели разные: переход на новую версию банка и
+// спасение несовместимой попытки. Общее здесь — только окружение; проверки
+// остаются у сценариев, поэтому возвращается готовая страница с подпиской.
+export async function quotaPage(browser, seed, sink) {
+  const context = await browser.newContext();
+  await context.addInitScript((data) => {
+    const store = {
+      getItem: key => (key === data.key ? data.value : null),
+      setItem: () => { throw new DOMException('quota', 'QuotaExceededError'); },
+      removeItem: () => {}, clear: () => {}, key: () => null, length: 0,
+    };
+    Object.defineProperty(window, 'localStorage', { configurable: true, get: () => store });
+  }, seed);
+  const page = await context.newPage();
+  if (sink) trackPageErrors(page, sink);
+  return { context, page };
+}
+
 export async function regressHarness(label) {
   const { server, origin } = await startStaticServer(resolve(process.cwd(), 'build'));
   let browser;
