@@ -12,7 +12,7 @@
 // после правки фрагментов запустите `npm run build` (он пересобирает и файл,
 // и сайт) и закоммитьте фрагмент вместе с обновлённым course.html.
 import { readFile, writeFile, readdir } from 'node:fs/promises';
-import { resolve, relative, extname, join } from 'node:path';
+import { resolve, relative, extname, join, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const contentDir = (root) => resolve(root, 'content');
@@ -43,14 +43,16 @@ const checkAnchors = (fragments, bodies) => {
 };
 
 // Файл без манифеста молча не попадает в сборку — это самый дорогой вид
-// ошибки, поэтому висячие файлы в content/ тоже запрещены.
+// ошибки, поэтому висячие файлы в content/ тоже запрещены. Пути сравниваются
+// с разделителями POSIX: на Windows path.relative вернёт обратные слеши, а
+// манифест записан прямыми — без нормализации каждый файл выглядел бы висячим.
 const listHtmlFiles = async (root) => {
   const found = [];
   const walk = async (dir) => {
     for (const entry of await readdir(dir, { withFileTypes: true })) {
       const path = join(dir, entry.name);
       if (entry.isDirectory()) await walk(path);
-      else if (extname(entry.name) === '.html') found.push(relative(contentDir(root), path));
+      else if (extname(entry.name) === '.html') found.push(relative(contentDir(root), path).split(sep).join('/'));
     }
   };
   await walk(contentDir(root));
