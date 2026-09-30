@@ -6119,7 +6119,8 @@ recovery objectives
 <pre><code class="language-bash">mkdir -p /var/tmp/course-zfs
 sudo truncate -s 1G /var/tmp/course-zfs/vdev0.img
 sudo zpool create course-check /var/tmp/course-zfs/vdev0.img
-sudo zfs create course-check/data
+# точка монтирования задана явно — без флага датасет смонтировался бы в /course-check/data:
+sudo zfs create -o mountpoint=/var/tmp/course-zfs/data course-check/data
 sudo dd if=/dev/urandom of=/var/tmp/course-zfs/data/file512.bin bs=1M count=512
 sudo sha256sum /var/tmp/course-zfs/data/file512.bin &gt; /var/tmp/course-zfs/sum.txt</code></pre>
 <p>Теперь портим 300 МиБ <em>строго локальной целью</em> — файлом vdev нашего пула, мимо ZFS, как это сделал бы сбойный контроллер или чужая команда <code>dd</code>. Цель сверяется с составом пула перед порчей; если файл внезапно не найден в <code>course-check</code>, сценарий останавливается, а не пишет по пути «на всякий случай»:</p>
