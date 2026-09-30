@@ -2,10 +2,13 @@ import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { assembleCourse } from './assemble-course.mjs';
 
 const root = process.cwd();
 const output = resolve(root, 'build');
-const source = await readFile(resolve(root, 'public', 'course.html'), 'utf8');
+// Редактируемый источник — фрагменты content/; переносимый однофайловый
+// course.html собирается из них и потому не является второй копией для правок.
+const { html: source } = await assembleCourse(root);
 
 const parts = [
   ['Часть 0', 'Учебная лаборатория', [0]],
@@ -1920,4 +1923,8 @@ for (const relative of htmlFiles) {
 }
 const manifest = { generatedAt: new Date().toISOString(), sourceSha256: sha256(source), routes: htmlFiles.length, chapters: chapters.length, labs: labs.length };
 await writeFile(resolve(output, 'build-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+// Переносимый однофайловый учебник — тоже результат сборки. Записывается в
+// конце: если сборка сайта упала, файл остаётся согласованным с прежним
+// коммитом, а не наполовину обновлённым.
+await writeFile(resolve(root, 'public', 'course.html'), source);
 console.log(`Multipage site built: ${htmlFiles.length} routes, ${chapters.length} chapters, ${labs.length} lab modules.`);

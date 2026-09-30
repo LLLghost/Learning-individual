@@ -1,0 +1,856 @@
+{
+  "target": "public/course.html",
+  "description": "Единственный редактируемый источник учебника. Порядок fragments — порядок сборки public/course.html; start задаёт, откуда фрагмент начинается в собранном файле, anchor проверяет содержимое. Правки — только здесь; course.html собирается scripts/assemble-course.mjs.",
+  "fragments": [
+    {
+      "file": "shell/open.html",
+      "start": {
+        "kind": "offset",
+        "at": 0
+      }
+    },
+    {
+      "file": "shell/style.html",
+      "start": {
+        "kind": "tag",
+        "tag": "<style"
+      }
+    },
+    {
+      "file": "shell/sidebar.html",
+      "start": {
+        "kind": "tag",
+        "tag": "</head>"
+      }
+    },
+    {
+      "file": "intro/about.html",
+      "start": {
+        "kind": "marker",
+        "id": "title"
+      },
+      "anchor": "title"
+    },
+    {
+      "file": "lessons/part-intro.html",
+      "start": {
+        "kind": "marker",
+        "id": "start-part"
+      },
+      "anchor": "start-part"
+    },
+    {
+      "file": "lessons/lesson-01.html",
+      "start": {
+        "kind": "marker",
+        "id": "start01"
+      },
+      "anchor": "start01"
+    },
+    {
+      "file": "lessons/lesson-02.html",
+      "start": {
+        "kind": "marker",
+        "id": "start02"
+      },
+      "anchor": "start02"
+    },
+    {
+      "file": "lessons/lesson-03.html",
+      "start": {
+        "kind": "marker",
+        "id": "start03"
+      },
+      "anchor": "start03"
+    },
+    {
+      "file": "lessons/lesson-04.html",
+      "start": {
+        "kind": "marker",
+        "id": "start04"
+      },
+      "anchor": "start04"
+    },
+    {
+      "file": "lessons/lesson-05.html",
+      "start": {
+        "kind": "marker",
+        "id": "start05"
+      },
+      "anchor": "start05"
+    },
+    {
+      "file": "lessons/lesson-06.html",
+      "start": {
+        "kind": "marker",
+        "id": "start06"
+      },
+      "anchor": "start06"
+    },
+    {
+      "file": "chapters/chapter-00.html",
+      "start": {
+        "kind": "marker",
+        "id": "front-s016"
+      },
+      "anchor": "b00"
+    },
+    {
+      "file": "chapters/chapter-01.html",
+      "start": {
+        "kind": "marker",
+        "id": "b00-s060"
+      },
+      "anchor": "b01"
+    },
+    {
+      "file": "chapters/chapter-02.html",
+      "start": {
+        "kind": "marker",
+        "id": "b02"
+      },
+      "anchor": "b02"
+    },
+    {
+      "file": "chapters/chapter-03.html",
+      "start": {
+        "kind": "marker",
+        "id": "b03"
+      },
+      "anchor": "b03"
+    },
+    {
+      "file": "chapters/chapter-04.html",
+      "start": {
+        "kind": "marker",
+        "id": "b04"
+      },
+      "anchor": "b04"
+    },
+    {
+      "file": "chapters/chapter-05.html",
+      "start": {
+        "kind": "marker",
+        "id": "b05"
+      },
+      "anchor": "b05"
+    },
+    {
+      "file": "chapters/chapter-06.html",
+      "start": {
+        "kind": "marker",
+        "id": "b05-s026"
+      },
+      "anchor": "b06"
+    },
+    {
+      "file": "chapters/chapter-07.html",
+      "start": {
+        "kind": "marker",
+        "id": "b07"
+      },
+      "anchor": "b07"
+    },
+    {
+      "file": "chapters/chapter-08.html",
+      "start": {
+        "kind": "marker",
+        "id": "b08"
+      },
+      "anchor": "b08"
+    },
+    {
+      "file": "chapters/chapter-09.html",
+      "start": {
+        "kind": "marker",
+        "id": "b08-s026"
+      },
+      "anchor": "b09"
+    },
+    {
+      "file": "chapters/chapter-10.html",
+      "start": {
+        "kind": "marker",
+        "id": "b10"
+      },
+      "anchor": "b10"
+    },
+    {
+      "file": "chapters/chapter-11.html",
+      "start": {
+        "kind": "marker",
+        "id": "b11"
+      },
+      "anchor": "b11"
+    },
+    {
+      "file": "chapters/chapter-12.html",
+      "start": {
+        "kind": "marker",
+        "id": "b11-s031"
+      },
+      "anchor": "b12"
+    },
+    {
+      "file": "chapters/chapter-13.html",
+      "start": {
+        "kind": "marker",
+        "id": "b13"
+      },
+      "anchor": "b13"
+    },
+    {
+      "file": "chapters/chapter-14.html",
+      "start": {
+        "kind": "marker",
+        "id": "b14"
+      },
+      "anchor": "b14"
+    },
+    {
+      "file": "chapters/chapter-15.html",
+      "start": {
+        "kind": "marker",
+        "id": "b15"
+      },
+      "anchor": "b15"
+    },
+    {
+      "file": "chapters/chapter-16.html",
+      "start": {
+        "kind": "marker",
+        "id": "b16"
+      },
+      "anchor": "b16"
+    },
+    {
+      "file": "chapters/chapter-17.html",
+      "start": {
+        "kind": "marker",
+        "id": "b16-s024"
+      },
+      "anchor": "b17"
+    },
+    {
+      "file": "chapters/chapter-18.html",
+      "start": {
+        "kind": "marker",
+        "id": "b18"
+      },
+      "anchor": "b18"
+    },
+    {
+      "file": "chapters/chapter-19.html",
+      "start": {
+        "kind": "marker",
+        "id": "b18-s025"
+      },
+      "anchor": "b19"
+    },
+    {
+      "file": "chapters/chapter-20.html",
+      "start": {
+        "kind": "marker",
+        "id": "b20"
+      },
+      "anchor": "b20"
+    },
+    {
+      "file": "chapters/chapter-21.html",
+      "start": {
+        "kind": "marker",
+        "id": "b21"
+      },
+      "anchor": "b21"
+    },
+    {
+      "file": "chapters/chapter-22.html",
+      "start": {
+        "kind": "marker",
+        "id": "b21-s024"
+      },
+      "anchor": "b22"
+    },
+    {
+      "file": "chapters/chapter-23.html",
+      "start": {
+        "kind": "marker",
+        "id": "b23"
+      },
+      "anchor": "b23"
+    },
+    {
+      "file": "chapters/chapter-24.html",
+      "start": {
+        "kind": "marker",
+        "id": "b23-s030"
+      },
+      "anchor": "b24"
+    },
+    {
+      "file": "chapters/chapter-25.html",
+      "start": {
+        "kind": "marker",
+        "id": "b25"
+      },
+      "anchor": "b25"
+    },
+    {
+      "file": "chapters/chapter-26.html",
+      "start": {
+        "kind": "marker",
+        "id": "b26"
+      },
+      "anchor": "b26"
+    },
+    {
+      "file": "chapters/chapter-27.html",
+      "start": {
+        "kind": "marker",
+        "id": "b26-s025"
+      },
+      "anchor": "b27"
+    },
+    {
+      "file": "chapters/chapter-28.html",
+      "start": {
+        "kind": "marker",
+        "id": "b28"
+      },
+      "anchor": "b28"
+    },
+    {
+      "file": "chapters/chapter-29.html",
+      "start": {
+        "kind": "marker",
+        "id": "b29"
+      },
+      "anchor": "b29"
+    },
+    {
+      "file": "chapters/chapter-30.html",
+      "start": {
+        "kind": "marker",
+        "id": "b30"
+      },
+      "anchor": "b30"
+    },
+    {
+      "file": "chapters/chapter-31.html",
+      "start": {
+        "kind": "marker",
+        "id": "b31"
+      },
+      "anchor": "b31"
+    },
+    {
+      "file": "chapters/chapter-32.html",
+      "start": {
+        "kind": "marker",
+        "id": "b32"
+      },
+      "anchor": "b32"
+    },
+    {
+      "file": "chapters/chapter-33.html",
+      "start": {
+        "kind": "marker",
+        "id": "b32-s023"
+      },
+      "anchor": "b33"
+    },
+    {
+      "file": "appendices/appendix-a.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s044"
+      },
+      "anchor": "b33-s044"
+    },
+    {
+      "file": "appendices/appendix-b.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s053"
+      },
+      "anchor": "b33-s053"
+    },
+    {
+      "file": "appendices/appendix-c.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s058"
+      },
+      "anchor": "b33-s058"
+    },
+    {
+      "file": "appendices/appendix-d.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s059"
+      },
+      "anchor": "b33-s059"
+    },
+    {
+      "file": "appendices/appendix-e.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s090"
+      },
+      "anchor": "b33-s090"
+    },
+    {
+      "file": "appendices/appendix-f.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s099"
+      },
+      "anchor": "b33-s099"
+    },
+    {
+      "file": "appendices/appendix-g.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s108"
+      },
+      "anchor": "b33-s108"
+    },
+    {
+      "file": "appendices/conclusion.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s109"
+      },
+      "anchor": "b33-s109"
+    },
+    {
+      "file": "appendices/appendix-h.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s110"
+      },
+      "anchor": "b33-s110"
+    },
+    {
+      "file": "appendices/final-checklist.html",
+      "start": {
+        "kind": "marker",
+        "id": "b33-s141"
+      },
+      "anchor": "b33-s141"
+    },
+    {
+      "file": "practice/selftest.html",
+      "start": {
+        "kind": "marker",
+        "id": "selftest"
+      },
+      "anchor": "selftest"
+    },
+    {
+      "file": "practice/study-app.html",
+      "start": {
+        "kind": "marker",
+        "id": "study-app"
+      },
+      "anchor": "study-app"
+    },
+    {
+      "file": "practice/assessment-intro.html",
+      "start": {
+        "kind": "marker",
+        "id": "assessment"
+      },
+      "anchor": "assessment"
+    },
+    {
+      "file": "practice/labs-intro.html",
+      "start": {
+        "kind": "marker",
+        "id": "labs"
+      },
+      "anchor": "labs"
+    },
+    {
+      "file": "practice/lab-00.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab00"
+      },
+      "anchor": "lab00"
+    },
+    {
+      "file": "practice/lab-01.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab01"
+      },
+      "anchor": "lab01"
+    },
+    {
+      "file": "practice/lab-02.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab02"
+      },
+      "anchor": "lab02"
+    },
+    {
+      "file": "practice/lab-03.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab03"
+      },
+      "anchor": "lab03"
+    },
+    {
+      "file": "practice/lab-04.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab04"
+      },
+      "anchor": "lab04"
+    },
+    {
+      "file": "practice/lab-05.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab05"
+      },
+      "anchor": "lab05"
+    },
+    {
+      "file": "practice/lab-06.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab06"
+      },
+      "anchor": "lab06"
+    },
+    {
+      "file": "practice/lab-07.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab07"
+      },
+      "anchor": "lab07"
+    },
+    {
+      "file": "practice/lab-08.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab08"
+      },
+      "anchor": "lab08"
+    },
+    {
+      "file": "practice/lab-09.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab09"
+      },
+      "anchor": "lab09"
+    },
+    {
+      "file": "practice/lab-10.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab10"
+      },
+      "anchor": "lab10"
+    },
+    {
+      "file": "practice/lab-11.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab11"
+      },
+      "anchor": "lab11"
+    },
+    {
+      "file": "practice/lab-12.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab12"
+      },
+      "anchor": "lab12"
+    },
+    {
+      "file": "practice/lab-13.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab13"
+      },
+      "anchor": "lab13"
+    },
+    {
+      "file": "practice/lab-14.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab14"
+      },
+      "anchor": "lab14"
+    },
+    {
+      "file": "practice/lab-15.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab15"
+      },
+      "anchor": "lab15"
+    },
+    {
+      "file": "practice/lab-16.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab16"
+      },
+      "anchor": "lab16"
+    },
+    {
+      "file": "practice/lab-17.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab17"
+      },
+      "anchor": "lab17"
+    },
+    {
+      "file": "practice/lab-18.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab18"
+      },
+      "anchor": "lab18"
+    },
+    {
+      "file": "practice/lab-19.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab19"
+      },
+      "anchor": "lab19"
+    },
+    {
+      "file": "practice/lab-20.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab20"
+      },
+      "anchor": "lab20"
+    },
+    {
+      "file": "practice/lab-21.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab21"
+      },
+      "anchor": "lab21"
+    },
+    {
+      "file": "practice/lab-22.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab22"
+      },
+      "anchor": "lab22"
+    },
+    {
+      "file": "practice/lab-23.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab23"
+      },
+      "anchor": "lab23"
+    },
+    {
+      "file": "practice/lab-24.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab24"
+      },
+      "anchor": "lab24"
+    },
+    {
+      "file": "practice/lab-25.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab25"
+      },
+      "anchor": "lab25"
+    },
+    {
+      "file": "practice/lab-26.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab26"
+      },
+      "anchor": "lab26"
+    },
+    {
+      "file": "practice/lab-27.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab27"
+      },
+      "anchor": "lab27"
+    },
+    {
+      "file": "practice/lab-28.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab28"
+      },
+      "anchor": "lab28"
+    },
+    {
+      "file": "practice/lab-29.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab29"
+      },
+      "anchor": "lab29"
+    },
+    {
+      "file": "practice/lab-30.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab30"
+      },
+      "anchor": "lab30"
+    },
+    {
+      "file": "practice/lab-31.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab31"
+      },
+      "anchor": "lab31"
+    },
+    {
+      "file": "practice/lab-32.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab32"
+      },
+      "anchor": "lab32"
+    },
+    {
+      "file": "practice/lab-33.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab33"
+      },
+      "anchor": "lab33"
+    },
+    {
+      "file": "practice/lab-34.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab34"
+      },
+      "anchor": "lab34"
+    },
+    {
+      "file": "practice/lab-35.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab35"
+      },
+      "anchor": "lab35"
+    },
+    {
+      "file": "practice/lab-36.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab36"
+      },
+      "anchor": "lab36"
+    },
+    {
+      "file": "reference/assessment-reference.html",
+      "start": {
+        "kind": "marker",
+        "id": "assessment-reference"
+      },
+      "anchor": "assessment-reference"
+    },
+    {
+      "file": "shell/main-close.html",
+      "start": {
+        "kind": "last-tag",
+        "tag": "</main>"
+      }
+    },
+    {
+      "file": "data/quiz-data.html",
+      "start": {
+        "kind": "marker",
+        "id": "quiz-data"
+      },
+      "anchor": "quiz-data"
+    },
+    {
+      "file": "data/quiz-engine.html",
+      "start": {
+        "kind": "script-end",
+        "id": "quiz-data"
+      }
+    },
+    {
+      "file": "data/lesson-quick-data.html",
+      "start": {
+        "kind": "marker",
+        "id": "lesson-quick-data"
+      },
+      "anchor": "lesson-quick-data"
+    },
+    {
+      "file": "data/chapter-quick-data.html",
+      "start": {
+        "kind": "marker",
+        "id": "chapter-quick-data"
+      },
+      "anchor": "chapter-quick-data"
+    },
+    {
+      "file": "data/study-data.html",
+      "start": {
+        "kind": "marker",
+        "id": "study-data"
+      },
+      "anchor": "study-data"
+    },
+    {
+      "file": "data/checker-code-data.html",
+      "start": {
+        "kind": "marker",
+        "id": "checker-code-data"
+      },
+      "anchor": "checker-code-data"
+    },
+    {
+      "file": "data/lab-code-data.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab-code-data"
+      },
+      "anchor": "lab-code-data"
+    },
+    {
+      "file": "data/lab-data.html",
+      "start": {
+        "kind": "marker",
+        "id": "lab-data"
+      },
+      "anchor": "lab-data"
+    },
+    {
+      "file": "shell/course-script.html",
+      "start": {
+        "kind": "plain-script-after",
+        "id": "lab-data"
+      }
+    }
+  ]
+}

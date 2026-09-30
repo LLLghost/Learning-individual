@@ -61,7 +61,7 @@ bash course-stand.sh plan
 Сборке и проверке нужен только Node со стандартной библиотекой — `pnpm install` для них не требуется.
 
 ```bash
-node scripts/build-static.mjs
+node scripts/build-static.mjs     # content/ → public/course.html + сайт в build/
 python3 -m http.server 4175 --directory build
 ```
 
@@ -92,11 +92,13 @@ BASE_PATH=/Learning-individual node scripts/build-static.mjs
 
 | Путь | Назначение |
 | --- | --- |
-| `public/course.html` | **Исходный учебник целиком.** Единственный источник содержания. |
+| `content/` | **Исходники учебника.** Уроки, главы, приложения и данные — отдельными фрагментами; порядок и адреса — в `content/manifest.json` (см. [content/README.md](content/README.md)). |
+| `public/course.html` | Переносимый однофайловый учебник. **Результат сборки** `content/`, а не редактируемая копия: проверка ловит устаревший файл. |
 | `public/reference-terms.json` | Дополнение к глоссарию и варианты написания для поиска по выделенному тексту. |
-| `scripts/build-static.mjs` | Генератор: режет учебник на 49 маршрутов, собирает навигацию, поиск, кабинет, CSS и JS. |
-| `scripts/validate-site.mjs` | Проверка собранного сайта. |
-| `scripts/text-nodes.mjs`, `scripts/study-strings.mjs` | Правка прозы и банка заданий без риска повредить разметку и ответы. |
+| `scripts/assemble-course.mjs` | Сборка `content/` → `public/course.html`; `--check` выявляет устаревший результат. |
+| `scripts/build-static.mjs` | Генератор: собирает course.html и режет его на 49 маршрутов, собирает навигацию, поиск, кабинет, CSS и JS. |
+| `scripts/validate-site.mjs` | Проверка собранного сайта и актуальности `public/course.html`. |
+| `scripts/text-nodes.mjs`, `scripts/study-strings.mjs` | Правка прозы и банка заданий без риска повредить разметку и ответы; сами раскладывают правки по фрагментам `content/`. |
 | `scripts/stand/course-stand.sh` | Разворачивает стенд главы 0 на хосте Proxmox VE. |
 | `CHANGELOG.md` | Что менялось для читателя; верхняя запись показывается на странице «О курсе». |
 | `build/` | Результат сборки, в Git не хранится. |

@@ -1,0 +1,78 @@
+<h1 id="b33-s090">Приложение E. Рекомендуемая документация и дальнейшее чтение</h1>
+<p>Учебник даёт модель и практический маршрут, но инженер должен привыкнуть читать первичные документы. Ниже — канонические источники со ссылками; адреса проектов меняются редко, но если ссылка не открывается, ищите документацию по названию проекта на его официальном домене, а не в пересказах.</p>
+<h2 id="b33-s091">Linux</h2>
+<ul>
+<li><code>man</code> установленной системы — первичный источник, версия которого совпадает с вашей</li>
+<li><a href="https://man7.org/linux/man-pages/" rel="noreferrer">Онлайн-зеркало man-страниц Linux</a> — <code>https://man7.org/linux/man-pages/</code></li>
+<li><a href="https://docs.kernel.org/" rel="noreferrer">Документация ядра Linux</a> — <code>https://docs.kernel.org/</code></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/latest/" rel="noreferrer">systemd: man-страницы и upstream-документация</a> — <code>https://www.freedesktop.org/software/systemd/man/latest/</code></li>
+<li><a href="https://debian-handbook.info/" rel="noreferrer">Debian Administrator's Handbook</a> — <code>https://debian-handbook.info/</code></li>
+<li><a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10" rel="noreferrer">Red Hat Enterprise Linux documentation</a> — <code>https://docs.redhat.com/en/documentation/red_hat_enterprise_linux</code></li>
+</ul>
+<p>Начинайте с man-страницы установленной системы: онлайн-версии могут описывать более новое поведение, чем то, которое вы наблюдаете.</p>
+<h2 id="b33-s092">Сети</h2>
+<ul>
+<li><a href="https://datatracker.ietf.org/" rel="noreferrer">IETF Datatracker — поиск по RFC</a> — <code>https://datatracker.ietf.org/</code></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc9293.html" rel="noreferrer">RFC 9293 — TCP (актуальная консолидированная спецификация)</a> — <code>https://www.rfc-editor.org/rfc/rfc9293.html</code></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc1035.html" rel="noreferrer">RFC 1035 — DNS, формат сообщений и поведение</a> — <code>https://www.rfc-editor.org/rfc/rfc1035.html</code></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc2131.html" rel="noreferrer">RFC 2131 — DHCP</a> — <code>https://www.rfc-editor.org/rfc/rfc2131.html</code></li>
+<li><a href="https://wiki.linuxfoundation.org/networking/iproute2" rel="noreferrer">iproute2 — исходники и документация</a> — <code>https://wiki.linuxfoundation.org/networking/iproute2</code></li>
+<li><a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page" rel="noreferrer">nftables wiki</a> — <code>https://wiki.nftables.org/wiki-nftables/index.php/Main_Page</code></li>
+<li>Документация конкретного вендора коммутатора и сетевой карты</li>
+</ul>
+<p>RFC лучше читать не подряд, а под конкретную диагностическую задачу: терминология, конечный автомат, точное поведение протокола в спорном случае.</p>
+<h2 id="b33-s093">Хранение данных</h2>
+<ul>
+<li><a href="https://www.smartmontools.org/wiki/TocDoc" rel="noreferrer">smartmontools</a> — <code>https://www.smartmontools.org/wiki/TocDoc</code></li>
+<li><a href="https://nvmexpress.org/specifications/" rel="noreferrer">Спецификации NVM Express</a> — <code>https://nvmexpress.org/specifications/</code></li>
+<li><a href="https://github.com/linux-nvme/nvme-cli" rel="noreferrer">nvme-cli</a> — <code>https://github.com/linux-nvme/nvme-cli</code></li>
+<li><a href="https://sourceware.org/lvm2/" rel="noreferrer">Документация LVM и device-mapper (sourceware LVM2)</a> — <code>https://sourceware.org/lvm2/</code></li>
+<li><a href="https://docs.kernel.org/admin-guide/md.html" rel="noreferrer">Программный RAID в ядре Linux (mdraid)</a> — <code>https://docs.kernel.org/admin-guide/md.html</code></li>
+<li><a href="https://openzfs.github.io/openzfs-docs/" rel="noreferrer">OpenZFS documentation</a> — <code>https://openzfs.github.io/openzfs-docs/</code></li>
+<li><a href="https://docs.ceph.com/en/latest/" rel="noreferrer">Ceph documentation</a> — <code>https://docs.ceph.com/en/latest/</code></li>
+<li><a href="https://sg.danny.cz/sg/sg3_utils.html" rel="noreferrer">Linux SCSI generic utilities (sg3_utils)</a> — <code>https://sg.danny.cz/sg/sg3_utils.html</code></li>
+<li>Руководства и справочник команд вашего производителя RAID-контроллера или HBA</li>
+</ul>
+<h2 id="b33-s094">Виртуализация</h2>
+<ul>
+<li><a href="https://www.qemu.org/docs/master/" rel="noreferrer">QEMU documentation</a> — <code>https://www.qemu.org/docs/master/</code></li>
+<li><a href="https://libvirt.org/docs.html" rel="noreferrer">libvirt documentation</a> — <code>https://libvirt.org/docs.html</code></li>
+<li><a href="https://pve.proxmox.com/pve-docs/" rel="noreferrer">Proxmox VE Administration Guide</a> — <code>https://pve.proxmox.com/pve-docs/</code></li>
+</ul>
+<h2 id="b33-s095">Мониторинг</h2>
+<ul>
+<li><a href="https://prometheus.io/docs/introduction/overview/" rel="noreferrer">Prometheus documentation</a> — <code>https://prometheus.io/docs/introduction/overview/</code></li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/querying/basics/" rel="noreferrer">PromQL — основы запросов</a> — <code>https://prometheus.io/docs/prometheus/latest/querying/basics/</code></li>
+<li><a href="https://grafana.com/docs/grafana/latest/" rel="noreferrer">Grafana documentation</a> — <code>https://grafana.com/docs/grafana/latest/</code></li>
+<li><a href="https://www.zabbix.com/documentation/current/en" rel="noreferrer">Zabbix documentation</a> — <code>https://www.zabbix.com/documentation/current/en</code></li>
+<li><a href="https://sre.google/sre-book/table-of-contents/" rel="noreferrer">Google SRE Book — главы о целях качества и оповещениях</a> — <code>https://sre.google/sre-book/table-of-contents/</code></li>
+</ul>
+<h2 id="b33-s096">Автоматизация</h2>
+<ul>
+<li><a href="https://www.gnu.org/software/bash/manual/bash.html" rel="noreferrer">GNU Bash Reference Manual</a> — <code>https://www.gnu.org/software/bash/manual/bash.html</code></li>
+<li><a href="https://www.shellcheck.net/" rel="noreferrer">ShellCheck — статический анализ скриптов оболочки</a> — <code>https://www.shellcheck.net/</code></li>
+<li><a href="https://docs.python.org/3/library/subprocess.html" rel="noreferrer">Python: <code>subprocess</code></a> — <code>https://docs.python.org/3/library/subprocess.html</code></li>
+<li><a href="https://docs.python.org/3/library/argparse.html" rel="noreferrer">Python: <code>argparse</code></a> — <code>https://docs.python.org/3/library/argparse.html</code></li>
+<li><a href="https://docs.python.org/3/library/logging.html" rel="noreferrer">Python: <code>logging</code></a> — <code>https://docs.python.org/3/library/logging.html</code></li>
+<li><a href="https://docs.ansible.com/projects/ansible/latest/" rel="noreferrer">Ansible documentation</a> — <code>https://docs.ansible.com/projects/ansible/latest/</code></li>
+<li><a href="https://git-scm.com/book/ru/v2" rel="noreferrer">Pro Git — книга целиком, на русском в том числе</a> — <code>https://git-scm.com/book/ru/v2</code></li>
+</ul>
+<h2 id="b33-s097">Контейнеры и DevOps</h2>
+<ul>
+<li><a href="https://docs.docker.com/" rel="noreferrer">Docker documentation</a> — <code>https://docs.docker.com/</code></li>
+<li><a href="https://kubernetes.io/docs/home/" rel="noreferrer">Kubernetes documentation</a> — <code>https://kubernetes.io/docs/home/</code></li>
+<li><a href="https://developer.hashicorp.com/terraform/docs" rel="noreferrer">Terraform documentation</a> — <code>https://developer.hashicorp.com/terraform/docs</code></li>
+<li><a href="https://helm.sh/docs/" rel="noreferrer">Helm documentation</a> — <code>https://helm.sh/docs/</code></li>
+</ul>
+<h2 id="b33-s098">Прошивки</h2>
+<ul>
+<li><a href="https://uefi.org/specifications" rel="noreferrer">UEFI, PI и ACPI — официальные спецификации UEFI Forum</a> — <code>https://uefi.org/specifications</code></li>
+<li><a href="https://tianocore-docs.github.io/" rel="noreferrer">TianoCore EDK II — документация</a> — <code>https://tianocore-docs.github.io/</code></li>
+<li><a href="https://github.com/tianocore/edk2" rel="noreferrer">TianoCore EDK II — исходный код</a> — <code>https://github.com/tianocore/edk2</code></li>
+<li><a href="https://pcisig.com/specifications" rel="noreferrer">PCI-SIG — спецификации PCI Express</a> — <code>https://pcisig.com/specifications</code></li>
+<li><a href="https://www.dmtf.org/standards/redfish" rel="noreferrer">DMTF Redfish</a> — <code>https://www.dmtf.org/standards/redfish</code></li>
+<li><a href="https://fwupd.org/" rel="noreferrer">fwupd и LVFS — обновление прошивок в Linux</a> — <code>https://fwupd.org/</code></li>
+<li>Технические руководства BIOS/BMC вашей серверной платформы</li>
+</ul>
+<p>Спецификации UEFI, PI и ACPI объёмны; читайте их адресно — по конкретной фазе, таблице или протоколу, встреченному в диагностике.</p>
+<hr>
