@@ -469,7 +469,7 @@ const chapterPage = (chapter) => {
   return pageShell({ title: chapter.title, eyebrow: `Глава ${pad(chapter.number)} · университетский курс`, body, sidebar, className: 'with-sidebar', description });
 };
 
-const lessonNav = (active) => `<p class="side-title">Обязательное начало</p><a href="/start/00/"><span>В</span>Как учиться по этому курсу</a>${lessons.map((item) => `<a ${active === item.number ? 'aria-current="page"' : ''} href="${item.url}"><span>${item.number}</span>${escape(item.title.replace(/^Урок \d+\.\s*/, ''))}</a>`).join('')}<p class="side-title">Дальше</p><a href="/chapters/00/"><span>00</span>Учебная лаборатория</a><a href="/curriculum/"><span>—</span>Вся программа</a>`;
+const lessonNav = (active) => `<p class="side-title">Обязательное начало</p><a ${active === null ? 'aria-current="page"' : ''} href="/start/00/"><span>В</span>Как учиться по этому курсу</a>${lessons.map((item) => `<a ${active === item.number ? 'aria-current="page"' : ''} href="${item.url}"><span>${item.number}</span>${escape(item.title.replace(/^Урок \d+\.\s*/, ''))}</a>`).join('')}<p class="side-title">Дальше</p><a href="/chapters/00/"><span>00</span>Учебная лаборатория</a><a href="/curriculum/"><span>—</span>Вся программа</a>`;
 
 const lessonPage = (lesson) => {
   const previous = lessons[lesson.number - 2];
@@ -524,7 +524,7 @@ const labData = scriptElement('lab-data');
 // уже было с мостом «глава → модуль».
 const autoCheckedLabs = new Map(scriptJson('lab-data').labs.map((lab) => [lab.module, lab]));
 let studyScript = followingScript('checker-code-data')
-  // Справка уехала на страницу «О курсе»: ссылка внутри кода кабинета не
+  // Справка живёт на вводном уроке /start/00/: ссылка внутри кода кабинета не
   // проходит через rewriteLinks, поэтому её адрес подставляется здесь — иначе
   // она молча указывала бы на несуществующий якорь этой же страницы.
   .replace(/'#autopractice'/g, `'${BASE}/start/00/#autopractice'`)
@@ -1838,8 +1838,8 @@ await writeFile(resolve(output, 'assets', 'search.json.gz'), gzipSync(Buffer.fro
 const routeList = ['/', '/curriculum/', ...outputs.map(([url]) => url).filter((url) => !['/book/', '/about/'].includes(url))].map((url) => `${BASE}${url}`);
 
 // Число страниц в тексте про офлайн берётся из самого списка кэширования:
-// маршрутов 48, в копию идёт 47 — «/book/» исключён намеренно, и написанное
-// рукой число расходилось бы с набором молча.
+// «/book/» и «/about/» исключены намеренно, а написанное рукой число
+// расходилось бы с набором молча.
 for (const [url, html] of pagesToWrite) {
   const file = resolve(output, url.slice(1), 'index.html');
   await mkdir(dirname(file), { recursive: true });
