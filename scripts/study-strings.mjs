@@ -5,11 +5,14 @@
 //
 //   node scripts/study-strings.mjs list [--latin]
 //   node scripts/study-strings.mjs apply patch.json
-import { readFile, writeFile } from 'node:fs/promises';
+//
+// Исходник — фрагменты content/ (банк лежит в data/study-data.html): правки
+// раскладываются обратно во фрагменты через course-source.mjs.
+import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { readCourse, writeCourse } from './course-source.mjs';
 
-const file = resolve(process.cwd(), 'public', 'course.html');
-const source = await readFile(file, 'utf8');
+const source = await readCourse();
 
 const opening = '<script type="application/json" id="study-data">';
 const start = source.indexOf(opening);
@@ -85,7 +88,7 @@ if (command === 'list') {
   const after = JSON.parse(next);
   const skeleton = (value) => JSON.stringify(value, (key, item) => (['stem', 'options', 'explanation', 'label', 'title', 'initial', 'evidence'].includes(key) ? (Array.isArray(item) ? item.map(() => 0) : 0) : item));
   if (skeleton(before) !== skeleton(after)) throw new Error('apply: изменилась структура банка — правка отклонена');
-  await writeFile(file, result);
+  await writeCourse(result);
   process.stdout.write(`Применено правок: ${applied}\n`);
 } else {
   const latin = visible.filter(([, text]) => /[A-Za-z]{2,}/.test(text));

@@ -591,6 +591,14 @@ else {
 // собирается, ссылки работают, а читатель видит два разных названия одного
 // раздела или «11.9» дважды. Проверяем это на исходном документе.
 const course = await readFile(resolve(process.cwd(), 'public', 'course.html'), 'utf8');
+// public/course.html — результат сборки content/. Правка фрагмента без
+// пересборки оставляла бы валидатор, сайт и читателей со старой копией
+// книги, и расхождение ничем не выдавало себя: проверяем собранность.
+{
+  const { assembleCourse } = await import('./assemble-course.mjs');
+  const { html } = await assembleCourse(process.cwd());
+  if (html !== course) failures.push('course.html: устарел — не совпадает со сборкой content/; запустите npm run build и закоммитьте course.html вместе с фрагментами');
+}
 const plain = (html) => html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
 const mainStart = course.indexOf('<main');
 const mainEnd = course.lastIndexOf('</main>');
