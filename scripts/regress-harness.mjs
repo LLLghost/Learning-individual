@@ -6,17 +6,13 @@
 // окружение у них одно, и две расходящиеся копии подъёма уже однажды
 // прошли мимо ревью. Сценарии остаются в самих регрессиях: каркас не
 // знает, что именно проверяется, и не смешивает их между собой.
-import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
-import { resolve, extname } from 'node:path';
+// Раздача статики — общий со smoke-обходом модуль static-server.mjs.
+import { resolve } from 'node:path';
 import { launchBrowser } from './browser-launch.mjs';
+import { startStaticServer } from './static-server.mjs';
 
 export const KEY = 'server-infrastructure-selfstudy-v6';
 export const KEPT = 'server-infrastructure-selfstudy-kept-v1';
-
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
-  '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
 
 // Каркас прогресса текущей версии: записи берутся настоящими id из банка,
 // иначе validate их отбросит, и проверка мерила бы пустое состояние.
@@ -35,20 +31,7 @@ export async function seedState(page, patch) {
 }
 
 export async function regressHarness(label) {
-  const root = resolve(process.cwd(), 'build');
-  const server = createServer(async (request, response) => {
-    const path = decodeURIComponent(request.url.split('?')[0]);
-    const file = path.endsWith('/') ? resolve(root, `.${path}index.html`) : resolve(root, `.${path}`);
-    try {
-      const body = await readFile(file);
-      response.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' });
-      response.end(body);
-    } catch {
-      response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-      response.end('нет такого файла');
-    }
-  });
-  await new Promise((done) => server.listen(0, '127.0.0.1', done));
+  const { server, origin } = await startStaticServer(resolve(process.cwd(), 'build'));
   let browser;
   try { browser = await launchBrowser(); }
   catch (error) { console.error(error.message); server.close(); process.exit(2); }
@@ -66,5 +49,5 @@ export async function regressHarness(label) {
     console.log(failures.length ? `\nПровалено проверок: ${failures.length} (${failures.join(', ')})` : `\nВсе ${label} пройдены.`);
     process.exit(failures.length ? 1 : 0);
   };
-  return { origin: `http://127.0.0.1:${server.address().port}`, browser, check, failures, finish };
+  return { origin, browser, check, failures, finish };
 }
