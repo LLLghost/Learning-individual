@@ -213,17 +213,19 @@ fio … --direct=0 --invalidate=0     IOPS 377 137 · p50 1,6 мкс</code></pre
 <h3 id="b16-s013">Стратегия</h3>
 <p>Обратите внимание на характер падения: не «постепенно хуже», а ровно в пять раз и сразу. Плавную деградацию дают изношенные носители и фоновые задачи; ступенька такой высоты почти всегда означает, что <em>переключился режим</em>. Поэтому начинаем не с дисков, а с политики и состояния контроллера.</p>
 <h3 id="b16-act">Действия</h3>
-<pre><code class="language-bash">sudo storcli64 /c0 show all | grep -Ei 'cache|bbu|temperature'
+<pre><code class="language-bash">sudo storcli64 /c0 show all | grep -Ei 'cache|bbu|temperature'  # sudo остаётся диагностикам контроллера
 sudo storcli64 /c0/bbu show all
 sudo storcli64 /c0/v0 show all
 sudo storcli64 /c0 show events filter=warning
-# Одноразовый файл стенда: сначала место, потом файл, и только потом запись.
+# Одноразовый файл стенда: приватный каталог, место, файл — и только потом запись.
+# Файл, нагрузка и уборка живут в одном непривилегированном контексте — без sudo.
 # Нагрузка уничтожает всё содержимое файла — он не хранит ничьи данные.
-df -h /var/tmp
-sudo fallocate -l 8G /var/tmp/course-fio-dispose.bin
+WORK="$(mktemp -d /var/tmp/course-fio.XXXXXX)"   # каталог этого запуска, а не общий путь
+df -h "$WORK"                                    # места заведомо больше размера теста
+fallocate -l 8G "$WORK/dispose.bin" || exit 1    # не выделился — писать нечего
 fio --name=w --rw=write --bs=1M --size=8G --direct=1 \
-    --filename=/var/tmp/course-fio-dispose.bin
-sudo rm /var/tmp/course-fio-dispose.bin
+    --filename="$WORK/dispose.bin" || { rm -rf "$WORK"; exit 1; }
+rm -rf "$WORK"                                   # убирается только свой каталог
 </code></pre>
 <p>Получено:</p>
 <pre><code class="language-text"># storcli64 /c0/v0 show all

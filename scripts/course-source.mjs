@@ -11,6 +11,10 @@
 //   import { readCourse, writeCourse } from './course-source.mjs';
 //   const html = await readCourse();      // собранный документ
 //   await writeCourse(edited);            // правки — в content/ и public/course.html
+//
+// Сам поиск маркера (markerOf) экспортируется наружу только для
+// регрессионных проверок scripts/regress-marker.mjs: правки инструментов
+// границы не должны молча менять правила распознавания.
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { assembleCourse } from './assemble-course.mjs';
@@ -25,15 +29,24 @@ import { assembleCourse } from './assemble-course.mjs';
 //     первом же </script>, как и для браузера), но атрибуты самого тега
 //     <script …> настоящие — так находятся блоки данных вида
 //     <script type="application/json" id="lab-data">;
+//   • скриптом считается только целое имя тега: сразу после него идут
+//     HTML-пробел, «/» или «>», но не дефис и не буква — `<script-data>` и
+//     `<scripting>` обычные элементы, их содержимое сканером не накрывается,
+//     и маркер внутри них находится;
+//   • открывающий и закрывающий теги скрипта распознаются без учёта
+//     регистра, в том числе с разным регистром внутри пары (<SCRIPT> …
+//     </ScRiPt>): браузеру регистр безразличен, а до фикса содержимое
+//     нераспознанного блока сканировалось как разметка, и приманка внутри
+//     него принималась за маркер;
 //   • в открывающем теге атрибут id узнаётся как отдельное слово — перед ним
 //     пробел, кавычка или слэш, но не часть другого имени: `data-id="…"`
 //     маркером не считается. Ловушка внутри значения чужого атрибута
 //     (`title='x id="…"'`) остаётся за границами защиты: инструменты правки
 //     разметку не меняют, а полноценный разбор атрибутов здесь не нужен.
-const markerOf = (html, id) => {
+export const markerOf = (html, id) => {
   const attribute = new RegExp(`["'\\s/]id="${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
   const carriesId = (tag) => attribute.test(tag.slice(1).replace(/\/?>$/, ''));
-  const scan = /<(\/?)script\b[^>]*>|<!--[\s\S]*?-->|<([a-zA-Z][^<>]*)>/g;
+  const scan = /<(\/?)script(?=[\s/>])[^>]*>|<!--[\s\S]*?-->|<([a-zA-Z][^<>]*)>/gi;
   let inScript = false;
   for (let match; (match = scan.exec(html)); ) {
     if (match[1] !== undefined) {
