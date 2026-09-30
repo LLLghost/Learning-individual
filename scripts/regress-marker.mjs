@@ -20,7 +20,14 @@
 //     а конец блока ищется теми же правилами, что и маркер: любой регистр,
 //     допустимый пробел, точное имя — и отказ, а не (-1) + 9, когда закрытия
 //     нет;
-//   • комментарий и `data-id="…"` маркером не считаются.
+//   • комментарий и `data-id="…"` маркером не считаются;
+//   • лишняя «[» перед `id=` — не граница атрибута: имя атрибута «[id»
+//     id не создаёт, и приманка не маркер — ни с настоящим маркером
+//     после неё, ни без него (P2 ревью PR #58);
+//   • кавычки значений атрибутов: «>» и закрывающая приманка `</script>`
+//     внутри значения открывающий тег не закрывают — id после такого
+//     атрибута настоящий, а script-end ищет закрытие после честного конца
+//     открывающего тега и не режет его пополам (P2 ревью PR #58).
 //
 // Вторая половина — кругозапись на изолированной fixture: правка прозы
 // меняет только свои фрагменты, соседние остаются байт-в-байт, а повторная
@@ -36,7 +43,7 @@
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { markerOf, readCourse, writeCourse } from './course-source.mjs';
+import { markerOf, endOfScript, readCourse, writeCourse } from './course-source.mjs';
 
 let failed = 0;
 const check = (name, actual, expected) => {
@@ -119,13 +126,47 @@ unit('HTML-пробел: NBSP перед id — не атрибут, марке�
 absent('точное имя закрытия: </scriptx> не закрывает блок',
   `<script>var s = 1;</scriptx><h1 id="target">real</h1>`, 'target');
 
+// Лишняя литеральная «[» в классе перед id (P2 ревью PR #58): атрибут с
+// именем «[id» — не id, приманка не маркер — ни с настоящим маркером
+// после неё, ни без него.
+unit('[: атрибут [id= — не маркер, настоящий после приманки',
+  '<div [id="target">fake</div><h1 id="target">real</h1>', 'target', '<h1 id="target">real');
+absent('[: атрибут [id= без настоящего маркера',
+  '<div [id="target">fake</div>', 'target');
+
+// Кавычки значений атрибутов (P2 ревью PR #58): «>» и закрывающая приманка
+// внутри значения открывающий тег не закрывают, id после такого атрибута —
+// настоящий атрибут тега. Ожидание конца блока — позиция после настоящего
+// закрытия, вычисленная по содержимому блока, а не функцией под проверкой.
+const afterClose = (html, marker) => html.indexOf('</script>', html.indexOf(marker)) + 9;
+const endUnit = (name, html, id, marker) =>
+  check(name, endOfScript(html, id), afterClose(html, marker));
+unit('кавычки: «>» в значении атрибута не кончает тег, id после него — маркер',
+  '<div title="a>b" id="target">текст</div>', 'target', '<div title="a>b" id="target">');
+unit('кавычки: id после приманки-закрытия в значении (двойные кавычки)',
+  '<script title="</script>" id="data">{"x":1}</script><p>x</p>', 'data', '<script title=');
+unit('кавычки: id после приманки-закрытия в значении (одинарные кавычки)',
+  `<script title='</script>' id="data">{"x":1}</script><p>x</p>`, 'data', '<script title=');
+endUnit('script-end: приманка-закрытие в значении атрибута не режет тег',
+  '<script id="data" title="</script>">{"x":1}</script><p>after</p><script>next</script>',
+  'data', '{"x":1}');
+endUnit('script-end: одинарные кавычки вокруг приманки',
+  `<script id="data" title='</script>'>{"x":1}</script><p>after</p>`,
+  'data', '{"x":1}');
+endUnit('script-end: id после атрибута-приманки',
+  '<script title="</script>" id="data">{"x":1}</script><p>after</p>',
+  'data', '{"x":1}');
+
 // Кругозапись: fixture со всеми видами локаторов и ловушками вокруг правки.
 // Документ маленький, но по структуре — та же книга: шелл, проза, блок
 // данных, скрипт после него; маркеры — те же виды id, что в настоящем
 // манифесте. Ловушки: маркер внутри custom-элемента, приманка в верхнем
 // регистре внутри <SCRIPT>, приманка в комментарии. Закрытие блока данных —
 // `</ScRiPt >`: смешанный регистр и пробел перед «>», как их обязан
-// принимать и поиск конца блока (script-end, plain-script-after).
+// принимать и поиск конца блока (script-end, plain-script-after); в
+// открывающем теге блока — приманка-закрытие в значении атрибута:
+// границы после блока обязаны разрешаться после настоящего закрытия,
+// а не резать открывающий тег по приманке.
 const root = mkdtempSync(join(tmpdir(), 'regress-marker-'));
 try {
   const manifest = {
@@ -148,7 +189,7 @@ try {
     'shell/body.html': '</head><body>',
     'intro/intro.html': '<section id="intro"><p>Вводная проза до ловушек.</p></section>',
     'intro/inside-custom.html': '<script-data><h2 id="inside-custom">Заголовок внутри custom-элемента</h2></script-data>',
-    'data/lab-data.html': '<script type="application/json" id="lab-data">{"kind":"fixture"}</ScRiPt >',
+    'data/lab-data.html': '<script type="application/json" id="lab-data" title="</script>">{"kind":"fixture"}</ScRiPt >',
     'data/after-lab.html': `<p>После блока данных.</p><SCRIPT>var s = '<h1 id="decoy">fake</h1>';</SCRIPT>`,
     'data/plain.html': '<script>window.__fixture = true;</script><!--<p id="ghost">комментарий</p>-->',
     'shell/close.html': '</body></html>',
@@ -199,8 +240,13 @@ try {
   await rejects('отказ: якорь задвоен', edited.replace('<p>Вводная проза после правки.</p>',
     '<p>Вводная проза после правки.</p><p id="intro">дубль якоря</p>'),
     'теряет якорь id="intro"');
-  await rejects('отказ: блок данных не закрыт',
-    edited.replace('</ScRiPt >', '').replace('</SCRIPT>', '').replace('</script>', ''),
+  // Закрытия убираются с привязкой к содержимому: первый попавшийся
+  // литеральный `</script>` в документе теперь — приманка в значении
+  // атрибута, и слепой replace снимал бы её, а не настоящие закрытия.
+  await rejects('отказ: блок данных не закрыт', edited
+    .replace('{"kind":"fixture"}</ScRiPt >', '{"kind":"fixture"}')
+    .replace('</SCRIPT>', '')
+    .replace('window.__fixture = true;</script>', 'window.__fixture = true;'),
     'не закрыт блок id="lab-data"');
 } finally {
   // Fixture убирается и при провале утверждения, и при исключении: раньше
