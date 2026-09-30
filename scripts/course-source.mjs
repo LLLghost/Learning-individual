@@ -15,10 +15,40 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { assembleCourse } from './assemble-course.mjs';
 
+// Маркер — атрибут id настоящего открывающего тега, а не любое вхождение
+// строки: indexOf находил `id="…"` и в прозе, и в комментарии, и в тексте
+// скрипта, и граница молча уезжала на такое совпадение — запись тогда
+// раскладывала бы правки по чужим фрагментам. Документ проходится один раз
+// сканером с теми же правилами, по которым его читает браузер:
+//   • комментарий <!-- … --> пропускается целиком, включая приманку внутри;
+//   • текст внутри <script>…</script> пропускается (блок заканчивается на
+//     первом же </script>, как и для браузера), но атрибуты самого тега
+//     <script …> настоящие — так находятся блоки данных вида
+//     <script type="application/json" id="lab-data">;
+//   • в открывающем теге атрибут id узнаётся как отдельное слово — перед ним
+//     пробел, кавычка или слэш, но не часть другого имени: `data-id="…"`
+//     маркером не считается. Ловушка внутри значения чужого атрибута
+//     (`title='x id="…"'`) остаётся за границами защиты: инструменты правки
+//     разметку не меняют, а полноценный разбор атрибутов здесь не нужен.
 const markerOf = (html, id) => {
-  const index = html.indexOf(`id="${id}"`);
-  if (index < 0) throw new Error(`course: не найден маркер id="${id}"`);
-  return html.lastIndexOf('<', index);
+  const attribute = new RegExp(`["'\\s/]id="${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
+  const carriesId = (tag) => attribute.test(tag.slice(1).replace(/\/?>$/, ''));
+  const scan = /<(\/?)script\b[^>]*>|<!--[\s\S]*?-->|<([a-zA-Z][^<>]*)>/g;
+  let inScript = false;
+  for (let match; (match = scan.exec(html)); ) {
+    if (match[1] !== undefined) {
+      if (match[1]) inScript = false;
+      else {
+        inScript = true;
+        if (carriesId(match[0])) return match.index;
+      }
+      continue;
+    }
+    if (match[2] === undefined) continue;
+    if (inScript) continue;
+    if (carriesId(match[0])) return match.index;
+  }
+  throw new Error(`course: не найден маркер id="${id}"`);
 };
 
 // Разрешение начальной границы фрагмента в собранном документе. Виды локаторов
