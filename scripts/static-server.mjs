@@ -35,16 +35,33 @@ export async function startStaticServer(root) {
     try {
       // Побег из root ловится дважды: resolve разматывает «..» в тексте
       // адреса (закодированный %2e%2e и %2f декодируются до того), а
-      // realpath — симлинк внутри build, ведущий наружу. Отсутствующий
-      // файл отказывает здесь же и становится обычным 404.
+      // realpath — симлинк внутри build, ведущий наружу. Отказ обозначается
+      // отдельной веткой ответа, а не броском Error: в общем catch брошенное
+      // исключение неотличимо от ошибки файловой системы, и «выход за root»
+      // пришлось бы приписывать любой ошибке подряд.
       const real = await realpath(file);
-      if (real !== realRoot && !real.startsWith(realRoot + sep)) throw new Error('вне каталога сайта');
+      if (real !== realRoot && !real.startsWith(realRoot + sep)) {
+        response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+        response.end('нет такого файла');
+        return;
+      }
       const body = await readFile(real);
       response.writeHead(200, { 'content-type': TYPES[extname(real)] ?? 'application/octet-stream' });
       response.end(body);
-    } catch {
-      response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-      response.end('нет такого файла');
+    } catch (error) {
+      // Отсутствующий путь (ENOENT) и файл на месте компонента каталога
+      // (ENOTDIR) — обычное «файла нет», каким путём оно ни возникло. Всё
+      // остальное — отказ серверной стороны (нет прав EACCES, исчерпаны
+      // дескрипторы EMFILE): такой запрос отвечает 500, а подробности
+      // уходят в диагностический лог — читателю в ответе они не нужны.
+      if (error?.code === 'ENOENT' || error?.code === 'ENOTDIR') {
+        response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+        response.end('нет такого файла');
+        return;
+      }
+      console.error(`static-server: ${request.method} ${request.url} → ${file}: ${error?.message ?? error}`);
+      response.writeHead(500, { 'content-type': 'text/plain; charset=utf-8' });
+      response.end('внутренняя ошибка сервера');
     }
   });
   await new Promise((done) => server.listen(0, '127.0.0.1', done));

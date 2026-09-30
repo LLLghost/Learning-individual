@@ -59,10 +59,23 @@ export async function quotaPage(browser, seed, sink) {
 }
 
 export async function regressHarness(label) {
-  const { server, origin } = await startStaticServer(resolve(process.cwd(), 'build'));
+  // Отказ подъёма — один случай и для сервера, и для браузера: причина
+  // печатается в console.error, прогон выходит кодом 2, убирается только
+  // то, что успело создаться. Прежде охранялся один запуск браузера, а
+  // старт сервера стоял до неё: отсутствующий build ронял прогон сырым
+  // стеком с кодом 1 — словно ошибку поймал сам сценарий, а не окружение.
+  let server;
+  let origin;
   let browser;
-  try { browser = await launchBrowser(); }
-  catch (error) { console.error(error.message); server.close(); process.exit(2); }
+  try {
+    ({ server, origin } = await startStaticServer(resolve(process.cwd(), 'build')));
+    browser = await launchBrowser();
+  } catch (error) {
+    console.error(`Не удалось поднять окружение регрессий (${label}): ${error.message}`);
+    if (browser) await browser.close().catch(() => {});
+    if (server) server.close();
+    process.exit(2);
+  }
   const failures = [];
   const check = (name, ok, detail) => {
     console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${ok || !detail ? '' : `: ${detail}`}`);
