@@ -17,6 +17,7 @@
 // подмены localStorage, которые общему обходу не место. Подъём сервера
 // и браузера — общий каркас regress-harness.mjs.
 import { writeFileSync, mkdtempSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { regressHarness, KEY, KEPT, seedState, trackPageErrors, quotaPage } from './regress-harness.mjs';
@@ -34,15 +35,25 @@ const LEGACY_ORDER = 'ban0p7', CURRENT_ORDER = '1g31eky';
 
 // Несовместимая попытка в хранилище: настоящие id по одному из модуля,
 // порядок — прежний отпечаток, как это выглядело у читателя до обновления.
+// Карты ответов наполняются настоящими значениями банка (верный вариант,
+// верное рассуждение, уверенная отметка): попытка до отклонения обязана
+// выглядеть как отвеченный живой вариант, а не пустой объект, — иначе
+// равенство исходной строки и копии доказывало сохранность пустоты.
+// probe возвращает опорную запись, по которой сценарии сверяют содержимое
+// копии: байтового равенства мало, ответы должны дойти до читателя.
 async function seedLegacyExam(page, order) {
   return page.evaluate(([key, value]) => {
     const data = JSON.parse(document.getElementById('study-data').textContent);
+    const picks = Array.from({ length: 37 }, (_, n) => data.items.find(x => x.module === n && x.kind === 'concept' && x.reason));
     const state = JSON.parse(localStorage.getItem(key));
-    state.exam = { ids: Array.from({ length: 37 }, (_, n) => data.items.filter(x => x.module === n)[0].id),
-      order: value, responses: {}, conf: {}, why: {}, submitted: false, started: 1500000000000 };
+    state.exam = { ids: picks.map(x => x.id), order: value,
+      responses: Object.fromEntries(picks.map(x => [x.id, x.answer])),
+      conf: Object.fromEntries(picks.map(x => [x.id, 2])),
+      why: Object.fromEntries(picks.map(x => [x.id, x.reason.answer])),
+      submitted: false, started: 1500000000000 };
     const raw = JSON.stringify(state);
     localStorage.setItem(key, raw);
-    return raw;
+    return { raw, probe: { id: picks[0].id, answer: picks[0].answer, why: picks[0].reason.answer, conf: 2, count: picks.length } };
   }, [KEY, order]);
 }
 
@@ -187,24 +198,35 @@ const page = trackPageErrors(await context.newPage(), errors);
 //    сразу перезаписывалась очищенным прогрессом, ответы терялись молча.
 //    Теперь исходная строка сохраняется отдельным разделом до перезаписи,
 //    читателю показывается уведомление и копия, остальной прогресс работает,
-//    переноса номеров вариантов по прежнему отпечатку нет.
+//    переноса номеров вариантов по прежнему отпечатку нет. Попытка несёт
+//    настоящие ответы по всем 37 модулям: копия и скачанный файл обязаны
+//    содержать их целиком, а не пустые карты.
 {
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
   check('попытка: банк несёт ожидаемый текущий отпечаток', await page.evaluate(() => window.CourseQA.order) === CURRENT_ORDER, `order=${await page.evaluate(() => window.CourseQA.order)}`);
   const seeded = await seedState(page);
-  const rawBefore = await seedLegacyExam(page, LEGACY_ORDER);
+  const attempt = await seedLegacyExam(page, LEGACY_ORDER);
   await page.reload({ waitUntil: 'load' });
   const kept = await page.evaluate(key => localStorage.getItem(key), KEPT);
-  check('попытка: исходная строка сохранена отдельным разделом', kept === rawBefore);
+  check('попытка: исходная строка сохранена отдельным разделом', kept === attempt.raw);
+  check('попытка: копия содержит настоящие ответы попытки', kept && JSON.parse(kept).exam.responses[attempt.probe.id] === attempt.probe.answer
+    && JSON.parse(kept).exam.why[attempt.probe.id] === attempt.probe.why && JSON.parse(kept).exam.conf[attempt.probe.id] === attempt.probe.conf, `probe=${attempt.probe.id}`);
   const after = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEY);
   check('попытка: из активного прогресса удалена, номера не перенесены', after.exam === null);
   check('попытка: остальной прогресс цел', Object.keys(after.records).length === 1 && after.records[seeded.id]?.attempts === 1);
   const text = await note(page).textContent();
   check('попытка: уведомление объясняет и не винит версию банка', text.includes('попытка итогового контроля') && !text.includes('Банк заданий обновился'), text);
   check('попытка: есть путь скачать копию', await page.getByRole('button', { name: 'Скачать данные с попыткой (JSON)' }).count() === 1);
+  // Скачивание: файл побайтово равен исходной строке — читатель уносит
+  // попытку целиком, со всеми ответами, а не с пустыми картами.
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Скачать данные с попыткой (JSON)' }).click();
+  const savedFile = await (await downloadPromise).path();
+  const savedCopy = await readFile(savedFile, 'utf8');
+  check('попытка: скачанная копия побайтово равна исходной строке', savedCopy === attempt.raw);
   // Перезагрузка: состояние стабильно, копия не теряется и не дублируется.
   await page.reload({ waitUntil: 'load' });
-  check('попытка: копия пережила перезагрузку', await page.evaluate(key => localStorage.getItem(key), KEPT) === rawBefore);
+  check('попытка: копия пережила перезагрузку', await page.evaluate(key => localStorage.getItem(key), KEPT) === attempt.raw);
   check('попытка: активный прогресс стабилен', (await page.evaluate(key => JSON.parse(localStorage.getItem(key)).exam, KEY)) === null);
   // Последующее сохранение: новый ответ пишет новый прогресс, копия попытки
   // остаётся нетронутой — защита не превращается в потерю при первом ответе.
@@ -217,7 +239,7 @@ const page = trackPageErrors(await context.newPage(), errors);
   await tier.getByRole('button', { name: 'Проверить' }).click();
   const saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEY);
   check('попытка: новый ответ записан в активный прогресс', saved.records[seeded.id]?.attempts === 2, `attempts=${saved.records[seeded.id]?.attempts}`);
-  check('попытка: копия цела после сохранения', await page.evaluate(key => localStorage.getItem(key), KEPT) === rawBefore);
+  check('попытка: копия цела после сохранения', await page.evaluate(key => localStorage.getItem(key), KEPT) === attempt.raw);
 }
 
 // 8. Тот же дефект через импорт резервной копии: «Маршрут» пишет раздел
@@ -226,18 +248,20 @@ const page = trackPageErrors(await context.newPage(), errors);
 {
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
   await seedState(page);
-  const rawImport = await seedLegacyExam(page, LEGACY_ORDER);
+  const imported = await seedLegacyExam(page, LEGACY_ORDER);
   await page.evaluate(([key, kept]) => { localStorage.removeItem(key); localStorage.removeItem(kept); }, [KEY, KEPT]);
   const dir = mkdtempSync(join(tmpdir(), 'course-exam-'));
   const file = join(dir, 'course-backup.json');
-  writeFileSync(file, JSON.stringify({ schema: 'course-backup', version: 1, exportedAt: new Date().toISOString(), data: { [KEY]: rawImport } }));
+  writeFileSync(file, JSON.stringify({ schema: 'course-backup', version: 1, exportedAt: new Date().toISOString(), data: { [KEY]: imported.raw } }));
   await page.goto(origin + '/route/', { waitUntil: 'load' });
   page.once('dialog', dialog => dialog.accept());
   await page.setInputFiles('[data-backup-load]', file);
   await page.waitForTimeout(600);
-  check('импорт попытки: раздел записан из файла', await page.evaluate(key => localStorage.getItem(key), KEY) === rawImport);
+  check('импорт попытки: раздел записан из файла', await page.evaluate(key => localStorage.getItem(key), KEY) === imported.raw);
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
-  check('импорт попытки: копия создана при загрузке кабинета', await page.evaluate(key => localStorage.getItem(key), KEPT) === rawImport);
+  const kept = await page.evaluate(key => localStorage.getItem(key), KEPT);
+  check('импорт попытки: копия создана при загрузке кабинета', kept === imported.raw);
+  check('импорт попытки: копия содержит ответы из файла', kept && JSON.parse(kept).exam.responses[imported.probe.id] === imported.probe.answer, `probe=${imported.probe.id}`);
   const after = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEY);
   check('импорт попытки: попытка не перенесена, остальной прогресс цел', after.exam === null && Object.keys(after.records).length === 1);
   const text = await note(page).textContent();
@@ -249,11 +273,12 @@ const page = trackPageErrors(await context.newPage(), errors);
 {
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
   await seedState(page);
-  const rawFail = await seedLegacyExam(page, LEGACY_ORDER);
-  const { context: failing, page: page9 } = await quotaPage(browser, { key: KEY, value: rawFail }, errors);
+  const failed = await seedLegacyExam(page, LEGACY_ORDER);
+  const { context: failing, page: page9 } = await quotaPage(browser, { key: KEY, value: failed.raw }, errors);
   await page9.goto(origin + '/assessment/', { waitUntil: 'load' });
   const after = await page9.evaluate(key => localStorage.getItem(key), KEY);
-  check('ошибка копии: исходная строка с попыткой не перезаписана', after === rawFail);
+  check('ошибка копии: исходная строка с попыткой не перезаписана', after === failed.raw);
+  check('ошибка копии: ответы попытки в исходной строке целы', after && JSON.parse(after).exam.responses[failed.probe.id] === failed.probe.answer, `probe=${failed.probe.id}`);
   const text = await note(page9).textContent();
   check('ошибка копии: статус честно сообщает недоступность и нетронутый оригинал', text.includes('недоступн') && text.includes('не перезаписаны'), text);
   check('ошибка копии: кабинет отрисован', (await page9.locator('#study-status').count()) === 1);
