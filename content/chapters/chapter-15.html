@@ -139,18 +139,38 @@ recovery objectives
 WORK="$(mktemp -d /var/tmp/course-zfs.XXXXXX)" || exit 1  # каталог не создался — записей не будет
 POOL="course-check-${WORK##*.}"
 POOL_OWNED=0  # владение даёт только успешный zpool create, а не обнаружение имени в списке
+# каждый отказ уборки обязан быть громким: причина и сохранённый каталог названы в stderr —
+# молчаливый return 1 оставил бы сохранённый стенд без объяснения, что с ним разбирать
+cleanup_stop() {
+    printf 'автоматическая уборка остановлена: %s; каталог %s с файлом vdev сохранён\n' "$1" "$WORK" &gt;&amp;2
+}
 abort_cleanup() {
     # уборка fail-closed: прежде чем что-то удалять, обязан пройти запрос списка пулов —
     # ошибка zpool list не доказывает отсутствия пула, стенд и файл vdev сохраняются для разбора
-    pools="$(sudo zpool list -Ho name 2&gt;/dev/null)" || return 1
+    pools="$(sudo zpool list -Ho name 2&gt;/dev/null)" || {
+        cleanup_stop "первый zpool list не удался — отсутствие пула $POOL не доказано"
+        return 1
+    }
     if printf '%s\n' "$pools" | grep -qxF "$POOL"; then
         # имя в списке; destroy разрешён только пулу этого запуска — чужой
         # одноимённый пул сохраняют вместе со стендом и файлом vdev
-        [ "$POOL_OWNED" = 1 ] || return 1
-        sudo zpool destroy "$POOL" || return 1  # destroy не прошёл — файл vdev не трогаем
+        [ "$POOL_OWNED" = 1 ] || {
+            cleanup_stop "пул $POOL создан не этим запуском — destroy чужого пула запрещён"
+            return 1
+        }
+        sudo zpool destroy "$POOL" || {
+            cleanup_stop "zpool destroy пула $POOL не удался — ядро может всё ещё держать файл vdev"
+            return 1
+        }
         # отсутствие после destroy подтверждается повторным списком, а не кодом destroy
-        pools="$(sudo zpool list -Ho name 2&gt;/dev/null)" || return 1
-        printf '%s\n' "$pools" | grep -qxF "$POOL" &amp;&amp; return 1
+        pools="$(sudo zpool list -Ho name 2&gt;/dev/null)" || {
+            cleanup_stop "после destroy повторный zpool list не удался — отсутствие пула $POOL не подтверждено"
+            return 1
+        }
+        printf '%s\n' "$pools" | grep -qxF "$POOL" &amp;&amp; {
+            cleanup_stop "имя пула $POOL всё ещё числится в списке после destroy — отсутствие не подтверждено"
+            return 1
+        }
     fi
     # имени нет в полученном списке: пул не создан или экспортирован, ядро файл не держит
     sudo rm -rf "$WORK"
