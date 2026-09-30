@@ -269,10 +269,10 @@ tail -f /var/log/nginx/error.log
 <pre><code class="language-bash">openssl s_client -connect api.lab:443 -servername api.lab &lt;/dev/null 2&gt;&amp;1 | openssl x509 -noout -dates -subject
 </code></pre>
 <p>Вопрос: какой сертификат отдаёт служба на самом деле? Отдаёт она его сама, и он может отличаться от того, что лежит в файле рядом с конфигурацией: перезагрузку после обновления делают не всегда.</p>
-<pre><code class="language-bash">openssl x509 -noout -modulus -in api.lab.crt | openssl sha256
-openssl rsa  -noout -modulus -in api.lab.key | openssl sha256
+<pre><code class="language-bash">openssl x509 -in api.lab.crt -noout -pubkey | openssl pkey -pubin -outform DER | openssl sha256
+openssl pkey -in api.lab.key -pubout -outform DER | openssl sha256
 </code></pre>
-<p>Вопрос: соответствуют ли сертификат и ключ друг другу? Совпадение сумм — да, расхождение — служба не запустится, и сообщение об этом будет неочевидным.</p>
+<p>Вопрос: соответствуют ли сертификат и ключ друг другу? Сравнивается открытый ключ в DER: обе команды выводят SubjectPublicKeyInfo, поэтому приём работает для RSA, EC и Ed25519 — сравнение <code>-modulus</code> годится только для RSA. Совпадение сумм — да, расхождение — служба не запустится, и сообщение об этом будет неочевидным. Контролируйте ошибки: если openssl не смог прочитать файл, хешируется сообщение об ошибке, и суммы «разойдутся» по ложной причине — сначала убедитесь, что обе команды прочитали свои файлы без ошибок и только тогда сравнивайте суммы.</p>
 <pre><code class="language-bash">openssl s_client -connect api.lab:443 -showcerts &lt;/dev/null
 </code></pre>
 <p>Вопрос: отдаёт ли служба промежуточные сертификаты? Частый случай: в браузере всё в порядке (он достраивает цепочку сам), а из <code>curl</code> и от соседней службы — ошибка доверия, потому что цепочка неполна.</p>
@@ -385,9 +385,10 @@ docker inspect &lt;имя&gt; --format '{{.State.ExitCode}} {{.State.OOMKilled}}
 </code></pre>
 <p>Вопрос: что с контейнером, что он писал последние пятнадцать минут и как именно он умер? Код возврата 137 вместе с признаком нехватки памяти означает, что контейнер убило ядро по превышению предела, а не приложение упало само — это разные причины и разные исправления.</p>
 <pre><code class="language-bash">docker stats --no-stream
-docker exec -it &lt;имя&gt; sh -c 'cat /proc/1/limits; ls -l /proc/1/fd | wc -l'
+docker exec -it &lt;имя&gt; sh -c 'cat /proc/1/limits; ls -l /proc/1/fd | wc -l; cat /sys/fs/cgroup/memory.max /sys/fs/cgroup/cpu.max 2&gt;/dev/null'
+docker inspect &lt;имя&gt; --format '{{.HostConfig.Memory}} {{.HostConfig.NanoCpus}}'
 </code></pre>
-<p>Вопрос: сколько потребляет контейнер сейчас и какие ограничения видит его первый процесс? Изнутри контейнера обычные команды показывают ресурсы хоста, а не выделенную долю, — читать надо ограничения, а не <code>free</code>.</p>
+<p>Вопрос: сколько контейнер потребляет сейчас и каковы его пределы? <code>/proc/1/limits</code> — это RLIMIT первого процесса контейнера, например потолок открытых дескрипторов, а не лимиты контейнера. Пределы CPU и памяти контейнера задаются cgroup: изнутри они видны в <code>/sys/fs/cgroup</code> (у cgroup v2 — <code>memory.max</code> и <code>cpu.max</code>; у v1 — файлы в <code>memory/</code> и <code>cpu/</code>), снаружи — в <code>docker inspect</code>; эффективно действует самый тесный из пределов, включая родительские срезы. Изнутри контейнера обычные команды показывают ресурсы хоста, а не выделенную долю, — читать надо лимиты, а не <code>free</code>. А <code>docker stats</code> показывает текущее потребление и проверкой настроенных пределов или выданных возможностей (capabilities) не является.</p>
 <pre><code class="language-bash">kubectl get pods -o wide --field-selector status.phase!=Running
 kubectl describe pod &lt;имя&gt; | sed -n '/Events/,$p'
 kubectl logs &lt;имя&gt; --previous --tail=100
