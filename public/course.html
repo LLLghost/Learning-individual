@@ -3070,12 +3070,15 @@ loop0  loop1
 <p>Читаем снизу вверх. <code>pvscan</code> не находит PV не потому, что метаданные LVM испорчены, а потому, что искать не в чем: в <code>/sys/class/block</code> нет ни одного дискового устройства. Модуль нового HBA (<code>mpt3sas</code>) в <code>/proc/modules</code> отсутствует. Значит, цепочка обрывается не на LVM и не на файловой системе, а на шаг раньше — драйвер контроллера не попал в initramfs, собранный ещё для старой карты.</p>
 <p>Проверка <code>/proc/cmdline</code> закрывает вторую гипотезу: имя корневого устройства передано правильно, опечатки в параметрах загрузки нет.</p>
 <h3 id="b05-s016">Вывод</h3>
-<p>Чинить нужно initramfs, а не LVM. Загрузиться с живого носителя, смонтировать систему в chroot и пересобрать образ с драйвером новой карты:</p>
-<pre><code class="language-bash">lsmod | grep mpt3sas                  # в live-среде карта видна
+<p>Чинить нужно initramfs, а не LVM. Загрузиться с живого носителя, смонтировать систему в chroot и пересобрать образ с драйвером новой карты. Одна ловушка этого пути: <strong>chroot не меняет работающее ядро</strong> — <code>uname -r</code> внутри него по-прежнему сообщает версию live-среды, и собранный «по ней» образ окажется не для той системы. Версию установленной системы выбирают явно из <code>/lib/modules</code>:</p>
+<pre><code class="language-bash">lsmod | grep mpt3sas                    # в live-среде карта видна
 # в chroot установленной системы:
+ls /lib/modules                         # установленная версия — здесь
+KVER=6.1.0-53-amd64                     # выбрана явно; uname -r в chroot бесполезен
+ls /boot/vmlinuz-"$KVER"                # соответствующий образ /boot существует
 echo 'add_drivers+=" mpt3sas "' &gt; /etc/dracut.conf.d/hba.conf
-dracut --force --kver "$(uname -r)"   # или update-initramfs -u -k all
-lsinitrd /boot/initramfs-*.img | grep mpt3sas
+dracut --force --kver "$KVER"           # или update-initramfs -u -k all
+lsinitrd /boot/initramfs-"$KVER".img | grep mpt3sas   # драйвер в новом образе
 </code></pre>
 <p>Ошибка выглядела как «LVM не видит root», но реальная граница лежала ниже — обнаружение устройств драйвером ядра. Это ровно тот случай, ради которого в главе 1 вводилось правило: текст ошибки сообщает, <em>где остановились</em>, а не <em>почему</em>.</p>
 <h2 id="b05-s017">5.14. Лаборатория</h2>
