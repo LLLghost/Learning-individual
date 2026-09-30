@@ -4,70 +4,46 @@
 // сохранения не должны молча терять прежние данные: исходная строка остаётся
 // в хранилище нетронутой, сообщение называет настоящую причину, а переход на
 // новую версию сначала сохраняет копию прежних данных отдельным разделом.
-// Проверяется собранный сайт — запускать после node scripts/build-static.mjs:
+// Сюда же относится сохранность несовместимой попытки итогового контроля
+// (дефект PR #54, задача ENG-122): validate отбрасывает попытку прежнего
+// отпечатка порядка вариантов, и загрузчик не имел права тут же писать
+// очищенный прогресс поверх исходной строки. Проверяется собранный сайт —
+// запускать после node scripts/build-static.mjs:
 //
 //   node scripts/regress-progress.mjs
 //
 // Отдельно от smoke-browser.mjs: тот ходит по всем маршрутам и живым
-// действиям, этот — про один инвариант хранилища, и ему нужны управляемые
-// подмены localStorage, которые общему обходу не место.
-import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+// действиям, этот — про инварианты хранилища, и ему нужны управляемые
+// подмены localStorage, которые общему обходу не место. Подъём сервера
+// и браузера — общий каркас regress-harness.mjs.
 import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { resolve, extname, join } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { launchBrowser } from './browser-launch.mjs';
+import { join } from 'node:path';
+import { regressHarness, KEY, KEPT, seedState } from './regress-harness.mjs';
 
-const root = resolve(process.cwd(), 'build');
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
-  '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
-const KEY = 'server-infrastructure-selfstudy-v6';
-const KEPT = 'server-infrastructure-selfstudy-kept-v1';
+const { origin, browser, check, failures, finish } = await regressHarness('проверки сохранности прогресса');
 
-const server = createServer(async (request, response) => {
-  const path = decodeURIComponent(request.url.split('?')[0]);
-  const file = path.endsWith('/') ? resolve(root, `.${path}index.html`) : resolve(root, `.${path}`);
-  try {
-    const body = await readFile(file);
-    response.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' });
-    response.end(body);
-  } catch {
-    response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-    response.end('нет такого файла');
-  }
-});
-await new Promise((done) => server.listen(0, '127.0.0.1', done));
-const origin = `http://127.0.0.1:${server.address().port}`;
-
-let browser;
-try { browser = await launchBrowser(); }
-catch (error) { console.error(error.message); process.exit(2); }
-
-const failures = [];
-const check = (name, ok, detail) => {
-  console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${ok || !detail ? '' : `: ${detail}`}`);
-  if (!ok) failures.push(name);
-};
 // Живая отметка «прочитано» на пути деталей страницы: статус хранилища —
 // единственное место, где читателю объясняют, что произошло с его данными.
 const note = page => page.locator('#storage-status');
+// Попытка прежнего отпечатка на исходном банке: одноярусный hash ban0p7
+// (только варианты ответов) и текущий двухъярусный 1g31eky. Значения
+// закреплены сознательно: смена банка меняет отпечатки, и проверка должна
+// громко потребовать пересчитать фикстуры, а не молча мерить другое.
+const LEGACY_ORDER = 'ban0p7', CURRENT_ORDER = '1g31eky';
 
-// Каркас прогресса текущей версии: записи берутся настоящими id из банка,
-// иначе validate их отбросит, и проверка мерила бы пустое состояние.
-async function seedCurrent(page) {
-  return page.evaluate((key) => {
+// Несовместимая попытка в хранилище: настоящие id по одному из модуля,
+// порядок — прежний отпечаток, как это выглядело у читателя до обновления.
+async function seedLegacyExam(page, order) {
+  return page.evaluate(([key, value]) => {
     const data = JSON.parse(document.getElementById('study-data').textContent);
-    const id = data.items[0].id;
-    const state = { schema: 'course-study-progress', version: data.version, records: {},
-      scenarios: {}, exam: null, history: [], practice: null,
-      calibration: [{ n: 0, correct: 0 }, { n: 0, correct: 0 }, { n: 0, correct: 0 }], errors: [], labs: {} };
-    state.records[id] = { correct: true, mechanism: true, attempts: 1, last: 1500000000000, due: 1500000000000, streak: 1 };
+    const state = JSON.parse(localStorage.getItem(key));
+    state.exam = { ids: Array.from({ length: 37 }, (_, n) => data.items.filter(x => x.module === n)[0].id),
+      order: value, responses: {}, conf: {}, why: {}, submitted: false, started: 1500000000000 };
     const raw = JSON.stringify(state);
     localStorage.setItem(key, raw);
-    return { raw, id, version: data.version };
-  }, KEY);
+    return raw;
+  }, [KEY, order]);
 }
 
 const context = await browser.newContext();
@@ -75,10 +51,11 @@ const page = await context.newPage();
 const errors = [];
 page.on('pageerror', error => errors.push(`исключение: ${error.message}`));
 
+try {
 // 1. Базовый путь: данные текущей версии читаются и переживают перезагрузку.
 {
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
-  const seeded = await seedCurrent(page);
+  const seeded = await seedState(page);
   await page.reload({ waitUntil: 'load' });
   const text = await note(page).textContent();
   check('baseline: прогресс текущей версии читается', text.includes('Прогресс сохраняется'), text);
@@ -89,8 +66,7 @@ page.on('pageerror', error => errors.push(`исключение: ${error.message
 // 2. Другая версия банка: сообщение называет версию, исходные данные не
 //    перезаписываются ни при загрузке, ни при переходе — переход копирует их.
 {
-  await page.evaluate(key => localStorage.removeItem(key), KEY);
-  await page.evaluate(key => localStorage.removeItem(key), KEPT);
+  await page.evaluate(([key, kept]) => { localStorage.removeItem(key); localStorage.removeItem(kept); }, [KEY, KEPT]);
   const old = await page.evaluate((key) => {
     const data = JSON.parse(document.getElementById('study-data').textContent);
     const id = data.items[0].id;
@@ -192,7 +168,7 @@ page.on('pageerror', error => errors.push(`исключение: ${error.message
   // Состояние сеется на странице кабинета (там лежит study-data с версией),
   // а проверяется загрузка на «Маршруте» — хранилище одно на весь источник.
   await page.goto(origin + '/assessment/', { waitUntil: 'load' });
-  const seeded = await seedCurrent(page);
+  const seeded = await seedState(page);
   await page.goto(origin + '/route/', { waitUntil: 'load' });
   await page.evaluate(() => {
     localStorage.setItem('server-infrastructure-theme', 'light');
@@ -212,9 +188,99 @@ page.on('pageerror', error => errors.push(`исключение: ${error.message
   check('импорт: подтверждение обещает слияние разделов', dialogs.length === 1 && dialogs[0].includes('останутся без изменений') && !dialogs[0].includes('будет потерян'), dialogs.join(' | '));
 }
 
-check('обход без клиентских исключений', errors.length === 0, errors.join(' | '));
+// 7. Несовместимая попытка итогового контроля (PR #54): попытка прежнего
+//    отпечатка отбрасывается validate — и до исправления исходная строка
+//    сразу перезаписывалась очищенным прогрессом, ответы терялись молча.
+//    Теперь исходная строка сохраняется отдельным разделом до перезаписи,
+//    читателю показывается уведомление и копия, остальной прогресс работает,
+//    переноса номеров вариантов по прежнему отпечатку нет.
+{
+  await page.goto(origin + '/assessment/', { waitUntil: 'load' });
+  check('попытка: банк несёт ожидаемый текущий отпечаток', await page.evaluate(() => window.CourseQA.order) === CURRENT_ORDER, `order=${await page.evaluate(() => window.CourseQA.order)}`);
+  const seeded = await seedState(page);
+  const rawBefore = await seedLegacyExam(page, LEGACY_ORDER);
+  await page.reload({ waitUntil: 'load' });
+  const kept = await page.evaluate(key => localStorage.getItem(key), KEPT);
+  check('попытка: исходная строка сохранена отдельным разделом', kept === rawBefore);
+  const after = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEY);
+  check('попытка: из активного прогресса удалена, номера не перенесены', after.exam === null);
+  check('попытка: остальной прогресс цел', Object.keys(after.records).length === 1 && after.records[seeded.id]?.attempts === 1);
+  const text = await note(page).textContent();
+  check('попытка: уведомление объясняет и не винит версию банка', text.includes('попытка итогового контроля') && !text.includes('Банк заданий обновился'), text);
+  check('попытка: есть путь скачать копию', await page.getByRole('button', { name: 'Скачать данные с попыткой (JSON)' }).count() === 1);
+  // Перезагрузка: состояние стабильно, копия не теряется и не дублируется.
+  await page.reload({ waitUntil: 'load' });
+  check('попытка: копия пережила перезагрузку', await page.evaluate(key => localStorage.getItem(key), KEPT) === rawBefore);
+  check('попытка: активный прогресс стабилен', (await page.evaluate(key => JSON.parse(localStorage.getItem(key)).exam, KEY)) === null);
+  // Последующее сохранение: новый ответ пишет новый прогресс, копия попытки
+  // остаётся нетронутой — защита не превращается в потерю при первом ответе.
+  const card = page.locator('#study-panel .card', { hasText: seeded.id }).first();
+  await card.locator('.option input').first().check();
+  await card.locator('fieldset.confidence input').first().check();
+  await card.getByRole('button', { name: 'Ответить' }).click();
+  const tier = card.locator('.reason-tier');
+  await tier.locator('.option input').first().check();
+  await tier.getByRole('button', { name: 'Проверить' }).click();
+  const saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEY);
+  check('попытка: новый ответ записан в активный прогресс', saved.records[seeded.id]?.attempts === 2, `attempts=${saved.records[seeded.id]?.attempts}`);
+  check('попытка: копия цела после сохранения', await page.evaluate(key => localStorage.getItem(key), KEPT) === rawBefore);
+}
 
-await browser.close();
-server.close();
-console.log(failures.length ? `\nПровалено проверок: ${failures.length} (${failures.join(', ')})` : '\nВсе проверки сохранности прогресса пройдены.');
-process.exit(failures.length ? 1 : 0);
+// 8. Тот же дефект через импорт резервной копии: «Маршрут» пишет раздел
+//    напрямую, и защита обязана сработать при первой же загрузке кабинета
+//    после импорта, а не только при «естественном» устаревании попытки.
+{
+  await page.goto(origin + '/assessment/', { waitUntil: 'load' });
+  await seedState(page);
+  const rawImport = await seedLegacyExam(page, LEGACY_ORDER);
+  await page.evaluate(([key, kept]) => { localStorage.removeItem(key); localStorage.removeItem(kept); }, [KEY, KEPT]);
+  const dir = mkdtempSync(join(tmpdir(), 'course-exam-'));
+  const file = join(dir, 'course-backup.json');
+  writeFileSync(file, JSON.stringify({ schema: 'course-backup', version: 1, exportedAt: new Date().toISOString(), data: { [KEY]: rawImport } }));
+  await page.goto(origin + '/route/', { waitUntil: 'load' });
+  page.once('dialog', dialog => dialog.accept());
+  await page.setInputFiles('[data-backup-load]', file);
+  await page.waitForTimeout(600);
+  check('импорт попытки: раздел записан из файла', await page.evaluate(key => localStorage.getItem(key), KEY) === rawImport);
+  await page.goto(origin + '/assessment/', { waitUntil: 'load' });
+  check('импорт попытки: копия создана при загрузке кабинета', await page.evaluate(key => localStorage.getItem(key), KEPT) === rawImport);
+  const after = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KEY);
+  check('импорт попытки: попытка не перенесена, остальной прогресс цел', after.exam === null && Object.keys(after.records).length === 1);
+  const text = await note(page).textContent();
+  check('импорт попытки: уведомление показано', text.includes('попытка итогового контроля'), text);
+}
+
+// 9. Копию попытки сохранить не вышло: исходная строка обязана остаться
+//    нетронутой — защита сама не имеет права стать потерей данных.
+{
+  await page.goto(origin + '/assessment/', { waitUntil: 'load' });
+  await seedState(page);
+  const rawFail = await seedLegacyExam(page, LEGACY_ORDER);
+  const failing = await browser.newContext();
+  await failing.addInitScript((seed) => {
+    const store = {
+      getItem: key => (key === seed.key ? seed.value : null),
+      setItem: () => { throw new DOMException('quota', 'QuotaExceededError'); },
+      removeItem: () => {}, clear: () => {}, key: () => null, length: 0,
+    };
+    Object.defineProperty(window, 'localStorage', { configurable: true, get: () => store });
+  }, { key: KEY, value: rawFail });
+  const page9 = await failing.newPage();
+  await page9.goto(origin + '/assessment/', { waitUntil: 'load' });
+  const after = await page9.evaluate(key => localStorage.getItem(key), KEY);
+  check('ошибка копии: исходная строка с попыткой не перезаписана', after === rawFail);
+  const text = await note(page9).textContent();
+  check('ошибка копии: статус честно сообщает недоступность и нетронутый оригинал', text.includes('недоступн') && text.includes('не перезаписаны'), text);
+  check('ошибка копии: кабинет отрисован', (await page9.locator('#study-status').count()) === 1);
+  await failing.close();
+}
+
+check('обход без клиентских исключений', errors.length === 0, errors.join(' | '));
+} catch (error) {
+  // Отказ сценария — тоже проверка: он обязан попасть в отчёт, а не обрывать
+  // его без итоговой строки и уборки окружения.
+  console.log(`FAIL аварийное завершение: ${error?.message ?? error}`);
+  failures.push('аварийное завершение сценария');
+} finally {
+  await finish();
+}
