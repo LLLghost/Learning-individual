@@ -6,17 +6,13 @@
 // окружение у них одно, и две расходящиеся копии подъёма уже однажды
 // прошли мимо ревью. Сценарии остаются в самих регрессиях: каркас не
 // знает, что именно проверяется, и не смешивает их между собой.
-import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
-import { resolve, extname } from 'node:path';
+// Раздача статики — общий со smoke-обходом модуль static-server.mjs.
+import { resolve } from 'node:path';
 import { launchBrowser } from './browser-launch.mjs';
+import { startStaticServer } from './static-server.mjs';
 
 export const KEY = 'server-infrastructure-selfstudy-v6';
 export const KEPT = 'server-infrastructure-selfstudy-kept-v1';
-
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
-  '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
 
 // Каркас прогресса текущей версии: записи берутся настоящими id из банка,
 // иначе validate их отбросит, и проверка мерила бы пустое состояние.
@@ -34,24 +30,60 @@ export async function seedState(page, patch) {
   }, [KEY, patch ?? {}]);
 }
 
+// Подписка на клиентские исключения ставится на каждую страницу до первой
+// навигации. Страниц за прогон несколько — основная, блокированное
+// хранилище, отказ записи, — и исключение в «чужой» странице молча
+// пропускало итоговую проверку: она видела ошибки только основной.
+export function trackPageErrors(page, sink) {
+  page.on('pageerror', error => sink.push(`исключение: ${error.message}`));
+  return page;
+}
+
+// Хранилище, чья запись всегда падает (переполнение квоты). Подмена у двух
+// сценариев была копией, а цели разные: переход на новую версию банка и
+// спасение несовместимой попытки. Общее здесь — только окружение; проверки
+// остаются у сценариев, поэтому возвращается готовая страница с подпиской.
+export async function quotaPage(browser, seed, sink) {
+  const context = await browser.newContext();
+  await context.addInitScript((data) => {
+    const store = {
+      getItem: key => (key === data.key ? data.value : null),
+      setItem: () => { throw new DOMException('quota', 'QuotaExceededError'); },
+      removeItem: () => {}, clear: () => {}, key: () => null, length: 0,
+    };
+    Object.defineProperty(window, 'localStorage', { configurable: true, get: () => store });
+  }, seed);
+  const page = await context.newPage();
+  if (sink) trackPageErrors(page, sink);
+  return { context, page };
+}
+
 export async function regressHarness(label) {
-  const root = resolve(process.cwd(), 'build');
-  const server = createServer(async (request, response) => {
-    const path = decodeURIComponent(request.url.split('?')[0]);
-    const file = path.endsWith('/') ? resolve(root, `.${path}index.html`) : resolve(root, `.${path}`);
-    try {
-      const body = await readFile(file);
-      response.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' });
-      response.end(body);
-    } catch {
-      response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-      response.end('нет такого файла');
-    }
-  });
-  await new Promise((done) => server.listen(0, '127.0.0.1', done));
+  // Отказ подъёма — один случай и для сервера, и для браузера: причина
+  // печатается в console.error, прогон выходит кодом 2, убирается только
+  // то, что успело создаться. Прежде охранялся один запуск браузера, а
+  // старт сервера стоял до неё: отсутствующий build ронял прогон сырым
+  // стеком с кодом 1 — словно ошибку поймал сам сценарий, а не окружение.
+  let server;
+  let origin;
   let browser;
-  try { browser = await launchBrowser(); }
-  catch (error) { console.error(error.message); server.close(); process.exit(2); }
+  try {
+    ({ server, origin } = await startStaticServer(resolve(process.cwd(), 'build')));
+    browser = await launchBrowser();
+  } catch (error) {
+    console.error(`Не удалось поднять окружение регрессий (${label}): ${error.message}`);
+    // Уборка наблюдаема до принудительного выхода: маркер печатает сам
+    // колбэк close, а не код рядом с exit. Принудительный выход сам по
+    // себе ничего не доказывает — он гасит и висящий сервер (r4145462744),
+    // поэтому доказательство уборки — маркер, которого без настоящего
+    // закрытия не бывает.
+    if (browser) await browser.close().catch(() => {});
+    if (server) await new Promise((done) => server.close(() => {
+      console.error('сервер окружения закрыт до выхода');
+      done();
+    }));
+    process.exit(2);
+  }
   const failures = [];
   const check = (name, ok, detail) => {
     console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${ok || !detail ? '' : `: ${detail}`}`);
@@ -66,5 +98,5 @@ export async function regressHarness(label) {
     console.log(failures.length ? `\nПровалено проверок: ${failures.length} (${failures.join(', ')})` : `\nВсе ${label} пройдены.`);
     process.exit(failures.length ? 1 : 0);
   };
-  return { origin: `http://127.0.0.1:${server.address().port}`, browser, check, failures, finish };
+  return { origin, browser, check, failures, finish };
 }

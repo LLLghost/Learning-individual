@@ -220,12 +220,19 @@ sudo storcli64 /c0 show events filter=warning
 # Одноразовый файл стенда: приватный каталог, место, файл — и только потом запись.
 # Файл, нагрузка и уборка живут в одном непривилегированном контексте — без sudo.
 # Нагрузка уничтожает всё содержимое файла — он не хранит ничьи данные.
-WORK="$(mktemp -d /var/tmp/course-fio.XXXXXX)"   # каталог этого запуска, а не общий путь
-df -h "$WORK"                                    # места заведомо больше размера теста
-fallocate -l 8G "$WORK/dispose.bin" || exit 1    # не выделился — писать нечего
-fio --name=w --rw=write --bs=1M --size=8G --direct=1 \
-    --filename="$WORK/dispose.bin" || { rm -rf "$WORK"; exit 1; }
-rm -rf "$WORK"                                   # убирается только свой каталог
+# Всё в подоболочке: exit и trap действуют только здесь и не трогают вызывающую сессию.
+(
+  WORK="$(mktemp -d /var/tmp/course-fio.XXXXXX)" || exit 1  # не создался — fallocate и fio не запускаются
+  # уборка ставится сразу после успешного mktemp, до проверок: ранний выход любой из них
+  # тоже убирает каталог. Действует на успех, отказ любой команды и перехватываемые
+  # сигналы; SIGKILL не ловится и не обещается:
+  trap 'rm -rf "$WORK"' EXIT INT TERM
+  test "$(stat -c %a "$WORK")" = 700 || exit 1  # каталог не приватен — стенд не собирается, каталог уберёт trap
+  df -h "$WORK"                                    # места заведомо больше размера теста
+  fallocate -l 8G "$WORK/dispose.bin" || exit 1    # не выделился — fio не запускается, каталог уберёт trap
+  fio --name=w --rw=write --bs=1M --size=8G --direct=1 \
+      --filename="$WORK/dispose.bin" || exit 1     # отказ fio — уборка и стоп; записей вне $WORK нет
+)
 </code></pre>
 <p>Получено:</p>
 <pre><code class="language-text"># storcli64 /c0/v0 show all
