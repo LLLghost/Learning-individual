@@ -19,6 +19,13 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { assembleCourse } from './assemble-course.mjs';
 
+// HTML ASCII whitespace — точный набор, которым разметка отделяет имя тега
+// от атрибутов: space, TAB, LF, FF, CR. Не JS `\s`: тот захватывает NBSP,
+// вертикальную табуляцию и прочие разделители Юникода, которых HTML-токенайзер
+// не знает — `<script\u{A0}…>` из-за этого считался тегом скрипта, хотя для
+// браузера NBSP продолжает имя тега.
+const HTML_SPACE = ' \\t\\n\\f\\r';
+
 // Маркер — атрибут id настоящего открывающего тега, а не любое вхождение
 // строки: indexOf находил `id="…"` и в прозе, и в комментарии, и в тексте
 // скрипта, и граница молча уезжала на такое совпадение — запись тогда
@@ -29,28 +36,37 @@ import { assembleCourse } from './assemble-course.mjs';
 //     первом же </script>, как и для браузера), но атрибуты самого тега
 //     <script …> настоящие — так находятся блоки данных вида
 //     <script type="application/json" id="lab-data">;
-//   • скриптом считается только целое имя тега: сразу после него идут
-//     HTML-пробел, «/» или «>», но не дефис и не буква — `<script-data>` и
-//     `<scripting>` обычные элементы, их содержимое сканером не накрывается,
-//     и маркер внутри них находится;
+//   • внутри текста скрипта открывающий `<SCRIPT id="…">` — тоже просто
+//     текст: блок закрывается первым </script, и приманка в строковом
+//     литерале не становится ни границей, ни маркером — в любом регистре;
+//   • скриптом считается только целое имя тега: сразу после него идёт
+//     HTML-пробел из набора выше, «/» или «>», но не NBSP, не дефис и не
+//     буква — `<script-data>` и `<scripting>` обычные элементы, их
+//     содержимое сканером не накрывается, и маркер внутри них находится;
 //   • открывающий и закрывающий теги скрипта распознаются без учёта
 //     регистра, в том числе с разным регистром внутри пары (<SCRIPT> …
 //     </ScRiPt>): браузеру регистр безразличен, а до фикса содержимое
 //     нераспознанного блока сканировалось как разметка, и приманка внутри
 //     него принималась за маркер;
 //   • в открывающем теге атрибут id узнаётся как отдельное слово — перед ним
-//     пробел, кавычка или слэш, но не часть другого имени: `data-id="…"`
-//     маркером не считается. Ловушка внутри значения чужого атрибута
-//     (`title='x id="…"'`) остаётся за границами защиты: инструменты правки
-//     разметку не меняют, а полноценный разбор атрибутов здесь не нужен.
+//     HTML-пробел, кавычка или слэш, но не NBSP и не часть другого имени:
+//     `data-id="…"` маркером не считается. Ловушка внутри значения чужого
+//     атрибута (`title='x id="…"'`) остаётся за границами защиты:
+//     инструменты правки разметку не меняют, а полноценный разбор атрибутов
+//     здесь не нужен.
 export const markerOf = (html, id) => {
-  const attribute = new RegExp(`["'\\s/]id="${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
+  const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const attribute = new RegExp(`["'[${HTML_SPACE}/]id="${escaped}"`);
   const carriesId = (tag) => attribute.test(tag.slice(1).replace(/\/?>$/, ''));
-  const scan = /<(\/?)script(?=[\s/>])[^>]*>|<!--[\s\S]*?-->|<([a-zA-Z][^<>]*)>/gi;
+  const scan = new RegExp(
+    `<(\\/?)script(?=[${HTML_SPACE}/>])[^>]*>|<!--[\\s\\S]*?-->|<([a-zA-Z][^<>]*)>`,
+    'gi',
+  );
   let inScript = false;
   for (let match; (match = scan.exec(html)); ) {
     if (match[1] !== undefined) {
       if (match[1]) inScript = false;
+      else if (inScript) continue;
       else {
         inScript = true;
         if (carriesId(match[0])) return match.index;
@@ -62,6 +78,20 @@ export const markerOf = (html, id) => {
     if (carriesId(match[0])) return match.index;
   }
   throw new Error(`course: не найден маркер id="${id}"`);
+};
+
+// Конец скриптового блока — первый закрывающий тег `</script`, опознанный
+// теми же правилами, что и маркер: любой регистр, за именем HTML-пробел,
+// «/» или «>» (`</ScRiPt >` и `</script\n>` — закрытия, `</scriptx>` — нет).
+// Регистрозависимый indexOf пропускал `</ScRiPt>` и молча искал закрытие в
+// чужом блоке ниже по документу, а отсутствие закрытия давало (-1) + 9 —
+// «границу» в самом начале документа вместо отказа.
+const endOfScript = (html, id) => {
+  const close = new RegExp(`</script(?=[${HTML_SPACE}/>])[^>]*>`, 'gi');
+  close.lastIndex = markerOf(html, id);
+  const match = close.exec(html);
+  if (!match) throw new Error(`course: не закрыт блок id="${id}"`);
+  return match.index + match[0].length;
 };
 
 // Разрешение начальной границы фрагмента в собранном документе. Виды локаторов
@@ -83,12 +113,13 @@ const locate = (html, start) => {
   }
   if (start.kind === 'marker') return markerOf(html, start.id);
   if (start.kind === 'script-end') {
-    const end = html.indexOf('</script>', markerOf(html, start.id));
-    if (end < 0) throw new Error(`course: не закрыт блок id="${start.id}"`);
-    return end + 9;
+    return endOfScript(html, start.id);
   }
   if (start.kind === 'plain-script-after') {
-    const after = html.indexOf('</script>', markerOf(html, start.id)) + 9;
+    // Ровно `<script>` без атрибутов — так в книге выглядит «следующий
+    // обычный скрипт», и регистр здесь часть конвенции: блок данных может
+    // закончиться `</ScRiPt>`, но скрипт после него ищется буквально.
+    const after = endOfScript(html, start.id);
     const at = html.indexOf('<script>', after);
     if (at < 0) throw new Error(`course: не найден скрипт после блока id="${start.id}"`);
     return at;
