@@ -14997,10 +14997,12 @@ const names=['Метод и единицы','Архитектура','Проце
 // результат, а не разрыв между «кажется, знаю» и «знаю» — главную ошибку учёбы в одиночку.
 const CONF=['догадка','склоняюсь к ответу','знаю'];
 const ERRORS_MAX=300;
-// Ответы попытки хранятся номерами вариантов, поэтому попытка привязана к тому
-// порядку, при котором её начали: после перестановки вариантов старые номера
-// означали бы уже другие строки, и проверка молча посчитала бы чужой ответ.
-const ORDER=(()=>{let h=0x811c9dc5;const feed=t=>{for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}};DB.items.forEach(x=>(x.options||[]).forEach(feed));return h.toString(36);})();
+// Ответы попытки хранятся номерами вариантов — и первого яруса, и вопроса о
+// механизме, — поэтому попытка привязана к порядку обоих: перестановка любых
+// вариантов делает старые номера чужими строками, и проверка молча посчитала
+// бы уже другой ответ. Отпечаток меняется и без смены версии банка, поэтому
+// попытки, начатые при прежнем порядке, отклоняются как несовместимые.
+const ORDER=(()=>{let h=0x811c9dc5;const feed=t=>{for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}};DB.items.forEach(x=>{(x.options||[]).forEach(feed);feed('|');(x.reason?.options||[]).forEach(feed);feed('|');});return h.toString(36);})();
 const emptyCalibration=()=>CONF.map(()=>({n:0,correct:0}));
 const newState=()=>({schema:'course-study-progress',version:DB.version,records:{},scenarios:{},exam:null,history:[],practice:null,calibration:emptyCalibration(),errors:[],labs:{}});
 let state=newState(),storageOK=true,module=0,tab='learn';
@@ -15026,7 +15028,10 @@ function labValid(r){
  if(!Number.isInteger(r.variant)||r.variant<0||r.variant>16)return false;
  if(typeof r.seed!=='string'||!/^[A-Za-z0-9_-]{2,64}$/.test(r.seed))return false;
  if(typeof r.collector_sha256!=='string'||!/^[a-f0-9]{64}$/.test(r.collector_sha256))return false;
- return Array.isArray(r.evidence)&&r.evidence.length>0&&r.evidence.length<=20;
+ // Каждый элемент evidence проверяется до сохранения: [null] или массив на
+ // месте элемента проходит проверку массива и роняет карточку при показе —
+ // «Что собрал скрипт» читает e.cmd и e.excerpt каждого элемента.
+ return Array.isArray(r.evidence)&&r.evidence.length>0&&r.evidence.length<=20&&r.evidence.every(e=>e&&typeof e==='object'&&!Array.isArray(e)&&typeof e.cmd==='string'&&typeof e.excerpt==='string');
 }
 // Сверка описана в самой работе, а не кодом под каждую: иначе двадцать работ
 // означали бы двадцать почти одинаковых функций. Операция знает, что сравнить;
@@ -15206,7 +15211,15 @@ function reasonTier(item,card,after){
  const probe={id:item.id+'#why',options:item.reason.options,answer:item.reason.answer};
  const get=answerInputs(probe,box,null,()=>{});
  const message=el('div');
- box.append(button('Проверить',()=>{const choice=get();if(choice===null){message.textContent='Выберите рассуждение.';return}after(choice===item.reason.answer);}),message);
+ // Второй ярус закрывается после первой валидной отправки тем же правилом,
+ // что и первый: повторный клик или повторный вызов callback не должен
+ // дописывать зачёт и попытку к уже записанной проверке.
+ let done=false;
+ const submit=button('Проверить',()=>{if(done)return;const choice=get();if(choice===null){message.textContent='Выберите рассуждение.';return}
+  done=true;submit.disabled=true;
+  box.querySelectorAll('.option input, input.answer-field').forEach(x=>{x.disabled=true;});
+  after(choice===item.reason.answer);});
+ box.append(submit,message);
  card.append(box);
 }
 function renderItem(item,parent){const card=el('div',undefined,'card');card.append(el('h3',item.id+' · '+(item.kind==='concept'?'Механизм':'Расчёт и перенос')),el('p',item.stem));if(item.fields)card.append(el('p','Единицы указаны у полей. Допуск 0,5%; адреса и дискретные количества — точные. Открытые пояснения из условия сверьте с разбором после вычисления.','note'));const get=answerInputs(item,card,null,()=>{}),confidence=confidenceInput(card),feedback=el('div');
@@ -15405,7 +15418,7 @@ function progress(){panel.append(el('h3','Прогресс по модулям')
 function render(){panel.replaceChildren();document.querySelectorAll('.navbtn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));({learn,mixed,review,errors,practice,exam,progress})[tab]();status();}
 document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();});
 // Exposes read-only validation functions for deterministic local QA; no server access.
-window.CourseQA=Object.freeze({evaluate,numericOK,validate,practiceValid,labValid,labRows,bankSize:DB.items.length,caseSize:DB.cases.length,version:DB.version});
+window.CourseQA=Object.freeze({evaluate,numericOK,validate,practiceValid,labValid,labRows,bankSize:DB.items.length,caseSize:DB.cases.length,version:DB.version,order:ORDER});
 render();
 })();
 </script></body></html>
