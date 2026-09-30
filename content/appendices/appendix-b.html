@@ -1,0 +1,99 @@
+<h1 id="b33-s053">Приложение B. Шаблоны runbook</h1>
+<h2 id="b33-s054">B.1. Универсальный runbook</h2>
+<pre><code class="language-markdown"># Runbook: &lt;название&gt;
+
+## Назначение
+Какой incident покрывает инструкция.
+
+## Impact
+Что обычно перестаёт работать.
+
+## Признаки
+Наблюдаемые симптомы, не предположения.
+
+## Перед началом
+Какие данные нельзя потерять, нужен ли maintenance window.
+
+## Диагностическая модель
+Схема слоёв/path.
+
+## Проверки
+Для каждой:
+- гипотеза;
+- команда/действие;
+- как интерпретировать варианты результата.
+
+## Recovery
+Минимальные безопасные действия.
+
+## Опасные действия
+Что нельзя делать без backup/approval.
+
+## Validation
+Как доказать восстановление.
+
+## Escalation
+Когда прекращать самостоятельные изменения.
+
+## Prevention
+Monitoring/design/change improvements.
+</code></pre>
+<h2 id="b33-s055">B.2. Runbook «не виден диск»</h2>
+<p>Начальное дерево:</p>
+<pre><code class="language-text">physical slot occupied/powered?
+        ↓
+controller/enclosure sees device?
+        ↓
+kernel sees target/namespace?
+        ↓
+block device exists?
+        ↓
+upper storage layer sees it?
+        ↓
+filesystem/application sees data?
+</code></pre>
+<p>Обязательные данные до замены:</p>
+<ul>
+<li>серийный номер и WWN;</li>
+<li>соответствие физическому слоту;</li>
+<li>контроллер и путь;</li>
+<li>состояние массива или пула;</li>
+<li>журнал ядра;</li>
+<li>показатели здоровья устройства, если они читаются.</li>
+</ul>
+<h2 id="b33-s056">B.3. Runbook «сервер не грузится»</h2>
+<pre><code class="language-text">Power/POST?
+ ↓
+Firmware sees boot device?
+ ↓
+Bootloader appears?
+ ↓
+Kernel starts?
+ ↓
+Root device found?
+ ↓
+Root filesystem mounts?
+ ↓
+PID1 starts?
+ ↓
+Target/services reached?
+</code></pre>
+<p>Не выполнять восстановление GRUB, пока не доказано, что отказ находится на уровне загрузчика.</p>
+<h2 id="b33-s057">B.4. Runbook «нет сети»</h2>
+<pre><code class="language-text">link/carrier
+ ↓
+VLAN/L2
+ ↓
+IP/prefix
+ ↓
+neighbor next-hop
+ ↓
+route
+ ↓
+firewall
+ ↓
+transport socket
+ ↓
+application
+</code></pre>
+<hr>

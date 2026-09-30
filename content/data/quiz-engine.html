@@ -1,0 +1,19 @@
+<script>
+const tocInput=document.getElementById('toc-filter');
+// Оглавление, кнопки ответов и печать есть только на одностраничном
+// учебнике; на странице тренажёра A1 из собранного сайта их нет. Раньше
+// скрипт падал здесь на первой же строке, и весь тренажёр не запускался.
+tocInput?.addEventListener('input',()=>{const q=tocInput.value.toLocaleLowerCase('ru');document.querySelectorAll('#toc li').forEach(li=>li.hidden=!li.textContent.toLocaleLowerCase('ru').includes(q));});
+const answerSections=()=>[...document.querySelectorAll('details.answer-section')];
+document.getElementById('show-answers')?.addEventListener('click',()=>answerSections().forEach(d=>d.open=true));
+document.getElementById('hide-answers')?.addEventListener('click',()=>answerSections().forEach(d=>d.open=false));
+function revealHash(){let id;try{id=decodeURIComponent(location.hash.slice(1));}catch{return}const target=document.getElementById(id);if(!target)return;for(let p=target.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;requestAnimationFrame(()=>target.scrollIntoView());}
+window.addEventListener('hashchange',revealHash);window.addEventListener('load',()=>{answerSections().forEach(d=>d.open=false);if(location.hash)revealHash();});
+let printState=[];window.addEventListener('beforeprint',()=>{printState=answerSections().map(d=>d.open);answerSections().forEach(d=>d.open=true);});window.addEventListener('afterprint',()=>answerSections().forEach((d,i)=>d.open=printState[i]));document.getElementById('print')?.addEventListener('click',()=>window.print());
+const bank=JSON.parse(document.getElementById('quiz-data').textContent);let qi=0;const QUIZ_KEY='server-infrastructure-quiz-a1-v1';const attempts=new Map((()=>{try{const raw=JSON.parse(localStorage.getItem(QUIZ_KEY)||'[]');return Array.isArray(raw)?raw:[]}catch{return[]}})());const persist=()=>{try{localStorage.setItem(QUIZ_KEY,JSON.stringify([...attempts]))}catch{}};const quizOptions=q=>{const entries=Object.entries(q.options),shift=q.id%entries.length;return[...entries.slice(shift),...entries.slice(0,shift)]};
+const stem=document.getElementById('quiz-stem'), opts=document.getElementById('quiz-options'), feedback=document.getElementById('quiz-feedback');
+function quizRender(){const q=bank[qi];stem.textContent=`Q${q.id}. ${q.stem.replaceAll('`','')}`;opts.replaceChildren();quizOptions(q).forEach(([letter,text])=>{const label=document.createElement('label'),input=document.createElement('input');input.type='radio';input.name='answer';input.value=letter;input.checked=attempts.get(q.id)===letter;label.append(input,document.createTextNode(`${letter}. ${text.replaceAll('`','')}`));opts.append(label);});feedback.replaceChildren();quizStatus();}
+function quizStatus(){const correct=bank.filter(q=>attempts.get(q.id)===q.answer).length;document.getElementById('quiz-progress').textContent=`Вопрос ${qi+1} из 40 · проверено ${attempts.size} · верно ${correct}. Результат сохраняется в этом браузере.`;}
+document.getElementById('quiz-check').onclick=()=>{const selected=document.querySelector('input[name=answer]:checked');if(!selected){feedback.textContent='Сначала выберите ответ.';return}const q=bank[qi];attempts.set(q.id,selected.value);persist();feedback.textContent=selected.value===q.answer?'Верно. Объясните механизм своими словами. ':'Пока неверно. Сопоставьте ответ с механизмом. ';const a=document.createElement('a');a.href=`#ch${String(q.module).padStart(2,'0')}`;a.textContent='Перейти к разбору темы';feedback.append(a);quizStatus();};
+document.getElementById('quiz-next').onclick=()=>{qi=(qi+1)%bank.length;quizRender();};document.getElementById('quiz-prev').onclick=()=>{qi=(qi+bank.length-1)%bank.length;quizRender();};document.getElementById('quiz-reset').onclick=()=>{attempts.clear();persist();qi=0;quizRender();};quizRender();
+</script>

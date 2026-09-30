@@ -1,0 +1,85 @@
+<h2 id="lab36">L36A/B. Комплексный инцидент и защита</h2>
+<p><strong>Теория:</strong> <a href="#ch36">U36</a>. <strong>A, VM:</strong> повторите один интеграционный сценарий <a href="#b33">главы 33</a>, сохранив исходное состояние, топологию и успешный прикладной запрос до внесения поломки. Подготовьте точку восстановления и порядок работы. <strong>Приёмка:</strong> исходная система действительно работала по заданным критериям.</p>
+<p><strong>B:</strong> внесите до трёх поломок из <a href="#capstone">выпускного проекта</a>, не выбирая их осознанно: заготовьте сценарии заранее, перемешайте и примените вслепую — или попросите об этом другого человека. Восстановите пользовательский путь, резервирование и наблюдаемость; причинное объяснение запишите до исправления, а не после. <strong>Инцидент:</strong> общий симптом ошибочно принят за одну общую первопричину. Оценка — по отдельной выпускной рубрике, а не только по числу исправленных настроек.</p>
+<p>Автоматическая проверка L36A/B работает с подготовленным набором наблюдений: это разбор перед выходом на стенд, а не подтверждение самого восстановления. В шкалу «Практика на стенде» она не идёт — восстановленный пользовательский путь, резервирование и наблюдаемость подтверждаются вашим журналом и защитой работы.</p>
+<h2 id="collector-code">Эталон ограниченного сборщика на Python</h2>
+<p>Этот пример предназначен для Linux и Python 3. Он читает состояние и пишет один локальный отчёт с правами 0600. Он не является универсальным средством криминалистического сбора: список проверок ограничен, каждая получает не более 64 KiB вывода каждого потока. Обрезка не выдаётся за полный вывод. Потеря прав отмечается в отчёте. Добавлять команды оболочки из пользовательского ввода нельзя.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import argparse
+import datetime as dt
+import json
+import os
+import selectors
+import subprocess
+import time
+
+LIMIT = 65536
+PROBES = {
+    "kernel": ["uname", "-a"],
+    "routes": ["ip", "-j", "route", "show"],
+    "sockets": ["ss", "-lnt"],
+    "disks": ["lsblk", "-J", "-o", "NAME,TYPE,SIZE,FSTYPE,MOUNTPOINTS"],
+}
+
+def probe(argv, timeout=5):
+    start = time.monotonic()
+    result = {"argv": argv, "status": "ok", "returncode": None}
+    chunks = {"stdout": bytearray(), "stderr": bytearray()}
+    truncated = {"stdout": False, "stderr": False}
+    try:
+        p = subprocess.Popen(argv, stdin=subprocess.DEVNULL,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             shell=False, start_new_session=True)
+    except OSError as exc:
+        return {**result, "status": "unavailable", "error": str(exc)}
+    with selectors.DefaultSelector() as sel:
+        for name in chunks:
+            stream = getattr(p, name)
+            os.set_blocking(stream.fileno(), False)
+            sel.register(stream, selectors.EVENT_READ, name)
+        while sel.get_map():
+            if time.monotonic() - start &gt;= timeout:
+                result["status"] = "timeout"
+                p.kill()  # allowlisted probes do not spawn a shell tree
+                break
+            for key, _ in sel.select(timeout=0.1):
+                data = os.read(key.fileobj.fileno(), 8192)
+                if not data:
+                    sel.unregister(key.fileobj)
+                    key.fileobj.close()
+                    continue
+                name = key.data
+                remaining = LIMIT - len(chunks[name])
+                chunks[name].extend(data[:remaining])
+                truncated[name] |= len(data) &gt; remaining
+        for stream in (p.stdout, p.stderr):
+            if not stream.closed:
+                stream.close()
+    try:
+        result["returncode"] = p.wait(timeout=max(0.1, timeout - (time.monotonic() - start)))
+    except subprocess.TimeoutExpired:
+        p.kill()
+        result["returncode"] = p.wait()
+        result["status"] = "timeout"
+    if result["status"] == "ok" and result["returncode"] != 0:
+        result["status"] = "error"
+    result.update({name: data.decode("utf-8", "replace") for name, data in chunks.items()})
+    result.update(truncated=truncated, elapsed_s=round(time.monotonic() - start, 3))
+    return result
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", required=True)
+    args = parser.parse_args()
+    report = {"schema_version": 1,
+              "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+              "probes": {name: probe(argv) for name, argv in PROBES.items()}}
+    fd = os.open(args.out, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as stream:
+        json.dump(report, stream, ensure_ascii=False, indent=2)
+    return 0 if all(p["status"] == "ok" for p in report["probes"].values()) else 2
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+</code></pre>
+<p><strong>Проверки контракта:</strong> корректная команда; отсутствующая программа; код возврата 3; превышение времени; Unicode; вывод более 64 KiB; существующий путь вывода. Для переносимого теста нужен профиль POSIX, а Windows требует иного механизма чтения каналов. Возврат 2 означает частичный отчёт, а не отсутствие файла.</p>
