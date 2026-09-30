@@ -217,7 +217,13 @@ fio … --direct=0 --invalidate=0     IOPS 377 137 · p50 1,6 мкс</code></pre
 sudo storcli64 /c0/bbu show all
 sudo storcli64 /c0/v0 show all
 sudo storcli64 /c0 show events filter=warning
-fio --name=w --rw=write --bs=1M --size=8G --direct=1 --filename=/dev/sda
+# Одноразовый файл стенда: сначала место, потом файл, и только потом запись.
+# Нагрузка уничтожает всё содержимое файла — он не хранит ничьи данные.
+df -h /var/tmp
+sudo fallocate -l 8G /var/tmp/course-fio-dispose.bin
+fio --name=w --rw=write --bs=1M --size=8G --direct=1 \
+    --filename=/var/tmp/course-fio-dispose.bin
+sudo rm /var/tmp/course-fio-dispose.bin
 </code></pre>
 <p>Получено:</p>
 <pre><code class="language-text"># storcli64 /c0/v0 show all
