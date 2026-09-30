@@ -137,7 +137,7 @@ Partitions will be aligned on 2048-sector boundaries</code></pre>
 <pre><code class="language-bash">sudo dd if=/dev/sdb bs=512 count=8 2>/dev/null | strings | head</code></pre>
 <pre><code class="language-text">LABELONE
 LVM2 001wevDiXZ2VZeMTRFOf1Z2bNn3dZtVOLoS</code></pre>
-<p>Но главное — второй экземпляр этих метаданных лежит <em>на хосте</em>, в текстовом виде, и обновляется при каждом изменении: <code>/etc/lvm/backup/</code> хранит текущее состояние каждой группы, <code>/etc/lvm/archive/</code> — все предыдущие, с отметкой времени. Это и есть механизм отмены.</p>
+<p>Но главное — второй экземпляр этих метаданных лежит <em>на хосте</em>, в текстовом виде, и обновляется при каждом изменении: <code>/etc/lvm/backup/</code> хранит текущее состояние каждой группы, <code>/etc/lvm/archive/</code> — предыдущие состояния с отметкой времени. Глубина истории ограничена настройками <code>/etc/lvm/lvm.conf</code> (число хранимых архивов и срок хранения), а само архивирование можно и отключить — тогда прошлых состояний не будет вовсе. Это механизм отмены в пределах того, что в архив попало; перед восстановлением проверяют, какие архивы реально доступны, а не предполагают их.</p>
 <p><strong>mdraid.</strong> Суперблок версии 1.2 лежит по смещению 4 КиБ от начала участника — поэтому диск с массивом выглядит «пустым» в начале, а данные начинаются ещё дальше:</p>
 <pre><code class="language-bash">sudo mdadm --examine /dev/sdd | grep -E 'Magic|Version|Data Offset|Array UUID|Device Role'</code></pre>
 <pre><code class="language-text">          Magic : a92b4efc
@@ -148,9 +148,10 @@ LVM2 001wevDiXZ2VZeMTRFOf1Z2bNn3dZtVOLoS</code></pre>
 <p>Данные начинаются с 18432-го сектора, то есть через 9 МиБ: место оставлено под суперблок, битовую карту намерений и запас. Версия метаданных — не формальность: у 0.90 и 1.0 суперблок в конце устройства, и именно поэтому старый массив иногда «виден» как обычная файловая система, а новый — нет. Обратная сторона: снимая диск из массива для другого применения, его нужно очистить (<code>mdadm --zero-superblock</code>), иначе следующая сборка подхватит его как участника.</p>
 
 <h2 id="b13-s025">13.10. Отмена: как вернуть удалённый том</h2>
-<p>Команда <code>lvremove</code> удаляет запись о томе, а не блоки с данными. Пока место не занято чем-то новым, состояние группы возвращается из архива — целиком, вместе с томом:</p>
+<p>Команда <code>lvremove</code> удаляет запись о томе, а не блоки с данными. Пока место не занято чем-то новым, состояние группы возвращается из архива — целиком, вместе с томом. Но файл архива выбирают, а не берут последний по списку: номера и метки времени в именах уникальны для каждого прогона, а самым свежим после удаления может оказаться архив уже без тома. Выбирают файл, где <code>lv_app</code> ещё описан, осматривают его метаданные — архивы текстовые — и в <code>vgcfgrestore</code> передают именно проверенный путь:</p>
 <pre><code class="language-bash">sudo lvremove -f /dev/vg_lab/lv_app     # том исчез
-ls -1t /etc/lvm/archive/vg_lab_*.vg | head -1
+ls -lt /etc/lvm/archive/vg_lab_*.vg | head -3
+sudo grep -l 'lv_app' /etc/lvm/archive/vg_lab_*.vg | tail -1   # новейший архив, где том ещё есть
 sudo vgcfgrestore -f /etc/lvm/archive/vg_lab_00001-1766531299.vg vg_lab
 sudo lvchange -ay /dev/vg_lab/lv_app
 sudo mount /dev/vg_lab/lv_app /mnt/lab &amp;&amp; cat /mnt/lab/marker.txt</code></pre>
@@ -285,12 +286,16 @@ sudo smartctl -i /dev/sdd | grep -iE 'serial|model'</code></pre></li>
 sudo mdadm /dev/md/storage:10 --add /dev/sdX
 watch cat /proc/mdstat</code></pre></li>
 <li><strong>Дождаться завершения и проверить остальных.</strong> Восстановление — самая тяжёлая нагрузка, какую массив видит, и именно в этот момент выявляются нечитаемые сектора на других участниках:
-<pre><code class="language-bash">cat /sys/block/md127/md/mismatch_cnt
-sudo smartctl -A /dev/sda | grep -iE 'reallocated|pending|uncorrect'</code></pre></li>
+<pre><code class="language-bash">sudo smartctl -A /dev/sda | grep -iE 'reallocated|pending|uncorrect'</code></pre></li>
 </ol>
-<p><strong>Что считается завершением.</strong> Не «мигание прекратилось», а три факта: <code>degraded</code> равен нулю, <code>sync_action</code> вернулся в <code>idle</code>, и в журнале ядра есть строка о завершении восстановления. Всё это проверяется одной командой каждое, и без них замена не считается выполненной:</p>
-<pre><code class="language-bash">cat /sys/block/md127/md/degraded /sys/block/md127/md/sync_action
+<p><strong>Что считается завершением.</strong> Не «мигание прекратилось», а три факта: <code>degraded</code> равен нулю, <code>sync_action</code> вернулся в <code>idle</code>, и в журнале ядра есть строка о завершении восстановления. Всё это проверяется одной командой каждое, и без них замена не считается выполненной. Путь в <code>sysfs</code> при этом разрешают от массива, который вы идентифицировали, — <code>/dev/md/storage:10</code>, сверив имя и UUID по <code>mdadm --detail</code>, — потому что номер <code>md127</code> нестабилен и после перезагрузки станет другим, как в разделе 13.11:</p>
+<pre><code class="language-bash">md=$(basename "$(readlink -f /dev/md/storage:10)")
+cat /sys/block/$md/md/degraded /sys/block/$md/md/sync_action
 journalctl -k | grep -i 'recovery done'</code></pre>
+<p><strong>Расхождения после замены.</strong> Счётчик <code>mismatch_cnt</code> — результат последней завершённой проверки, а не датчик и не команда: его нулевое значение ничего не значит, пока проверка не прошла. После восстановления запланируйте <code>check</code>, допустимый по нагрузке, дождитесь его завершения — и только потом читайте счётчик. Не запускайте <code>repair</code> автоматически при ненулевом значении: переписывание копий — решение после анализа причин, а не шаг диагностики. И помните о контексте: счётчик осмыслен для уровней RAID с избыточностью — зеркала и чётность, — вне RAID-контекста его трактовать нельзя:</p>
+<pre><code class="language-bash">echo check | sudo tee /sys/block/$md/md/sync_action   # когда нагрузка позволяет
+watch cat /sys/block/$md/md/sync_action               # дождаться idle
+cat /sys/block/$md/md/mismatch_cnt</code></pre>
 <p><strong>Горячий резерв.</strong> Диск, добавленный как <code>--add-spare</code>, ждёт в массиве и вступает в дело автоматически при отказе — окно без резерва сокращается до времени восстановления, а не до времени реакции человека. Цена — диск, который простаивает; для удалённой площадки это обычно выгодный обмен.</p>
 <h2 id="b13-s011">13.19. Разобранный пример: <code>df</code> показывает 100 GiB после расширения LV до 200 GiB</h2>
 <h3 id="b13-s012">Ситуация</h3>
