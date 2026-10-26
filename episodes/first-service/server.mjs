@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { spawn, spawnSync } from 'node:child_process';
 import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir, rename, open, unlink } from 'node:fs/promises';
-import { dirname, resolve, join } from 'node:path';
+import { dirname, resolve, join, sep, extname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -289,7 +289,20 @@ export async function startWorkshop({ port = 4180, stateDir = join(project, '.ep
           response.end(result.body);
           return;
         }
-        const file = { '/': 'index.html', '/app.js': 'app.js', '/introduction.js': 'introduction.js', '/style.css': 'style.css' }[path];
+        // Та же сборка курса работает локально с API и на статической публикации без API.
+        const buildRoot=join(project,'build');
+        if(path==='/'||/^\/(?:learn|progress|book|reference|assets|archive|downloads|chapters|start)\//.test(path)||path==='/sw-course.js'){
+          const relative=decodeURIComponent(path).replace(/^\/+/,''),target=resolve(buildRoot,relative,path.endsWith('/')?'index.html':'');
+          if(target.startsWith(buildRoot+sep)){
+            try{
+              let bytes=await readFile(target);
+              const ext=extname(target),type={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.py':'text/plain; charset=utf-8','.svg':'image/svg+xml'}[ext]??'application/octet-stream';
+              if(ext==='.html')bytes=Buffer.from(bytes.toString('utf8').replace('__LOCAL_LAB_TOKEN__',token));
+              response.writeHead(200,{'content-type':type,'cache-control':'no-store'});response.end(bytes);return;
+            }catch(error){if(error.code!=='ENOENT')throw error;}
+          }
+        }
+        const file = { '/': 'index.html', '/workshop/': 'index.html', '/app.js': 'app.js', '/introduction.js': 'introduction.js', '/style.css': 'style.css' }[path];
         if (!file) throw fail('Не найдено.', 404);
         const type = file.endsWith('.js') ? 'text/javascript; charset=utf-8' : file.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/html; charset=utf-8';
         let text = await readFile(join(here, file), 'utf8');

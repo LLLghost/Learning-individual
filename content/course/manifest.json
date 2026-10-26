@@ -1,0 +1,1877 @@
+{
+  "schema": "practical-course-v1",
+  "version": 7,
+  "editorialStatus": "pending",
+  "units": [
+    {
+      "id": "intro",
+      "title": "Введение"
+    },
+    {
+      "id": "first",
+      "title": "Первая страница"
+    },
+    {
+      "id": "linux",
+      "title": "Linux и лаборатория"
+    },
+    {
+      "id": "network",
+      "title": "Сеть"
+    },
+    {
+      "id": "storage",
+      "title": "Хранение и данные"
+    },
+    {
+      "id": "automation",
+      "title": "Автоматизация"
+    },
+    {
+      "id": "platform",
+      "title": "Платформа приложений"
+    },
+    {
+      "id": "hardware",
+      "title": "Серверное оборудование"
+    },
+    {
+      "id": "operations",
+      "title": "Эксплуатация"
+    },
+    {
+      "id": "final",
+      "title": "Итоговая работа"
+    }
+  ],
+  "lessons": [
+    {
+      "unit": "intro",
+      "chapter": null,
+      "id": "why",
+      "title": "Зачем разбираться в работе сайтов",
+      "environment": "reading",
+      "order": 0,
+      "prerequisites": [],
+      "labIds": [],
+      "file": "lessons/why.html",
+      "checks": [
+        "I-service",
+        "I-service-alt"
+      ],
+      "reviewed": true
+    },
+    {
+      "unit": "intro",
+      "chapter": null,
+      "id": "request",
+      "title": "Как браузер получает ответ",
+      "environment": "local",
+      "order": 1,
+      "prerequisites": [
+        "why"
+      ],
+      "labIds": [],
+      "file": "lessons/request.html",
+      "checks": [
+        "I-request",
+        "I-request-alt"
+      ],
+      "reviewed": true
+    },
+    {
+      "unit": "intro",
+      "chapter": null,
+      "id": "computer",
+      "title": "Чем программа отличается от компьютера",
+      "environment": "reading",
+      "order": 2,
+      "prerequisites": [
+        "request"
+      ],
+      "labIds": [],
+      "file": "lessons/computer.html",
+      "checks": [],
+      "reviewed": true
+    },
+    {
+      "unit": "intro",
+      "chapter": null,
+      "id": "files",
+      "title": "Где остаётся записанный текст",
+      "environment": "reading",
+      "order": 3,
+      "prerequisites": [
+        "computer"
+      ],
+      "labIds": [],
+      "file": "lessons/files.html",
+      "checks": [
+        "I-file",
+        "I-file-alt"
+      ],
+      "reviewed": true
+    },
+    {
+      "unit": "first",
+      "chapter": null,
+      "id": "my-page",
+      "title": "Создать страницу с собственной заметкой",
+      "environment": "local",
+      "order": 4,
+      "prerequisites": [
+        "files"
+      ],
+      "labIds": [],
+      "file": "lessons/my-page.html",
+      "checks": [],
+      "reviewed": true
+    },
+    {
+      "unit": "first",
+      "chapter": null,
+      "id": "page-failure",
+      "title": "Отличить запущенную программу от доступной страницы",
+      "environment": "local",
+      "order": 5,
+      "prerequisites": [
+        "my-page"
+      ],
+      "labIds": [],
+      "file": "lessons/page-failure.html",
+      "checks": [],
+      "reviewed": true
+    },
+    {
+      "unit": "linux",
+      "chapter": 2,
+      "id": "terminal",
+      "title": "Выполнить первую понятную команду",
+      "environment": "local-terminal",
+      "order": 6,
+      "prerequisites": [
+        "page-failure"
+      ],
+      "labIds": [],
+      "file": "lessons/terminal.html",
+      "checks": [
+        "C02-0",
+        "C02-0b",
+        "C02-1",
+        "C02-1b",
+        "S3-0",
+        "S3-0b",
+        "S3-1",
+        "S3-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 1,
+      "id": "one-change",
+      "title": "Проверять одну гипотезу одним изменением",
+      "environment": "dataset",
+      "order": 7,
+      "prerequisites": [
+        "terminal"
+      ],
+      "labIds": [],
+      "file": "lessons/one-change.html",
+      "checks": [
+        "M00-0",
+        "M00-1",
+        "M00-2",
+        "R00",
+        "S00:0",
+        "S00:1",
+        "S00:2",
+        "S00:3",
+        "L00B#why",
+        "L00A#why",
+        "C01-0",
+        "C01-0b",
+        "C01-1",
+        "C01-1b",
+        "S5-0",
+        "S5-0b",
+        "S5-1",
+        "S5-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 1,
+      "id": "units",
+      "title": "Сравнивать измерения в одинаковых единицах",
+      "environment": "dataset",
+      "order": 8,
+      "prerequisites": [
+        "one-change"
+      ],
+      "labIds": [],
+      "file": "lessons/units.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 0,
+      "id": "lab-map",
+      "title": "Понять, какие компьютеры есть в лаборатории",
+      "environment": "reading",
+      "order": 9,
+      "prerequisites": [
+        "units"
+      ],
+      "labIds": [],
+      "file": "lessons/lab-map.html",
+      "checks": [
+        "C00-0",
+        "C00-0b",
+        "C00-1",
+        "C00-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 0,
+      "id": "lab-setup",
+      "title": "Подготовить стенд и проверить исходное состояние",
+      "environment": "stand",
+      "order": 10,
+      "prerequisites": [
+        "lab-map"
+      ],
+      "labIds": [],
+      "file": "lessons/lab-setup.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 2,
+      "id": "process",
+      "title": "Найти работающую программу и её процесс",
+      "environment": "vm",
+      "order": 11,
+      "prerequisites": [
+        "lab-setup"
+      ],
+      "labIds": [],
+      "file": "lessons/process.html",
+      "checks": [
+        "M02-0",
+        "M02-1",
+        "M02-2",
+        "R02",
+        "S02:0",
+        "S02:1",
+        "S02:2",
+        "S02:3",
+        "L02B#why",
+        "L02A#why",
+        "S2-0",
+        "S2-0b",
+        "S2-1",
+        "S2-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 2,
+      "id": "memory",
+      "title": "Отличить занятые страницы памяти от нехватки",
+      "environment": "vm",
+      "order": 12,
+      "prerequisites": [
+        "process"
+      ],
+      "labIds": [],
+      "file": "lessons/memory.html",
+      "checks": [
+        "M03-0",
+        "M03-1",
+        "M03-2",
+        "R03",
+        "S03:0",
+        "S03:1",
+        "S03:2",
+        "S03:3",
+        "L03B#why",
+        "L03A#why"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 3,
+      "id": "permissions",
+      "title": "Разобраться, кто может прочитать файл заметки",
+      "environment": "vm",
+      "order": 13,
+      "prerequisites": [
+        "memory"
+      ],
+      "labIds": [],
+      "file": "lessons/permissions.html",
+      "checks": [
+        "C03-0",
+        "C03-0b",
+        "C03-1",
+        "C03-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 3,
+      "id": "packages",
+      "title": "Установить инструмент и узнать происхождение файла",
+      "environment": "vm",
+      "order": 14,
+      "prerequisites": [
+        "permissions"
+      ],
+      "labIds": [],
+      "file": "lessons/packages.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 4,
+      "id": "systemd",
+      "title": "Запускать программу как службу",
+      "environment": "vm",
+      "order": 15,
+      "prerequisites": [
+        "packages"
+      ],
+      "labIds": [
+        "L04A"
+      ],
+      "file": "lessons/systemd.html",
+      "checks": [
+        "M04-0",
+        "M04-1",
+        "M04-2",
+        "R04",
+        "S04:0",
+        "S04:1",
+        "S04:2",
+        "S04:3",
+        "L04A#why",
+        "L04B#why",
+        "C04-0",
+        "C04-0b",
+        "C04-1",
+        "C04-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 4,
+      "id": "logs",
+      "title": "Восстановить порядок событий по журналу",
+      "environment": "vm",
+      "order": 16,
+      "prerequisites": [
+        "systemd"
+      ],
+      "labIds": [],
+      "file": "lessons/logs.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 5,
+      "id": "boot",
+      "title": "Проследить путь загрузки до корневого раздела",
+      "environment": "vm",
+      "order": 17,
+      "prerequisites": [
+        "logs"
+      ],
+      "labIds": [],
+      "file": "lessons/boot.html",
+      "checks": [
+        "M05-0",
+        "M05-1",
+        "M05-2",
+        "R05",
+        "S05:0",
+        "S05:1",
+        "S05:2",
+        "S05:3",
+        "L05B#why",
+        "L05A#why",
+        "C05-0",
+        "C05-0b",
+        "C05-1",
+        "C05-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "linux",
+      "chapter": 5,
+      "id": "mount",
+      "title": "Проверять монтирование до записи данных",
+      "environment": "vm",
+      "order": 18,
+      "prerequisites": [
+        "boot"
+      ],
+      "labIds": [],
+      "file": "lessons/mount.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 6,
+      "id": "address",
+      "title": "Понять, кому компьютер отправляет пакет",
+      "environment": "vm",
+      "order": 19,
+      "prerequisites": [
+        "mount"
+      ],
+      "labIds": [],
+      "file": "lessons/address.html",
+      "checks": [
+        "M06-0",
+        "M06-1",
+        "M06-2",
+        "R06",
+        "S06:0",
+        "S06:1",
+        "S06:2",
+        "S06:3",
+        "L06B#why",
+        "L06A#why",
+        "C06-0",
+        "C06-0b",
+        "C06-1",
+        "C06-1b",
+        "S4-0",
+        "S4-0b",
+        "S4-1",
+        "S4-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 6,
+      "id": "prefix",
+      "title": "Найти ошибку в длине сетевого префикса",
+      "environment": "vm",
+      "order": 20,
+      "prerequisites": [
+        "address"
+      ],
+      "labIds": [
+        "L06B"
+      ],
+      "file": "lessons/prefix.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 7,
+      "id": "tcp",
+      "title": "Различать установление соединения и передачу данных",
+      "environment": "vm",
+      "order": 21,
+      "prerequisites": [
+        "prefix"
+      ],
+      "labIds": [],
+      "file": "lessons/tcp.html",
+      "checks": [
+        "M07-0",
+        "M07-1",
+        "M07-2",
+        "R07",
+        "S07:0",
+        "S07:1",
+        "S07:2",
+        "S07:3",
+        "L07B#why",
+        "L07A#why",
+        "C07-0",
+        "C07-0b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 7,
+      "id": "dns",
+      "title": "Проверить имя отдельно от адреса",
+      "environment": "vm",
+      "order": 22,
+      "prerequisites": [
+        "tcp"
+      ],
+      "labIds": [],
+      "file": "lessons/dns.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 7,
+      "id": "mtu",
+      "title": "Измерить размер проходящего пакета",
+      "environment": "vm",
+      "order": 23,
+      "prerequisites": [
+        "dns"
+      ],
+      "labIds": [
+        "L07B"
+      ],
+      "file": "lessons/mtu.html",
+      "checks": [
+        "C07-1",
+        "C07-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 7,
+      "id": "ipv6",
+      "title": "Проверить адрес и маршрут IPv6",
+      "environment": "vm",
+      "order": 24,
+      "prerequisites": [
+        "mtu"
+      ],
+      "labIds": [],
+      "file": "lessons/ipv6.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 8,
+      "id": "segments",
+      "title": "Разделить сеть на наблюдаемые сегменты",
+      "environment": "vm",
+      "order": 25,
+      "prerequisites": [
+        "ipv6"
+      ],
+      "labIds": [],
+      "file": "lessons/segments.html",
+      "checks": [
+        "M08-0",
+        "M08-1",
+        "M08-2",
+        "R08",
+        "S08:0",
+        "S08:1",
+        "S08:2",
+        "S08:3",
+        "L08B#why",
+        "L08A#why",
+        "C08-0",
+        "C08-0b",
+        "C08-1",
+        "C08-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "network",
+      "chapter": 8,
+      "id": "firewall",
+      "title": "Отличить маршрутизацию от разрешения трафика",
+      "environment": "vm",
+      "order": 26,
+      "prerequisites": [
+        "segments"
+      ],
+      "labIds": [],
+      "file": "lessons/firewall.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 12,
+      "id": "disk-identity",
+      "title": "Узнать диск до любой записи",
+      "environment": "vm",
+      "order": 27,
+      "prerequisites": [
+        "firewall"
+      ],
+      "labIds": [
+        "L12A"
+      ],
+      "file": "lessons/disk-identity.html",
+      "checks": [
+        "M12-0",
+        "M12-1",
+        "M12-2",
+        "R12",
+        "S12:0",
+        "S12:1",
+        "S12:2",
+        "S12:3",
+        "L12A#why",
+        "L12B#why",
+        "C12-0",
+        "C12-0b",
+        "C12-1",
+        "C12-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 12,
+      "id": "disk-health",
+      "title": "Отделить состояние диска от качества пути",
+      "environment": "vm",
+      "order": 28,
+      "prerequisites": [
+        "disk-identity"
+      ],
+      "labIds": [],
+      "file": "lessons/disk-health.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 13,
+      "id": "filesystem",
+      "title": "Различать свободные блоки и свободные имена файлов",
+      "environment": "vm",
+      "order": 29,
+      "prerequisites": [
+        "disk-health"
+      ],
+      "labIds": [],
+      "file": "lessons/filesystem.html",
+      "checks": [
+        "M13-0",
+        "M13-1",
+        "M13-2",
+        "R13",
+        "S13:0",
+        "S13:1",
+        "S13:2",
+        "S13:3",
+        "L13B#why",
+        "L13A#why",
+        "C13-0",
+        "C13-0b",
+        "C13-1",
+        "C13-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 13,
+      "id": "lvm",
+      "title": "Увеличить файловую систему через логический том",
+      "environment": "vm",
+      "order": 30,
+      "prerequisites": [
+        "filesystem"
+      ],
+      "labIds": [
+        "L13B"
+      ],
+      "file": "lessons/lvm.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 13,
+      "id": "mirror",
+      "title": "Установить, что осталось после отказа RAID1",
+      "environment": "vm",
+      "order": 31,
+      "prerequisites": [
+        "lvm"
+      ],
+      "labIds": [
+        "L14B"
+      ],
+      "file": "lessons/mirror.html",
+      "checks": [
+        "M14-0",
+        "M14-1",
+        "M14-2",
+        "R14",
+        "S14:0",
+        "S14:1",
+        "S14:2",
+        "S14:3",
+        "L14B#why",
+        "L14A#why",
+        "C14-0",
+        "C14-1",
+        "C14-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 14,
+      "id": "storage-path",
+      "title": "Нарисовать путь от контроллера к накопителю",
+      "environment": "dataset",
+      "order": 32,
+      "prerequisites": [
+        "mirror"
+      ],
+      "labIds": [],
+      "file": "lessons/storage-path.html",
+      "checks": [
+        "C14-0b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 14,
+      "id": "write-cache",
+      "title": "Узнать, кто подтвердил сохранение записи",
+      "environment": "dataset",
+      "order": 33,
+      "prerequisites": [
+        "storage-path"
+      ],
+      "labIds": [],
+      "file": "lessons/write-cache.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 15,
+      "id": "network-storage",
+      "title": "Различать общий файл и удалённое блочное устройство",
+      "environment": "vm",
+      "order": 34,
+      "prerequisites": [
+        "write-cache"
+      ],
+      "labIds": [],
+      "file": "lessons/network-storage.html",
+      "checks": [
+        "M15-0",
+        "M15-1",
+        "M15-2",
+        "R15",
+        "S15:0",
+        "S15:1",
+        "S15:2",
+        "S15:3",
+        "L15A#why",
+        "L15B#why",
+        "C15-0",
+        "C15-0b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 15,
+      "id": "multipath",
+      "title": "Проверить независимость путей к одному тому",
+      "environment": "vm",
+      "order": 35,
+      "prerequisites": [
+        "network-storage"
+      ],
+      "labIds": [],
+      "file": "lessons/multipath.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 15,
+      "id": "zfs",
+      "title": "Восстановить файл из снимка в другом пуле",
+      "environment": "vm",
+      "order": 36,
+      "prerequisites": [
+        "multipath"
+      ],
+      "labIds": [
+        "L16B"
+      ],
+      "file": "lessons/zfs.html",
+      "checks": [
+        "M16-0",
+        "M16-1",
+        "M16-2",
+        "R16",
+        "S16:0",
+        "S16:1",
+        "S16:2",
+        "S16:3",
+        "L16B#why",
+        "L16A#why",
+        "C15-1",
+        "C15-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 15,
+      "id": "ceph",
+      "title": "Разобрать распределённое хранение по состоянию объектов",
+      "environment": "dataset",
+      "order": 37,
+      "prerequisites": [
+        "zfs"
+      ],
+      "labIds": [],
+      "file": "lessons/ceph.html",
+      "checks": [
+        "M17-0",
+        "M17-1",
+        "M17-2",
+        "R17",
+        "S17:0",
+        "S17:1",
+        "S17:2",
+        "S17:3",
+        "L17A#why",
+        "L17B#why"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 16,
+      "id": "benchmark",
+      "title": "Сравнить накопители при одинаковой нагрузке",
+      "environment": "dataset",
+      "order": 38,
+      "prerequisites": [
+        "ceph"
+      ],
+      "labIds": [],
+      "file": "lessons/benchmark.html",
+      "checks": [
+        "M18-0",
+        "M18-1",
+        "M18-2",
+        "R18",
+        "S18:0",
+        "S18:1",
+        "S18:2",
+        "S18:3",
+        "L18B#why",
+        "L18A#why",
+        "C16-0",
+        "C16-0b",
+        "C16-1",
+        "C16-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 16,
+      "id": "latency",
+      "title": "Увидеть медленные ответы за средним значением",
+      "environment": "vm",
+      "order": 39,
+      "prerequisites": [
+        "benchmark"
+      ],
+      "labIds": [],
+      "file": "lessons/latency.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 29,
+      "id": "database-write",
+      "title": "Определить, что база обещала при подтверждении записи",
+      "environment": "dataset",
+      "order": 40,
+      "prerequisites": [
+        "latency"
+      ],
+      "labIds": [],
+      "file": "lessons/database-write.html",
+      "checks": [
+        "M32-0",
+        "M32-1",
+        "M32-2",
+        "R32",
+        "S32:0",
+        "S32:1",
+        "S32:2",
+        "S32:3",
+        "L32A#why",
+        "L32B#why",
+        "C29-0",
+        "C29-0b",
+        "C29-1",
+        "C29-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "storage",
+      "chapter": 29,
+      "id": "restore-point",
+      "title": "Проверить точку и время восстановления данных",
+      "environment": "dataset",
+      "order": 41,
+      "prerequisites": [
+        "database-write"
+      ],
+      "labIds": [],
+      "file": "lessons/restore-point.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "automation",
+      "chapter": 19,
+      "id": "shell-data",
+      "title": "Передавать имена файлов без потери границ",
+      "environment": "vm",
+      "order": 42,
+      "prerequisites": [
+        "restore-point"
+      ],
+      "labIds": [],
+      "file": "lessons/shell-data.html",
+      "checks": [
+        "M21-0",
+        "M21-1",
+        "M21-2",
+        "R21",
+        "S21:0",
+        "S21:1",
+        "S21:2",
+        "S21:3",
+        "L21A#why",
+        "L21B#why",
+        "C19-0",
+        "C19-0b",
+        "C19-1",
+        "C19-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "automation",
+      "chapter": 19,
+      "id": "shell-failure",
+      "title": "Обрабатывать отказ команды и ограничивать ожидание",
+      "environment": "vm",
+      "order": 43,
+      "prerequisites": [
+        "shell-data"
+      ],
+      "labIds": [],
+      "file": "lessons/shell-failure.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "automation",
+      "chapter": 20,
+      "id": "python-result",
+      "title": "Получить структурированный результат внешней команды",
+      "environment": "vm",
+      "order": 44,
+      "prerequisites": [
+        "shell-failure"
+      ],
+      "labIds": [],
+      "file": "lessons/python-result.html",
+      "checks": [
+        "M22-0",
+        "M22-1",
+        "M22-2",
+        "R22",
+        "S22:0",
+        "S22:1",
+        "S22:2",
+        "S22:3",
+        "L22B#why",
+        "L22A#why",
+        "C20-0",
+        "C20-0b",
+        "C20-1",
+        "C20-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "automation",
+      "chapter": 20,
+      "id": "api-pages",
+      "title": "Собрать полный набор данных из интерфейса",
+      "environment": "dataset",
+      "order": 45,
+      "prerequisites": [
+        "python-result"
+      ],
+      "labIds": [],
+      "file": "lessons/api-pages.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "automation",
+      "chapter": 21,
+      "id": "git-change",
+      "title": "Сохранить объяснимое изменение конфигурации",
+      "environment": "vm",
+      "order": 46,
+      "prerequisites": [
+        "api-pages"
+      ],
+      "labIds": [],
+      "file": "lessons/git-change.html",
+      "checks": [
+        "M23-0",
+        "M23-1",
+        "M23-2",
+        "R23",
+        "S23:0",
+        "S23:1",
+        "S23:2",
+        "S23:3",
+        "L23A#why",
+        "L23B#why",
+        "C21-0",
+        "C21-0b",
+        "C21-1b",
+        "S6-0",
+        "S6-0b",
+        "S6-1",
+        "S6-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "automation",
+      "chapter": 21,
+      "id": "ansible-state",
+      "title": "Проверить сходимость объявленной конфигурации",
+      "environment": "vm",
+      "order": 47,
+      "prerequisites": [
+        "git-change"
+      ],
+      "labIds": [],
+      "file": "lessons/ansible-state.html",
+      "checks": [
+        "C21-1"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 17,
+      "id": "vm-resources",
+      "title": "Связать ресурсы виртуальной машины с хостом",
+      "environment": "vm",
+      "order": 48,
+      "prerequisites": [
+        "ansible-state"
+      ],
+      "labIds": [],
+      "file": "lessons/vm-resources.html",
+      "checks": [
+        "M19-0",
+        "M19-1",
+        "M19-2",
+        "R19",
+        "S19:0",
+        "S19:1",
+        "S19:2",
+        "S19:3",
+        "L19A#why",
+        "L19B#why",
+        "C17-0",
+        "C17-0b",
+        "C17-1",
+        "C17-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 17,
+      "id": "vm-backup",
+      "title": "Проверить восстановление ВМ, а не только наличие снимка",
+      "environment": "stand",
+      "order": 49,
+      "prerequisites": [
+        "vm-resources"
+      ],
+      "labIds": [],
+      "file": "lessons/vm-backup.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 22,
+      "id": "container",
+      "title": "Установить границы контейнера",
+      "environment": "vm",
+      "order": 50,
+      "prerequisites": [
+        "vm-backup"
+      ],
+      "labIds": [],
+      "file": "lessons/container.html",
+      "checks": [
+        "M24-0",
+        "M24-1",
+        "M24-2",
+        "R24",
+        "S24:0",
+        "S24:1",
+        "S24:2",
+        "S24:3",
+        "L24A#why",
+        "L24B#why",
+        "C22-0",
+        "C22-0b",
+        "C22-1",
+        "C22-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 22,
+      "id": "container-network",
+      "title": "Опубликовать приложение с подходящим адресом прослушивания",
+      "environment": "vm",
+      "order": 51,
+      "prerequisites": [
+        "container"
+      ],
+      "labIds": [],
+      "file": "lessons/container-network.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 23,
+      "id": "delivery",
+      "title": "Провести изменение через проверяемый выпуск",
+      "environment": "dataset",
+      "order": 52,
+      "prerequisites": [
+        "container-network"
+      ],
+      "labIds": [],
+      "file": "lessons/delivery.html",
+      "checks": [
+        "M25-0",
+        "M25-1",
+        "M25-2",
+        "R25",
+        "S25:0",
+        "S25:1",
+        "S25:2",
+        "S25:3",
+        "L25A#why",
+        "L25B#why",
+        "C23-0",
+        "C23-1",
+        "C23-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 23,
+      "id": "terraform",
+      "title": "Прочитать план инфраструктуры до применения",
+      "environment": "dataset",
+      "order": 53,
+      "prerequisites": [
+        "delivery"
+      ],
+      "labIds": [],
+      "file": "lessons/terraform.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 23,
+      "id": "kubernetes",
+      "title": "Разделить запуск Pod и готовность приложения",
+      "environment": "vm",
+      "order": 54,
+      "prerequisites": [
+        "terraform"
+      ],
+      "labIds": [],
+      "file": "lessons/kubernetes.html",
+      "checks": [
+        "M26-0",
+        "M26-1",
+        "M26-2",
+        "R26",
+        "S26:0",
+        "S26:1",
+        "S26:2",
+        "S26:3",
+        "L26B#why",
+        "L26A#why",
+        "C23-0b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "platform",
+      "chapter": 23,
+      "id": "service-selector",
+      "title": "Проследить запрос Kubernetes до приложения",
+      "environment": "vm",
+      "order": 55,
+      "prerequisites": [
+        "kubernetes"
+      ],
+      "labIds": [],
+      "file": "lessons/service-selector.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 9,
+      "id": "cpu-numa",
+      "title": "Связать размещение задачи с доступом к памяти",
+      "environment": "vm",
+      "order": 56,
+      "prerequisites": [
+        "service-selector"
+      ],
+      "labIds": [],
+      "file": "lessons/cpu-numa.html",
+      "checks": [
+        "M01-0",
+        "M01-1",
+        "M01-2",
+        "R01",
+        "M09-0",
+        "M09-1",
+        "M09-2",
+        "R09",
+        "S01:0",
+        "S01:1",
+        "S01:2",
+        "S01:3",
+        "S09:0",
+        "S09:1",
+        "S09:2",
+        "S09:3",
+        "L01A#why",
+        "L09B#why",
+        "L01B#why",
+        "L09A#why",
+        "C09-0",
+        "C09-0b",
+        "C09-1",
+        "C09-1b",
+        "S1-0",
+        "S1-0b",
+        "S1-1",
+        "S1-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 9,
+      "id": "ecc",
+      "title": "Отделить исправленную ошибку памяти от штатного здоровья",
+      "environment": "hardware",
+      "order": 57,
+      "prerequisites": [
+        "cpu-numa"
+      ],
+      "labIds": [],
+      "file": "lessons/ecc.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 10,
+      "id": "pcie",
+      "title": "Отличить обнаруженное устройство от рабочего пути данных",
+      "environment": "vm",
+      "order": 58,
+      "prerequisites": [
+        "ecc"
+      ],
+      "labIds": [],
+      "file": "lessons/pcie.html",
+      "checks": [
+        "M10-0",
+        "M10-1",
+        "M10-2",
+        "R10",
+        "S10:0",
+        "S10:1",
+        "S10:2",
+        "S10:3",
+        "L10B#why",
+        "L10A#why",
+        "C10-0",
+        "C10-0b",
+        "C10-1",
+        "C10-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 10,
+      "id": "device-id",
+      "title": "Связать физическое устройство с драйвером",
+      "environment": "vm",
+      "order": 59,
+      "prerequisites": [
+        "pcie"
+      ],
+      "labIds": [],
+      "file": "lessons/device-id.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 11,
+      "id": "bmc",
+      "title": "Получить факты, когда основная система не отвечает",
+      "environment": "hardware",
+      "order": 60,
+      "prerequisites": [
+        "device-id"
+      ],
+      "labIds": [],
+      "file": "lessons/bmc.html",
+      "checks": [
+        "M11-0",
+        "M11-1",
+        "M11-2",
+        "R11",
+        "S11:0",
+        "S11:1",
+        "S11:2",
+        "S11:3",
+        "L11A#why",
+        "L11B#why",
+        "C11-0",
+        "C11-0b",
+        "C11-1",
+        "C11-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 11,
+      "id": "power",
+      "title": "Проверить резерв питания по всей цепочке",
+      "environment": "hardware",
+      "order": 61,
+      "prerequisites": [
+        "bmc"
+      ],
+      "labIds": [],
+      "file": "lessons/power.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 24,
+      "id": "uefi",
+      "title": "Проследить работу до запуска операционной системы",
+      "environment": "vm",
+      "order": 62,
+      "prerequisites": [
+        "power"
+      ],
+      "labIds": [],
+      "file": "lessons/uefi.html",
+      "checks": [
+        "M27-0",
+        "M27-1",
+        "M27-2",
+        "R27",
+        "S27:0",
+        "S27:1",
+        "S27:2",
+        "S27:3",
+        "L27B#why",
+        "L27A#why",
+        "C24-0",
+        "C24-0b",
+        "C24-1",
+        "C24-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 24,
+      "id": "secure-boot",
+      "title": "Понять, какая подпись допускает загрузку",
+      "environment": "hardware",
+      "order": 63,
+      "prerequisites": [
+        "uefi"
+      ],
+      "labIds": [],
+      "file": "lessons/secure-boot.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 25,
+      "id": "firmware-phases",
+      "title": "Различить раннюю инициализацию и запуск загрузчика",
+      "environment": "hardware",
+      "order": 64,
+      "prerequisites": [
+        "secure-boot"
+      ],
+      "labIds": [],
+      "file": "lessons/firmware-phases.html",
+      "checks": [
+        "M28-0",
+        "M28-1",
+        "M28-2",
+        "R28",
+        "S28:0",
+        "S28:1",
+        "S28:2",
+        "S28:3",
+        "L28A#why",
+        "L28B#why",
+        "C25-0",
+        "C25-0b",
+        "C25-1",
+        "C25-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 25,
+      "id": "acpi",
+      "title": "Отделить описание оборудования от выделения ресурсов",
+      "environment": "hardware",
+      "order": 65,
+      "prerequisites": [
+        "firmware-phases"
+      ],
+      "labIds": [],
+      "file": "lessons/acpi.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 26,
+      "id": "firmware-update",
+      "title": "Подготовить проверяемое обновление платформы",
+      "environment": "hardware",
+      "order": 66,
+      "prerequisites": [
+        "acpi"
+      ],
+      "labIds": [],
+      "file": "lessons/firmware-update.html",
+      "checks": [
+        "M29-0",
+        "M29-1",
+        "M29-2",
+        "R29",
+        "S29:0",
+        "S29:1",
+        "S29:2",
+        "S29:3",
+        "L29B#why",
+        "L29A#why",
+        "C26-0",
+        "C26-0b",
+        "C26-1",
+        "C26-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "hardware",
+      "chapter": 26,
+      "id": "redfish",
+      "title": "Прочитать управление платформой как программный интерфейс",
+      "environment": "hardware",
+      "order": 67,
+      "prerequisites": [
+        "firmware-update"
+      ],
+      "labIds": [],
+      "file": "lessons/redfish.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 18,
+      "id": "monitor",
+      "title": "Измерить то, что важно пользователю",
+      "environment": "dataset",
+      "order": 68,
+      "prerequisites": [
+        "redfish"
+      ],
+      "labIds": [],
+      "file": "lessons/monitor.html",
+      "checks": [
+        "M20-0",
+        "M20-1",
+        "M20-2",
+        "R20",
+        "S20:0",
+        "S20:1",
+        "S20:2",
+        "S20:3",
+        "L20A#why",
+        "L20B#why",
+        "C18-0",
+        "C18-0b",
+        "C18-1",
+        "C18-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 18,
+      "id": "alert",
+      "title": "Сделать оповещение поводом к конкретному действию",
+      "environment": "dataset",
+      "order": 69,
+      "prerequisites": [
+        "monitor"
+      ],
+      "labIds": [],
+      "file": "lessons/alert.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 27,
+      "id": "access",
+      "title": "Проверить право конкретного пользователя",
+      "environment": "dataset",
+      "order": 70,
+      "prerequisites": [
+        "alert"
+      ],
+      "labIds": [],
+      "file": "lessons/access.html",
+      "checks": [
+        "M30-0",
+        "M30-1",
+        "M30-2",
+        "R30",
+        "S30:0",
+        "S30:1",
+        "S30:2",
+        "S30:3",
+        "L30B#why",
+        "L30A#why",
+        "C27-0",
+        "C27-0b",
+        "C27-1",
+        "C27-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 27,
+      "id": "tls",
+      "title": "Проверить доверие и имя в сертификате",
+      "environment": "vm",
+      "order": 71,
+      "prerequisites": [
+        "access"
+      ],
+      "labIds": [
+        "L30B"
+      ],
+      "file": "lessons/tls.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 28,
+      "id": "time",
+      "title": "Сопоставить события с учётом погрешности часов",
+      "environment": "vm",
+      "order": 72,
+      "prerequisites": [
+        "tls"
+      ],
+      "labIds": [
+        "L31A"
+      ],
+      "file": "lessons/time.html",
+      "checks": [
+        "M31-0",
+        "M31-1",
+        "M31-2",
+        "R31",
+        "S31:0",
+        "S31:1",
+        "S31:2",
+        "S31:3",
+        "L31A#why",
+        "L31B#why",
+        "C28-0",
+        "C28-0b",
+        "C28-1",
+        "C28-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 28,
+      "id": "duration",
+      "title": "Измерять длительность подходящими часами",
+      "environment": "dataset",
+      "order": 73,
+      "prerequisites": [
+        "time"
+      ],
+      "labIds": [],
+      "file": "lessons/duration.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 30,
+      "id": "availability",
+      "title": "Найти общий элемент в резервированной системе",
+      "environment": "dataset",
+      "order": 74,
+      "prerequisites": [
+        "duration"
+      ],
+      "labIds": [],
+      "file": "lessons/availability.html",
+      "checks": [
+        "M33-0",
+        "M33-1",
+        "M33-2",
+        "R33",
+        "S33:0",
+        "S33:1",
+        "S33:2",
+        "S33:3",
+        "L33A#why",
+        "L33B#why",
+        "C30-0",
+        "C30-0b",
+        "C30-1",
+        "C30-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 30,
+      "id": "recovery-time",
+      "title": "Уменьшить время обнаружения и восстановления",
+      "environment": "dataset",
+      "order": 75,
+      "prerequisites": [
+        "availability"
+      ],
+      "labIds": [],
+      "file": "lessons/recovery-time.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 31,
+      "id": "incident",
+      "title": "Восстановить работу, сохраняя факты",
+      "environment": "vm",
+      "order": 76,
+      "prerequisites": [
+        "recovery-time"
+      ],
+      "labIds": [],
+      "file": "lessons/incident.html",
+      "checks": [
+        "M34-0",
+        "M34-1",
+        "M34-2",
+        "R34",
+        "S34:0",
+        "S34:1",
+        "S34:2",
+        "S34:3",
+        "L34A#why",
+        "L34B#why",
+        "C31-0",
+        "C31-0b",
+        "C31-1",
+        "C31-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 31,
+      "id": "incident-close",
+      "title": "Проверить завершение инцидента по состоянию системы",
+      "environment": "dataset",
+      "order": 77,
+      "prerequisites": [
+        "incident"
+      ],
+      "labIds": [],
+      "file": "lessons/incident-close.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 32,
+      "id": "migration",
+      "title": "Перенести запись, сохранив один источник истины",
+      "environment": "dataset",
+      "order": 78,
+      "prerequisites": [
+        "incident-close"
+      ],
+      "labIds": [],
+      "file": "lessons/migration.html",
+      "checks": [
+        "M35-0",
+        "M35-1",
+        "M35-2",
+        "R35",
+        "S35:0",
+        "S35:1",
+        "S35:2",
+        "S35:3",
+        "L35A#why",
+        "L35B#why",
+        "C32-0",
+        "C32-0b",
+        "C32-1",
+        "C32-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "operations",
+      "chapter": 32,
+      "id": "decommission",
+      "title": "Закончить изменение выводом старой системы",
+      "environment": "dataset",
+      "order": 79,
+      "prerequisites": [
+        "migration"
+      ],
+      "labIds": [],
+      "file": "lessons/decommission.html",
+      "checks": [],
+      "reviewed": false
+    },
+    {
+      "unit": "final",
+      "chapter": 33,
+      "id": "baseline",
+      "title": "Подготовить проверяемую исходную систему",
+      "environment": "stand",
+      "order": 80,
+      "prerequisites": [
+        "decommission"
+      ],
+      "labIds": [],
+      "file": "lessons/baseline.html",
+      "checks": [
+        "M36-0",
+        "M36-1",
+        "M36-2",
+        "R36",
+        "S36:0",
+        "S36:1",
+        "S36:2",
+        "S36:3",
+        "L36B#why",
+        "L36A#why",
+        "C33-0",
+        "C33-0b",
+        "C33-1",
+        "C33-1b"
+      ],
+      "reviewed": false
+    },
+    {
+      "unit": "final",
+      "chapter": 33,
+      "id": "unknown-incident",
+      "title": "Самостоятельно разобрать незнакомую неисправность",
+      "environment": "stand",
+      "order": 81,
+      "prerequisites": [
+        "baseline"
+      ],
+      "labIds": [],
+      "file": "lessons/unknown-incident.html",
+      "checks": [],
+      "reviewed": false
+    }
+  ],
+  "assessmentFile": "assessments.json"
+}

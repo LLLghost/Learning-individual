@@ -112,7 +112,7 @@ workspace.addEventListener('click', async (event) => {
   button.disabled = true;
   try {
     const result = await call(`/api/${action}`);
-    if (action === 'introduction-complete') { showIntroduction = false; history.replaceState(null, '', '/'); }
+    if (action === 'introduction-complete') { showIntroduction = false; history.replaceState(null, '', '/workshop/'); }
     render();
     if (action === 'check') feedback(result.message, !result.ok);
     else if (result.message) notify(result.message);

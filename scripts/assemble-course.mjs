@@ -51,7 +51,7 @@ const listHtmlFiles = async (root) => {
   const walk = async (dir) => {
     for (const entry of await readdir(dir, { withFileTypes: true })) {
       const path = join(dir, entry.name);
-      if (entry.isDirectory()) await walk(path);
+      if (entry.isDirectory() && path !== join(contentDir(root), 'course')) await walk(path);
       else if (extname(entry.name) === '.html') found.push(relative(contentDir(root), path).split(sep).join('/'));
     }
   };

@@ -12,7 +12,9 @@
     "assemble": "node scripts/assemble-course.mjs",
     "build": "node scripts/build-static.mjs",
     "validate": "node scripts/validate-site.mjs",
-    "validate:release": "npm run build && npm run validate && node scripts/check-coverage.mjs --strict && node scripts/smoke-browser.mjs && npm run verify:live",
+    "validate:release": "npm run build && npm run validate && node scripts/validate-site.mjs --strict && node scripts/smoke-browser.mjs && npm run verify:live",
+    "test:course": "node scripts/smoke-browser.mjs",
+    "validate:archive": "node scripts/validate-legacy.mjs && node scripts/check-coverage.mjs --strict",
     "verify:live": "node scripts/verify-live-reports.mjs"
   }
 }

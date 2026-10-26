@@ -54,7 +54,7 @@ jobs:
         run: node scripts/build-static.mjs
 
       - name: Проверить собранный сайт
-        run: node scripts/validate-site.mjs
+        run: node scripts/validate-site.mjs --strict
 
       # Скрипт стенда меняет чужую машину, и до сих пор его можно было проверить
       # только на настоящем Proxmox. Подставные qm и pvesm ловят половину того,

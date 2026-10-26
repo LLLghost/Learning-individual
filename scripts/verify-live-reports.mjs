@@ -10,7 +10,7 @@ try { browser = await launchBrowser(); }
 catch (error) { console.error(error.message); process.exit(2); }
 try {
   const page = await browser.newPage();
-  await page.goto(pathToFileURL(resolve('build/assessment/index.html')).href);
+  await page.goto(pathToFileURL(resolve('build/archive/v6/assessment/index.html')).href);
   for (const id of ids) {
     const report = JSON.parse(await readFile(resolve(folder, `${id}.json`), 'utf8'));
     const result = await page.evaluate((report) => {

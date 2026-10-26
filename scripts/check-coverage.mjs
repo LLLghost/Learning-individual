@@ -33,8 +33,8 @@ const pageFor = async (chapter) => {
   const key = String(chapter);
   if (!pageCache.has(key)) {
     const path = key.startsWith('s')
-      ? `build/start/${key.slice(1).padStart(2, '0')}/index.html`
-      : `build/chapters/${key.padStart(2, '0')}/index.html`;
+      ? `build/archive/v6/start/${key.slice(1).padStart(2, '0')}/index.html`
+      : `build/archive/v6/chapters/${key.padStart(2, '0')}/index.html`;
     pageCache.set(key, await readFile(resolve(root, path), 'utf8'));
   }
   return pageCache.get(key);

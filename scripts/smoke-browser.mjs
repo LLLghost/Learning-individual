@@ -1,235 +1,60 @@
-#!/usr/bin/env node
-// Обход собранного сайта настоящим браузером. Валидатор читает разметку и не
-// видит того, что ломается только при исполнении: ошибка в клиентском коде,
-// не найденный элемент, упавший обработчик. До сих пор такой обход делался
-// руками, то есть не делался, когда о нём забывали.
-//
-//   node scripts/smoke-browser.mjs          # нужен playwright и Chromium
-//
-// Отдельно от validate-site.mjs: тому хватает стандартной библиотеки, а этому
-// нужен браузер. Публикация ждёт обоих.
-import { createServer } from 'node:http';
-import { readFile, readdir, stat } from 'node:fs/promises';
-import { resolve, extname, join } from 'node:path';
-import { launchBrowser } from './browser-launch.mjs';
-
-const root = resolve(process.cwd(), 'build');
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
-  '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
-
-const walk = async (directory, prefix = '/') => {
-  const routes = [];
-  for (const entry of await readdir(directory)) {
-    const full = join(directory, entry);
-    if ((await stat(full)).isDirectory()) routes.push(...await walk(full, `${prefix}${entry}/`));
-    else if (entry === 'index.html') routes.push(prefix);
-  }
-  return routes.sort();
-};
-
-const server = createServer(async (request, response) => {
-  const path = decodeURIComponent(request.url.split('?')[0]);
-  const file = path.endsWith('/') ? resolve(root, `.${path}index.html`) : resolve(root, `.${path}`);
-  try {
-    const body = await readFile(file);
-    response.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' });
-    response.end(body);
-  } catch {
-    response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-    response.end('нет такого файла');
-  }
-});
-await new Promise((done) => server.listen(0, '127.0.0.1', done));
-const origin = `http://127.0.0.1:${server.address().port}`;
-
-// Запуск браузера — общий с остальными проверками (scripts/browser-launch.mjs):
-// fallback на playwright-core и обход CHROMIUM_PATH для сред, где сборка
-// браузера разошлась с пакетом.
-let browser;
-try { browser = await launchBrowser(); }
-catch (error) { console.error(error.message); process.exit(2); }
-const page = await browser.newPage();
-const routes = await walk(root);
-const problems = [];
-let checked = 0, actions = 0;
-for (const route of routes) {
-  const seen = [];
-  page.removeAllListeners('console');
-  page.removeAllListeners('pageerror');
-  page.on('console', (message) => { if (message.type() === 'error') seen.push(message.text()); });
-  page.on('pageerror', (error) => seen.push(`исключение: ${error.message}`));
-  const response = await page.goto(origin + route, { waitUntil: 'load' });
-  if (!response?.ok()) seen.push(`страница отдала ${response?.status()}`);
-  await page.waitForTimeout(120);
-  checked += 1;
-  if (seen.length) problems.push(`${route}: ${seen.slice(0, 2).join(' · ')}`);
-}
-
-// Живые действия: тренажёр засчитывает верный ответ, промах меняет вопрос и
-// не открывает верный вариант, поиск находит слово, кабинет собирает модуль.
-// Каждое из них ломалось молча и правилами разметки не ловится.
-const act = async (route, name, work) => {
-  actions += 1;
-  page.removeAllListeners('pageerror');
-  page.on('pageerror', (error) => problems.push(`${name}: исключение ${error.message}`));
-  try {
-    await page.goto(origin + route, { waitUntil: 'load' });
-    await page.waitForTimeout(150);
-    const trouble = await work();
-    if (trouble) problems.push(`${name}: ${trouble}`);
-  } catch (error) {
-    // Исчезнувшая кнопка роняет сам обход, а должна быть находкой: без этого
-    // проверка падает стеком вместо того, чтобы назвать сломанное действие.
-    problems.push(`${name}: действие не выполнилось — ${error.message.split('\n')[0]}`);
-  }
-};
-
-await act('/chapters/07/', 'мини-тренажёр · верный ответ', async () => {
-  // Верный вариант в разметке лежит хешем, поэтому тест считает его тем же
-  // способом, что и страница: иначе «заведомо неверный» ответ не выбрать, а
-  // именно он и проверяется следующим действием.
-  const index = await page.evaluate((wrong) => {
-    const digest = (id, value) => { let hash = 0x811c9dc5; for (const character of id + '|' + value + '|sic6') hash = Math.imul(hash ^ character.charCodeAt(0), 0x01000193) >>> 0; return hash.toString(36); };
-    const slot = document.querySelector('[data-trainer-question]');
-    const box = slot.querySelector('[data-trainer-variant]:not([hidden])');
-    const total = box.querySelectorAll('input[type=radio]').length;
-    let answer = -1;
-    for (let value = 0; value < total; value += 1) if (digest(slot.dataset.trainerQuestion + '/' + box.dataset.trainerVariant, value) === box.dataset.answer) answer = value;
-    return wrong ? (answer + 1) % total : answer;
-  }, false);
-  await page.click(`[data-trainer-question] [data-trainer-variant]:not([hidden]) label:nth-of-type(${index + 1}) input`);
-  await page.click('[data-trainer-question] [data-trainer-check]');
-  await page.waitForTimeout(150);
-  const shown = await page.evaluate(() => {
-    const feedback = document.querySelector('[data-trainer-feedback]');
-    return { hidden: feedback.hidden, text: feedback.textContent.trim() };
-  });
-  if (shown.hidden || !shown.text) return 'разбор не показан после верного ответа';
-  return shown.text.startsWith('Верно') ? '' : `верный ответ не засчитан: ${shown.text.slice(0, 60)}`;
-});
-
-// Промах не должен открывать ни верный вариант, ни разбор: вместо этого слот
-// показывает другой вопрос о том же. Каждое из трёх условий ломалось молча.
-await act('/chapters/07/', 'мини-тренажёр · промах', async () => {
-  await page.evaluate(() => localStorage.removeItem('server-infrastructure-chapter-trainers-v1'));
-  await page.reload();
-  await page.waitForTimeout(200);
-  const before = await page.evaluate(() => {
-    const digest = (id, value) => { let hash = 0x811c9dc5; for (const character of id + '|' + value + '|sic6') hash = Math.imul(hash ^ character.charCodeAt(0), 0x01000193) >>> 0; return hash.toString(36); };
-    const slot = document.querySelector('[data-trainer-question]');
-    const box = slot.querySelector('[data-trainer-variant]:not([hidden])');
-    const total = box.querySelectorAll('input[type=radio]').length;
-    let answer = -1;
-    for (let value = 0; value < total; value += 1) if (digest(slot.dataset.trainerQuestion + '/' + box.dataset.trainerVariant, value) === box.dataset.answer) answer = value;
-    return { wrong: (answer + 1) % total, stem: slot.querySelector('[data-trainer-stem]').textContent, explanation: box.dataset.explanation };
-  });
-  await page.click(`[data-trainer-question] [data-trainer-variant]:not([hidden]) label:nth-of-type(${before.wrong + 1}) input`);
-  await page.click('[data-trainer-question] [data-trainer-check]');
-  await page.waitForTimeout(700);
-  const after = await page.evaluate(() => {
-    const slot = document.querySelector('[data-trainer-question]');
-    return {
-      text: slot.querySelector('[data-trainer-feedback]').textContent.trim(),
-      stem: slot.querySelector('[data-trainer-stem]').textContent,
-      revealed: slot.querySelectorAll('label.is-correct').length,
-    };
-  });
-  if (after.revealed) return 'промах подсветил верный вариант';
-  if (after.text.includes(before.explanation.slice(0, 40))) return 'промах показал разбор';
-  if (after.stem === before.stem) return 'вопрос не сменился после промаха';
-  return after.text.startsWith('Пока неверно') ? '' : `нет отметки о промахе: ${after.text.slice(0, 60)}`;
-});
-
-await act('/chapters/07/', 'поиск', async () => {
-  await page.click('[data-search-open]');
-  await page.waitForTimeout(120);
-  await page.fill('[data-search-input]', 'multipath');
-  await page.waitForTimeout(800);
-  const hits = await page.evaluate(() => document.querySelectorAll('[data-search-results] a').length);
-  return hits > 0 ? '' : 'по слову multipath ничего не найдено';
-});
-
-await act('/assessment/?module=7', 'кабинет', async () => {
-  const built = await page.evaluate(() => {
-    const panel = document.getElementById('study-panel');
-    return { blocks: panel.querySelectorAll('.card').length, lab: !!panel.querySelector('.module-lab') };
-  });
-  if (!built.blocks) return 'вид модуля не собрал ни одного задания';
-  return built.lab ? '' : 'работа практикума не показана в виде модуля';
-});
-
-await act('/assessment/', 'итоговый контроль', async () => {
-  await page.click('[data-tab="exam"]');
-  await page.getByRole('button', { name: 'Начать вариант' }).click();
-  const seeded = await page.evaluate(() => {
-    const db = JSON.parse(document.getElementById('study-data').textContent);
-    const key = 'server-infrastructure-selfstudy-v6';
-    const state = JSON.parse(localStorage.getItem(key));
-    const picks = Array.from({ length: 37 }, (_, module) => db.items.find((item) => item.module === module && item.kind === 'concept'));
-    if (picks.some((item) => !item?.reason)) return false;
-    state.exam.ids = picks.map((item) => item.id);
-    state.exam.responses = Object.fromEntries(picks.map((item) => [item.id, item.answer]));
-    state.exam.why = Object.fromEntries(picks.map((item) => [item.id, item.reason.answer]));
-    state.exam.conf = Object.fromEntries(picks.map((item) => [item.id, 2]));
-    localStorage.setItem(key, JSON.stringify(state));
-    return true;
-  });
-  if (!seeded) return 'не найден полный набор заданий с рассуждением';
-  await page.reload();
-  await page.click('[data-tab="exam"]');
-  await page.getByRole('button', { name: 'Отправить весь вариант на проверку' }).click();
-  const result = await page.locator('#study-panel').textContent();
-  return result.includes('Результат: 37/37') ? '' : 'полностью верный вариант не получил 37/37';
-});
-
-await act('/route/', 'резервная копия', async () => {
-  const key = 'server-infrastructure-selfstudy-v6';
-  const before = await page.evaluate((storageKey) => localStorage.getItem(storageKey), key);
-  if (!before) return 'нет прогресса для переноса';
-  const downloadPromise = page.waitForEvent('download');
-  await page.click('[data-backup-save]');
-  const download = await downloadPromise;
-  const file = await download.path();
-  if (!file) return 'файл резервной копии не создан';
-  await page.evaluate((storageKey) => localStorage.removeItem(storageKey), key);
-  page.once('dialog', (dialog) => dialog.accept());
-  await page.locator('[data-backup-load]').setInputFiles(file);
-  await page.waitForFunction((storageKey) => localStorage.getItem(storageKey) !== null, key);
-  const after = await page.evaluate((storageKey) => localStorage.getItem(storageKey), key);
-  return before === after ? '' : 'импорт не восстановил сохранённый прогресс';
-});
-
-await act('/chapters/13/', 'мобильное чтение', async () => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  const width = await page.evaluate(() => ({ content: document.documentElement.scrollWidth, screen: innerWidth }));
-  await page.setViewportSize({ width: 1280, height: 800 });
-  return width.content <= width.screen + 1 ? '' : `горизонтальная прокрутка ${width.content}px при ширине ${width.screen}px`;
-});
-
-await act('/route/', 'работа без сети', async () => {
-  await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: 10000 }).catch(async () => {
-    await page.reload();
-    await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: 10000 });
-  });
-  await page.click('[data-offline-save]');
-  await page.waitForFunction(() => document.querySelector('[data-offline-status]')?.textContent.startsWith('Готово:'), null, { timeout: 30000 });
-  await page.context().setOffline(true);
-  try {
-    const response = await page.goto(origin + '/chapters/15/', { waitUntil: 'load' });
-    if (!response?.ok()) return `страница из кэша вернула ${response?.status()}`;
-    return (await page.locator('h1').first().textContent())?.includes('15.') ? '' : 'глава 15 не открылась из кэша';
-  } finally {
-    await page.context().setOffline(false);
-  }
-});
-
-await browser.close();
-server.close();
-
-if (problems.length) {
-  console.error(`Браузер нашёл ${problems.length} проблем на ${checked} маршрутах и ${actions} действиях:`);
-  for (const problem of problems) console.error(`  ${problem}`);
-  process.exit(1);
-}
-console.log(`Браузер прошёл ${checked} маршрутов и ${actions} действия: ошибок нет.`);
+import {createServer}from'node:http';
+import {readFile,mkdir,mkdtemp,rm}from'node:fs/promises';
+import {resolve,extname,join,dirname,basename,sep}from'node:path';
+import {tmpdir}from'node:os';
+import assert from'node:assert/strict';
+import {launchBrowser}from'./browser-launch.mjs';
+import {startWorkshop}from'../episodes/first-service/server.mjs';
+const course=JSON.parse(await readFile('build/assets/course-data.json','utf8'));
+const bank=JSON.parse(await readFile('build/assets/assessments.json','utf8'));
+const root=resolve('build'),base=(process.env.BASE_PATH??'').replace(/\/+$/,'');
+const output=resolve('work/course-evidence');await mkdir(output,{recursive:true});
+const server=createServer(async(req,res)=>{try{const path=new URL(req.url,'http://localhost').pathname;if(base&&!path.startsWith(base+'/'))throw Error();const relative=base?path.slice(base.length):path;const file=resolve(root,'.'+relative+(relative.endsWith('/')?'index.html':''));if(!file.startsWith(root+sep))throw Error();const data=await readFile(file);res.writeHead(200,{'content-type':{'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8'}[extname(file)]??'text/plain'});res.end(data)}catch{res.writeHead(404).end('Не найдено')}});
+await new Promise(done=>server.listen(0,'127.0.0.1',done));
+const origin=`http://127.0.0.1:${server.address().port}`;
+let browser,workshop;const temporary=await mkdtemp(join(tmpdir(),'mayak-course-'));const errors=[];
+try{
+ browser=await launchBrowser();const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));
+ for(const l of course.lessons){await page.goto(`${origin}${base}/learn/${l.id}/`);await page.waitForSelector('#assessment');assert.equal(await page.locator('[data-block="explain"]').count(),1,l.id);assert.equal(await page.locator('.practice-tools').count(),1,l.id);}
+ console.log(`Chromium: пройдено ${course.lessons.length} урока.`);
+ await page.goto(`${origin}${base}/learn/why/`);await page.waitForSelector('[data-question="I-service"]');
+ const card=page.locator('[data-question="I-service"]');await card.locator('summary').click();await card.locator('[value="1"]').check();await card.locator('button').click();await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).results['I-service']?.correct===false);
+ await card.locator('[value="0"]').check();await card.locator('button').click();await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).results['I-service']?.correct===true);
+ await page.locator('[data-draft="note"]').fill('Моя заметка о запросе и отвечающей программе.');await page.locator('[data-action="read"]').click();await page.reload();await page.waitForSelector('#assessment');assert.equal(await page.locator('[data-draft="note"]').inputValue(),'Моя заметка о запросе и отвечающей программе.');
+ await page.screenshot({path:join(output,'intro.png'),fullPage:true});
+ await page.goto(`${origin}${base}/progress/`);await page.waitForSelector('#progress-summary .stats');
+ const downloadEvent=page.waitForEvent('download');await page.locator('[data-action="export"]').click();const download=await downloadEvent;const saved=JSON.parse(await readFile(await download.path(),'utf8'));assert(saved.lessons.why.read);
+ await page.locator('#import-progress').setInputFiles({name:'legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({schema:'course-backup',data:{'server-infrastructure-reader-v1':JSON.stringify({notes:[{text:'Старая заметка'}]})}}))});await page.waitForFunction(()=>Boolean(JSON.parse(localStorage.getItem('mayak-course-progress-v7')).legacy['server-infrastructure-reader-v1']));
+ await page.locator('#import-progress').setInputFiles({name:'v7.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});
+ await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('объединена'));assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).lessons.why.note),'Моя заметка о запросе и отвечающей программе.');
+ await page.evaluate(()=>{window.savedStorageSetter=Storage.prototype.setItem;Storage.prototype.setItem=()=>{throw new DOMException('Нет места','QuotaExceededError')}});
+ await page.locator('#import-progress').setInputFiles({name:'quota.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Не удалось сохранить прогресс'));await page.evaluate(()=>{Storage.prototype.setItem=window.savedStorageSetter});
+ await page.goto(`${origin}${base}/learn/why/?review=1`);await page.waitForSelector('[data-question="I-service-alt"]');await page.reload();await page.waitForSelector('[data-question="I-service-alt"]');assert.equal(await page.locator('[data-question="I-service"]').count(),0);
+ const grading=await page.evaluate(async base=>{const {evaluate}=await import(base+'/assets/checker.js'),bank=await fetch(base+'/assets/assessments.json').then(r=>r.json());return bank.items.map(item=>{const good=item.fields?item.fields.map(f=>String(f.answer)):item.answer,bad=item.fields?item.fields.map(()=> '__invalid__'):(item.answer+1)%item.options.length;return{id:item.id,good:evaluate(item,good),bad:evaluate(item,bad)}})},base);assert(grading.every(x=>x.good&&!x.bad),JSON.stringify(grading.filter(x=>!x.good||x.bad)));
+ console.log(`Проверка оценивания: ${grading.length} верных и ${grading.length} неверных ответов; другой вариант повторения сохраняется после обновления.`);
+ await page.locator('#search').fill('снимок');await page.locator('#search-form button').click();await page.waitForSelector('#search-results a');
+ const report=JSON.parse(await readFile('quality/live-labs/2026-09-24/L04A.json','utf8'));
+ const verification=await page.evaluate(async({report,base})=>{const qa=await import(base+'/assets/checker.js'),data=await fetch(base+'/assets/assessments.json').then(r=>r.json()),lab=data.labs.find(l=>l.id===report.lab);const good=qa.labRows(report,lab).every(x=>x.ok);const bad=structuredClone(report);bad.facts.has_dropin=false;return{valid:qa.labValid(report),good,bad:qa.labRows(bad,lab).every(x=>x.ok)}},{report,base});assert.deepEqual(verification,{valid:true,good:true,bad:false});
+ await page.goto(`${origin}${base}/learn/${course.lessons.find(l=>l.checks.includes('L04A#why')).id}/`);await page.waitForSelector('#lab-id');await page.locator('#lab-id').selectOption('L04A');const lab=bank.labs.find(l=>l.id==='L04A');await page.locator(`[name="lab-why"][value="${lab.why.answer}"]`).check();await page.locator('#lab-report').setInputFiles('quality/live-labs/2026-09-24/L04A.json');await page.waitForFunction(()=>document.querySelector('#lab-feedback').textContent.includes('исторический'));assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports.L04A.verified),false);
+ await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:join(output,'mobile.png'),fullPage:true});
+ await page.goto(`${origin}${base}/progress/`);await page.waitForSelector('#progress-summary');await page.locator('[data-action="offline"]').click();await page.waitForFunction(()=>{const t=document.querySelector('#notice').textContent;return /Сохранено (\d+) из \1; ошибок: 0\./.test(t)},null,{timeout:60000});
+ await page.context().setOffline(true);await page.goto(`${origin}${base}/learn/restore-point/`);await page.waitForSelector('[data-block="explain"]');await page.context().setOffline(false);
+ await page.goto(`${origin}${base}/chapters/06/#b06-s005`);await page.waitForURL(/\/learn\/.*#b06-s005/);await page.waitForSelector('#b06-s005',{state:'visible'});
+ if(!base){
+  workshop=await startWorkshop({port:0,stateDir:temporary});const local=await browser.newPage();
+  await local.goto(`${workshop.origin}/learn/why/`);await local.waitForSelector('[data-question="I-service"]');const q=local.locator('[data-question="I-service"]');await q.locator('summary').click();await q.locator('[value="0"]').check();await q.locator('button').click();await local.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).results['I-service']?.correct);
+  await local.goto(`${workshop.origin}/learn/request/`);await local.waitForSelector('#local-greeting');await local.locator('#local-greeting button').click();await local.waitForFunction(()=>document.querySelector('#local-output').textContent.includes('Привет'));
+  await local.goto(`${workshop.origin}/learn/my-page/`);await local.waitForSelector('#local-note');await local.locator('[data-draft="prediction"]').fill('Запись останется в файле после перезапуска программы.');await local.locator('#local-note button').click();await local.waitForFunction(()=>document.querySelector('#local-output').textContent.includes('сохранена'));await local.locator('[data-local-command="restart"]').click();await local.waitForFunction(()=>document.querySelector('#local-output').textContent.includes('Перезапуск:'));await local.locator('#local-verify').click();await local.waitForFunction(()=>document.querySelector('#local-output').textContent.includes('HTTP 200'));
+  await local.goto(`${workshop.origin}/learn/page-failure/`);await local.waitForSelector('#local-config',{state:'attached'});
+  await local.locator('[data-draft="prediction"]').fill('Сравню порт программы и назначение входа до изменения.');
+  const act=async(name,text)=>{await local.locator(`[data-local-action="${name}"]`).click();await local.waitForFunction(expected=>document.querySelector('#local-output').textContent.includes(expected),text)};
+  const observe=async()=>{for(const command of ['status','request public','journal']){const [response]=await Promise.all([local.waitForResponse(r=>r.url().endsWith('/api/command')&&r.request().method()==='POST'),local.locator(`[data-local-command="${command}"]`).click()]);assert.equal(response.status(),200)}};
+  const configure=async(service,gateway)=>{await local.locator('#local-config').evaluate(el=>el.closest('details').open=true);await local.locator('#local-config [name="service"]').selectOption(service);await local.locator('#local-config [name="gateway"]').selectOption(gateway);await local.locator('#local-config button').click();await local.waitForFunction(()=>document.querySelector('#local-output').textContent.includes('Конфигурация применена'))};
+  await act('fault','Эксперимент начался');await observe();await configure('blue','blue');await local.locator('#local-verify').click();await local.waitForFunction(()=>document.querySelector('#local-output').textContent.includes('HTTP 200'));
+  await local.locator('[data-draft="reflection"]').fill('Вход и программа использовали разные порты. После сравнения настроек я согласовал адреса и получил заметку через вход.');await act('reflection','Разбор сохранён');
+  await act('challenge','Новая ситуация готова');await observe();await configure('blue','blue');await local.locator('#local-verify').click();await local.waitForFunction(()=>document.querySelector('#local-output').textContent.includes('HTTP 200'));
+  await local.locator('[data-draft="reflection"]').fill('Во втором случае изменилось назначение входа. Я снова проверил запуск, журнал и ответ и восстановил согласованную настройку.');await act('reflection','Разбор сохранён');await act('finish','Эпизод завершён');
+  await local.close();
+ }
+ assert.deepEqual(errors,[]);console.log('Прогресс, экспорт/импорт, старые заметки, поиск, повторы, 390 px, офлайн и старые ссылки: OK.');console.log('Исторический отчёт не засчитан как новая практика; подмена факта отклонена. Ошибок JavaScript: 0.');
+}catch(error){console.error(error);throw error;}finally{await browser?.close();await workshop?.close();await new Promise(done=>server.close(done));const checked=resolve(temporary);if(dirname(checked)!==resolve(tmpdir())||!basename(checked).startsWith('mayak-course-'))throw Error('Неожиданный временный каталог');await rm(checked,{recursive:true,force:true});}

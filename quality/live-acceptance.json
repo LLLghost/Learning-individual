@@ -1,0 +1,10 @@
+{
+  "schema": "course-live-acceptance-v1",
+  "status": "blocked",
+  "sourceSha256": null,
+  "collectorSha256": null,
+  "checkerSha256": null,
+  "stand": "10.30.90.40",
+  "reason": "TCP/22 не отвечает. Протоколы сентября относятся к предыдущему изданию и не подтверждают новый маршрут.",
+  "runs": []
+}

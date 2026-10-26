@@ -18,7 +18,7 @@ try {
   browser = await launchBrowser();
   page = await browser.newPage({ viewport: { width: 1440, height: 1080 } });
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(workshop.origin);
+  await page.goto(`${workshop.origin}/workshop/`);
   await page.waitForSelector('[data-phase="introduction"]');
   let token = await page.locator('meta[name="workshop-token"]').getAttribute('content');
   const getState = async () => (await page.request.get(`${workshop.origin}/api/state`)).json();
@@ -145,7 +145,7 @@ try {
   await workshop.close(); workshop = null;
   assert.throws(() => process.kill(finalPid, 0), (error) => error.code === 'ESRCH');
   workshop = await startWorkshop({ port: 0, stateDir });
-  await page.goto(workshop.origin);
+  await page.goto(`${workshop.origin}/workshop/`);
   await page.waitForSelector('[data-phase="complete"]');
   token = await page.locator('meta[name="workshop-token"]').getAttribute('content');
   const resumed = await getState();
@@ -159,7 +159,7 @@ try {
   delete legacy.introduction;
   await writeFile(join(stateDir, 'progress.json'), JSON.stringify(legacy));
   workshop = await startWorkshop({ port: 0, stateDir });
-  await page.goto(workshop.origin);
+  await page.goto(`${workshop.origin}/workshop/`);
   await page.waitForSelector('[data-phase="introduction"]');
   token = await page.locator('meta[name="workshop-token"]').getAttribute('content');
   assert.equal((await getState()).note.message, noteText);
