@@ -122,7 +122,36 @@ export async function startWorkshop({ port = 4180, stateDir = join(project, '.ep
   };
 
   const action = async (path, body) => {
+    if (path === '/api/introduction') {
+      if (!Number.isInteger(body.step) || body.step < 0 || body.step > 3) throw fail('Такой части вводного урока нет.');
+      state.introduction.step = body.step;
+      return {};
+    }
+    if (path === '/api/introduction-example') {
+      const name = limited(body.name, 40, 'имя');
+      state.introduction.example = { name, reply: `Привет, ${name}! Это ответ программы мастерской.`, at: new Date().toISOString() };
+      state.introduction.requests++;
+      return { example: state.introduction.example };
+    }
+    if (path === '/api/introduction-check') {
+      if (!['browser', 'service', 'file'].includes(body.answer)) throw fail('Выбери один ответ.');
+      const understood = body.answer === 'service';
+      state.introduction.understood = understood;
+      state.introduction.feedback = understood
+        ? 'Да. Сервис принял запрос и подготовил ответ с заметкой. Браузер получил этот ответ и показал страницу на экране.'
+        : body.answer === 'browser'
+          ? 'Страницу на экране отображает браузер. Программа заметки принимает запрос и подготавливает ответ с её содержимым. Попробуй выбрать эту работу.'
+          : 'В нашем опыте браузер обращается к программе заметки. Она читает файл и отправляет ответ; браузер показывает полученное. Вернись к схеме и попробуй ещё раз.';
+      return { ok: understood };
+    }
+    if (path === '/api/introduction-complete') {
+      if (!state.introduction.example || !state.introduction.understood) throw fail('Сначала попробуй запросить приветствие и проверь понимание в конце урока.');
+      state.introduction.complete = true;
+      state.introduction.completedAt ??= new Date().toISOString();
+      return { message: state.phase === 'welcome' ? 'Теперь создадим страницу с твоей заметкой.' : 'Возвращаемся к твоей работе. Страница и записи сохранены.' };
+    }
     if (path === '/api/create') {
+      if (!state.introduction.complete) throw fail('Начни с вводного урока: он объясняет, какую программу мы создаём.');
       if (state.phase !== 'welcome') throw fail('Сервис уже создан.');
       await saveNote({ title: limited(body.title, 80, 'название'), message: 'Пока здесь пусто.', revision: 1 });
       state.phase = 'own'; await restart();
@@ -221,6 +250,8 @@ export async function startWorkshop({ port = 4180, stateDir = join(project, '.ep
       state = { schema: 1, run: randomBytes(8).toString('hex'), phase: 'welcome', startedAt: new Date().toISOString(), config: { service: 'blue', gateway: 'blue' }, records: { own: record(), guided: record(), challenge: record() }, transcript: [], previousRuns: [], events: [] };
     }
     if (state.schema !== 1) throw fail('Неизвестная версия сохранённого эпизода.');
+    // Старый опыт продолжается с теми же файлами; вводный урок добавляется отдельно.
+    state.introduction ??= { step: 0, complete: false, requests: 0, understood: false };
     ports = { blue: await sparePort(), green: await sparePort() };
     while (ports.blue === ports.green) ports.green = await sparePort();
     if (state.phase !== 'welcome') await restart();
@@ -258,7 +289,7 @@ export async function startWorkshop({ port = 4180, stateDir = join(project, '.ep
           response.end(result.body);
           return;
         }
-        const file = { '/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css' }[path];
+        const file = { '/': 'index.html', '/app.js': 'app.js', '/introduction.js': 'introduction.js', '/style.css': 'style.css' }[path];
         if (!file) throw fail('Не найдено.', 404);
         const type = file.endsWith('.js') ? 'text/javascript; charset=utf-8' : file.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/html; charset=utf-8';
         let text = await readFile(join(here, file), 'utf8');

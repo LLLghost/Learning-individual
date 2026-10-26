@@ -1,7 +1,11 @@
+import { introductionHTML } from '/introduction.js';
+
 const token = document.querySelector('meta[name="workshop-token"]').content;
 const workspace = document.querySelector('#workspace');
 const escape = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 let state, toastTimer;
+let showIntroduction = new URLSearchParams(location.search).get('lesson') === 'intro';
+const inIntroduction = () => showIntroduction || !state.introduction.complete;
 const stage = () => state.records[state.phase];
 const draftKey = (name) => `mayak:${state.run}:${state.phase}:${name}`;
 const draft = (name, fallback = '') => { try { return localStorage.getItem(draftKey(name)) ?? fallback; } catch { return fallback; } };
@@ -19,25 +23,35 @@ const call = async (path, body = {}) => {
 };
 const feedback = (message, error = false) => { const el = document.querySelector('#check-feedback'); if (el) { el.textContent = message; el.classList.toggle('error', error); } };
 const journey = () => {
+  const reading = inIntroduction();
   const index = ['welcome', 'own'].includes(state.phase) ? 0 : state.phase === 'guided' ? 1 : 2;
-  document.querySelector('#journey').innerHTML = [['Сделать своим', 'Запуск и сохранение'], ['Разобраться', 'Эксперимент с подсказками'], ['Справиться самому', 'Новая ситуация']].map(([title, subtitle], i) => `<div class="journey-step ${i === index ? 'active' : i < index || state.phase === 'complete' ? 'done' : ''}"><span class="number">${i < index || state.phase === 'complete' ? '✓' : `0${i + 1}`}</span><div><strong>${title}</strong><small>${subtitle}</small></div></div>`).join('');
-  document.querySelector('#process-label').textContent = state.running ? `Процесс запущен · PID ${state.pid}` : 'Сервис ещё не создан';
+  document.querySelector('#journey').innerHTML = `<a class="journey-step ${reading ? 'active' : 'done'}" href="/?lesson=intro"><span class="number">${reading ? '00' : '✓'}</span><div><strong>Вводный урок</strong><small>Что мы изучаем и зачем</small></div></a>` + [['Своя страница', 'Запуск и сохранение'], ['Наблюдение', 'Опыт с подсказками'], ['Самостоятельная задача', 'Новая ситуация']].map(([title, subtitle], i) => `<div class="journey-step ${!reading && i === index ? 'active' : i < index || state.phase === 'complete' ? 'done' : ''}"><span class="number">${i < index || state.phase === 'complete' ? '✓' : `0${i + 1}`}</span><div><strong>${title}</strong><small>${subtitle}</small></div></div>`).join('');
+  document.querySelector('#process-label').textContent = reading ? 'Знакомство · с самого начала' : state.running ? 'Программа твоей страницы запущена' : 'Твоя страница ещё не создана';
+  document.querySelector('#lesson-title').innerHTML = reading ? 'Как работает<br><em>веб-страница.</em>' : 'Своя страница.<br>Первый<br><em>опыт.</em>';
+  document.querySelector('#lesson-summary').textContent = reading ? 'Начнём с понятных объяснений и одного небольшого опыта.' : 'Создай страницу, сохрани свою заметку и проверь, как программа отвечает на обращения.';
 };
-const preview = () => `<section class="panel"><div class="preview-head"><span>СТРАНИЦА ЧЕРЕЗ ВХОД</span><a href="/public/" target="_blank" rel="noopener">Открыть ↗</a></div><iframe title="Твоя страница через вход" src="/public/?v=${Date.now()}" sandbox="allow-same-origin"></iframe><p class="help">Это настоящий HTTP-ответ. После изменения состояния обнови страницу.</p><button class="secondary" data-action="refresh">Обновить страницу</button></section>`;
+const preview = () => `<section class="panel"><div class="preview-head"><span>ТВОЯ СТРАНИЦА</span><a href="/public/" target="_blank" rel="noopener">Открыть ↗</a></div><iframe title="Твоя страница через вход" src="/public/?v=${Date.now()}" sandbox="allow-same-origin"></iframe><p class="help">Мастерская запросила эту страницу у программы заметки. Кнопка ниже отправляет запрос снова.</p><button class="secondary" data-action="refresh">Обновить страницу</button></section>`;
 const theory = () => `<section class="panel tinted"><p class="tag">КОГДА ПОНАДОБИТСЯ</p><h3>Как устроен этот маленький сервис</h3><div class="diagram"><span>браузер</span> → <span>вход</span> → <span>процесс</span></div><p class="help">Вход принимает твой запрос и обращается к процессу по адресу и порту. Процесс читает запись из файла и отвечает страницей.</p><details><summary>Что означает порт?</summary><p>Порт помогает выбрать приложение на одном компьютере. В этой мастерской адрес один — <code>127.0.0.1</code>, а порты разные. Если процесс слушает один порт, запрос к другому до него не дойдёт.</p></details><details><summary>Почему «запущен» бывает недостаточно?</summary><p>Живой процесс и ответ пользователю — разные наблюдения. По пути могут мешать адрес, порт или посредник. Сравнивай проверку процесса с запросом по тому пути, которым идёт пользователь.</p></details><details><summary>Что сохраняется после перезапуска?</summary><p>У процесса исчезает память и меняется PID. Файл <code>note.json</code> остаётся на диске; новый процесс читает его снова. Этот опыт проверяет перезапуск процесса. Отключение питания и потерю диска он не проверяет.</p></details></section>`;
-const terminal = () => `<section aria-label="Наблюдения"><h3>Проверь свою гипотезу</h3><p class="help">Это консоль мастерской с семью командами. Они проверяют и перезапускают настоящий сервис; произвольные команды системы здесь не выполняются.</p><div class="quick-commands">${['status', 'request public', 'journal', 'config service', 'config gateway', 'request service', 'restart'].map((command) => `<button type="button" data-command="${command}">${command}</button>`).join('')}</div><div class="terminal"><div class="terminal-head"><span>НАБЛЮДЕНИЯ</span><span>локальная сессия</span></div><div class="terminal-body" role="log" aria-label="Вывод команд" tabindex="0">${transcript()}</div><form id="command-form" class="command-form"><span aria-hidden="true">›</span><input id="command" aria-label="Команда мастерской" placeholder="help — список команд" autocomplete="off" spellcheck="false"><button type="submit">Выполнить</button></form></div></section>`;
+const terminal = () => {
+  const own = state.phase === 'own';
+  const commands = own
+    ? [['status', 'Проверить запуск'], ['request public', 'Запросить страницу'], ['restart', 'Перезапустить программу']]
+    : [['status', 'Проверить запуск'], ['request public', 'Запросить страницу через вход'], ['journal', 'Посмотреть журнал'], ['config service', 'Настройки программы'], ['config gateway', 'Настройки входа'], ['request service', 'Запросить напрямую'], ['restart', 'Перезапустить программу']];
+  return `<section aria-label="Наблюдения"><h3>${own ? 'Проведи первый опыт' : 'Проверь своё предположение'}</h3><p class="help">${own ? 'Кнопки обращаются к программе твоей страницы. «Проверить запуск» узнаёт, работает ли она. «Запросить страницу» проверяет ответ через вход. «Перезапустить» останавливает программу и запускает снова.' : 'Журнал — записи о работе программы. Настройки говорят, где программа принимает обращения и куда их передаёт вход. Выбери проверку, которая поможет твоей гипотезе.'}</p><div class="quick-commands">${commands.map(([command, label]) => `<button type="button" data-command="${command}">${label}</button>`).join('')}</div><div class="terminal"><div class="terminal-head"><span>РЕЗУЛЬТАТЫ ПРОВЕРОК</span><span>на твоём компьютере</span></div><div class="terminal-body" role="log" aria-label="Вывод команд" tabindex="0">${transcript()}</div><form id="command-form" class="command-form"><span aria-hidden="true">›</span><input id="command" aria-label="Команда мастерской" placeholder="Можно выбрать кнопку выше" autocomplete="off" spellcheck="false"><button type="submit">Выполнить</button></form></div><details><summary>Что означают надписи в результатах?</summary><p><code>PID</code> — номер работающего экземпляра программы. После перезапуска он меняется. <code>HTTP</code> — способ обмена запросами и ответами между браузером и программой. Код <code>200</code> означает успешную обработку запроса; <code>502</code> здесь означает, что вход не получил ответ от программы заметки.</p><p>Кнопки выполняют команды этой мастерской. Они проверяют настоящий процесс и ответы страницы; обычные команды операционной системы в этом поле не выполняются.</p></details></section>`;
+};
 const transcript = () => state.transcript.filter((entry) => entry.phase === state.phase).map((entry) => `<pre><span class="prompt">› ${escape(entry.command)}</span>\n${escape(entry.output)}</pre>`).join('') || '<pre>Выбери проверку выше или введи help.</pre>';
 const prediction = (own = false) => `<section class="panel"><p class="tag">ПРОГНОЗ ДО ПРОВЕРКИ</p><h3>${own ? 'Переживёт ли твоя запись перезапуск?' : 'Что ты предполагаешь — и чем это проверишь?'}</h3><p class="help">${own ? 'Запиши предположение. Затем перезапусти сервис и сравни результат с прогнозом.' : 'Одного предложения достаточно. Первую гипотезу можно пересмотреть по новым фактам.'}</p><form id="prediction-form"><label for="prediction">${own ? 'Мой прогноз и причина' : 'Моя гипотеза и первая проверка'}</label><textarea id="prediction" data-draft="prediction" maxlength="1000" required placeholder="Я ожидаю…, потому что…">${escape(draft('prediction', stage()?.prediction))}</textarea><button class="secondary" type="submit">Сохранить предположение</button></form>${stage()?.prediction ? '<p class="help">Предположение сохранено в журнале.</p>' : ''}</section>`;
 const reflection = () => `<section class="panel"><p class="tag">ОБЪЯСНИ СВОИМИ СЛОВАМИ</p><h3>Что именно ты доказал?</h3><p class="help">Что мешало запросу? Какие наблюдения это подтвердили? Как проверил исправление? В самостоятельной задаче добавь, чем она отличалась от предыдущей.</p><form id="reflection-form"><label for="reflection">Короткий разбор</label><textarea id="reflection" data-draft="reflection" maxlength="2200" minlength="20" required placeholder="Процесс…, но запрос… Я сравнил… После изменения проверил…">${escape(draft('reflection', stage()?.reflection))}</textarea><button class="secondary" type="submit">Сохранить разбор</button></form><p class="help">Текст сохраняется для обсуждения. Автоматическая проверка подтверждает работу сервиса, а не правильность свободного объяснения.</p></section>`;
 const config = () => `<section class="panel"><details id="config-details"><summary>Изменить конфигурацию</summary><p class="help">Выбери осмысленное изменение после наблюдений. Оба порта принадлежат только этой мастерской.</p><form id="config-form"><div class="config-grid"><label for="service-port">Порт сервиса<select id="service-port">${options(state.config.service)}</select></label><label for="gateway-port">Вход обращается к порту<select id="gateway-port">${options(state.config.gateway)}</select></label></div><button class="secondary" type="submit">Применить и перезапустить</button></form></details><button class="subtle" data-action="hint">${stage()?.hints ? 'Ещё подсказка' : 'Нужна подсказка'}</button>${stage()?.hints ? `<p class="help">Открыто подсказок: ${stage().hints} из 3.</p>` : ''}</section>`;
 const options = (selected) => Object.entries(state.ports).map(([key, value]) => `<option value="${key}" ${selected === key ? 'selected' : ''}>127.0.0.1:${value}</option>`).join('');
-const checkPanel = () => `<section class="panel"><h3>Проверка по пути пользователя</h3><p class="help">Проверяется ответ через вход, твоя сохранённая запись и PID процесса. Твои команды и объяснение попадут в журнал.</p><button id="check" data-action="check">${stage()?.verified ? 'Проверить ещё раз' : 'Проверить результат'}</button><div id="check-feedback" class="feedback" role="status">${stage()?.verified ? 'Последняя проверка пройдена: HTTP 200, запись получена через вход.' : ''}</div></section>`;
+const checkPanel = () => `<section class="panel"><h3>Проверка по пути пользователя</h3><p class="help">Мастерская запрашивает твою страницу через вход и сверяет полученную заметку с сохранённой. Результат проверки остаётся в журнале.</p><button id="check" data-action="check">${stage()?.verified ? 'Проверить ещё раз' : 'Проверить результат'}</button><div id="check-feedback" class="feedback" role="status">${stage()?.verified ? 'Последняя проверка пройдена: HTTP 200, запись получена через вход.' : ''}</div></section>`;
 
 function render() {
-  workspace.dataset.phase = state.phase;
+  workspace.dataset.phase = inIntroduction() ? 'introduction' : state.phase;
   workspace.dataset.render = String(Number(workspace.dataset.render ?? 0) + 1);
   journey();
   workspace.setAttribute('aria-busy', 'false');
+  if (inIntroduction()) { workspace.innerHTML = introductionHTML(state); return; }
   if (state.phase === 'welcome') {
     workspace.innerHTML = `<div class="stage-head"><p class="eyebrow">01 / СДЕЛАТЬ СВОИМ</p><h2>Начнём с маленькой<br>работающей вещи.</h2><p class="lead">Сегодня у тебя появится своя страница. Ты изменишь её, проверишь перезапуск, а затем вернёшь в работу после неожиданной ошибки.</p></div><div class="layout welcome-grid"><section class="panel"><p class="tag">ТВОЙ ПРОЕКТ</p><h3>Для чего будет эта страница?</h3><p class="help">Заметка для команды, план домашней лаборатории, страница игрового сервера — выбери то, что тебе интересно.</p><form id="create-form"><label for="title">Название<input id="title" data-draft="title" maxlength="80" required value="${escape(draft('title', 'Моя лаборатория'))}"></label><button type="submit">Создать мой сервис →</button></form><p class="help">Нужен только этот браузер. Можно закрыть страницу и вернуться: работа сохраняется на компьютере.</p></section><section class="panel tinted"><div class="empty-preview"><span>СКОРО ЗДЕСЬ БУДЕТ ТВОЯ СТРАНИЦА</span><strong>Маленький сервис.<br>Настоящий результат.</strong><p>От первой записи до самостоятельного разбора.</p></div><ol class="steps"><li>Запусти и измени страницу.</li><li>Проведи эксперимент с подсказками.</li><li>Разберись в новой ситуации сам.</li></ol></section></div>`;
     return;
@@ -71,6 +85,8 @@ workspace.addEventListener('submit', async (event) => {
   if (button) button.disabled = true;
   try {
     let result;
+    if (form.id === 'intro-example-form') result = await call('/api/introduction-example', { name: form.querySelector('#intro-name').value });
+    if (form.id === 'intro-check-form') result = await call('/api/introduction-check', { answer: new FormData(form).get('answer') });
     if (form.id === 'create-form') result = await call('/api/create', { title: form.querySelector('#title').value });
     if (form.id === 'note-form') result = await call('/api/note', { title: form.querySelector('#note-title').value, message: form.querySelector('#note-message').value });
     if (form.id === 'prediction-form') result = await call('/api/prediction', { text: form.querySelector('#prediction').value });
@@ -83,12 +99,20 @@ workspace.addEventListener('submit', async (event) => {
 });
 workspace.addEventListener('click', async (event) => {
   const button = event.target.closest('button'); if (!button) return;
+  if (button.dataset.introStep !== undefined) {
+    button.disabled = true;
+    try { await call('/api/introduction', { step: Number(button.dataset.introStep) }); render(); workspace.scrollIntoView({ block: 'start' }); }
+    catch (error) { notify(error.message, true); }
+    finally { button.disabled = false; }
+    return;
+  }
   if (button.dataset.command) { button.disabled = true; try { await execute(button.dataset.command); } catch (error) { notify(error.message, true); } finally { button.disabled = false; } return; }
   const action = button.dataset.action; if (!action) return;
   if (action === 'refresh') { document.querySelector('iframe').src = `/public/?v=${Date.now()}`; return; }
   button.disabled = true;
   try {
     const result = await call(`/api/${action}`);
+    if (action === 'introduction-complete') { showIntroduction = false; history.replaceState(null, '', '/'); }
     render();
     if (action === 'check') feedback(result.message, !result.ok);
     else if (result.message) notify(result.message);
