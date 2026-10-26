@@ -16,6 +16,10 @@ for(const l of manifest.lessons){
  for(const block of ['goal','explain','example','guided','independent','reflection'])if(!html.includes(`data-block="${block}"`))failures.push(`${l.id}: нет блока ${block}`);
  for(const a of html.matchAll(/\bid="([^"]+)"/g)){if(anchors.has(a[1]))failures.push(`Повтор якоря ${a[1]}`);anchors.set(a[1],l.id);}
  if(!built.routes.includes(`/learn/${l.id}/`))failures.push(`Не собран ${l.id}`);
+ if(['vm','stand'].includes(l.environment)){
+  const data=JSON.parse(await readFile('build/assets/course-data.json','utf8'));
+  if(!data.practiceLabs?.[l.id])failures.push(`${l.id}: нет цикла новой практики`);
+ }
  const page=await readFile(`build/learn/${l.id}/index.html`,'utf8');
  for(const m of page.matchAll(/(?:href|src)="([^"]+)"/g)){
   const address=m[1];if(/^(?:https?:|mailto:|#)/.test(address))continue;
@@ -39,7 +43,10 @@ for(const x of map.assessments){
  if(!bank.items.some(i=>i.id===x.id))failures.push(`${x.id}: нет задания`);
  const html=htmls.get(x.lesson)??'';
  if(!html.includes(`id="${x.source}"`))failures.push(`${x.id}: раздел ${x.source} отсутствует`);
- if(!plain(html).includes(plain(x.evidence)))failures.push(`${x.id}: объяснение отсутствует`);
+ const section=html.match(new RegExp(`<section id="${x.source.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}"[^>]*>([\\s\\S]*?)</section>`))?.[1];
+ if(!section||!plain(section).includes(plain(x.evidence)))failures.push(`${x.id}: объяснение отсутствует в указанном разделе`);
+ const item=bank.items.find(i=>i.id===x.id);
+ if(item?.mechanism!==x.source)failures.push(`${x.id}: ссылка задания расходится с объяснением`);
 }
 for(const chapter of map.chapters)for(const s of chapter.sections)if(anchors.get(s.id)!==s.lesson)failures.push(`Не перенесён раздел ${s.id}`);
 const pendingLessons=manifest.lessons.filter(l=>l.reviewed!==true).length;
@@ -48,6 +55,7 @@ if(process.argv.includes('--strict')&&(pendingLessons||pendingAssessments||manif
 if(process.argv.includes('--strict')){
  const live=JSON.parse(await readFile('quality/live-acceptance.json','utf8'));
  if(live.status!=='accepted'||live.sourceSha256!==built.sourceSha256||live.collectorSha256!==built.collectorSha256||live.checkerSha256!==built.checkerSha256)failures.push('Нет стендовой приёмки текущей версии содержания, сборщика и проверяющего кода.');
+ if(live.practiceSha256!==built.practiceSha256)failures.push('Нет стендовой приёмки текущей версии новых исполнителей практики.');
  for(const lab of bank.labs.filter(x=>x.kind!=='dataset'))if(!live.runs.some(r=>r.lab===lab.id&&r.firstPassed&&r.repeatPassed&&r.restored&&r.reportAccepted&&r.commit&&r.vmState))failures.push(`${lab.id}: нет полного свежего протокола нового курса.`);
  for(const lesson of manifest.lessons.filter(x=>['vm','stand'].includes(x.environment)))if(!live.runs.some(r=>r.lesson===lesson.id&&r.firstPassed&&r.repeatPassed&&r.restored&&r.reportAccepted&&r.commit&&r.vmState))failures.push(`${lesson.id}: нет приёмки практического результата урока на ВМ.`);
 }

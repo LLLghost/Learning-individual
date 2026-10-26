@@ -42,3 +42,5 @@ next-env.d.ts
 
 # рабочий файл вычитки
 /need.jsonl
+__pycache__/
+*.pyc

@@ -3,6 +3,7 @@ import {readFile,mkdir,mkdtemp,rm}from'node:fs/promises';
 import {resolve,extname,join,dirname,basename,sep}from'node:path';
 import {tmpdir}from'node:os';
 import assert from'node:assert/strict';
+import {createHash}from'node:crypto';
 import {launchBrowser}from'./browser-launch.mjs';
 import {startWorkshop}from'../episodes/first-service/server.mjs';
 const course=JSON.parse(await readFile('build/assets/course-data.json','utf8'));
@@ -15,11 +16,35 @@ const origin=`http://127.0.0.1:${server.address().port}`;
 let browser,workshop;const temporary=await mkdtemp(join(tmpdir(),'mayak-course-'));const errors=[];
 try{
  browser=await launchBrowser();const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));
- for(const l of course.lessons){await page.goto(`${origin}${base}/learn/${l.id}/`);await page.waitForSelector('#assessment');assert.equal(await page.locator('[data-block="explain"]').count(),1,l.id);assert.equal(await page.locator('.practice-tools').count(),1,l.id);}
+ for(const l of course.lessons){await page.goto(`${origin}${base}/learn/${l.id}/`);await page.waitForSelector('body[data-course-ready="true"]');assert.equal(await page.locator('[data-block="explain"]').count(),1,l.id);assert.equal(await page.locator('.practice-tools').count(),1,l.id);}
  console.log(`Chromium: пройдено ${course.lessons.length} урока.`);
+ {
+ const vmLessons=course.lessons.filter(l=>['vm','stand'].includes(l.environment));
+ assert.equal(vmLessons.length,46);
+ for(const l of vmLessons){await page.goto(`${origin}${base}/learn/${l.id}/`);await page.waitForSelector('#practice-start');assert.ok(course.practiceLabs[l.id],l.id);}
+ await page.goto(`${origin}${base}/learn/vm-backup/`);await page.waitForSelector('#practice-start');await page.locator('#practice-start').click();assert.match(await page.locator('#practice-commands').innerText(),/proxmox-backup.py prepare/);assert.equal(await page.locator('[data-guest-instructions]').count(),0);
+ await page.goto(`${origin}${base}/learn/process/`);await page.waitForSelector('#practice-start');await page.locator('#practice-start').click();
+ const attempt=await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).lessons.process.practice);
+ const report={schema:'mayak-practice-report-v1',lesson:'process',attempt:attempt.attempt,variant:attempt.variant,started:Date.now()/1000,checked:Date.now()/1000,runnerSha256:course.practiceRunnerSha256,guest:'a'.repeat(64),environment:{kernel:'browser-fixture',host:'fixture'},passed:true,observations:'test fixture, not a live lab',error:''};
+ const makeReport=data=>{const payload=JSON.stringify(data);return {schema:'mayak-practice-envelope-v1',payload,sha256:createHash('sha256').update(payload).digest('hex')};};
+ const upload=async envelope=>page.locator('#practice-report').setInputFiles({name:'fixture.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(envelope))});
+ await upload(makeReport(report));await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports['P:process']?.verified);
+ await page.evaluate(({envelope})=>{const s=JSON.parse(localStorage.getItem('mayak-course-progress-v7'));s.reports['P:process'].envelope=envelope;localStorage.setItem('mayak-course-progress-v7',JSON.stringify(s));},{envelope:makeReport({...report,runnerSha256:'0'.repeat(64)})});await page.reload();await page.waitForSelector('body[data-course-ready="true"]');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports['P:process'].verified),false,'Old checker revision retained credit after reload');
+ await upload(makeReport(report));await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports['P:process']?.verified);
+ await upload(makeReport({...report,passed:false}));await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports['P:process']?.verified===false);
+ await upload(makeReport(report));await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports['P:process']?.verified);
+ await page.locator('#practice-start').click();assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports['P:process'].verified),false);
+ await upload(makeReport(report));await page.waitForFunction(()=>document.querySelector('#practice-feedback').textContent.includes('история'));
+ const damaged=makeReport(report);damaged.payload+=' ';await upload(damaged);await page.waitForFunction(()=>document.querySelector('#practice-feedback').textContent.includes('Контрольная сумма'));
+ const practiceBackup=await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')));
+ await page.goto(`${origin}${base}/progress/`);await page.waitForSelector('#import-progress');await page.locator('#import-progress').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(practiceBackup))});await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('объединена'));assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports['P:process'].verified),false);
+ console.log('Новая практика: 46 интерфейсов; приём отчёта, отказ, новая попытка, повреждение и импорт истории: OK (браузерные фикстуры).');
+ }
  await page.goto(`${origin}${base}/learn/why/`);await page.waitForSelector('[data-question="I-service"]');
+ await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('mayak-course-progress-v7'));s.results['I-service']={correct:true,attempts:1,at:Date.now()-86400000,source:'previous-content-revision'};localStorage.setItem('mayak-course-progress-v7',JSON.stringify(s));});await page.reload();await page.waitForSelector('[data-question="I-service"]');
  const card=page.locator('[data-question="I-service"]');await card.locator('summary').click();await card.locator('[value="1"]').check();await card.locator('button').click();await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).results['I-service']?.correct===false);
  await card.locator('[value="0"]').check();await card.locator('button').click();await page.waitForFunction(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).results['I-service']?.correct===true);
+ assert.ok(await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).history.some(x=>x.kind==='answer'&&x.id==='I-service'&&x.value.source==='previous-content-revision'&&x.value.correct)),'Previous revision result was lost');
  await page.locator('[data-draft="note"]').fill('Моя заметка о запросе и отвечающей программе.');await page.locator('[data-action="read"]').click();await page.reload();await page.waitForSelector('#assessment');assert.equal(await page.locator('[data-draft="note"]').inputValue(),'Моя заметка о запросе и отвечающей программе.');
  await page.screenshot({path:join(output,'intro.png'),fullPage:true});
  await page.goto(`${origin}${base}/progress/`);await page.waitForSelector('#progress-summary .stats');
@@ -38,7 +63,7 @@ try{
  await page.goto(`${origin}${base}/learn/${course.lessons.find(l=>l.checks.includes('L04A#why')).id}/`);await page.waitForSelector('#lab-id');await page.locator('#lab-id').selectOption('L04A');const lab=bank.labs.find(l=>l.id==='L04A');await page.locator(`[name="lab-why"][value="${lab.why.answer}"]`).check();await page.locator('#lab-report').setInputFiles('quality/live-labs/2026-09-24/L04A.json');await page.waitForFunction(()=>document.querySelector('#lab-feedback').textContent.includes('исторический'));assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('mayak-course-progress-v7')).reports.L04A.verified),false);
  await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:join(output,'mobile.png'),fullPage:true});
  await page.goto(`${origin}${base}/progress/`);await page.waitForSelector('#progress-summary');await page.locator('[data-action="offline"]').click();await page.waitForFunction(()=>{const t=document.querySelector('#notice').textContent;return /Сохранено (\d+) из \1; ошибок: 0\./.test(t)},null,{timeout:60000});
- await page.context().setOffline(true);await page.goto(`${origin}${base}/learn/restore-point/`);await page.waitForSelector('[data-block="explain"]');await page.context().setOffline(false);
+ await page.context().setOffline(true);await page.goto(`${origin}${base}/learn/restore-point/`);await page.waitForSelector('body[data-course-ready="true"]');assert.ok(await page.locator('[data-question]').count()>0,'Offline exercises did not initialize');await page.context().setOffline(false);
  await page.goto(`${origin}${base}/chapters/06/#b06-s005`);await page.waitForURL(/\/learn\/.*#b06-s005/);await page.waitForSelector('#b06-s005',{state:'visible'});
  if(!base){
   workshop=await startWorkshop({port:0,stateDir:temporary});const local=await browser.newPage();
@@ -56,5 +81,6 @@ try{
   await local.locator('[data-draft="reflection"]').fill('Во втором случае изменилось назначение входа. Я снова проверил запуск, журнал и ответ и восстановил согласованную настройку.');await act('reflection','Разбор сохранён');await act('finish','Эпизод завершён');
   await local.close();
  }
- assert.deepEqual(errors,[]);console.log('Прогресс, экспорт/импорт, старые заметки, поиск, повторы, 390 px, офлайн и старые ссылки: OK.');console.log('Исторический отчёт не засчитан как новая практика; подмена факта отклонена. Ошибок JavaScript: 0.');
+ const broken=await browser.newPage();broken.on('pageerror',e=>errors.push(e.message));await broken.route('**/assets/course-data.json',route=>route.abort());await broken.goto(`${origin}${base}/learn/why/`);await broken.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Не удалось загрузить данные курса'));assert.equal(await broken.locator('[data-block="explain"]').count(),1);assert.equal(await broken.locator('body[data-course-ready="true"]').count(),0);await broken.close();
+ assert.deepEqual(errors,[]);console.log('Прогресс, экспорт/импорт, старые заметки, поиск, повторы, 390 px, офлайн и старые ссылки: OK.');console.log('Исторический отчёт не засчитан как новая практика; подмена факта отклонена. Ошибок JavaScript: 0. Ошибка загрузки данных объяснена, текст сохранён.');
 }catch(error){console.error(error);throw error;}finally{await browser?.close();await workshop?.close();await new Promise(done=>server.close(done));const checked=resolve(temporary);if(dirname(checked)!==resolve(tmpdir())||!basename(checked).startsWith('mayak-course-'))throw Error('Неожиданный временный каталог');await rm(checked,{recursive:true,force:true});}

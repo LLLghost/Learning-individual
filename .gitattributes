@@ -16,3 +16,4 @@
 # npm run assemble). Для GitHub он помечен сгенерировённым: правки содержания
 # делаются во фрагментах, а diff этого файла — следствие сборки.
 public/course.html linguist-generated=true
+public/practical-course.html linguist-generated=true

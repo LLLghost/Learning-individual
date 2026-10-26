@@ -1,0 +1,715 @@
+{
+  "schema": "mayak-practice-catalog-v1",
+  "platform": "Debian 12/13, Python >= 3.11, dedicated guest",
+  "labs": {
+    "process": {
+      "goal": "Найти PID учебной программы по её командной строке",
+      "requires": [
+        "python3",
+        "ps",
+        "runuser"
+      ],
+      "prepare": "runuser -u \"$COURSE_USER\" -- python3 -c \"import time; time.sleep(3600)\" \"mayak-$NS\" >/dev/null 2>&1 &\necho $! > \"$STATE/launcher.pid\"\nsleep 0.3",
+      "solve": "pgrep -f \"^python3 -c import time; time.sleep\\(3600\\) mayak-$NS$\" > \"$WORK/pid.txt\"",
+      "check": "pid=$(cat \"$WORK/pid.txt\"); [[ \"$pid\" =~ ^[0-9]+$ ]]; tr \"\\0\" \" \" < \"/proc/$pid/cmdline\" | grep -F \"mayak-$NS\"; test \"$(stat -c %U /proc/$pid)\" = \"$COURSE_USER\"",
+      "restore": "pkill -f \"^python3 -c import time; time.sleep\\(3600\\) mayak-$NS$\" || test \"$?\" = 1\nif test -f \"$STATE/launcher.pid\"; then wait \"$(cat \"$STATE/launcher.pid\")\" 2>/dev/null || true; fi\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Найди python3 с меткой mayak- в ps и запиши только его PID в work/pid.txt.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "permissions": {
+      "goal": "Разрешить владельцу чтение заметки, не открывая её всем",
+      "requires": [
+        "python3",
+        "runuser",
+        "stat"
+      ],
+      "prepare": "printf \"private note\\n\" > \"$WORK/note.txt\"; chown \"$COURSE_USER:\" \"$WORK/note.txt\"; chmod 000 \"$WORK/note.txt\"",
+      "solve": "chmod 600 \"$WORK/note.txt\"",
+      "check": "test \"$(stat -c %a \"$WORK/note.txt\")\" = 600; runuser -u \"$COURSE_USER\" -- cat \"$WORK/note.txt\"; test \"$(stat -c %U \"$WORK/note.txt\")\" = \"$COURSE_USER\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "От имени ученика измени режим note.txt: чтение и запись владельцу, никаких прав группе и остальным.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "memory": {
+      "goal": "Различить доступную память, кэш и давление памяти",
+      "requires": [
+        "python3"
+      ],
+      "prepare": "test -r /proc/pressure/memory; test -r /proc/meminfo",
+      "solve": "python3 - <<'PY' > \"$WORK/memory.json\"\nimport json\nm=dict((k,int(v.split()[0])) for k,v in (line.split(\":\",1) for line in open(\"/proc/meminfo\")))\nprint(json.dumps({\"available_kib\":m[\"MemAvailable\"],\"total_kib\":m[\"MemTotal\"],\"pressure_source\":\"/proc/pressure/memory\"}))\nPY",
+      "check": "python3 - <<'PY'\nimport json,os\na=json.load(open(os.environ[\"WORK\"]+\"/memory.json\")); total=int(open(\"/proc/meminfo\").readline().split()[1]); assert a[\"total_kib\"]==total and 0<=a[\"available_kib\"]<=total and a[\"pressure_source\"]==\"/proc/pressure/memory\"; print(a); print(open(a[\"pressure_source\"]).read())\nPY",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "В memory.json запиши total_kib и available_kib из /proc/meminfo, а также pressure_source. Объяснение кэша сохрани в уроке.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "packages": {
+      "goal": "Определить пакет, которому принадлежит установленная программа",
+      "requires": [
+        "python3",
+        "dpkg-query"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(dpkg-query -S /usr/bin/python3; dpkg-query -W -f='${Package} ${Version}\\n' python3-minimal) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(dpkg-query -S /usr/bin/python3; dpkg-query -W -f='${Package} ${Version}\\n' python3-minimal) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "После установки python3 штатным apt на учебной ВМ запиши владельца /usr/bin/python3 и версию python3-minimal в observation.txt.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "shell-data": {
+      "goal": "Передать имена файлов с пробелами без разбиения",
+      "requires": [
+        "python3",
+        "find"
+      ],
+      "prepare": "mkdir \"$WORK/input\"; touch \"$WORK/input/first note\" \"$WORK/input/second note\"; if test \"$VARIANT\" = 1; then touch \"$WORK/input/third note\"; fi",
+      "solve": "find \"$WORK/input\" -type f -printf \"%f\\0\" | sort -z > \"$WORK/names.bin\"",
+      "check": "find \"$WORK/input\" -type f -printf \"%f\\0\" | sort -z > \"$STATE/expected.bin\"; cmp \"$STATE/expected.bin\" \"$WORK/names.bin\"; python3 -c 'import os; print(open(os.environ[\"WORK\"]+\"/names.bin\",\"rb\").read().split(bytes([0])))'",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани отсортированные имена из input в names.bin. Разделитель — нулевой байт; полный путь не включай.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "shell-failure": {
+      "goal": "Ограничить ожидание команды и сохранить код timeout",
+      "requires": [
+        "python3",
+        "timeout",
+        "runuser"
+      ],
+      "prepare": "printf \"Timeout is %s seconds\\n\" \"$((VARIANT+1))\"",
+      "solve": "cat > \"$WORK/solution.sh\" <<'SH'\ntimeout \"$1\" sleep 30\ncode=$?\nprintf '%s\\n' \"$code\"\nSH\nchown \"$COURSE_USER:\" \"$WORK/solution.sh\"",
+      "check": "python3 - <<'PY'\nimport subprocess,time,os\ne=os.environ; seconds=int(e['VARIANT'])+1; start=time.monotonic()\nr=subprocess.run(['runuser','-u',e['COURSE_USER'],'--','bash',e['WORK']+'/solution.sh',str(seconds)],capture_output=True,text=True,timeout=seconds+3)\nelapsed=time.monotonic()-start\nassert r.returncode==0 and r.stdout.strip()=='124' and seconds*.8<=elapsed<=seconds+3,(r.stdout,r.stderr,elapsed)\nprint('Observed timeout:',r.stdout.strip(),'elapsed seconds:',elapsed)\nPY",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Создай solution.sh: первый аргумент — предел ожидания. Запусти timeout с этим пределом и sleep 30, выведи реальный код возврата. Проверка выполнит сценарий от имени ученика с пределом 1 или 2 секунды; один записанный ответ 124 не принимается.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "python-result": {
+      "goal": "Сохранить stdout, stderr и код завершения отдельно",
+      "requires": [
+        "python3",
+        "runuser"
+      ],
+      "prepare": "true",
+      "solve": "cat > \"$WORK/solution.py\" <<'PY'\nimport subprocess,json,sys\nr=subprocess.run(sys.argv[1:],capture_output=True,text=True,timeout=3)\nprint(json.dumps({'stdout':r.stdout,'stderr':r.stderr,'code':r.returncode}))\nPY\nchown \"$COURSE_USER:\" \"$WORK/solution.py\"",
+      "check": "python3 - <<'PY'\nimport subprocess,json,os\ne=os.environ; v=int(e['VARIANT']); out='out' if v==0 else 'another out'; err='err' if v==0 else 'another err'; code=7+v\nchild=f'import sys; print({out!r}); print({err!r},file=sys.stderr); sys.exit({code})'\nr=subprocess.run(['runuser','-u',e['COURSE_USER'],'--','python3',e['WORK']+'/solution.py','python3','-c',child],capture_output=True,text=True,timeout=5)\nassert r.returncode==0,r.stderr\na=json.loads(r.stdout); assert a=={'stdout':out+'\\n','stderr':err+'\\n','code':code},a\nprint(a)\nPY",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Создай solution.py: запусти sys.argv[1:] через subprocess.run и выведи JSON с stdout, stderr и code. Проверка передаст разные дочерние программы в двух вариантах. Статический result.json не считается исполнением.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "git-change": {
+      "goal": "Закоммитить изменение конфигурации вместе с объяснением",
+      "requires": [
+        "python3",
+        "git",
+        "runuser"
+      ],
+      "prepare": "runuser -u \"$COURSE_USER\" -- git init -q \"$WORK/repo\"; printf \"port=8080\\n\" > \"$WORK/repo/service.conf\"; chown \"$COURSE_USER:\" \"$WORK/repo/service.conf\"; runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" -c user.name=Student -c user.email=student@localhost add service.conf; runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" -c user.name=Student -c user.email=student@localhost commit -qm baseline",
+      "solve": "printf \"port=%s\\n\" \"$((8081+VARIANT))\" > \"$WORK/repo/service.conf\"; runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" add service.conf; runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" -c user.name=Student -c user.email=student@localhost commit -qm \"Move note port to avoid listener conflict\"",
+      "check": "runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" diff --exit-code; test -z \"$(runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" status --porcelain)\"; test \"$(runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" rev-list --count HEAD)\" = 2; grep -x \"port=$((8081+VARIANT))\" \"$WORK/repo/service.conf\"; runuser -u \"$COURSE_USER\" -- git -C \"$WORK/repo\" log -1 --format=%s | grep -E \".{15}\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "В repo измени port на 8081 (вариант 0) или 8082 (вариант 1). Сделай отдельный коммит с объяснением причины; рабочее дерево должно быть чистым.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "boot": {
+      "goal": "Связать параметры загрузки с реально смонтированным корнем",
+      "requires": [
+        "python3",
+        "findmnt"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(findmnt -n -o SOURCE,FSTYPE /; cat /proc/cmdline) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(findmnt -n -o SOURCE,FSTYPE /; cat /proc/cmdline) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани источник и тип корневой ФС, затем параметры ядра в observation.txt. Не меняй загрузчик.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "disk-identity": {
+      "goal": "Зафиксировать идентичность устройств до записи",
+      "requires": [
+        "python3",
+        "lsblk"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(lsblk -J -o NAME,TYPE,SIZE,MODEL,SERIAL,WWN) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(lsblk -J -o NAME,TYPE,SIZE,MODEL,SERIAL,WWN) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "В observation.txt сохрани JSON lsblk с NAME,TYPE,SIZE,MODEL,SERIAL,WWN. Пустой SERIAL — ограничение идентификации, а не разрешение форматировать диск.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "disk-health": {
+      "goal": "Отделить сообщение ядра о пути от сведений накопителя",
+      "requires": [
+        "python3",
+        "lsblk"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(lsblk -n -o NAME,TYPE,TRAN,MODEL; test -d /sys/class/block; printf \"guest-data-only\\n\") > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(lsblk -n -o NAME,TYPE,TRAN,MODEL; test -d /sys/class/block; printf \"guest-data-only\\n\") > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани NAME,TYPE,TRAN,MODEL и строку guest-data-only. SMART виртуального диска не доказывает здоровье физического накопителя.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "vm-resources": {
+      "goal": "Зафиксировать доступные гостю CPU и лимит памяти",
+      "requires": [
+        "python3",
+        "lscpu"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(lscpu -J; grep \"^MemTotal:\" /proc/meminfo) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(lscpu -J; grep \"^MemTotal:\" /proc/meminfo) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани lscpu -J и MemTotal. Сравни с карточкой ВМ в Proxmox; внутренний сборщик сам не подтверждает конфигурацию хоста.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "pcie": {
+      "goal": "Связать PCI-адрес устройства с привязанным драйвером",
+      "requires": [
+        "python3",
+        "lspci"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(lspci -Dnnk) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(lspci -Dnnk) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани lspci -Dnnk. Наличие PCI ID и строка Kernel driver in use — разные наблюдения.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "device-id": {
+      "goal": "Сопоставить сетевой интерфейс с sysfs и драйвером",
+      "requires": [
+        "python3",
+        "ip"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(for p in /sys/class/net/*; do printf \"%s \" \"${p##*/}\"; readlink -f \"$p/device/driver\" || true; done) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(for p in /sys/class/net/*; do printf \"%s \" \"${p##*/}\"; readlink -f \"$p/device/driver\" || true; done) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Для каждого интерфейса сохрани имя и ссылку на драйвер, если она существует; loopback физического драйвера не имеет.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "uefi": {
+      "goal": "Проверить фактический режим загрузки виртуальной машины",
+      "requires": [
+        "python3",
+        "find"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(test -d /sys/firmware/efi; printf \"UEFI\\n\"; find /sys/firmware/efi/efivars -maxdepth 1 -name \"BootOrder-*\" -printf \"%f\\n\") > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(test -d /sys/firmware/efi; printf \"UEFI\\n\"; find /sys/firmware/efi/efivars -maxdepth 1 -name \"BootOrder-*\" -printf \"%f\\n\") > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Нужна ВМ, загруженная через OVMF/UEFI. Сохрани UEFI и имя переменной BootOrder. Отсутствие EFI — отказ предпосылки, не успех.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "address": {
+      "goal": "Проверить прямой маршрут между двумя узлами",
+      "requires": [
+        "python3",
+        "ip",
+        "ping"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0",
+      "solve": "ip -n \"$NS-a\" route get 192.0.2.2 > \"$WORK/route.txt\"",
+      "check": "grep -F \"192.0.2.2 dev eth0\" \"$WORK/route.txt\"; ip netns exec \"$NS-a\" ping -c 1 -W 2 192.0.2.2",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Выполни ip -n <NS>-a route get 192.0.2.2 и сохрани вывод в route.txt. Имя NS есть в status.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "prefix": {
+      "goal": "Исправить ошибочный префикс и восстановить достижимость",
+      "requires": [
+        "python3",
+        "ip",
+        "ping"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0\nip -n \"$NS-a\" addr del 192.0.2.1/24 dev eth0; ip -n \"$NS-a\" addr add 192.0.2.1/32 dev eth0",
+      "solve": "ip -n \"$NS-a\" addr del 192.0.2.1/32 dev eth0; ip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0",
+      "check": "ip -n \"$NS-a\" -o addr show dev eth0 | grep -F \"192.0.2.1/24\"; ip netns exec \"$NS-a\" ping -c 1 -W 2 192.0.2.2",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "В учебном namespace a замени /32 на /24; не добавляй обходной host route.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "mtu": {
+      "goal": "Измерить границу IPv4-пакета без фрагментации",
+      "requires": [
+        "python3",
+        "ip",
+        "ping"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0\nfor n in a b; do ip -n \"$NS-$n\" link set eth0 mtu \"$((1280+VARIANT*100))\"; done",
+      "solve": "printf \"%s\\n\" \"$((1252+VARIANT*100))\" > \"$WORK/payload.txt\"",
+      "check": "n=$(cat \"$WORK/payload.txt\"); test \"$n\" = \"$((1252+VARIANT*100))\"; ip netns exec \"$NS-a\" ping -c 1 -W 2 -M do -s \"$n\" 192.0.2.2; if ip netns exec \"$NS-a\" ping -c 1 -W 2 -M do -s \"$((n+1))\" 192.0.2.2; then exit 1; fi",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Найди максимальный payload ping -M do -s в IPv4 и запиши число в payload.txt. Учти 20 байт IPv4 и 8 байт ICMP.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "ipv6": {
+      "goal": "Настроить адреса IPv6 и проверить маршрут без DNS",
+      "requires": [
+        "python3",
+        "ip",
+        "ping"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0",
+      "solve": "ip -n \"$NS-a\" -6 addr add 2001:db8::1/64 dev eth0 nodad; ip -n \"$NS-b\" -6 addr add 2001:db8::2/64 dev eth0 nodad",
+      "check": "ip -n \"$NS-a\" -6 route get 2001:db8::2; ip netns exec \"$NS-a\" ping -6 -c 1 -W 2 2001:db8::2",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Добавь 2001:db8::1/64 и ::2/64 в два namespace. nodad используется только в этом изолированном опыте.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "firewall": {
+      "goal": "Разрешить ICMP в локальном фильтре без смены маршрута",
+      "requires": [
+        "python3",
+        "ip",
+        "ping",
+        "nft"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0\nip netns exec \"$NS-b\" nft add table inet mayak; ip netns exec \"$NS-b\" nft 'add chain inet mayak input { type filter hook input priority 0; policy drop; }'",
+      "solve": "ip netns exec \"$NS-b\" nft add rule inet mayak input ip protocol icmp accept",
+      "check": "ip -n \"$NS-a\" route get 192.0.2.2; ip netns exec \"$NS-a\" ping -c 1 -W 2 192.0.2.2; ip netns exec \"$NS-b\" nft list ruleset | grep -F \"policy drop\"",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани policy drop; добавь точечное разрешение ICMP в namespace b. Не меняй firewall основной ВМ.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "segments": {
+      "goal": "Пропустить трафик через совпадающие VLAN",
+      "requires": [
+        "python3",
+        "ip",
+        "ping"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0\nfor n in a b; do ip -n \"$NS-$n\" addr flush dev eth0; ip -n \"$NS-$n\" link add link eth0 name vlan10 type vlan id 10; ip -n \"$NS-$n\" link set vlan10 up; done\nip -n \"$NS-a\" addr add 198.51.100.1/24 dev vlan10",
+      "solve": "ip -n \"$NS-b\" addr add 198.51.100.2/24 dev vlan10",
+      "check": "ip -n \"$NS-b\" -d link show vlan10 | grep -F \"id 10\"; ip netns exec \"$NS-a\" ping -c 1 -W 2 198.51.100.2",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Назначь 198.51.100.2/24 интерфейсу vlan10 второго узла. Объясни отличие VLAN ID от IP-префикса.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "tcp": {
+      "goal": "Отличить TCP listener от успешного ответа HTTP",
+      "requires": [
+        "python3",
+        "ip",
+        "curl",
+        "ss"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0\nprintf \"note\\n\" > \"$WORK/index.html\"; ip netns exec \"$NS-b\" python3 -m http.server 8080 --bind 192.0.2.2 --directory \"$WORK\" > \"$STATE/http.log\" 2>&1 &\nsleep 0.5",
+      "solve": "ip netns exec \"$NS-a\" curl -fsS --max-time 3 http://192.0.2.2:8080/ > \"$WORK/response.txt\"",
+      "check": "ip netns exec \"$NS-b\" ss -lnt | grep -F \"192.0.2.2:8080\"; grep -x note \"$WORK/response.txt\"; ip netns exec \"$NS-a\" curl -fsS --max-time 3 http://192.0.2.2:8080/ | grep -x note",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сначала найди listener ss, затем сохрани тело HTTP-ответа в response.txt. Установленное соединение ещё не доказывает правильное содержимое.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "systemd": {
+      "goal": "Запустить учебную службу и проверить HTTP-ответ",
+      "requires": [
+        "python3",
+        "systemctl",
+        "curl"
+      ],
+      "prepare": "test -d /run/systemd/system\npython3 -c 'import socket,os; s=socket.socket(); s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); s.bind((\"127.0.0.1\",int(os.environ[\"PORT\"])))'\nprintf '[Unit]\\nDescription=Mayak isolated lesson\\n[Service]\\nType=simple\\nUser=%s\\nExecStart=/usr/bin/python3 -m http.server %s --bind 127.0.0.1 --directory %s\\n' \"$COURSE_USER\" \"$PORT\" \"$WORK\" > \"/run/systemd/system/$NS.service\"\nprintf 'note\\n' > \"$WORK/index.html\"\nsystemctl daemon-reload",
+      "solve": "systemctl start \"$NS.service\"",
+      "check": "systemctl is-active \"$NS.service\"; for n in $(seq 1 40); do if curl -fsS --max-time 1 \"http://127.0.0.1:$PORT/\" > \"$STATE/body\" 2>/dev/null; then break; fi; sleep .1; done; grep -x note \"$STATE/body\"",
+      "restore": "systemctl stop \"$NS.service\" || true; rm -f \"/run/systemd/system/$NS.service\"; systemctl daemon-reload; systemctl reset-failed \"$NS.service\" 2>/dev/null || true\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Узнай NS в status; запусти соответствующий unit и проверь содержимое страницы, а не только active.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "logs": {
+      "goal": "Найти событие своей попытки в системном журнале",
+      "requires": [
+        "python3",
+        "logger",
+        "journalctl"
+      ],
+      "prepare": "logger -t \"$NS\" \"start attempt $NS\"; sleep 0.1; logger -t \"$NS\" \"failure port $((8081+VARIANT))\"; journalctl --sync",
+      "solve": "journalctl -t \"$NS\" -o cat --no-pager > \"$WORK/events.txt\"",
+      "check": "grep -x \"start attempt $NS\" \"$WORK/events.txt\"; grep -x \"failure port $((8081+VARIANT))\" \"$WORK/events.txt\"; journalctl -t \"$NS\" -o cat --no-pager",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани только сообщения с tag NS в events.txt; найди сначала start, потом failure. Системный журнал при откате не удаляется.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "incident": {
+      "goal": "Восстановить учебную службу и сохранить наблюдение до исправления",
+      "requires": [
+        "python3",
+        "systemctl",
+        "curl"
+      ],
+      "prepare": "test -d /run/systemd/system\npython3 -c 'import socket,os; s=socket.socket(); s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); s.bind((\"127.0.0.1\",int(os.environ[\"PORT\"])))'\nprintf '[Unit]\\nDescription=Mayak isolated lesson\\n[Service]\\nType=simple\\nUser=%s\\nExecStart=/usr/bin/python3 -m http.server %s --bind 127.0.0.1 --directory %s\\n' \"$COURSE_USER\" \"$PORT\" \"$WORK\" > \"/run/systemd/system/$NS.service\"\nprintf 'note\\n' > \"$WORK/index.html\"\nsystemctl daemon-reload\nsystemctl start \"$NS.service\"; systemctl stop \"$NS.service\"",
+      "solve": "systemctl show \"$NS.service\" -p ActiveState -p SubState > \"$WORK/before.txt\"; systemctl start \"$NS.service\"",
+      "check": "grep -x ActiveState=inactive \"$WORK/before.txt\"; systemctl is-active \"$NS.service\"; for n in $(seq 1 40); do if curl -fsS --max-time 1 \"http://127.0.0.1:$PORT/\" > \"$STATE/body\" 2>/dev/null; then break; fi; sleep .1; done; grep -x note \"$STATE/body\"",
+      "restore": "systemctl stop \"$NS.service\" || true; rm -f \"/run/systemd/system/$NS.service\"; systemctl daemon-reload; systemctl reset-failed \"$NS.service\" 2>/dev/null || true\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "До исправления сохрани systemctl show -p ActiveState -p SubState в before.txt. Затем восстанови службу и ответ.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "unknown-incident": {
+      "goal": "Найти неверный адрес прослушивания и восстановить ответ",
+      "requires": [
+        "python3",
+        "systemctl",
+        "curl"
+      ],
+      "prepare": "test -d /run/systemd/system\npython3 -c 'import socket,os; s=socket.socket(); s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); s.bind((\"127.0.0.1\",int(os.environ[\"PORT\"])))'\nprintf '[Unit]\\nDescription=Mayak isolated lesson\\n[Service]\\nType=simple\\nUser=%s\\nExecStart=/usr/bin/python3 -m http.server %s --bind 127.0.0.1 --directory %s\\n' \"$COURSE_USER\" \"$PORT\" \"$WORK\" > \"/run/systemd/system/$NS.service\"\nprintf 'note\\n' > \"$WORK/index.html\"\nsystemctl daemon-reload\nsed -i s/127.0.0.1/127.0.0.2/ \"/run/systemd/system/$NS.service\"; systemctl daemon-reload; systemctl start \"$NS.service\"",
+      "solve": "systemctl show \"$NS.service\" -p ExecStart > \"$WORK/before.txt\"; sed -i s/127.0.0.2/127.0.0.1/ \"/run/systemd/system/$NS.service\"; systemctl daemon-reload; systemctl restart \"$NS.service\"",
+      "check": "grep -F 127.0.0.2 \"$WORK/before.txt\"; for n in $(seq 1 40); do if curl -fsS --max-time 1 \"http://127.0.0.1:$PORT/\" > \"$STATE/body\" 2>/dev/null; then break; fi; sleep .1; done; grep -x note \"$STATE/body\"",
+      "restore": "systemctl stop \"$NS.service\" || true; rm -f \"/run/systemd/system/$NS.service\"; systemctl daemon-reload; systemctl reset-failed \"$NS.service\" 2>/dev/null || true\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани ExecStart до изменения в before.txt; восстанови ответ через 127.0.0.1. Не запускай вторую программу в обход службы.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "mount": {
+      "goal": "Подключить только выделенный образ и проверить место записи",
+      "requires": [
+        "python3",
+        "truncate",
+        "mkfs.ext4",
+        "mount",
+        "umount",
+        "findmnt",
+        "losetup",
+        "mountpoint"
+      ],
+      "prepare": "truncate -s 32M \"$STATE/disk.img\"\nmkfs.ext4 -q -F \"$STATE/disk.img\"\nmkdir \"$WORK/mnt\"",
+      "solve": "mount -o loop \"$STATE/disk.img\" \"$WORK/mnt\"; printf \"note\\n\" > \"$WORK/mnt/note.txt\"",
+      "check": "mountpoint -q \"$WORK/mnt\"; source=$(findmnt -n -o SOURCE --target \"$WORK/mnt\"); losetup -j \"$STATE/disk.img\" | cut -d: -f1 | grep -qx \"$source\"; cat \"$WORK/mnt/note.txt\" | grep -x note",
+      "restore": "if mountpoint -q \"$WORK/mnt\"; then\n source=$(findmnt -n -o SOURCE --target \"$WORK/mnt\")\n losetup -j \"$STATE/disk.img\" | cut -d: -f1 | grep -qx \"$source\"\n umount \"$WORK/mnt\"\nfi\ntest -z \"$(losetup -j \"$STATE/disk.img\")\"\nrm -f \"$STATE/disk.img\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Смонтируй выделенный STATE/disk.img в work/mnt и только после проверки источника запиши note в note.txt.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "filesystem": {
+      "goal": "Различить расход блоков и inode на отдельной ФС",
+      "requires": [
+        "python3",
+        "truncate",
+        "mkfs.ext4",
+        "mount",
+        "umount",
+        "findmnt",
+        "losetup",
+        "mountpoint",
+        "df"
+      ],
+      "prepare": "truncate -s 32M \"$STATE/disk.img\"\nmkfs.ext4 -q -F \"$STATE/disk.img\"\nmkdir \"$WORK/mnt\"\nmount -o loop \"$STATE/disk.img\" \"$WORK/mnt\"; mkdir \"$WORK/mnt/notes\"; chown \"$COURSE_USER:\" \"$WORK/mnt/notes\"",
+      "solve": "for n in $(seq 1 \"$((50+VARIANT*10))\"); do touch \"$WORK/mnt/notes/n$n\"; done; df -B1 \"$WORK/mnt\" > \"$WORK/blocks.txt\"; df -i \"$WORK/mnt\" > \"$WORK/inodes.txt\"",
+      "check": "test \"$(find \"$WORK/mnt/notes\" -type f | wc -l)\" = \"$((50+VARIANT*10))\"; grep -F \"$WORK/mnt\" \"$WORK/blocks.txt\"; grep -F \"$WORK/mnt\" \"$WORK/inodes.txt\"; df -i \"$WORK/mnt\"",
+      "restore": "if mountpoint -q \"$WORK/mnt\"; then\n source=$(findmnt -n -o SOURCE --target \"$WORK/mnt\")\n losetup -j \"$STATE/disk.img\" | cut -d: -f1 | grep -qx \"$source\"\n umount \"$WORK/mnt\"\nfi\ntest -z \"$(losetup -j \"$STATE/disk.img\")\"\nrm -f \"$STATE/disk.img\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Создай 50 пустых заметок (60 во втором варианте) в mnt/notes. Сохрани df -B1 в blocks.txt и df -i в inodes.txt; объясни, почему пустые файлы расходуют inode.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "lvm": {
+      "goal": "Расширить LV и файловую систему, сохранив заметку",
+      "requires": [
+        "python3",
+        "truncate",
+        "losetup",
+        "pvcreate",
+        "vgcreate",
+        "lvcreate",
+        "lvs",
+        "vgs",
+        "vgremove",
+        "pvremove",
+        "lvextend",
+        "resize2fs",
+        "mkfs.ext4",
+        "mount",
+        "findmnt",
+        "mountpoint",
+        "umount"
+      ],
+      "prepare": "truncate -s 128M \"$STATE/pv.img\"\nlosetup --find --show \"$STATE/pv.img\" > \"$STATE/loop\"\ndev=$(cat \"$STATE/loop\")\npvcreate -ff -y \"$dev\"\nvgcreate \"$NS\" \"$dev\"\nlvcreate -L 16M -n notes \"$NS\"\nmkfs.ext4 -q \"/dev/$NS/notes\"\nmkdir \"$WORK/mnt\"\nmount \"/dev/$NS/notes\" \"$WORK/mnt\"\nprintf 'keep me\\n' > \"$WORK/mnt/note.txt\"",
+      "solve": "lvextend -L \"$((32+VARIANT*16))M\" \"/dev/$NS/notes\"; resize2fs \"/dev/$NS/notes\"",
+      "check": "lvs --noheadings --units b --nosuffix -o lv_size \"/dev/$NS/notes\" | python3 -c 'import sys,os; assert float(sys.stdin.read())==(32+int(os.environ[\"VARIANT\"])*16)*1024*1024'; python3 -c 'import os; s=os.statvfs(os.environ[\"WORK\"]+\"/mnt\"); assert s.f_blocks*s.f_frsize>24*1024*1024; print(s.f_blocks*s.f_frsize)'; grep -x \"keep me\" \"$WORK/mnt/note.txt\"",
+      "restore": "if mountpoint -q \"$WORK/mnt\"; then test \"$(readlink -f \"$(findmnt -n -o SOURCE --target \"$WORK/mnt\")\")\" = \"$(readlink -f \"/dev/$NS/notes\")\"; umount \"$WORK/mnt\"; fi\nif vgs \"$NS\" >/dev/null 2>&1; then vgremove -fy \"$NS\"; fi\nif test -f \"$STATE/loop\"; then\n dev=$(cat \"$STATE/loop\")\n if losetup -j \"$STATE/pv.img\" | cut -d: -f1 | grep -qx \"$dev\"; then pvremove -fy \"$dev\"; losetup -d \"$dev\"; fi\nfi\nrm -f \"$STATE/pv.img\" \"$STATE/loop\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Расширь только /dev/NS/notes с 16 до 32 MiB (вариант 1: 48 MiB), затем расширь ext4. Не создавай ФС заново.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "dns": {
+      "goal": "Проверить DNS-ответ собственного изолированного сервера",
+      "requires": [
+        "python3",
+        "ip",
+        "dig",
+        "dnsmasq"
+      ],
+      "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0\nip netns exec \"$NS-b\" dnsmasq --keep-in-foreground --port=5353 --no-resolv --no-hosts --bind-interfaces --listen-address=192.0.2.2 --address=/notes.test/192.0.2.2 > \"$STATE/dns.log\" 2>&1 &\nsleep 0.5",
+      "solve": "ip netns exec \"$NS-a\" dig @192.0.2.2 -p 5353 notes.test A +short > \"$WORK/address.txt\"",
+      "check": "grep -x 192.0.2.2 \"$WORK/address.txt\"; ip netns exec \"$NS-a\" dig @192.0.2.2 -p 5353 notes.test A +short | grep -x 192.0.2.2",
+      "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Запроси A-запись notes.test непосредственно у 192.0.2.2:5353 и сохрани только адрес в address.txt. Это ещё не проверка HTTP.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "latency": {
+      "goal": "Посчитать хвост измеренной длительности отдельно от среднего",
+      "requires": [
+        "python3",
+        "runuser"
+      ],
+      "prepare": "printf \"Use a monotonic clock; measure five real waits.\\n\"",
+      "solve": "cat > \"$WORK/measure.py\" <<'PY'\nimport time,json,statistics,sys\na=[]\nfor delay in map(float,sys.argv[1:]):\n start=time.monotonic(); time.sleep(delay); a.append((time.monotonic()-start)*1000)\nprint(json.dumps({'samples_ms':a,'mean_ms':statistics.mean(a),'max_ms':max(a)}))\nPY\nchown \"$COURSE_USER:\" \"$WORK/measure.py\"",
+      "check": "python3 - <<'PY'\nimport json,os,statistics,math,subprocess,time\ne=os.environ; v=int(e['VARIANT']); delays=[.01,.01,.01,.01,.2+.1*v]; start=time.monotonic()\nr=subprocess.run(['runuser','-u',e['COURSE_USER'],'--','python3',e['WORK']+'/measure.py',*map(str,delays)],capture_output=True,text=True,timeout=5)\nelapsed=time.monotonic()-start\nassert r.returncode==0,r.stderr\na=json.loads(r.stdout); s=a['samples_ms']; assert len(s)==5 and all(math.isfinite(x) and x>0 for x in s)\nassert all(x>=d*1000*.9 for x,d in zip(s,delays))\nassert abs(a['mean_ms']-statistics.mean(s))<.001 and abs(a['max_ms']-max(s))<.001\nassert sum(delays)*.9<=elapsed and sum(s)<=elapsed*1000+20\nprint(a); print('Observed wall duration:',elapsed)\nPY",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Создай measure.py: для длительностей из sys.argv[1:] измерь каждый sleep монотонными часами и выведи JSON samples_ms, mean_ms, max_ms. Проверка исполнит программу от имени ученика с разными ожиданиями. Готовый JSON без программы не принимается; это не нагрузочный тест сервера.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "ansible-state": {
+      "goal": "Получить одинаковое состояние без изменений при втором запуске",
+      "requires": [
+        "python3",
+        "ansible-playbook",
+        "runuser"
+      ],
+      "prepare": "printf \"%s\\n\" \"- hosts: localhost\" \"  connection: local\" \"  gather_facts: false\" \"  tasks:\" \"    - name: Keep note configuration\" \"      ansible.builtin.copy:\" \"        content: |\" \"          port=$((8081+VARIANT))\" \"        dest: $WORK/service.conf\" \"        mode: \"0600\"\" > \"$WORK/site.yml\"",
+      "solve": "runuser -u \"$COURSE_USER\" -- ansible-playbook -i localhost, \"$WORK/site.yml\" > \"$WORK/first.log\"; runuser -u \"$COURSE_USER\" -- ansible-playbook -i localhost, \"$WORK/site.yml\" > \"$WORK/second.log\"",
+      "check": "grep -x \"port=$((8081+VARIANT))\" \"$WORK/service.conf\"; grep -E \"changed=0.*failed=0\" \"$WORK/second.log\"; test \"$(stat -c %a \"$WORK/service.conf\")\" = 600",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Прочитай site.yml и запусти дважды с inventory localhost,. Сохрани first.log и second.log; второй запуск должен дать changed=0 и failed=0.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "tls": {
+      "goal": "Отличить доверие сертификату от совпадения имени",
+      "requires": [
+        "python3",
+        "openssl"
+      ],
+      "prepare": "openssl req -x509 -newkey rsa:2048 -nodes -keyout \"$STATE/key.pem\" -out \"$WORK/cert.pem\" -days 1 -subj /CN=notes.test -addext subjectAltName=DNS:notes.test >/dev/null 2>&1",
+      "solve": "openssl verify -CAfile \"$WORK/cert.pem\" -verify_hostname notes.test \"$WORK/cert.pem\" > \"$WORK/valid.txt\"; if openssl verify -CAfile \"$WORK/cert.pem\" -verify_hostname other.test \"$WORK/cert.pem\" > \"$WORK/wrong.txt\" 2>&1; then exit 1; fi",
+      "check": "openssl verify -CAfile \"$WORK/cert.pem\" -verify_hostname notes.test \"$WORK/cert.pem\"; if openssl verify -CAfile \"$WORK/cert.pem\" -verify_hostname other.test \"$WORK/cert.pem\"; then exit 1; fi; grep -F \"OK\" \"$WORK/valid.txt\"; grep -F \"hostname mismatch\" \"$WORK/wrong.txt\"",
+      "restore": "rm -f \"$STATE/key.pem\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Явно доверься только учебному cert.pem через -CAfile. Проверь notes.test и other.test, сохрани valid.txt и wrong.txt. Не меняй системное хранилище CA.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "time": {
+      "goal": "Зафиксировать источник синхронизации и неопределённость времени",
+      "requires": [
+        "python3",
+        "timedatectl"
+      ],
+      "prepare": "test -d /run/systemd/system",
+      "solve": "timedatectl show -p NTPSynchronized -p Timezone > \"$WORK/clock.txt\"",
+      "check": "timedatectl show -p NTPSynchronized -p Timezone > \"$STATE/current.txt\"; diff -u \"$STATE/current.txt\" \"$WORK/clock.txt\"; cat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Сохрани NTPSynchronized и Timezone в clock.txt. Даже yes не задаёт погрешность; если нет измеренной границы ошибки, запиши это ограничение в разборе.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "baseline": {
+      "goal": "Зафиксировать исходную систему перед изменением",
+      "requires": [
+        "python3",
+        "lsblk",
+        "ip",
+        "sha256sum"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(hostname; cat /etc/os-release; lsblk -J -o NAME,TYPE,SIZE; ip -j address show lo; sha256sum /etc/os-release) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(hostname; cat /etc/os-release; lsblk -J -o NAME,TYPE,SIZE; ip -j address show lo; sha256sum /etc/os-release) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "В observation.txt сохрани hostname, os-release, JSON дисков, JSON loopback и SHA-256 os-release. При изменении сравнивай ту же версию фактов.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "lab-setup": {
+      "goal": "Подтвердить исходное состояние выделенного гостя",
+      "requires": [
+        "python3",
+        "lsblk",
+        "ip"
+      ],
+      "prepare": "printf \"Read the lesson and record the requested facts.\\n\"",
+      "solve": "(hostname; cat /etc/os-release; lsblk -J -o NAME,TYPE,SIZE; ip -j address show lo) > \"$WORK/observation.txt\"",
+      "check": "test -s \"$WORK/observation.txt\"\n(hostname; cat /etc/os-release; lsblk -J -o NAME,TYPE,SIZE; ip -j address show lo) > \"$STATE/current.txt\"\ndiff -u \"$STATE/current.txt\" \"$WORK/observation.txt\"\ncat \"$STATE/current.txt\"",
+      "restore": "\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Развёртывание машин выполняется закреплённым course-stand.sh по инструкции главы 0. Внутри выделенного гостя сохрани hostname, os-release, JSON дисков и loopback в observation.txt; сверь карточку с Proxmox.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "mirror": {
+      "goal": "Проверить degraded RAID1 и сохранность заметки",
+      "requires": [
+        "python3",
+        "mdadm",
+        "losetup",
+        "truncate",
+        "mkfs.ext4",
+        "mount",
+        "mountpoint",
+        "umount"
+      ],
+      "prepare": "for n in 1 2; do truncate -s 64M \"$STATE/member$n.img\"; losetup --find --show \"$STATE/member$n.img\" > \"$STATE/loop$n\"; done\ntest ! -e \"/dev/md/$NS\"\nmdadm --create \"/dev/md/$NS\" --level=1 --raid-devices=2 --metadata=1.2 --run \"$(cat \"$STATE/loop1\")\" \"$(cat \"$STATE/loop2\")\"\nmdadm --wait \"/dev/md/$NS\"\nmkfs.ext4 -q \"/dev/md/$NS\"\nmkdir \"$WORK/mnt\"; mount \"/dev/md/$NS\" \"$WORK/mnt\"; printf 'keep me\\n' > \"$WORK/mnt/note.txt\"",
+      "solve": "n=$((VARIANT+1)); mdadm \"/dev/md/$NS\" --fail \"$(cat \"$STATE/loop$n\")\" --remove \"$(cat \"$STATE/loop$n\")\"",
+      "check": "test \"$(cat /sys/class/block/$(basename \"$(readlink -f \"/dev/md/$NS\")\")/md/degraded)\" = 1; grep -x \"keep me\" \"$WORK/mnt/note.txt\"; mdadm --detail \"/dev/md/$NS\"",
+      "restore": "if mountpoint -q \"$WORK/mnt\"; then umount \"$WORK/mnt\"; fi\nif test -e \"/dev/md/$NS\"; then mdadm --stop \"/dev/md/$NS\"; fi\nfor n in 1 2; do\n if test -f \"$STATE/loop$n\"; then dev=$(cat \"$STATE/loop$n\"); if losetup -j \"$STATE/member$n.img\" | cut -d: -f1 | grep -qx \"$dev\"; then mdadm --zero-superblock \"$dev\" || true; losetup -d \"$dev\"; fi; fi\n rm -f \"$STATE/member$n.img\" \"$STATE/loop$n\"\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Проверь участников по STATE/loop1 и loop2. В варианте 0 выведи первого, в варианте 1 второго. Сохрани доступ к mnt/note.txt. Не затрагивай другие массивы.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "zfs": {
+      "goal": "Перенести снимок в отдельный пул и проверить восстановленный файл",
+      "requires": [
+        "python3",
+        "zpool",
+        "zfs",
+        "truncate"
+      ],
+      "prepare": "for n in source target; do truncate -s 128M \"$STATE/$n.img\"; done\nzpool create -m \"$WORK/source\" \"${NS}s\" \"$STATE/source.img\"\nzpool create -m \"$WORK/target\" \"${NS}t\" \"$STATE/target.img\"\nzfs create \"${NS}s/notes\"\nprintf 'note variant %s\\n' \"$VARIANT\" > \"$WORK/source/notes/note.txt\"\nzfs snapshot \"${NS}s/notes@baseline\"",
+      "solve": "zfs send \"${NS}s/notes@baseline\" | zfs receive \"${NS}t/restored\"",
+      "check": "grep -x \"note variant $VARIANT\" \"$WORK/target/restored/note.txt\"; cmp \"$WORK/source/notes/note.txt\" \"$WORK/target/restored/note.txt\"; zfs list -t filesystem,snapshot",
+      "restore": "for suffix in s t; do\n pool=\"$NS$suffix\"\n if zpool list -H \"$pool\" >/dev/null 2>&1; then\n  if test \"$suffix\" = s; then image=source; else image=target; fi\n  zpool status -P \"$pool\" | grep -F \"$STATE/$image.img\"\n  zpool destroy \"$pool\"\n fi\ndone\nrm -f \"$STATE/source.img\" \"$STATE/target.img\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Передай NSs/notes@baseline в NSt/restored. Прочитай target/restored/note.txt; не используй receive -F для принудительного удаления чужих данных.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "container": {
+      "goal": "Пересоздать контейнер, сохранив заметку вне его слоя",
+      "requires": [
+        "python3",
+        "docker",
+        "curl"
+      ],
+      "prepare": "docker image inspect python:3.11-slim --format '{{.Id}}' > \"$STATE/image-id\"\ntest -z \"$(docker ps -aq --filter \"name=^/$NS$\")\"\nprintf 'note variant %s\\n' \"$VARIANT\" > \"$WORK/index.html\"\ndocker run -d --pull never --name \"$NS\" --label \"mayak.attempt=$NS\" --user \"$(id -u \"$COURSE_USER\"):$(id -g \"$COURSE_USER\")\" --mount \"type=bind,source=$WORK,target=/notes,readonly\" -p \"127.0.0.1:$PORT:8080\" \"$(cat \"$STATE/image-id\")\" python3 -m http.server 8080 --bind 0.0.0.0 --directory /notes\ndocker inspect --format '{{.Id}}' \"$NS\" > \"$STATE/first-container\"",
+      "solve": "docker rm -f \"$NS\"\ndocker run -d --pull never --name \"$NS\" --label \"mayak.attempt=$NS\" --user \"$(id -u \"$COURSE_USER\"):$(id -g \"$COURSE_USER\")\" --mount \"type=bind,source=$WORK,target=/notes,readonly\" -p \"127.0.0.1:$PORT:8080\" \"$(cat \"$STATE/image-id\")\" python3 -m http.server 8080 --bind 0.0.0.0 --directory /notes",
+      "check": "test \"$(docker inspect --format '{{.Id}}' \"$NS\")\" != \"$(cat \"$STATE/first-container\")\"\ntest \"$(docker inspect --format '{{.Image}}' \"$NS\")\" = \"$(cat \"$STATE/image-id\")\"\ndocker exec \"$NS\" cat /notes/index.html | grep -x \"note variant $VARIANT\"\ndocker inspect --format '{{json .Mounts}}' \"$NS\"",
+      "restore": "if docker container inspect \"$NS\" >/dev/null 2>&1; then test \"$(docker inspect --format '{{index .Config.Labels \"mayak.attempt\"}}' \"$NS\")\" = \"$NS\"; docker rm -f \"$NS\"; fi\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Предварительно нужен локальный python:3.11-slim; исполнитель не скачивает образы. Пересоздай только NS с тем же image ID и bind mount WORK:/notes:ro. Сохрани заметку.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "container-network": {
+      "goal": "Исправить bind внутри контейнера, сохранив локальную публикацию",
+      "requires": [
+        "python3",
+        "docker",
+        "curl"
+      ],
+      "prepare": "docker image inspect python:3.11-slim --format '{{.Id}}' > \"$STATE/image-id\"\ntest -z \"$(docker ps -aq --filter \"name=^/$NS$\")\"\nprintf 'note variant %s\\n' \"$VARIANT\" > \"$WORK/index.html\"\ndocker run -d --pull never --name \"$NS\" --label \"mayak.attempt=$NS\" --user \"$(id -u \"$COURSE_USER\"):$(id -g \"$COURSE_USER\")\" --mount \"type=bind,source=$WORK,target=/notes,readonly\" -p \"127.0.0.1:$PORT:8080\" \"$(cat \"$STATE/image-id\")\" python3 -m http.server 8080 --bind 127.0.0.1 --directory /notes",
+      "solve": "docker rm -f \"$NS\"\ndocker run -d --pull never --name \"$NS\" --label \"mayak.attempt=$NS\" --user \"$(id -u \"$COURSE_USER\"):$(id -g \"$COURSE_USER\")\" --mount \"type=bind,source=$WORK,target=/notes,readonly\" -p \"127.0.0.1:$PORT:8080\" \"$(cat \"$STATE/image-id\")\" python3 -m http.server 8080 --bind 0.0.0.0 --directory /notes",
+      "check": "test \"$(docker inspect --format '{{.Image}}' \"$NS\")\" = \"$(cat \"$STATE/image-id\")\"\ndocker port \"$NS\" 8080/tcp | grep -x \"127.0.0.1:$PORT\"\nfor n in $(seq 1 30); do if curl -fsS --max-time 1 \"http://127.0.0.1:$PORT/\" > \"$STATE/body\"; then break; fi; sleep .1; done\ngrep -x \"note variant $VARIANT\" \"$STATE/body\"",
+      "restore": "if docker container inspect \"$NS\" >/dev/null 2>&1; then test \"$(docker inspect --format '{{index .Config.Labels \"mayak.attempt\"}}' \"$NS\")\" = \"$NS\"; docker rm -f \"$NS\"; fi\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Предварительно нужен локальный образ python:3.11-slim. Исправь bind программы с 127.0.0.1 на 0.0.0.0 внутри своего контейнера; публикация хоста остаётся на 127.0.0.1.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "kubernetes": {
+      "goal": "Исправить readiness и подтвердить ответ через Service",
+      "requires": [
+        "python3",
+        "kind",
+        "docker",
+        "kubectl"
+      ],
+      "prepare": "test -n \"${MAYAK_KIND_NODE_IMAGE:-}\"\n[[ \"$MAYAK_KIND_NODE_IMAGE\" =~ ^kindest/node@sha256:[a-f0-9]{64}$ ]]\ndocker image inspect \"$MAYAK_KIND_NODE_IMAGE\" >/dev/null\ndocker image inspect python:3.11-slim >/dev/null\nkind create cluster --name \"$NS\" --image \"$MAYAK_KIND_NODE_IMAGE\" --kubeconfig \"$STATE/kubeconfig\" --wait 120s\nkind load docker-image python:3.11-slim --name \"$NS\"\nexport KUBECONFIG=\"$STATE/kubeconfig\"\nkubectl create namespace \"$NS\"\npython3 - <<'PY' > \"$STATE/objects.json\"\nimport os,json\nn=os.environ['NS']\npod={'containers':[{'name':'notes','image':'python:3.11-slim','imagePullPolicy':'Never','command':['sh','-c','mkdir -p /tmp/web; echo note > /tmp/web/index.html; exec python3 -m http.server 8080 --bind 0.0.0.0 --directory /tmp/web'],'ports':[{'containerPort':8080}],'readinessProbe':{'httpGet':{'path':'/wrong','port':8080},'periodSeconds':1}}]}\ndeployment={'apiVersion':'apps/v1','kind':'Deployment','metadata':{'name':'notes','namespace':n},'spec':{'replicas':1,'selector':{'matchLabels':{'app':'notes'}},'template':{'metadata':{'labels':{'app':'notes'}},'spec':pod}}}\nservice={'apiVersion':'v1','kind':'Service','metadata':{'name':'notes','namespace':n},'spec':{'selector':{'app':'notes'},'ports':[{'port':80,'targetPort':8080}]}}\nprint(json.dumps({'apiVersion':'v1','kind':'List','items':[deployment,service]}))\nPY\nkubectl apply -f \"$STATE/objects.json\"",
+      "solve": "export KUBECONFIG=\"$STATE/kubeconfig\"\nkubectl -n \"$NS\" patch deployment notes --type=strategic -p '{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"notes\",\"readinessProbe\":{\"httpGet\":{\"path\":\"/\",\"port\":8080}}}]}}}}'",
+      "check": "export KUBECONFIG=\"$STATE/kubeconfig\"\nkubectl -n \"$NS\" rollout status deployment/notes --timeout=90s; kubectl -n \"$NS\" exec deployment/notes -- python3 -c 'import urllib.request; r=urllib.request.urlopen(\"http://notes/\").read(); print(r); assert r==b\"note\\n\"'",
+      "restore": "if kind get clusters | grep -qx \"$NS\"; then kind delete cluster --name \"$NS\"; fi\nrm -f \"$STATE/kubeconfig\" \"$STATE/objects.json\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Нужны заранее загруженные образы kindest/node по digest и python:3.11-slim. Перед prepare передай MAYAK_KIND_NODE_IMAGE. Исправь путь readiness в Deployment своего отдельного кластера. Пробу не удаляй.",
+      "timeout": 300,
+      "acceptance": "pending-live"
+    },
+    "service-selector": {
+      "goal": "Исправить selector Service и подтвердить HTTP-путь",
+      "requires": [
+        "python3",
+        "kind",
+        "docker",
+        "kubectl"
+      ],
+      "prepare": "test -n \"${MAYAK_KIND_NODE_IMAGE:-}\"\n[[ \"$MAYAK_KIND_NODE_IMAGE\" =~ ^kindest/node@sha256:[a-f0-9]{64}$ ]]\ndocker image inspect \"$MAYAK_KIND_NODE_IMAGE\" >/dev/null\ndocker image inspect python:3.11-slim >/dev/null\nkind create cluster --name \"$NS\" --image \"$MAYAK_KIND_NODE_IMAGE\" --kubeconfig \"$STATE/kubeconfig\" --wait 120s\nkind load docker-image python:3.11-slim --name \"$NS\"\nexport KUBECONFIG=\"$STATE/kubeconfig\"\nkubectl create namespace \"$NS\"\npython3 - <<'PY' > \"$STATE/objects.json\"\nimport os,json\nn=os.environ['NS']\npod={'containers':[{'name':'notes','image':'python:3.11-slim','imagePullPolicy':'Never','command':['sh','-c','mkdir -p /tmp/web; echo note > /tmp/web/index.html; exec python3 -m http.server 8080 --bind 0.0.0.0 --directory /tmp/web'],'ports':[{'containerPort':8080}],'readinessProbe':{'httpGet':{'path':'/wrong','port':8080},'periodSeconds':1}}]}\ndeployment={'apiVersion':'apps/v1','kind':'Deployment','metadata':{'name':'notes','namespace':n},'spec':{'replicas':1,'selector':{'matchLabels':{'app':'notes'}},'template':{'metadata':{'labels':{'app':'notes'}},'spec':pod}}}\nservice={'apiVersion':'v1','kind':'Service','metadata':{'name':'notes','namespace':n},'spec':{'selector':{'app':'notes'},'ports':[{'port':80,'targetPort':8080}]}}\nprint(json.dumps({'apiVersion':'v1','kind':'List','items':[deployment,service]}))\nPY\nkubectl apply -f \"$STATE/objects.json\"\nkubectl -n \"$NS\" patch deployment notes --type=strategic -p '{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"notes\",\"readinessProbe\":{\"httpGet\":{\"path\":\"/\",\"port\":8080}}}]}}}}'\nkubectl -n \"$NS\" patch service notes -p '{\"spec\":{\"selector\":{\"app\":\"wrong\"}}}'",
+      "solve": "export KUBECONFIG=\"$STATE/kubeconfig\"\nkubectl -n \"$NS\" patch service notes -p '{\"spec\":{\"selector\":{\"app\":\"notes\"}}}'",
+      "check": "export KUBECONFIG=\"$STATE/kubeconfig\"\nkubectl -n \"$NS\" rollout status deployment/notes --timeout=90s; kubectl -n \"$NS\" exec deployment/notes -- python3 -c 'import urllib.request; r=urllib.request.urlopen(\"http://notes/\").read(); print(r); assert r==b\"note\\n\"'",
+      "restore": "if kind get clusters | grep -qx \"$NS\"; then kind delete cluster --name \"$NS\"; fi\nrm -f \"$STATE/kubeconfig\" \"$STATE/objects.json\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Используется отдельный kind-кластер своей попытки, не текущий kube-context. Укажи KUBECONFIG=STATE/kubeconfig. Исправь selector app, сохрани правильный targetPort и readiness.",
+      "timeout": 300,
+      "acceptance": "pending-live"
+    },
+    "cpu-numa": {
+      "goal": "Проверить привязку CPU и размещение страниц на одном NUMA-узле",
+      "requires": [
+        "python3",
+        "numactl",
+        "taskset",
+        "pgrep",
+        "runuser"
+      ],
+      "prepare": "test \"$(find /sys/devices/system/node -maxdepth 1 -name 'node[0-9]*' | wc -l)\" -ge 2\nprintf 'Requires two guest-visible NUMA nodes. Physical topology is not certified.\\n' ",
+      "solve": "node=$(find /sys/devices/system/node -maxdepth 1 -name 'node[0-9]*' | sort | head -n1)\nn=${node##*node}; cpu=$(cut -d, -f1 \"$node/cpulist\" | cut -d- -f1)\nrunuser -u \"$COURSE_USER\" -- numactl --physcpubind=\"$cpu\" --membind=\"$n\" python3 -c 'import time; a=bytearray(32*1024*1024); time.sleep(120)' \"mayak-$NS\" >/dev/null 2>&1 &\nprintf '%s\\n' \"$n\" > \"$WORK/node.txt\"; printf '%s\\n' \"$cpu\" > \"$WORK/cpu.txt\"\nsleep 1\npgrep -f \"^python3 -c import time; a=bytearray.*mayak-$NS$\" > \"$WORK/pid.txt\"",
+      "check": "pid=$(cat \"$WORK/pid.txt\"); [[ \"$pid\" =~ ^[0-9]+$ ]]\ntr '\\0' ' ' < \"/proc/$pid/cmdline\" | grep -F \"mayak-$NS\"\ntaskset -pc \"$pid\" | grep -E \": $(cat \"$WORK/cpu.txt\")$\"\nnode=$(cat \"$WORK/node.txt\"); [[ \"$node\" =~ ^[0-9]+$ ]]\ngrep -E \" N$node=[1-9][0-9]+\" \"/proc/$pid/numa_maps\"\ncat \"/sys/devices/system/node/node$node/cpulist\"",
+      "restore": "pkill -f \"^python3 -c import time; a=bytearray.*mayak-$NS$\" || test \"$?\" = 1\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Нужны два NUMA-узла, видимые гостю. Запусти ограниченное выделение 32 MiB с привязкой CPU и памяти к одному узлу; сохрани node.txt, cpu.txt и pid.txt. Одноузловая ВМ не проходит предпосылку.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "network-storage": {
+      "goal": "Записать заметку через выделенный NFS-экспорт",
+      "requires": [
+        "python3",
+        "exportfs",
+        "mount.nfs",
+        "mount",
+        "umount",
+        "mountpoint",
+        "findmnt",
+        "systemctl",
+        "runuser"
+      ],
+      "prepare": "systemctl is-active nfs-server.service > \"$STATE/nfs-before\" || true\nmkdir \"$WORK/export\" \"$WORK/client\"\nchown \"$COURSE_USER:\" \"$WORK/export\"\nprintf 'server note\\n' > \"$WORK/export/note.txt\"; chown \"$COURSE_USER:\" \"$WORK/export/note.txt\"\nsystemctl start nfs-server.service\nexportfs -i -o rw,sync,no_subtree_check,root_squash \"127.0.0.1:$WORK/export\"",
+      "solve": "mount -t nfs -o vers=4 \"127.0.0.1:$WORK/export\" \"$WORK/client\"\nrunuser -u \"$COURSE_USER\" -- sh -c 'printf \"client note\\n\" > \"$1/client.txt\"' _ \"$WORK/client\"",
+      "check": "mountpoint -q \"$WORK/client\"; findmnt -n -o FSTYPE --target \"$WORK/client\" | grep -E \"^nfs4?$\"; grep -x \"client note\" \"$WORK/export/client.txt\"; cmp \"$WORK/client/client.txt\" \"$WORK/export/client.txt\"",
+      "restore": "if mountpoint -q \"$WORK/client\"; then test \"$(findmnt -n -o SOURCE --target \"$WORK/client\")\" = \"127.0.0.1:$WORK/export\"; umount \"$WORK/client\"; fi\nexportfs -u \"127.0.0.1:$WORK/export\" || true\nif test -f \"$STATE/nfs-before\" && ! grep -qx active \"$STATE/nfs-before\"; then systemctl stop nfs-server.service; fi\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Пакет nfs-kernel-server должен быть установлен в госте. Подключи только 127.0.0.1:WORK/export в WORK/client, от имени ученика создай client.txt с client note. Это NFS-путь в одной ВМ; отказ независимого сервера данным опытом не проверяется.",
+      "timeout": 120,
+      "acceptance": "pending-live"
+    },
+    "multipath": {
+      "goal": "Проверить программное переключение между двумя путями к одному образу",
+      "requires": [
+        "python3",
+        "dmsetup",
+        "losetup",
+        "truncate",
+        "dd",
+        "sha256sum"
+      ],
+      "prepare": "dmsetup targets | grep -q '^multipath '\ntruncate -s 32M \"$STATE/lun.img\"\nprintf 'same logical blocks\\n' | dd of=\"$STATE/lun.img\" conv=notrunc status=none\nfor n in 1 2; do losetup --find --show \"$STATE/lun.img\" > \"$STATE/path$n\"; done\np1=$(cat \"$STATE/path1\"); p2=$(cat \"$STATE/path2\")\ndmsetup create \"$NS\" --uuid \"mayak-$NS\" --table \"0 65536 multipath 0 0 1 1 round-robin 0 2 1 $p1 1 $p2 1\"\ndd if=\"/dev/mapper/$NS\" bs=512 count=1 status=none | sha256sum > \"$STATE/before.sha\"",
+      "solve": "n=$((VARIANT+1)); dmsetup message \"$NS\" 0 \"fail_path $(cat \"$STATE/path$n\")\"; dd if=\"/dev/mapper/$NS\" bs=512 count=1 status=none | sha256sum > \"$WORK/after.sha\"",
+      "check": "test \"$(dmsetup info -c --noheadings -o uuid \"$NS\" | xargs)\" = \"mayak-$NS\"\ndmsetup status \"$NS\" | grep -E '[[:space:]]F[[:space:]]'\ncmp \"$STATE/before.sha\" \"$WORK/after.sha\"\ndd if=\"/dev/mapper/$NS\" bs=512 count=1 status=none | sha256sum > \"$STATE/current.sha\"; cmp \"$STATE/before.sha\" \"$STATE/current.sha\"",
+      "restore": "if dmsetup info \"$NS\" >/dev/null 2>&1; then test \"$(dmsetup info -c --noheadings -o uuid \"$NS\" | xargs)\" = \"mayak-$NS\"; dmsetup remove \"$NS\"; fi\nfor n in 1 2; do if test -f \"$STATE/path$n\"; then p=$(cat \"$STATE/path$n\"); if losetup -j \"$STATE/lun.img\" | cut -d: -f1 | grep -qx \"$p\"; then losetup -d \"$p\"; fi; fi; done\nrm -f \"$STATE/lun.img\" \"$STATE/path1\" \"$STATE/path2\"\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
+      "task": "Программный опыт DM multipath: два loop-пути ведут к одному файловому образу. Выведи path1 (вариант 1: path2) через dmsetup message fail_path, прочитай те же блоки и сохрани after.sha. Он не доказывает независимость физических HBA, сетей или питания.",
+      "timeout": 120,
+      "acceptance": "pending-live",
+      "evidenceKind": "software-path-failover"
+    }
+  }
+}

@@ -53,6 +53,9 @@ jobs:
       - name: Собрать сайт
         run: node scripts/build-static.mjs
 
+      - name: Проверить реестр практики, отчёты и расчёты
+        run: npm run test:practice
+
       - name: Проверить собранный сайт
         run: node scripts/validate-site.mjs --strict
 
@@ -88,8 +91,7 @@ jobs:
             echo "BASE_PATH=/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
           fi
 
-      # Обход идёт по сайту, собранному без базового пути: локальный сервер
-      # отдаёт его из корня, а ссылки с префиксом там вели бы в пустоту.
+      # Сборка и обход должны использовать один BASE_PATH.
       - name: Собрать сайт для обхода
         run: BASE_PATH= node scripts/build-static.mjs
 
@@ -99,7 +101,15 @@ jobs:
           npx playwright install --with-deps chromium
 
       - name: Пройти сайт браузером
-        run: node scripts/smoke-browser.mjs
+        run: BASE_PATH= node scripts/smoke-browser.mjs
+
+      - name: Проверить сборку и браузер в подкаталоге
+        env:
+          BASE_PATH: /Learning-individual
+        run: |
+          node scripts/build-static.mjs
+          node scripts/validate-site.mjs
+          node scripts/smoke-browser.mjs
 
   deploy:
     needs: [build, smoke]

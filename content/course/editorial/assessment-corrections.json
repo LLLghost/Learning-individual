@@ -1,0 +1,2691 @@
+{
+  "M00-2": {
+    "correct": "Согласовать весь профиль нагрузки, точку измерения, рабочий набор и режим кэша",
+    "explanation": "IOPS сопоставимы при согласованных размерах операций, read/write, random/sequential, глубине очереди, числе исполнителей, рабочем наборе, длительности, кэше и точке измерения. Одного совпадения имени теста недостаточно.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M02-2": {
+    "explanation": "SIGKILL не игнорируется и не перехватывается процессом, но завершение может ждать выхода из непрерываемого ожидания ядра. Нужно исследовать ожидаемый ресурс и предусмотренные тайм-ауты, а не повторять сигнал как способ ремонта устройства.",
+    "reasonCorrect": "Завершение по сигналу может ждать выхода из непрерываемого ожидания ядра",
+    "reviewed": true,
+    "correct": "Непрерываемое ожидание может отложить завершение по SIGKILL до выхода из этого ожидания",
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M04-2": {
+    "explanation": "Проверь постоянное хранение journald, ротацию, права и выбранную загрузку. Журнал в /run не переживает перезагрузку; постоянное хранение обычно использует /var/log/journal. Отсутствие записей не доказывает отсутствие падения.",
+    "stem": "До перезагрузки journald хранил журнал только в /run/log/journal. Почему записи предыдущей загрузки исчезли?",
+    "options": [
+      "Они хранились в памяти и не пережили перезагрузку",
+      "Их удалил фильтр по имени службы из всех хранилищ",
+      "Кольцевой буфер ядра и journald всегда используют один файл",
+      "Любая перезагрузка обязательно удаляет также постоянный журнал"
+    ],
+    "correct": "Они хранились в памяти и не пережили перезагрузку",
+    "reasonCorrect": "Хранилище /run временное; для сохранения между загрузками нужно настроенное постоянное хранение",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M05-0": {
+    "correct": "Ядро и раннее пользовательское пространство уже выполняются; основной корень ещё не подтверждён",
+    "explanation": "Оболочка initramfs доказывает выполнение ядра и ранней среды. Это не полная приёмка прошивки, загрузчика и драйверов. Дальше проверяют обнаружение, идентичность и доступность устройства корня.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M05-2": {
+    "stem": "В systemd не удалось смонтировать обязательный локальный том из fstab; из-за этого local-fs.target не достигнут. Какое свойство записи объясняет остановку штатной загрузки?",
+    "explanation": "Обязательное монтирование входит в зависимости штатной цели. nofail меняет эту зависимость для подходящего необязательного тома, но не исправляет устройство и не должен применяться к необходимому приложению хранилищу вслепую.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M07-2": {
+    "explanation": "Малые пакеты рукопожатия могут проходить, когда крупные пакеты с запретом фрагментации отбрасываются на узком участке. Потеря нужного ICMP согласуется с симптомами, но не является единственной возможной причиной. Проверяют размер пакетов, маршрут, сообщения PMTU и повторные передачи.",
+    "reasonCorrect": "Малые и крупные пакеты проверяют разные ограничения пути; гипотезу PMTU нужно подтвердить измерением",
+    "stem": "Рукопожатие TCP и мелкие ответы проходят. На пути MTU 1400, крупные IPv4-пакеты 1500 байт имеют DF, а нужные ICMP фильтруются. Какая гипотеза объясняет зависание большого ответа?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M08-2": {
+    "correct": "VLAN разделяет L2-домены; для связи IP-подсетей нужны согласованные маршруты и разрешённая пересылка",
+    "explanation": "Изоляция VLAN сама по себе ожидаема, но отсутствие связи может противоречить заданной архитектуре. Проверяют принадлежность VLAN, маршруты и политику, прежде чем объявлять результат правильным или ошибочным.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M09-2": {
+    "stem": "После переноса многопоточного приложения на NUMA-машину задержка выросла. Какую гипотезу о размещении CPU и страниц стоит проверить?",
+    "explanation": "Большее число ядер не гарантирует меньшую задержку. Удалённая память — проверяемая гипотеза, а не установленная причина. Сопоставь affinity, политику и фактическое размещение страниц при одинаковой нагрузке.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M11-1": {
+    "correct": "Причину ограничения частоты, тепловые и энергетические лимиты, путь воздуха и контакт охлаждения",
+    "explanation": "Нормальные обороты и температура входного воздуха не исключают плохой теплоотвод и не доказывают тепловую природу ограничения. Сначала различают thermal throttling, power limit и другие ограничения по телеметрии платформы.",
+    "reasonCorrect": "Одинаковое снижение частоты может иметь тепловую или энергетическую причину; их различает телеметрия ограничений",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M11-2": {
+    "correct": "Работает канал BMC и он сообщает включённое питание; загрузка ОС и исправность всех линий питания ещё не доказаны",
+    "explanation": "BMC даёт независимое наблюдение, но его статус питания не подтверждает работу CPU, памяти, ОС или сети данных. Следующая проверка — консоль и текущие датчики, с учётом времени обновления.",
+    "reviewed": true,
+    "reasonCorrect": "Управляющая плоскость и ОС дают разные наблюдения; ответ BMC не подтверждает основной вычислительный путь",
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M12-0": {
+    "correct": "Логическое пространство адресуемых блоков NVMe, представленное контроллером; физическая независимость из этого не следует",
+    "explanation": "NVMe namespace задаёт логический набор блоков и его идентификаторы. Несколько namespaces могут использовать общие контроллеры и носители; отображение и домены отказа проверяют отдельно.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M12-2": {
+    "explanation": "Имена sdX зависят от обнаружения. Используй подтверждённый by-id/WWN вместе с проверкой назначения, размера и отсутствия опасного использования. UUID ФС после клонирования может дублироваться. Ни один одиночный идентификатор не отменяет защиту от записи не на тот диск.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M14-0": {
+    "correct": "В обычном RAID10 из двух зеркальных пар потеря одной пары делает весь массив недоступным",
+    "explanation": "В заданной парной схеме полосы распределены между зеркалами. Потеря обоих участников одной пары означает потерю части адресного пространства всего массива; два отказа в разных парах имеют другой результат.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M14-2": {
+    "stem": "RAID1 состоял ровно из двух исправных участников. Один отказал, оставшийся читает данные без ошибок. Что изменилось?",
+    "correct": "Данные сейчас доступны, но второй копии нет; отказ оставшегося участника лишит массив данных",
+    "explanation": "Для данного двухдискового зеркала degraded означает потерю избыточности. Факт чтения не подтверждает возможность пережить следующий отказ; отдельная резервная копия решает другую задачу.",
+    "reasonCorrect": "Одна исправная копия позволяет читать, но потерю оставшегося участника уже нечем покрыть",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M15-2": {
+    "stem": "Два пути к одному LUN представлены отдельными устройствами. Почему опасно независимо использовать оба для записи в обычную локальную файловую систему?",
+    "correct": "Возникает риск несогласованных кэшей и метаданных; пути нужно объединить и использовать согласованное устройство",
+    "explanation": "Отдельные представления одного LUN не создают независимых данных. Несогласованная запись может повредить ФС; некоторые попытки монтирования ядро может отклонить. Нельзя обещать ни обязательное повреждение при любом mount, ни безопасность двух писателей.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M20-0": {
+    "correct": "Число учитываемых запросов умножить на допустимую долю неуспеха",
+    "explanation": "При SLO по запросам бюджет равен числу учитываемых запросов за заданное окно, умноженному на 1−SLO. Это не бюджет времени, если SLI определён иначе.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M26-1": {
+    "stem": "Какая величина CPU и памяти является основой учёта ёмкости при обычном размещении Pod планировщиком?",
+    "correct": "Requests контейнеров и доступная allocatable-ёмкость узла с учётом остальных правил размещения",
+    "explanation": "Планировщик учитывает requests и правила размещения относительно allocatable. Limits прежде всего задают ограничения исполнения и не заменяют requests в этом расчёте; defaulting может связать значения до планирования.",
+    "reasonOptions": [
+      "Текущее измеренное потребление независимо от requests",
+      "Планировщик выбирает узел только по наименьшей загрузке процессора",
+      "Размещение считается по заявленным requests и доступной allocatable-ёмкости с учётом правил"
+    ],
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M27-0": {
+    "correct": "UEFI описывает интерфейсы загрузки и сервисов, PI — архитектуру внутренней инициализации платформы",
+    "explanation": "Спецификации UEFI и PI связаны, но не тождественны. Фазы PEI/DXE и HOB относятся к архитектуре PI; сам факт UEFI-загрузки не доказывает конкретную внутреннюю реализацию прошивки.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M30-0": {
+    "correct": "Шифрование не скрывает содержимое уже разблокированного тома от привилегированного процесса",
+    "explanation": "LUKS защищает данные на заблокированном носителе при соответствующей модели угроз. Root работающей системы может обращаться к открытому отображению; это не означает отсутствия всех прочих свойств шифрования или защиты независимых закрытых томов.",
+    "reasonCorrect": "Доступ через разблокированное отображение и чтение закрытого носителя относятся к разным моделям угроз",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M30-1": {
+    "correct": "Окружение может быть доступно уполномоченным читателям /proc и попасть в диагностические дампы; это неподходящее универсальное хранилище секретов",
+    "explanation": "Доступ к /proc/PID/environ ограничен правами и политиками, поэтому не следует утверждать, что значение видит любой пользователь. Но окружение распространяется по процессам и диагностике; для службы выбирают механизм секретов с явными правами и жизненным циклом.",
+    "reasonCorrect": "Окружение наследуется процессами и может попадать в диагностику при наличии прав доступа",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M31-2": {
+    "correct": "Контекст обмена сообщениями и причинные зависимости; конкурентные события могут остаться неупорядоченными",
+    "explanation": "Логические часы помогают отслеживать причинность при передаче контекста. Порядок скалярных меток Лампорта сам по себе не доказывает причинную связь; конкурентные события нельзя объявлять связанными только по числам.",
+    "reasonCorrect": "Контекст сообщений помогает установить причинные зависимости, но не превращает конкурентные события в причинно связанные",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M32-1": {
+    "stem": "Копии создаются каждую ночь, но восстановление не испытывалось. Что доказано о достижимой точке и фактическом времени восстановления?",
+    "correct": "Расписание известно, но пригодность точки восстановления и фактическое время возврата сервиса не подтверждены",
+    "explanation": "RPO и RTO можно задать как требования до испытания. Расписание копий не доказывает достижение этих требований; нужны читаемость копий, необходимые журналы, зависимости и измеренное восстановление.",
+    "reasonCorrect": "Расписание и успешное завершение задания не подтверждают пригодность восстановления",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M33-2": {
+    "stem": "Сервис требует работы всех четырёх компонентов. Их доступности равны 99,9%, отказы считаем независимыми. Как оценить доступность сервиса в этой модели?",
+    "correct": "Перемножить доступности: 0,999⁴ ≈ 99,6006%",
+    "explanation": "Для последовательной модели с независимыми отказами A=0,999⁴. Без независимости такая формула не обоснована; при полностью общих отказах результат может быть другим.",
+    "reasonCorrect": "В заданной модели независимости вероятность одновременной работы всех обязательных компонентов равна произведению доступностей",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "R32": {
+    "stem": "При непрерывной пригодной цепочке восстановления последняя сохранённая точка — 12:00, отказ — 12:07. Журналы успешно сохраняются раз в 15 минут без задержек. Найдите возраст последней точки и идеальную верхнюю границу этого возраста. Какие условия ещё нужны для гарантии?",
+    "explanation": "Возраст точки в момент отказа — 7 минут. При заданной идеальной периодичности его верхняя граница — 15 минут. Это оценки восстановимого разрыва при выполнении предпосылок, а не автоматически заданная бизнес-цель RPO. Пригодность копий, непрерывность журналов и независимость хранения требуют испытания.",
+    "fieldLabels": [
+      "Возраст последней точки, мин",
+      "Идеальная верхняя граница возраста, мин"
+    ],
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "S2-0": {
+    "explanation": "ОС предоставляет программы, процессы, память и доступ к устройствам. Но ошибка программы может возникнуть и в её собственной логике; не каждый прикладной отказ означает отказ ядра.",
+    "stem": "Какая роль ОС важна при работе программы с процессами, памятью и файлами?",
+    "correct": "Управлять ресурсами и предоставлять программе системные интерфейсы доступа к ним",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S2-0b": {
+    "stem": "Программа вызвала open, и системный вызов вернул EACCES. На какой границе возник отказ?",
+    "correct": "Ядро отказало в запрошенном доступе; нужно проверить права и политики для этого процесса",
+    "explanation": "Задан конкретный результат системного вызова. Это позволяет исследовать владельца процесса, путь, режимы и политики. Произвольное сообщение приложения без такого факта не доказывает отказ ОС.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S2-1": {
+    "stem": "Программа получила EACCES при открытии файла. С чего начать разбор?",
+    "correct": "С параметров запроса, пользователя процесса, пути и политики доступа",
+    "explanation": "Начинай с конкретного запроса и фактической среды. Ошибка может быть ожидаемым применением политики, неверным путём или неверной учётной записью, а не неисправностью ядра.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S2-1b": {
+    "stem": "Сообщение находится в системном журнале. Достаточно ли этого, чтобы объявить ядро причиной отказа?",
+    "correct": "Нет: в журнал пишут и ядро, и службы; нужно установить источник и механизм события",
+    "explanation": "Расположение сообщения не устанавливает источник неисправности. Проверь transport, unit, PID, текст и связанные события; журнал содержит сообщения пользовательского пространства.",
+    "options": [
+      "Да: любой системный журнал содержит только сообщения ядра",
+      "Да: наличие сообщения доказывает повреждение оборудования",
+      "Да: программа не может самостоятельно записать сообщение в журнал",
+      "Нет: в журнал пишут и ядро, и службы; нужно установить источник и механизм события"
+    ],
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "C05-1": {
+    "stem": "Меню загрузчика отображается. Достаточно ли этого, чтобы назначить его переустановку первым действием?",
+    "correct": "Нет: сначала нужно установить, выбирается ли образ, загружается ли ядро и где обрывается передача управления",
+    "explanation": "Меню подтверждает запуск части загрузчика, но не успешную загрузку ядра. Проверяй последнюю подтверждённую границу: конфигурацию меню, доступ к образу, передачу ядру, initramfs и корень.",
+    "options": [
+      "Да: любое меню означает неисправный загрузчик",
+      "Нет: сначала нужно установить, выбирается ли образ, загружается ли ядро и где обрывается передача управления",
+      "Да: видимое меню всегда рисуется только прошивкой",
+      "Да: переустановка загрузчика устраняет любые ошибки fstab"
+    ],
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C05-1b": {
+    "explanation": "Выполнение ядра подтверждено, но это не полная приёмка всех предыдущих компонентов. Следующая проверка зависит от места остановки: initramfs, обнаружение корня, его mount или обязательные дополнительные тома.",
+    "stem": "Ядро загрузилось; systemd сообщает об отказе обязательного монтирования и включает аварийный режим. Что проверить?",
+    "correct": "Источник тома, его UUID, доступность и запись fstab для отказавшего монтирования",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "L04A#why": {
+    "explanation": "Контекст службы может отличаться пользователем и правами, рабочим каталогом, окружением и способом запуска. ExecStart обычно не выполняется как строка интерактивной оболочки. Сравни фактический unit, журнал и конкретный отказ.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L06A#why": {
+    "explanation": "В обычном маршруте через шлюз ARP разрешает адрес следующего Ethernet-соседа. ARP конечного адреса может следовать из слишком широкого префикса или явно заданного on-link маршрута; для вывода нужно читать route get, а не только пакет ARP.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "M03-2": {
+    "stem": "Файл удалён, но процесс по-прежнему держит его открытый дескриптор. Почему занятые им блоки ещё не освободились?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "R00": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R01": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R02": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R03": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R04": {
+    "stem": "В обычной модели Unix без default ACL файл создаётся с запрошенным режимом 0666 и umask 0022; каталог — 0777. Найдите режимы. Отдельно объясните влияние прохода по каталогам, ACL и MAC на эффективный доступ.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R05": {
+    "stem": "В упрощённом бюджете /boot доступно 512 MiB без служебных расходов. Один комплект — ядро 14 MiB и initramfs 42 MiB. Сколько комплектов помещается и сколько места останется? Почему для настоящего обновления нужен дополнительный запас?",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R06": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R07": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R08": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R09": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R10": {
+    "stem": "Рассчитайте теоретическую полосу PCIe Gen3 x8 в одном направлении при 8 GT/s и кодировании 128/130, до расходов протокола транзакций. Почему приложение получит меньше?",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R11": {
+    "stem": "Нагрузка на DC-выходы питания узла — 640 Вт. Два блока имеют допустимую выходную мощность по 800 Вт в заданных условиях, режим 1+1. Найдите загрузку оставшегося блока и запас при потере второго.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R12": {
+    "stem": "В стационарном режиме на одной границе учёта измерены 32 000 IOPS по 16 KiB и средняя задержка 1,5 мс. Найдите MiB/s и среднее число запросов в системе.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R13": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R14": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R15": {
+    "stem": "Подтверждено: четыре пути относятся к одному LUN логическим размером 5 TiB. Сколько логической ёмкости они представляют вместе? Приложение ждёт 20 с, переключение на резерв занимает 35 с: оцените превышение ожидания. Физическую независимость хранения эти данные не доказывают.",
+    "fieldLabels": [
+      "Логическая ёмкость одного LUN, TiB",
+      "Превышение timeout, с"
+    ],
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R16": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R17": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R18": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R19": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R20": {
+    "stem": "За 30 суток было 3 млн учитываемых запросов; SLO 99,95%. Найдите бюджет ошибок и расход бюджета при 1800 ошибках. Не переводите ответ во время простоя без дополнительной модели.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R21": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R22": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R23": {
+    "stem": "В идеализированной модели одна одинаковая задача Ansible обрабатывает 30 узлов, forks=5, длительность на каждом узле ровно 12 с, накладных расходов нет. Сколько волн и секунд требуется? Почему changed=0 во втором запуске не доказывает здоровье HTTP-сервиса?",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R24": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R25": {
+    "stem": "Конвейер пересобирает один commit на dev, staging и production; получены три различных digest. Сколько артефактов нуждаются в отдельной квалификации и сколько при build-once? Как исключить доставку непроверенной пересборки?",
+    "explanation": "По условию получены три разных артефакта, поэтому проверка одного не квалифицирует остальные. Если повторные сборки дали бы одинаковый digest при доверенной проверке содержимого, число уникальных артефактов было бы другим. Build-once создаёт один артефакт и продвигает его неизменным; параметры среды задаются отдельно.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R26": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R27": {
+    "stem": "В идеализированном бюджете полезных данных 2 MiB размещён EFI-образ 1 966 080 B. Заголовки, сжатие и выравнивание не учитываются. Сколько KiB остаётся и какова заполненность? Какие отдельные доказательства нужны для сборки, запуска OVMF и физической платформы?",
+    "explanation": "2·2²⁰−1 966 080=131 072 B=128 KiB; заполненность 93,75%. Это арифметический запас полезных данных, а не измеренная свободная ёмкость упакованного firmware volume. Сборка требует исходников, инструментов, лога и хеша; OVMF — конфигурации виртуальной среды и наблюдаемого запуска; физическая платформа — совместимости, пути восстановления и испытаний. Эти уровни не подменяют друг друга.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R28": {
+    "stem": "В арифметической модели окно BAR имеет 64 GiB, запросы устройств — 8, 16 и 16 GiB. Выравнивание и резервы пока исключены. Найдите остаток бюджета и число дополнительных запросов по 16 GiB. Почему это ещё не проверка фактического размещения?",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R29": {
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R30": {
+    "stem": "Пароль выбирается как пять независимых равновероятных слов из словаря 8192 слов, повторы разрешены. Найдите энтропию и время полного перебора при постоянных 10¹⁰ проверок/с (год=3,156·10⁷ с). Нападающий знает словарь и метод выбора.",
+    "explanation": "log₂(8192)=13 бит на независимое равновероятное слово; всего 65 бит. 2⁶⁵/(10¹⁰·3,156·10⁷)≈116,9 года полного перебора, среднее время поиска примерно вдвое меньше в этой модели. Знание словаря уже учтено. Смещение вероятностей, зависимость выборов и утечки могут уменьшать неопределённость; скорость проверок в настоящей системе требует отдельной модели.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R31": {
+    "stem": "В идеализированной модели после каждой синхронизации ошибка часов равна нулю, между сверками модуль дрейфа ограничен 45 ppm. Найдите верхнюю оценку расхождения за 6 часов и максимальный интервал для порога 50 мс. Какие реальные ошибки не вошли в модель?",
+    "explanation": "За 21600 с: 21600·45·10⁻⁶=0,972 с=972 мс. Для 50 мс: 0,05/(45·10⁻⁶)=1111,11 с≈18,52 мин. Реальная граница включает начальную ошибку после синхронизации, погрешность источника и канала, изменение частоты и период недоступности; без них это только идеализированная оценка.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R33": {
+    "stem": "В модели независимых отказов сервис требует одновременной работы трёх компонентов с доступностями 99,9%, 99,95% и 99,99%. Найдите расчётную доступность и ожидаемую недоступность за 30 суток. Почему общие зависимости меняют расчёт?",
+    "explanation": "При независимости A=0,999·0,9995·0,9999=0,99840064995≈99,84%. За 43200 минут ожидаемая недоступность 43200·(1−A)≈69,1 минуты. Это модельная оценка, а не гарантированный допустимый простой конкретного месяца. Общие причины отказов требуют другой модели.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R34": {
+    "stem": "Отказ начался в 03:12, сигнал пришёл в 03:41, дежурный приступил в 03:47, сервис восстановлен в 04:20. Найдите задержку обнаружения и полную недоступность. Какие сведения нужны, чтобы выбрать самое дешёвое улучшение?",
+    "explanation": "Обнаружение: 29 мин; реакция: 6 мин; восстановление: 33 мин; всего: 68 мин. Обнаружение занимает значительную часть интервала, но стоимость его сокращения из времён не выводится. Сравнивают цену, достижимый эффект и риск улучшений сигнализации, процедуры и архитектуры.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R35": {
+    "stem": "При постоянных 500 000 запросов/ч дефект затрагивает 4% запросов новой версии. Найдите ошибки за один час при долях версии 1% и 10%. Во сколько раз различается число ошибок при одинаковой длительности наблюдения?",
+    "explanation": "500000·0,01·0,04=200 ошибок/ч; 500000·0,10·0,04=2000 ошибок/ч. Отношение равно 10 при заданных постоянных условиях. Финансовая стоимость и реальный ущерб требуют отдельной оценки; критерий остановки задают до расширения.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "R36": {
+    "stem": "От фактического отказа до начала восстановления прошло 10 мин; восстановительные действия заняли 45 мин, обязательная проверка ещё 20 мин. Работа считается восстановленной только после проверки. RTO=60 мин от отказа. Найдите полный интервал и оцените выполнение цели.",
+    "reviewed": true,
+    "reviewNote": "Read numeric conditions, recomputed fields and checked model limits; free explanation remains self-assessed."
+  },
+  "M00-1": {
+    "explanation": "Для точного общего p99 объединяют исходные наблюдения с одинаковым определением величины. Совместимые корзины гистограмм позволяют получить согласованную оценку, точность которой ограничена границами корзин. Среднее, включая взвешенное, отдельных p99 общего квантиля не даёт.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M01-0": {
+    "reasonCorrect": "CPU-адрес и адрес, допустимый устройству, определяются разными контрактами; численно они иногда могут совпадать",
+    "explanation": "DMA позволяет устройству обращаться к памяти без копирования каждого байта через инструкции CPU. Драйвер получает DMA-адрес через API отображения и соблюдает время жизни и синхронизацию буфера. Виртуальный адрес процесса не заменяет этот контракт; при identity mapping числа адресов могут совпадать, но это не универсальное правило.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M05-1": {
+    "stem": "После замены контроллера Linux вошёл в initramfs, но устройство корня не найдено. Какую гипотезу о раннем образе нужно проверить?",
+    "reasonCorrect": "Загрузчик и ядро используют разные драйверы и интерфейсы; доступность диска прошивке не гарантирует его доступность initramfs",
+    "explanation": "Проверь фактическое обнаружение контроллера ядром и наличие нужного драйвера в initramfs для выбранного ядра. Вход в initramfs подтверждает запуск ранней среды, но не доказывает доступность всех дисков и исправность всего носителя.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M06-2": {
+    "stem": "Адрес и маршрут добавили только командами ip, а постоянную конфигурацию сети не меняли. Почему эти команды сами по себе не обещают сохранение адреса после перезагрузки?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M08-1": {
+    "correct": "NAT преобразует адреса и при необходимости порты; разрешения доступа требуют отдельного анализа",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M09-0": {
+    "stem": "Общий CPU% нормирован на суммарную ёмкость 64 логических CPU. Один последовательный поток насыщает один CPU. Почему общий процент может быть низким?",
+    "explanation": "Один полностью занятый CPU составляет около 1/64 суммарной ёмкости, то есть 1,56% в заданной нормировке. Проценты top для отдельного процесса могут использовать другую нормировку. Нужны наблюдения по потокам и отдельным CPU.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M10-0": {
+    "reasonCorrect": "Обнаружение PCI-функции и найденный кандидат модуля не подтверждают привязку активного драйвера",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M11-0": {
+    "stem": "Журнал ОС обрывается без выключения; событие потери входного напряжения в BMC относится к тому же интервалу после проверки часов. Какой вывод обоснован?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M12-1": {
+    "reasonCorrect": "Дыры могут возвращать нули без чтения соответствующих блоков данных; чтение метаданных при этом возможно",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M13-0": {
+    "reasonCorrect": "Логический том и файловая система имеют разные метаданные; сначала нужно установить, какой слой и тип ФС изменяется",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M13-2": {
+    "stem": "LV под смонтированной ext4 увеличен, но resize2fs ещё не запускали. lvs показывает новый размер, df — прежний. Какой отдельный шаг нужен после проверки источника и состояния ФС?",
+    "correct": "Расширить ext4 штатной командой resize2fs, сохранив данные",
+    "explanation": "LV и ext4 имеют разные метаданные размера. После проверки источника, исправности и резервной копии ext4 расширяют resize2fs; mkfs создаёт новую ФС. Для другой ФС процедура и ограничения могут отличаться.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M14-1": {
+    "reasonCorrect": "Коррелированная потеря группы усиливает гипотезу общего пути или питания, но ещё не доказывает единственную причину",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M16-0": {
+    "stem": "Зачем выполняют scrub пула ZFS?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M17-1": {
+    "stem": "quorum_status успешно подтвердил кворум трёх MON Ceph. Какое из следующих утверждений этот результат НЕ подтверждает?",
+    "options": [
+      "Доступность трёх копий каждого объекта на OSD",
+      "Три указанных MON входят в наблюдаемый кворум",
+      "Плоскость управления ответила на запрос состояния кворума",
+      "Получен корректный отчёт quorum_status"
+    ],
+    "correct": "Доступность трёх копий каждого объекта на OSD",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M19-0": {
+    "stem": "Создан локальный снимок ВМ на том же хранилище. Какую гарантию из этого нельзя вывести?",
+    "reasonCorrect": "Локальный снимок зависит от сохранности своего хранилища и не является независимой копией от его полного отказа",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M19-2": {
+    "stem": "При нагрузке соседних ВМ задержка гостя выросла, а его собственная загрузка CPU невысока. Какую гипотезу о гипервизоре следует проверить?",
+    "correct": "Проверить ожидание планирования vCPU и конкуренцию за физические ресурсы хоста",
+    "explanation": "Ожидание планирования при конкуренции — проверяемая гипотеза. По одному совпадению нельзя исключить дисковую или сетевую конкуренцию; сопоставляют метрики хоста, гостя и нагрузку.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M20-1": {
+    "stem": "Задание копирования завершилось успешно. Как проверить достижение заданной цели RTO?",
+    "explanation": "RTO задаётся как цель. Её достижение проверяют полным измеренным восстановлением до работающего сервиса, включая зависимости и обязательную приёмку. Длительность копирования сама по себе этого не подтверждает.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M21-1": {
+    "stem": "Обычный вызов GNU grep без -q вернул 1. Что следует заключить?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M22-0": {
+    "reasonCorrect": "Тайм-аут не позволяет однозначно отличить неприменённую операцию от применённой с потерянным ответом",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M22-2": {
+    "explanation": "Returncode проверяют согласно контракту утилиты; stdout может быть пустым или непустым при любом исходе. Успешный код запуска ещё не доказывает предметную полноту: дальше проверяют схему, значения и ожидаемый набор результатов. Повторы допустимы после оценки идемпотентности.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M23-0": {
+    "stem": "Как проверяют сходимость конкретного playbook в выбранных условиях?",
+    "explanation": "Повтори применение к достигнутому состоянию и проверь changed, фактическую конфигурацию и побочные эффекты. Один такой опыт подтверждает выбранный случай, а не доказывает идемпотентность любого пути выполнения; нужны также варианты исходного состояния.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M23-1": {
+    "reasonCorrect": "Check mode моделирует поддержанные изменения; ограничения модулей и явные переопределения задач требуют чтения playbook",
+    "explanation": "Поддержка check mode зависит от модуля. Условные зависимости и зарегистрированные результаты могут вести себя иначе; задача с явным check_mode:false может исполняться реально. Поэтому флаг --check не является универсальным обещанием отсутствия изменений.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M23-2": {
+    "explanation": "Handler получает notify от задачи, сообщившей changed. Найди конкретный источник уведомления и его фактический эффект: другая задача могла измениться обоснованно, даже если выбранный шаблон не изменился. Ложный changed исправляют, полезный restart не удаляют вслепую.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M24-2": {
+    "stem": "Приложение писало данные только в изменяемый слой контейнера, без volume и bind mount. Контейнер удалили и создали заново. Почему данные исчезли?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M26-0": {
+    "reasonCorrect": "Фаза Pod и включение его адреса в готовые конечные точки Service проверяются отдельно",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M27-1": {
+    "reasonCorrect": "Измерение фиксирует значения компонентов и события цепочки; допуск и оценка доверия требуют отдельной политики",
+    "explanation": "Measured boot формирует измерения компонентов и связанные события для оценки. Сам факт измерения не доказывает, что каждый измеренный образ успешно выполнился, что код безопасен или что политика запретила неизвестный образ. Достоверность зависит от цепочки измерений и проверки журнала.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M28-0": {
+    "reasonCorrect": "В модели PI сведения об инициализированной платформе передаются от PEI к DXE через HOB",
+    "reasonOptions": [
+      "В модели PI сведения об инициализированной платформе передаются от PEI к DXE через HOB",
+      "Выбор загрузочной записи уже выполнен до подготовки памяти",
+      "Операционная система создаёт все HOB после своей загрузки"
+    ],
+    "explanation": "В модели PI фаза PEI подготавливает ранние ресурсы и передаёт сведения DXE через HOB. PEIM могут выполнять раннюю инициализацию устройств; это не следует путать с работой DXE-драйверов и последующим выбором загрузки в BDS.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M28-1": {
+    "correct": "Назначение BAR, окна вышестоящих мостов и платформенные резервы адресного пространства",
+    "reasonCorrect": "Обнаружение конфигурационной функции не означает успешное назначение всех требуемых ресурсов",
+    "explanation": "Отдельно проверь enumeration, BAR, адресные окна мостов, платформенные резервы и сообщения назначения ресурсов. Видимость устройства не означает пригодность его MMIO-областей; физическую неисправность нельзя назначить только по одной строке драйвера.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M28-2": {
+    "explanation": "Самый ранний код может выполняться до готовности DRAM и нуждаться во временной памяти. На некоторых x86-платформах используется cache-as-RAM; это пример реализации, а не универсальное требование UEFI. Передача в следующую фазу должна учитывать срок жизни временных данных.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M29-0": {
+    "reasonCorrect": "Сохранение значения в энергонезависимом хранилище ещё не доказывает, что потребитель применил его к оборудованию",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M31-0": {
+    "explanation": "Для межузлового порядка нужны смещения и границы погрешности часов на момент событий. Синхронизация не означает нулевую ошибку; при перекрытии интервалов неопределённости строгий порядок по этим меткам не доказан.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M31-1": {
+    "reasonCorrect": "Монотонная шкала не испытывает скачков календарных часов; возможность плавной коррекции частоты зависит от типа часов",
+    "explanation": "Для локальной длительности выбирают монотонные часы. CLOCK_MONOTONIC в Linux может плавно корректироваться по частоте, но не скачком CLOCK_REALTIME. CLOCK_BOOTTIME включает сон системы; выбор зависит от того, что именно измеряется.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M33-1": {
+    "explanation": "Сервис может оставаться работоспособным в деградированном состоянии, но запас на следующий отказ исчерпан. Риск зависит от оставшихся доменов отказа и времени до восстановления резервирования.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M34-0": {
+    "stem": "Во время инцидента два инженера несогласованно и одновременно меняют настройки одного узла без общего журнала. Чем это опасно помимо конфликта правок?",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M35-1": {
+    "explanation": "Длительное наблюдение, охватывающее редкие сценарии, — более сильное свидетельство, чем час тишины. Оно не является абсолютным доказательством отсутствия неизвестных потребителей: сверяют владельцев, расписания, зависимости и сначала выполняют обратимый шаг.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M35-2": {
+    "explanation": "Возврат снимка отменяет последующие изменения в его охвате. Новые записи делают такой откат потенциально потерей данных; безопасный возврат требует переноса дельты, иной процедуры или явно принятой потери. Сам факт появления записи не доказывает невозможность любого альтернативного возврата.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M36-2": {
+    "stem": "Есть три сформулированные гипотезы о медленном сайте. Как выбрать следующий шаг, чтобы уменьшить этот набор?",
+    "explanation": "Проверка должна различать предложенные гипотезы по возможным результатам. Если наблюдение не совпало ни с одним прогнозом, пересмотри набор причин или качество измерения. Это метод уменьшения неопределённости, а не гарантия, что реальная диагностика всегда конечна.",
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M00-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M01-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M01-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M02-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M02-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M03-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M03-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M04-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M04-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M06-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M06-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M07-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M07-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M08-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M09-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M10-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M10-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M13-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M15-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M15-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M16-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M16-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M17-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M17-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M18-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M18-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M18-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M19-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M20-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M21-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M21-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M22-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M24-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M24-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M25-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M25-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M25-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M26-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M27-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M29-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M29-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M30-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M32-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M32-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M33-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M34-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M34-2": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M35-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M36-0": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "M36-1": {
+    "reviewed": true,
+    "reviewNote": "Read stem, all alternatives, selected reason and direct mechanism; scoped conclusions to the given facts."
+  },
+  "C00-0b": {
+    "stem": "Две машины подключены к разным изолированным мостам и разным IP-подсетям. Маршрутизатор между ними ещё не настроен. Почему прямой связи нет?",
+    "correct": "Сегменты разделены; для обмена IP между подсетями нужна настроенная маршрутизация",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C01-0": {
+    "stem": "Какую границу ищут при последовательной проверке пути запроса?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C01-0b": {
+    "stem": "Что должно уменьшать полезное наблюдение, различающее сформулированные гипотезы?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C01-1": {
+    "stem": "Отказ исчез после несогласованного перебора перезапусков и смены настроек без промежуточных проверок. Чем ограничен вывод о причине?",
+    "explanation": "Восстановление может быть полезно для ограничения ущерба, но без исходных фактов и промежуточных проверок нельзя отделить вклад действий. Перезапуск не запрещён как средство восстановления; он просто не является сам по себе доказательством причины.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C01-1b": {
+    "stem": "Известен только факт: после перезагрузки отказ исчез. Что из этого одного наблюдения ещё НЕ установлено?",
+    "correct": "Первопричина, минимально достаточное исправление и способ раннего обнаружения",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C02-0": {
+    "stem": "Какую модель ядра Linux используют при диагностике процессов, памяти и устройств?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C02-0b": {
+    "stem": "Какие псевдофайловые системы Linux предоставляют структурированные сведения о процессах, устройствах и состоянии ядра?",
+    "correct": "/proc и /sys; доступ к ядру также предоставляют системные вызовы",
+    "explanation": "/proc и /sys предоставляют разные представления состояния ядра. Журналы также полезны для наблюдения, но не являются ответом на вопрос о двух псевдофайловых системах.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C02-1b": {
+    "stem": "Какое утверждение о Linux load average корректно?",
+    "options": [
+      "Это точное мгновенное число задач, ждущих конкретный диск",
+      "Это усреднённая нагрузка, включающая готовые задачи и непрерываемые ожидания, а не процент занятости CPU",
+      "Это исключительно процент времени простоя CPU",
+      "Это показатель, не зависящий от числа ожидающих задач"
+    ],
+    "correct": "Это усреднённая нагрузка, включающая готовые задачи и непрерываемые ожидания, а не процент занятости CPU",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C03-1b": {
+    "stem": "Обычная служба без обхода DAC имеет доступ к самому файлу, но не имеет x на одном родительском каталоге. Почему открытие пути не проходит?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C04-0": {
+    "stem": "Какая модель systemd помогает разбирать запуск службы?",
+    "options": [
+      "Менеджер графа unit и их контекстов выполнения",
+      "Только средство вывода календарного времени",
+      "Только текстовый редактор конфигурации",
+      "Только просмотрщик журналов без управления процессами"
+    ],
+    "correct": "Менеджер графа unit и их контекстов выполнения",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C04-1": {
+    "stem": "Синтаксис unit проверен, команда вручную работает, а служба падает. Какое различие контекста нужно исследовать?",
+    "correct": "Пользователя, рабочий каталог, окружение и способ запуска в службе и оболочке",
+    "explanation": "Ручной запуск и unit могут отличаться UID, группами, каталогом, окружением, ограничениями и способом интерпретации команды. Установи конкретный отказ по фактическому unit и журналу; не делай вывод только по успешной команде из оболочки.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C06-0": {
+    "stem": "В обычной IPv4 Ethernet-сети IP назначения уже известен. Как определяют, нужен MAC адресата или шлюза?",
+    "correct": "Выбирают маршрут и следующий узел: прямой сосед или шлюз",
+    "explanation": "Сначала выбирается маршрут в применимой таблице с учётом policy routing. В обычном прямом маршруте ARP разрешает адрес конечного соседа, в маршруте via — адрес следующего узла. Прокси-ARP и явно on-link маршруты требуют отдельного чтения конфигурации.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C07-0": {
+    "correct": "dig спрашивает DNS, а getent использует настроенную цепочку NSS",
+    "explanation": "dig и getent проверяют разные механизмы. Linux-приложения, использующие системное разрешение через NSS, могут получать данные из hosts, DNS и других источников. Приложение с собственным резолвером может идти другим путём.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C07-0b": {
+    "stem": "Что показывает getent hosts в Linux, в отличие от прямого запроса dig?",
+    "correct": "Результат настроенной системной цепочки NSS для этого имени",
+    "explanation": "getent hosts проверяет выбранную базу NSS. Он не обещает точный результат любого приложения: собственный резолвер, запрос IPv4/IPv6 и параметры getaddrinfo могут отличаться.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C08-1b": {
+    "stem": "VLAN и адреса настроены по карте, но маршрутизация между IP-подсетями ещё не проверена. Что проверить для связи между ними?",
+    "explanation": "Проверь применимые маршруты, включённую пересылку, разрешения фильтра и обратный путь. Отсутствие связи не доказывает один конкретный дефект VLAN и не означает, что любой отказ связи ожидаем.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C09-1": {
+    "correct": "Возможны разные причины: зеркалирование, отключённый канал, резервы адресов или ограничения платформы",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C10-1b": {
+    "stem": "Карта видна в lspci, но функция не работает. Как правильно разделить дальнейший разбор?",
+    "correct": "Проверить отдельно ресурсы, согласованный линк, привязку драйвера и путь данных",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C11-1": {
+    "explanation": "Обрыв журнала сам по себе не различает потерю питания, панику, сбой записи и неполный захват. Сопоставь источники с учётом их часов; crash dump или serial log также могут дать различающее доказательство.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C11-1b": {
+    "stem": "Почему один внезапный обрыв журнала не различает потерю питания и панику ядра?",
+    "correct": "Оба события могут оставить журнал без последующей записи; нужен дополнительный источник",
+    "explanation": "Паника иногда оставляет сообщения или crash dump, а потеря питания — событие BMC. Но отсутствие таких записей не гарантирует ни один вариант; используют независимые наблюдения.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C12-1": {
+    "correct": "Имена sdX зависят от обнаружения и могут измениться после загрузки или смены топологии",
+    "explanation": "sdX — текущее имя, а не идентичность накопителя. Для изменяющего сценария сопоставь устойчивый идентификатор с назначением, размером и использованием; даже UUID может дублироваться после клонирования.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C12-1b": {
+    "stem": "Какой риск следует именно из выбора диска для стирания по /dev/sdb?",
+    "correct": "После смены порядка обнаружения это имя может принадлежать другому диску",
+    "explanation": "Возможно стирание не того устройства при корректном выполнении команды. Это риск, а не обещание, что имя обязательно меняется при каждой загрузке. Нужны идентичность и защитные проверки до записи.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C13-0b": {
+    "stem": "После проверки данных и идентичности участников mdraid обнаружена потеря избыточности. Какова цель дальнейшего ремонта?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C13-1": {
+    "explanation": "В заданной ситуации размер блочного устройства вырос, а размер ФС — ещё нет. Сверяют источник и тип ФС, затем используют её штатное расширение. Удалённый открытый файл — другой механизм и не объясняет неизменный размер ФС после роста LV.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C14-0": {
+    "stem": "В исправном двухдисковом RAID1 обе копии согласованы. Какое свойство само по себе НЕ даёт зеркало?",
+    "options": [
+      "Чтение при потере одного участника, если оставшийся исправен",
+      "Наличие второй согласованной копии текущих блоков",
+      "Возврат к версии файла до ошибочного удаления без отдельной истории",
+      "Возможность восстановить зеркало на заменённом участнике из исправного"
+    ],
+    "correct": "Возврат к версии файла до ошибочного удаления без отдельной истории",
+    "explanation": "Зеркало повторяет текущие изменения, включая логическое удаление. Для возврата старого состояния нужна подходящая история или независимая копия. Защита от контроллера и питания определяется конкретной топологией, а не словом RAID.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C14-0b": {
+    "correct": "При потере питания могут исчезнуть уже подтверждённые, но ещё неустойчивые данные",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C14-1": {
+    "stem": "Все диски полки исчезли одновременно. Какую гипотезу об общем пути следует проверить прежде замены отдельных носителей?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C14-1b": {
+    "stem": "Двенадцать дисков исчезли одновременно; отдельных доказательств их неисправности нет. Какая гипотеза имеет меньший начальный приоритет, чем общий путь и питание?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C15-1": {
+    "stem": "Почему локальный снимок ZFS не является независимой копией на случай потери собственного пула?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C16-0": {
+    "stem": "Что необходимо согласовать для содержательного сравнения IOPS двух накопителей?",
+    "correct": "Профиль нагрузки, включая размер и тип операций, шаблон, очередь, исполнителей, рабочий набор, кэш и точку измерения",
+    "explanation": "Перечисленные параметры определяют эксперимент. Нужно также фиксировать длительность и подготовку данных; одинаковый инструмент или объём накопителя не делает разные нагрузки сопоставимыми.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C16-0b": {
+    "stem": "Когда различие IOPS нельзя приписать именно разнице накопителей в одинаковой нагрузке?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C16-1": {
+    "correct": "Учётную долю времени CPU, отнесённую ядром к idle с ожиданием I/O, а не занятость диска",
+    "explanation": "Linux iowait — учёт времени CPU, а не прямой измеритель очереди или задержки диска. На многоядерной системе атрибуция имеет ограничения; низкий iowait не исключает медленное хранение. Проверяют сами операции, задержки и очереди.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C17-1": {
+    "correct": "Наблюдения гостя не дают полной картины планирования и общих ресурсов хоста",
+    "explanation": "У гостя могут быть виртуальные устройства и проброшенное оборудование, но изнутри обычно не видна вся конкуренция хоста. Steal time доступен не во всякой конфигурации; его отсутствие не исключает проблему гипервизора.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C17-1b": {
+    "stem": "Какие сведения сопоставляют по обе стороны границы виртуализации?",
+    "correct": "Гостевые наблюдения, включая steal при поддержке, и конфигурацию с нагрузкой хоста",
+    "explanation": "Проверяют наблюдаемое гостем поведение и фактические ресурсы гипервизора. Некоторые ограничения видны и гостю, некоторые — только администратору; универсального правила «steal всегда виден» нет.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C18-0": {
+    "explanation": "Внутренние показатели нужны для диагностики, но хотя бы один SLI должен отражать получение результата пользователем. Отсутствие сигнала не доказывает отсутствие проблемы или полноту мониторинга.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C18-1": {
+    "stem": "В Prometheus после устаревания последних семплов экспортер не даёт metric. Почему простое условие metric > threshold не обнаружит само отсутствие данных?",
+    "explanation": "В заданном выражении отсутствующая серия не даёт элемента, который можно сравнить с порогом. Нужны отдельная проверка доступности цели и условие исчезновения метрики. Другие системы могут иметь собственную политику No Data; её проверяют отдельно.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C19-0b": {
+    "stem": "В Bash без errexit и без явной обработки обычная неуспешная команда не является последней. Что обычно происходит дальше?",
+    "explanation": "Bash обычно продолжает последовательность команд. set -e имеет исключения, set -u ловит некоторые необъявленные значения, pipefail меняет код конвейера; критические отказы обрабатывают явно.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C19-1": {
+    "stem": "В Bash отключён pipefail. Конвейер cmd | grep x завершился с 0. Доказывает ли это успешный код cmd?",
+    "options": [
+      "Да: ноль конвейера всегда означает успех обеих команд",
+      "Да: grep автоматически проверяет код производителя",
+      "Нет: grep нашёл совпадение, но cmd могла вывести его и затем завершиться ошибкой",
+      "Нет: grep с кодом 0 доказывает полностью пустой ввод"
+    ],
+    "correct": "Нет: grep нашёл совпадение, но cmd могла вывести его и затем завершиться ошибкой",
+    "explanation": "Без pipefail код такого конвейера равен коду последней команды. Успех grep подтверждает совпадение по его контракту, но не код производителя. Полностью незапустившийся cmd обычно не даёт grep совпадения в этом простом конвейере.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C19-1b": {
+    "stem": "Что может произойти с переменной, содержащей пробел, при обычной подстановке без кавычек в аргумент Bash?",
+    "correct": "Одно значение может разделиться на несколько аргументов и подвергнуться раскрытию шаблонов",
+    "explanation": "В обычных позициях аргументов непроцитированная подстановка допускает word splitting и globbing. Это может изменить результат или вызвать ошибку; не обязательно пройдёт молча. Контексты присваивания и [[ ]] имеют другие правила.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C20-1": {
+    "stem": "Чем опасна передача недоверенного значения в строку shell=True без корректного контекстного экранирования?",
+    "explanation": "Оболочка может интерпретировать значение как код. Список аргументов с shell=False убирает этот уровень интерпретации, но не отменяет проверку аргументов утилиты и использование -- там, где оно предусмотрено.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C21-0b": {
+    "stem": "Какой счётчик recap Ansible явно отмечает хост, до которого не удалось установить необходимое соединение?",
+    "options": [
+      "changed: число изменений",
+      "ok: число успешных задач",
+      "unreachable: недоступность хоста",
+      "skipped: все пропущенные по условию задачи"
+    ],
+    "correct": "unreachable: недоступность хоста",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C21-1b": {
+    "correct": "Предполагаемое изменение или поведение модуля, которое нужно сверить с фактическим состоянием",
+    "explanation": "Check mode моделирует поддержанные действия, а не универсально подтверждает сходимость. Объясни, откуда взялись три changed, проверь поддержку модулей, условия и реальные данные; ноль changed сам по себе также не доказывает здоровье сервиса.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C22-1": {
+    "stem": "Контейнер использует отдельную bridge-сеть, без host network. Приложение слушает только 127.0.0.1 внутри него. Почему обычная публикация на адрес контейнера не исправляет доступ?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C23-0": {
+    "correct": "Pod назначен узлу, контейнеры созданы и хотя бы один выполняется, запускается или перезапускается; Ready не гарантирован",
+    "explanation": "Running — фаза Pod, а не успешность прикладной проверки. Возможны запуск или перезапуск части контейнеров; отдельно читают условия Ready и фактический ответ.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C23-0b": {
+    "correct": "Running — фаза жизненного цикла, Ready — выполнение настроенных условий готовности",
+    "explanation": "Условия готовности могут определяться разными пробами; отсутствие HTTP-пробы не создаёт автоматической проверки страницы. Фаза Running не подменяет Ready или пользовательский запрос.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C23-1": {
+    "stem": "Service с selector не имеет готовых конечных точек. Какие соответствия нужно проверить?",
+    "explanation": "Сверяют namespace, selector, labels, наличие IP и readiness. EndpointSlice может содержать адрес с ready=false; это отличается от отсутствия адреса. У publishNotReadyAddresses отдельная политика, её проверяют явно.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C23-1b": {
+    "stem": "Для обычного Service с selector список готовых конечных точек пуст. Что проверить?",
+    "explanation": "Проверь selector и labels, namespace, адреса Pod и conditions.ready в EndpointSlice. Неготовый адрес может присутствовать в срезе; пустой список готовых адресов не равен единственной доказанной ошибке меток.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C24-0": {
+    "options": [
+      "Только подаёт питание и немедленно прекращает выполнение",
+      "Только запускает ядро Linux без других загрузочных программ",
+      "Готовит платформу, предоставляет загрузочную среду и передаёт управление выбранному образу",
+      "Всегда монтирует корневую ext4 вместо ядра"
+    ],
+    "correct": "Готовит платформу, предоставляет загрузочную среду и передаёт управление выбранному образу",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C24-1": {
+    "correct": "Проверяют доступность устройства и ФС, формат и архитектуру EFI-образа, путь выбранного способа загрузки и политику доверия",
+    "explanation": "Расширение .efi не подтверждает исполняемый формат или доступность образа. Возможны Boot####, стандартный путь съёмного носителя и другие механизмы; отдельная запись NVRAM нужна не всегда. При Secure Boot дополнительно проверяют допуск образа.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C24-1b": {
+    "correct": "Доступность образа, его формат и архитектуру, путь загрузки и политику доверия",
+    "explanation": "Проверки зависят от способа загрузки. Наличие ESP или файла не доказывает, что выбран правильный путь и образ допустим. Необходимость Boot#### нельзя объявлять универсальной для всех EFI-загрузок.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C25-0": {
+    "stem": "Почему на раннем x86-этапе до инициализации DRAM нельзя обращаться к ней как к готовой обычной памяти?",
+    "correct": "DRAM ещё не готова; нужен предусмотренный платформой временный способ хранения",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C25-0b": {
+    "stem": "Какой временный способ хранения возможен на x86-платформе до инициализации DRAM?",
+    "correct": "Регистры и, при поддержке реализации, cache-as-RAM",
+    "explanation": "Способ временной памяти зависит от платформы. Cache-as-RAM — пример x86-реализации, а не универсальное требование всех UEFI-прошивок.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C25-1": {
+    "stem": "PCI-функция обнаружена, а ядро сообщает, что требуемый BAR не получил адресного диапазона. Что установлено?",
+    "correct": "Перечисление прошло, но требуемый ресурс не назначен",
+    "explanation": "Неназначенный BAR и отключённое декодирование уже назначенного BAR — разные состояния. Проверь сами BAR, окна мостов и сообщения назначения. Above 4G относится к подходящим 64-битным ресурсам и не является универсальным исправлением.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C26-1b": {
+    "stem": "После обновления BIOS с сохранением старых BMC и CPLD возник отказ. Какую проверку совместимости версий нужно выполнить?",
+    "explanation": "Проверяют матрицу сочетаний BIOS, BMC, CPLD и других компонентов конкретной платформы. Несовместимость — одна из гипотез; новый дефект кода или изменение настроек также возможны.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C27-0": {
+    "stem": "Что нужно назвать, чтобы обосновать пользу и цену меры безопасности?",
+    "explanation": "Без описанной угрозы, ожидаемого эффекта и цены нельзя убедительно оценить меру. Это не доказывает, что недокументированная мера никогда не помогает; отрицательный тест проверяет заявленную границу доступа.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C27-0b": {
+    "explanation": "Обоснуй угрозу, эффект, цену и проверку запрещённого действия. Ссылка на стандарт полезна, но сама по себе не показывает результат в конкретной системе.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C27-1": {
+    "correct": "Положение внутри периметра не доказывает доверие участнику или защиту канала",
+    "explanation": "Внутри сети может находиться скомпрометированный или ошибочно настроенный узел. Необходимость шифрования и аутентификации выводят из модели угроз, а не отменяют одним словом «внутренняя».",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C28-0b": {
+    "stem": "Каких данных не хватает для численной оценки ошибки часов, если известно только «синхронизировано»?",
+    "correct": "Смещения, границы погрешности и актуальности измерения",
+    "explanation": "Флаг состояния не задаёт численную границу ошибки. Он также не гарантирует, что источник доступен именно сейчас: проверяют актуальные измерения и их возраст.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C28-1": {
+    "stem": "Как строят межузловую хронологию при известных расхождениях часов?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C28-1b": {
+    "correct": "При известной поправке приводят к общей шкале с интервалом неопределённости; иначе порядок оставляют неустановленным",
+    "explanation": "Одной ручной перестановки событий недостаточно. Для BMC и других источников нужны оценка поправки, её актуальность и погрешность; при неизвестной ошибке строгий общий порядок может быть недоказуем.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C29-0": {
+    "stem": "Почему обычная репликация сама по себе не обещает возврат к моменту до ошибочного, но допустимого изменения данных?",
+    "explanation": "Настроенная репликация передаёт и логически ошибочные для бизнеса изменения. Фильтры и задержка могут менять конкретный результат, но не создают автоматическую историю восстановления. Для возврата до ошибки нужны подходящие копии, журналы и испытание.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C29-0b": {
+    "stem": "Ошибка приложения — допустимое удаление таблицы — зафиксирована, и это изменение входит в обычную репликацию без задержки. Чего ждать от реплики?",
+    "correct": "Она применит это изменение по своему протоколу, а не распознает бизнес-ошибку автоматически",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C30-0": {
+    "stem": "В формуле A=1−(1−A1)(1−A2) считаем идеальное переключение и достаточную мощность каждой ветви. Какое предположение об отказах необходимо?",
+    "explanation": "Формула использует независимость отказов. В реальной системе отдельно проверяют общие причины, время и успешность переключения, ёмкость оставшейся ветви и определение функции.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C30-0b": {
+    "stem": "Какой вариант явно создаёт общий домен отказа двух резервных ветвей?",
+    "options": [
+      "Один общий UPS или один управляющий ключ, способный уничтожить обе ветви",
+      "Разные независимые вводы с подтверждёнными раздельными путями",
+      "Разные имена узлов без добавления общей зависимости",
+      "Разный объём локальных журналов"
+    ],
+    "correct": "Один общий UPS или один управляющий ключ, способный уничтожить обе ветви",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C30-1": {
+    "stem": "В модели A=MTBF/(MTBF+MTTR) при фиксированном MTBF какую величину можно уменьшить для повышения A?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C31-0": {
+    "stem": "Почему одного ответа сервиса недостаточно для технического подтверждения полного завершения инцидента?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C31-1": {
+    "stem": "Ущерб продолжается, и известен разрешённый безопасный обратимый способ его ограничить. Что приоритетно, пока команда исследует причину?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C32-0b": {
+    "options": [
+      "Клиент ещё использует прежний DNS-ответ или открытое соединение",
+      "DNS всегда автоматически закрывает соединения, но ждёт команду оператора",
+      "Новая DNS-запись копирует все HTTP-запросы на оба узла",
+      "Кэш DNS изменяет содержимое уже записанных заметок"
+    ],
+    "correct": "Клиент ещё использует прежний DNS-ответ или открытое соединение",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C32-1": {
+    "stem": "План миграции включает полный вывод старой системы. Какой этап остаётся после проверки новой и переключения трафика?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C32-1b": {
+    "stem": "Как завершить миграцию, если её утверждённая цель включает вывод старой системы?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C33-0b": {
+    "stem": "Почему до перезапуска полезно сохранить состояния процессов и текущие связи ресурсов?",
+    "correct": "Перезапуск может уничтожить именно это диагностическое состояние",
+    "explanation": "Память процессов, дескрипторы и текущие ожидания после перезапуска меняются. Он может также затронуть несохранённые данные, поэтому диагностические и восстановительные действия выбирают с учётом ущерба.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C33-1b": {
+    "stem": "Какие элементы модели и наблюдения нужны комплексному разбору помимо знания команд?",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C03-0": {
+    "explanation": "Доступ проверяют для эффективного пользователя, групп и политик фактического процесса, с проходом по всему пути. Этот пользователь может совпадать или не совпадать с учётной записью интерактивного входа.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C03-0b": {
+    "explanation": "Доступ проверяют для эффективного пользователя, групп и политик фактического процесса, с проходом по всему пути. Этот пользователь может совпадать или не совпадать с учётной записью интерактивного входа.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C12-0": {
+    "explanation": "Сопоставь идентификатор с назначением, размером и топологией. UUID ФС может дублироваться после клонирования; serial/WWN тоже требуют проверки источника. sdX не используют как единственное основание для разрушительного автоматического действия.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C12-0b": {
+    "explanation": "Сопоставь идентификатор с назначением, размером и топологией. UUID ФС может дублироваться после клонирования; serial/WWN тоже требуют проверки источника. sdX не используют как единственное основание для разрушительного автоматического действия.",
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C00-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C00-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C00-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C02-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C03-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C04-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C04-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C05-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C05-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C06-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C06-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C06-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C07-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C07-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C08-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C08-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C08-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C09-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C09-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C09-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C10-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C10-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C10-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C11-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C11-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C13-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C13-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C15-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C15-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C15-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C16-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C17-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C17-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C18-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C18-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C19-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C20-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C20-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C20-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C21-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C21-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C22-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C22-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C22-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C24-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C25-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C26-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C26-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C26-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C27-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C28-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C29-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C29-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C30-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C31-0b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C31-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C32-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C33-0": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "C33-1": {
+    "reviewed": true,
+    "reviewNote": "Read both variants, distractors and explanation; removed unsupported universal claims and ambiguous alternatives."
+  },
+  "S1-0": {
+    "stem": "Программа мало вычисляет и большую часть времени ждёт данные. Какой вопрос помогает искать ограничение?",
+    "explanation": "Сначала установи ожидаемый ресурс и измерь соответствующую операцию. Задержки памяти, диска и сети зависят от конкретного пути и нагрузки; удалённая операция не обязана быть медленнее любого локального диска.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S1-0b": {
+    "stem": "Какая величина непосредственно сравнивает скорость получения конкретных данных из памяти, с диска и по сети?",
+    "correct": "Измеренная длительность определённой операции в одинаково заданных условиях",
+    "explanation": "Укажи размер, операцию, точку измерения и единицы. Фиксированный порядок «память, диск, сеть» не является универсальным: кэш, удалённое хранение и протокол меняют результат.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S1-1": {
+    "stem": "Что означает роль сервера в рассматриваемой модели «клиент посылает запрос, сервер отвечает»?",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S1-1b": {
+    "stem": "Что нужно уточнить для диагностики фразы «сервер не работает»?",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S3-0": {
+    "stem": "Чем текстовая запись команды помогает воспроизвести процедуру?",
+    "explanation": "Запись сохраняет команду и аргументы и позволяет запуск без наблюдения экрана при известных условиях среды. Интерфейсы тоже можно автоматизировать; преимущество здесь в явной команде и воспроизводимом контексте, а не в невозможности записать нажатия.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S3-0b": {
+    "stem": "Почему удобно описывать повторяемую процедуру явными командами?",
+    "explanation": "Команды и параметры можно сохранить и проверить в обозначенной среде. Сценарий также может включать переменные, условия и обработку отказов; это не обещание одинакового результата на любой ОС.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S3-1": {
+    "explanation": "stdout и stderr — два разных потока. Код завершения отдельно сообщает статус по контракту команды. Перенаправление stdout само по себе не перенаправляет stderr; один статус не заменяет проверку предметного результата.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S3-1b": {
+    "stem": "В интерактивном Bash выполнено cmd > result.txt; stderr унаследован от терминала и отдельно не перенаправлялся. Где появятся сообщения, которые cmd пишет в stderr?",
+    "explanation": "В этих условиях stderr останется в терминале, а stdout уйдёт в result.txt. При другом наследовании или явном 2> результат меняется; нельзя обещать экран для любого процесса.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S4-0": {
+    "stem": "Почему при разборе маршрутизации нужно различать IP назначения и Ethernet-адрес следующего узла?",
+    "correct": "IP выбирает сетевое назначение, а кадр доставляется соседу на текущем участке",
+    "explanation": "На маршрутизируемых Ethernet-переходах формируются новые кадры для следующего узла. Обычный L2-коммутатор не заменяет адреса кадра при каждом пересылании. NAT может менять IP-адреса, поэтому неизменность IP относится к пути без такой трансляции.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S4-0b": {
+    "stem": "Что происходит с адресами назначения на следующем маршрутизируемом Ethernet-участке обычного IP-пути без NAT?",
+    "correct": "Создаётся кадр к следующему соседу, а IP назначения сохраняется",
+    "explanation": "Речь о новом канальном участке после маршрутизатора, не о каждом коммутаторе. Другие поля IP, например TTL/Hop Limit, меняются; условие без NAT ограничивает утверждение об адресах.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S4-1": {
+    "stem": "Зачем в TCP/UDP используется порт, если IP адресата уже известен?",
+    "correct": "Чтобы вместе с протоколом и адресами различать транспортные конечные точки служб",
+    "explanation": "ОС сопоставляет протокол, адреса и порты с сокетами. Порт помогает выбрать службу, но сам по себе не является универсальным идентификатором одного процесса; возможны прокси и совместное обслуживание.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S4-1b": {
+    "stem": "Две службы на одном IP используют разные TCP-порты. Какое поле назначения различает обращения к этим двум конечным точкам?",
+    "correct": "TCP-порт назначения",
+    "explanation": "В заданном случае IP совпадает, а порты различаются. Имя сайта или прикладной заголовок может решать дополнительные задачи уже после доставки к транспортной конечной точке.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S5-0": {
+    "stem": "Что делает наблюдение полезным именно для выбора между двумя сформулированными причинами?",
+    "correct": "Разные причины предсказывают разные результаты этого наблюдения",
+    "explanation": "Такое наблюдение уменьшает неопределённость между гипотезами. Измерения исходного состояния и безопасности тоже могут быть нужны, даже если непосредственно не различают эти две причины.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S5-0b": {
+    "stem": "Проверка не нужна для безопасности или предпосылок и даёт одинаковый результат при всех рассматриваемых причинах. Как выбрать следующий диагностический шаг?",
+    "correct": "Выбрать другую различающую проверку; эту не считать доказательством выбора причины",
+    "explanation": "Повторение неразличающего наблюдения само по себе не отделяет данные гипотезы. При этом контроль среды, безопасности и качества измерения решает отдельную задачу и не должен автоматически отбрасываться.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S5-1": {
+    "stem": "Сообщение «порт занят» описывает отказ bind. Что ещё не установлено?",
+    "correct": "Какой процесс и по какой причине занял порт и почему возник конфликт",
+    "explanation": "Сообщение уже содержит полезный механизм непосредственного отказа. Но первопричина конфликта требует фактов о listener, конфигурации и времени запуска; не всякое сообщение одинаково малоинформативно.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S5-1b": {
+    "stem": "Прочитано сообщение об ошибке. Какой следующий шаг обоснован до применения найденного в сети исправления?",
+    "correct": "Сохранить факт и проверить причину в своей среде по различающим наблюдениям",
+    "explanation": "Сообщение сверяют с фактическими условиями, версиями и конфигурацией. Оно может указывать непосредственную причину, но готовый совет для другой среды не является доказательством подходящего изменения.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S6-0": {
+    "correct": "Git хранит историю снимков отслеживаемых файлов, отличия и записанные автором сообщения",
+    "explanation": "Причина изменения не возникает автоматически: её записывает автор коммита. История связывает состояния и различия; случайные config.bak без метаданных не дают такой же структуры.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S6-0b": {
+    "stem": "Что фиксирует обычный Git-коммит и почему это полезно для нескольких связанных файлов?",
+    "options": [
+      "Состояние отслеживаемых файлов из индекса, позволяющее вернуть согласованное сочетание",
+      "Все файлы компьютера, включая игнорируемые и недобавленные",
+      "Только временные метки последнего изменённого файла",
+      "Все личные данные всех пользователей автоматически"
+    ],
+    "correct": "Состояние отслеживаемых файлов из индекса, позволяющее вернуть согласованное сочетание",
+    "explanation": "Коммит создаёт снимок дерева из индекса. Изменения без git add и неотслеживаемые файлы автоматически не включаются. Согласованность сочетания требует осмысленного выбора файлов автором.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S6-1": {
+    "stem": "Обычный репозиторий существовал только на одном сервере; его носитель безвозвратно потерян, клонов и копий нет. Что Git сам по себе может восстановить?",
+    "correct": "Ничего из потерянной истории: другой копии объектов нет",
+    "explanation": "Git не создаёт удалённую копию автоматически. Для обычного репозитория потеря единственного хранилища объектов уничтожает доступную историю; нужны независимые клоны или резервные копии.",
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S6-1b": {
+    "reviewed": true,
+    "reviewNote": "Read both introductory variants and alternatives; replaced unsupported analogies with concrete mechanisms."
+  },
+  "S22:1": {
+    "correct": "Операция применена, но клиент не получил подтверждение до истечения ожидания",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S29:1": {
+    "correct": "Подтверждённое изменение политики слота согласуется с исчезновением дочерних устройств",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S30:1": {
+    "correct": "Не создана защита от этого субъекта, имеющего и архив, и пригодный ключ",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S30:2": {
+    "correct": "Разделить запись зашифрованных архивов и право расшифрования, сохранив проверяемое восстановление",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S31:1": {
+    "correct": "Метки совместимы с расхождением часов и не доказывают обратный причинный порядок",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S31:2": {
+    "correct": "Применить безопасную политику синхронизации, сохранить смещения и сверить события по связям запроса",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S31:3": {
+    "correct": "Проверить границы ошибки часов и связать события ID вместе с причинными связями протокола или трассировки",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S32:1": {
+    "correct": "Статус задания не подтвердил пригодность; конкретный отказ чтения и доступные точки нужно исследовать",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S32:2": {
+    "correct": "Найти и испытать пригодную точку либо безопасно пересоздать копию источника, затем ввести регулярные восстановления",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S33:1": {
+    "correct": "Ветви зависимы; модель независимого резервирования без общего узла здесь неприменима",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S33:3": {
+    "correct": "Испытать отказ каждой заявленной ветви отдельно и подтвердить сохранение функции в этих сценариях",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S34:3": {
+    "correct": "Проверить гипотезы по доступным фактам и безопасному воспроизведению, указать пробелы и испытать профилактику",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S35:1": {
+    "correct": "Прежний код несовместим с текущей схемой; возврат требует согласованной схемы и данных",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S35:2": {
+    "correct": "Исправить вперёд либо восстановить совместимость схемы и данных по плану, затем разделить будущие миграции",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S35:3": {
+    "correct": "Проверить прикладные инварианты, ключевые данные и совместимость версий в предусмотренном сценарии возврата",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S36:1": {
+    "correct": "Восстановлен проверенный HTTP-путь; резерв хранения и мониторинг ещё неисправны",
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S00:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S00:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S00:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S00:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S01:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S01:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S01:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S01:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S02:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S02:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S02:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S02:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S03:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S03:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S03:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S03:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S04:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S04:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S04:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S04:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S05:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S05:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S05:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S05:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S06:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S06:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S06:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S06:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S07:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S07:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S07:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S07:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S08:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S08:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S08:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S08:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S09:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S09:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S09:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S09:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S10:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S10:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S10:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S10:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S11:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S11:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S11:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S11:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S12:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S12:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S12:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S12:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S13:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S13:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S13:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S13:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S14:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S14:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S14:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S14:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S15:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S15:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S15:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S15:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S16:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S16:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S16:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S16:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S17:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S17:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S17:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S17:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S18:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S18:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S18:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S18:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S19:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S19:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S19:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S19:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S20:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S20:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S20:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S20:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S21:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S21:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S21:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S21:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S22:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S22:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S22:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S23:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S23:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S23:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S23:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S24:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S24:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S24:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S24:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S25:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S25:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S25:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S25:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S26:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S26:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S26:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S26:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S27:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S27:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S27:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S27:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S28:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S28:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S28:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S28:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S29:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S29:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S29:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S30:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S30:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S31:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S32:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S32:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S33:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S33:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S34:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S34:1": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S34:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S35:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S36:0": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S36:2": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "S36:3": {
+    "reviewed": true,
+    "reviewNote": "Read all four stages and alternatives; provide discovered facts before asking interpretation and scope acceptance to the tested failure."
+  },
+  "L00A#why": {
+    "options": [
+      "Потому что ноль испортит медиану сильнее среднего",
+      "Потому что ноль означал бы мгновенное завершение, а не отсутствие успешного ответа",
+      "Потому что curl всегда молчит при отказе",
+      "Потому что ошибки не относятся к качеству сервиса"
+    ],
+    "correct": "Потому что ноль означал бы мгновенное завершение, а не отсутствие успешного ответа",
+    "explanation": "Длительность неуспешного ожидания можно измерять отдельно, но её нельзя подменять нулём в ряду успешных ответов. Ошибки и неизвестные исходы учитывают явно по определению SLI; иначе одновременно прячется недоступность и занижается задержка.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L01A#why": {
+    "stem": "В примере четыре байта трактуются как беззнаковое 32-битное число в двух порядках. Что определяет правильную интерпретацию?",
+    "explanation": "Нужен контракт формата: ширина, знаковость и порядок байтов источника. Архитектура читателя сама по себе не задаёт формат чужого пакета или дампа. Для памяти процессора порядок тоже задаётся архитектурным контрактом, а не угадывается по виду байтов.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L01B#why": {
+    "stem": "В учебной аддитивной модели в оба замера обхода входит одна и та же постоянная цена пустого цикла. Почему отношение сырых времён ближе к единице?",
+    "explanation": "Для этой модели сравниваются (C+A)/(C+B), а после вычитания известного общего C — A/B. В реальном коде накладные расходы могут быть неаддитивными и зависеть от кэша и интерпретатора; вычитание пустого цикла само по себе не даёт точную аппаратную задержку памяти.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L02A#why": {
+    "stem": "Процесс существует два часа и сейчас находится в S. Где узнать накопленное процессорное время?",
+    "explanation": "S — состояние в момент наблюдения; user и sys — накопленный учёт CPU. Прошедшее время включает ожидания. Для многопоточного процесса сумма CPU-времени может превышать календарное, поэтому их разность не является универсальной мерой ожидания.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L02B#why": {
+    "stem": "В предоставленных данных CPU мал, а задачи ждут I/O в ядре. Почему низкий CPU% не исключает проблему нагрузки?",
+    "explanation": "Готовые вычисления и ожидание ресурса — разные состояния. D означает непрерываемое ожидание и не всегда именно блочный диск. Для выбора устройства сопоставляют wchan, стеки, PSI и данные пути; одна колонка b не называет диск.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L03A#why": {
+    "stem": "После удаления журнала lsof показывает его открытый дескриптор с нулём имён и занятыми блоками. Почему место ещё не освободилось?",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L03B#why": {
+    "stem": "В модели несколько процессов отображают одну общую область памяти. Почему сумма их RSS повторно считает часть физического расхода?",
+    "explanation": "RSS каждого отображающего процесса включает общие резидентные страницы. PSS распределяет такие страницы между отображениями. Это учёт данных процессов, а не всей памяти машины: ядро и неотображённый файловый кэш требуют отдельного анализа.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L04B#why": {
+    "stem": "В предоставленном журнале видны версия ядра, запуск systemd основной системы и попытка дополнительного mount. Какой факт подтверждает, что выполнение дошло дальше загрузки ядра?",
+    "correct": "Сообщения выполняющегося ядра и systemd о монтировании в этой загрузке",
+    "explanation": "В указанном журнале подтверждён запуск ядра и менеджера основной системы. Наличие journalctl как команды само по себе не доказывает смонтированный корень: утилитой можно читать и чужие или сохранённые журналы. Для границы вывода важны источник и конкретные записи.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L05A#why": {
+    "stem": "В заданном загрузочном профиле initramfs поддерживает root=UUID. Чем выбор корня по /dev/vda2 менее устойчив?",
+    "explanation": "Имена vdaN зависят от обнаружения, UUID ФС — от содержимого и его метаданных. В данном профиле UUID разрешает initramfs; другие схемы загрузки могут требовать PARTUUID, mapper или иной контракт. После клонирования UUID может дублироваться, поэтому идентичность проверяют заново.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L05B#why": {
+    "stem": "В заданной конфигурации systemd дополнительный локальный том включён в обязательные зависимости загрузки. Почему отказ его mount останавливает штатную цель?",
+    "correct": "Потому что отказала обязательная зависимость цели; политика необязательного тома должна быть задана явно",
+    "explanation": "Обязательность определяется зависимостями и параметрами, а не субъективной важностью данных. nofail подходит для обоснованно необязательного тома. Удаление строки fstab не уничтожает том, но убирает описание автомонтирования; приложение всё равно не должно писать в пустую точку вместо отсутствующего mount.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L06B#why": {
+    "explanation": "В данном сценарии слишком широкий подключённый префикс выбрал прямой маршрут. Ядро разрешает соседа после выбора маршрута. В других настройках такой же ARP возможен из-за явно on-link маршрута; один пакет не доказывает единственную причину.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L07A#why": {
+    "correct": "HTTP 200 не является проверкой полноты и ожидаемого содержимого тела",
+    "explanation": "Статус ответа не заменяет чтение полного тела и сравнение ожидаемых байтов. Усечённая передача, неверное содержимое источника и ошибка хранения — разные возможные причины несовпадения. Контрольная сумма проверяет содержимое, а не устанавливает причину её нарушения.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L07B#why": {
+    "stem": "В данных пакет IPv4 1500 B с DF отбрасывается на участке MTU 1400, а нужный ICMP не приходит. Почему малое TCP-рукопожатие может пройти при зависшем большом ответе?",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L08A#why": {
+    "stem": "Клиенты подключены к разным VLAN одного коммутатора, а маршрутизация между подсетями не настроена. Почему прямой связи нет?",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L08B#why": {
+    "stem": "Почему успешное обращение к самому маршрутизатору не подтверждает разрешение транзита через него?",
+    "explanation": "Пакеты самому узлу и пересылаемые пакеты проходят разные hooks и цепочки. Читают подходящие правила, политику, счётчики и маршрут; успех input не доказывает ни разрешение, ни факт прохождения forward.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L09A#why": {
+    "stem": "В данных одна и та же задача использует несколько CPU без привязки и выполняется дольше при запуске taskset -c 2. Какой вывод относится к этой пробе?",
+    "correct": "Ограничение набора CPU изменило доступный параллелизм этой задачи; это не ограничение всей машины",
+    "explanation": "При запуске через taskset маска задаётся новому процессу и наследуется его новыми потоками. Остальные CPU доступны другим задачам, но не обязательно простаивают. Для вывода об ускорении проверяют загрузку потоков, одинаковую работу и условия, а не только время одного прогона.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L09B#why": {
+    "stem": "Общий CPU% нормирован по многим CPU, а в данных насыщен один поток. Почему низкое среднее не исключает ограничение этого приложения?",
+    "correct": "Усреднение по CPU скрывает насыщенный поток и не показывает его полезный прогресс",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L10B#why": {
+    "stem": "После поправки часов метка регистрации сигнала питания позже метки ошибки I/O. Достаточно ли этого, чтобы исключить более раннее физическое нарушение питания?",
+    "correct": "Нет: нужны смысл меток, задержка обнаружения и границы погрешности; поздняя регистрация не исключает ранний физический эффект",
+    "explanation": "Время регистрации сообщения может отличаться от времени физического события. До причинного вывода учитывают опрос датчика, задержку доставки и ошибку часов. Даже строгий порядок двух сообщений не доказывает порядок всех физических причин.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L11A#why": {
+    "stem": "Датчик опрашивается раз в 30 секунд. Почему отсутствие пика не гарантирует отсутствие секундного эпизода с точки зрения временного разрешения?",
+    "correct": "Потому что краткий эпизод может целиком попасть между двумя опросами",
+    "explanation": "Периодический опрос не гарантирует захват более короткого события, хотя случайное попадание в него возможно. Дополнительно важны измеряемая величина и место датчика: температура на входе не равна температуре кристалла.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L11B#why": {
+    "stem": "Что можно вывести только из внезапного обрыва журнала гостя без записи о завершении?",
+    "correct": "Есть неполная хронология; причина и даже штатность остановки одним отсутствием записи не доказаны",
+    "explanation": "Запись могла не сохраниться из-за конфигурации, сбоя хранения, потери питания, остановки или неполного захвата. Сопоставляют гипервизор, консоль и другие источники; модель журнала сама по себе не доказывает физическую причину.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L13A#why": {
+    "stem": "В учебной модели ext4 занимает весь LV 256 MiB, из них 15 MiB отнесены к служебным структурам. Почему общий бюджет данных df около 241 MiB?",
+    "explanation": "256−15=241 MiB в заданной модели. Размер LV, геометрия ФС, её служебные расходы, занятое и доступное пользователю — разные поля. Реальные значения зависят от формата ФС, резервов и единиц; нельзя любую разницу автоматически приписать одному компоненту.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L13B#why": {
+    "stem": "В работе выполнен lvextend без -r и без отдельного resize2fs. Почему ext4 ещё имеет прежний размер?",
+    "explanation": "Само увеличение LV не изменяет геометрию ext4. Опция lvextend -r может координировать изменение обоих слоёв при поддержке, поэтому нельзя утверждать, что инструменты никогда не взаимодействуют. Уменьшение не является универсальным откатом; заранее готовят подходящее восстановление.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L15A#why": {
+    "stem": "По карте подтверждено, что sdb и sdc — два пути к одному LUN с одним WWID. Почему это не суммарные 40 GiB?",
+    "explanation": "Оба пути адресуют одни блоки подтверждённого LUN. Прямая работа с одним путём не обязана немедленно повредить данные, но обходит управление переключением. Независимая инициализация и запись через разные представления опасны; верхний слой используют через согласованное отображение.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L16A#why": {
+    "stem": "Снимок содержит версию файла до удаления. Почему блоки этой версии могут оставаться занятыми после unlink?",
+    "explanation": "ZFS не освобождает блоки, на которые ещё ссылается снимок или другой объект. Снимок не делает полную копию всех данных при создании, но имеет метаданные и не является буквально бесплатным. Удалять снимки можно только по проверенной политике хранения и восстановления.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L17B#why": {
+    "stem": "Для PG осталась одна пригодная реплика, а min_size=2 запрещает нужный I/O. Какой риск меняет снижение порога до 1 при остальных необходимых условиях?",
+    "correct": "Может разрешить I/O при единственной копии без запаса на её отказ",
+    "explanation": "min_size — порог допуска I/O при недостатке реплик, а не полное описание протокола подтверждения и не обещание точного числа копий каждого COMMIT. При одной оставшейся копии снижение порога может вернуть доступ ценой повышенного риска. Состояние PG, size, размещение и восстановление проверяют отдельно.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L18A#why": {
+    "stem": "В данных QD32 дал +18% IOPS и втрое большую задержку. Почему без требований нельзя объявить его универсально лучшим результатом?",
+    "correct": "Есть компромисс throughput и latency; выбор зависит от заданной нагрузки и SLO",
+    "explanation": "Нужно сопоставить достигнутую глубину, полезную пропускную способность, среднее и хвост с требованиями. Трёхкратный рост задержки может быть допустим или недопустим; из одного IOPS универсальный победитель не следует.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L19A#why": {
+    "stem": "В учебном трассировании 4 ms в госте включают 3 ms очереди хоста и 1 ms устройства. Чем объясняется разница точек измерения?",
+    "explanation": "В заданной модели гостевая граница включает очередь гипервизора. В настоящих усреднённых метриках одинаковые имена колонок ещё не гарантируют одинаковую выборку и границу; отношение чисел само по себе не доказывает причину.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L19B#why": {
+    "explanation": "Локальный снимок зависит от сохранности своего хранилища. При одновременном запуске оригинала и восстановленной копии нужны изоляция и контроль идентификаторов, чтобы избежать конфликтов. При замещении потерянного оригинала часть прежней идентичности может сохраняться намеренно; новые MAC не являются универсальным требованием любого восстановления.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L21A#why": {
+    "stem": "В заданной обёртке shift удалил имя команды; Bash вернул отказ запуска, но сценарий не проверяет код и не использует errexit. Почему выполнение продолжается?",
+    "correct": "Сценарий не обработал ненулевой код после того, как из argv исчезло имя программы",
+    "explanation": "Удаление имени меняет запускаемый аргумент. Оболочка сообщает отказ по своему контракту, но без явной обработки сценарий может продолжиться. Сохраняют полный список аргументов и статус; логирование не должно разрушать argv.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L22B#why": {
+    "explanation": "Таймер клиента ограничивает ожидание, а не гарантирует откат серверной операции. Результат ищут по идентификатору операции, ресурса или корреляции; простой рост числа объектов ещё не доказывает, что их создал именно этот запрос. Ключ идемпотентности работает только по документированному контракту сервера.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L23A#why": {
+    "explanation": "Отчёт фиксирует конкретную выборку и время прогона. Недоступность видна в unreachable/failed и должна учитываться, а не объявляться невидимой. Сводка не доказывает состояние вне inventory, отсутствие дрейфа после прогона или корректность произвольной shell-задачи.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L23B#why": {
+    "explanation": "unreachable явно показывает отсутствие необходимого соединения в этих прогонах. changed=0 такого хоста не подтверждает сходимость. Проверяют доступность, failed и фактическую конфигурацию, отдельно от пользовательского здоровья.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L24A#why": {
+    "stem": "Приложение и БД находятся в разных сетевых namespace. Почему TCP-обращение приложения к localhost:5432 не обращается автоматически к соседней БД?",
+    "correct": "Loopback относится к namespace приложения, а не к другому контейнеру",
+    "explanation": "К БД в общей контейнерной сети обращаются по предусмотренному адресу или имени. Для проверки PostgreSQL используют подходящий протокол, например pg_isready, а не трактуют HTTP curl как полноценную проверку БД. Данные могут переживать контейнер в volume, bind mount или другом внешнем хранилище.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L24B#why": {
+    "explanation": "Проверь лимит memory cgroup, текущий учёт и memory.events, а также причину завершения. Приложение может быть осведомлено о cgroup-лимите или видеть общую память — это зависит от среды и runtime. Один exit 137 не является достаточным доказательством OOM.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L25A#why": {
+    "stem": "В данном выпуске повторная сборка того же commit дала другой digest в production. Какое доказательство качества не переносится автоматически?",
+    "correct": "Проверки прежнего digest не квалифицируют фактически другой артефакт",
+    "explanation": "Повторная сборка может быть воспроизводимой, но это устанавливают, а не предполагают. При разных digest проверенные байты отличаются от установленных. Продвигают конкретный проверенный артефакт и отдельно задают параметры среды.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L25B#why": {
+    "explanation": "Replacement меняет экземпляр ресурса: старый уничтожается, новый создаётся; порядок зависит от плана и create_before_destroy. Для состояния нужно оценить копии, внешние тома и новые записи. Возврат может быть возможен по подготовленному плану, но не следует из слова replacement.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L26A#why": {
+    "stem": "Готовый Pod в том же namespace имеет app=notes-v2, Service с selector app=notes. Почему у этого Service нет соответствующей готовой конечной точки?",
+    "correct": "Указанный selector не совпал с labels этого Pod",
+    "explanation": "В данном случае задано несовпадение меток. Вообще конечные точки зависят также от namespace, IP и готовности; EndpointSlice может содержать неготовые адреса. Один пустой список не доказывает только ошибку selector.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L26B#why": {
+    "explanation": "Running, labels, namespace и readiness — разные проверки. Читают selector и EndpointSlice с conditions.ready, затем путь запроса и порт. Перезапуск без изменения установленного несовпадения не является исправлением.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L27A#why": {
+    "stem": "Зачем связывать SHA-256 образа с журналом сборки и отдельным протоколом запуска?",
+    "correct": "Чтобы связать идентичность артефакта с проверкой при наличии независимых фактов его загрузки",
+    "explanation": "Хеш идентифицирует файл, но сам по себе не доказывает, что исполнялся именно он. Нужны сведения о фактическом пути загрузки, конфигурации среды и наблюдаемом запуске. Успех сборки, виртуальный запуск и испытание физической платы — отдельные уровни.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L28A#why": {
+    "explanation": "После обнаружения функции отдельно проверяют ресурсы, привязку драйвера и реальный I/O. При их отказе устройство может оставаться видимым в lspci; нельзя все состояния описывать как отсутствие устройства. Конкретная граница определяется наблюдениями.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L28B#why": {
+    "explanation": "Совпадающие наблюдения сужают проверенную область изменений, но не исключают все скрытые причины. OVMF-профиль не квалифицирует физическое питание, тепло и разводку конкретной платы; даже наличие модели какого-то эффекта не заменяет аппаратное испытание.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L29A#why": {
+    "correct": "Она может относиться к другой конфигурации; сопоставимость нужно доказать по происхождению, версии и состоянию",
+    "explanation": "Другая загрузка не обязательно даёт другие байты таблиц, но происхождение и сопоставимость нужно установить. Дамп, журнал и конфигурацию связывают с загрузкой и хешами. Декомпиляция AML анализирует код и сама по себе не исполняет методы на оборудовании.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L30A#why": {
+    "explanation": "Добавление корня меняет политику доверия клиента при остальных проверках цепочки, имени и срока. Если клиент принудительно продолжает TLS без проверки, шифрование само по себе не подтверждает личность собеседника. При обычном отказе проверки приложение могло вообще не установить рабочий канал.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L30B#why": {
+    "explanation": "Меняются допустимые для клиента цепочки доверия, а не байты серверного сертификата. Проверки имени, времени и других политик остаются необходимыми. Доверенный издатель не доказывает отсутствие кражи ключа и правильность поведения приложения.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L31A#why": {
+    "stem": "Почему небольшой измеренный дрейф часов сам по себе ещё не доказывает неисправность генератора?",
+    "explanation": "Частота генератора зависит от экземпляра, температуры и условий. 1 ppm даёт около 0,0864 с за сутки, 10 ppm — около 0,864 с без коррекции. Допустимость оценивают по спецификации и требованиям; синхронизация измеряет и корректирует уход, но не делает ошибку автоматически нулевой.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L31B#why": {
+    "stem": "В модели одного обмена время обработки удалено из RTT, ошибки меток и дрейф пренебрежимы. Почему без симметрии пути граница ошибки оценки смещения может достигать половины оставшегося сетевого времени?",
+    "explanation": "Наблюдаемое сетевое время — сумма прямой и обратной задержек. По одному обмену неизвестно их распределение; оценка при предположении симметрии может ошибиться до половины суммы при неотрицательных задержках. Ошибки меток, дрейф и обработка добавляют отдельные неопределённости, если ими нельзя пренебречь.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L32A#why": {
+    "stem": "Почему одного среднего 9,6 ms недостаточно для оценки редких долгих ответов?",
+    "explanation": "Среднее описывает сумму, а не хвост распределения. Для требований к редким ожиданиям нужны согласованные процентили или исходные наблюдения, число попыток и ошибки. Причину роста хвоста устанавливают отдельно; одна разница средних её не доказывает.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L32B#why": {
+    "explanation": "В данном определении секунды описывают возраст применённых данных, байты — объём неприменённых изменений. Это не взаимозаменяемые единицы. Если отставание растёт, текущей скорости догоняния недостаточно на этом интервале; при изменении нагрузки оно всё же может сократиться. Значение временного lag нужно читать по контракту метрики, особенно при отсутствии новых записей.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L33A#why": {
+    "stem": "Все звенья последовательной цепочки необходимы, их отказы независимы и доступность каждого строго между 0 и 1. Почему модельная доступность цепочки ниже каждой отдельной?",
+    "explanation": "При заданной независимости перемножают вероятности одновременной работы. Без независимости это произведение не обосновано; при полностью общих отказах результат может совпадать с доступностью слабого звена. Принятое окно и определение функции должны совпадать.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L33B#why": {
+    "stem": "Отдельно от измеренной паузы переключения, какой факт в схеме опровергает независимость двух ветвей?",
+    "explanation": "Общий маршрутизатор — общий домен отказа. Если пауза также превышает цель, это второй независимый критерий неуспеха, который нельзя скрыть. Испытание переключения одной ветви не подтверждает устойчивость к отказу общего узла.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L34A#why": {
+    "stem": "В учебном сценарии консервативный прогноз заполнения /var — через 6 часов, смена приступит через 2 часа и успеет выполнить действие с запасом. Пользователи не затронуты. Почему немедленный ночной вызов может не требоваться?",
+    "explanation": "При заданных сроках, ответственности и достаточном запасе действие можно выполнить до ожидаемого отказа. Нужно учитывать погрешность прогноза, время реакции и последствия; при изменении этих условий приоритет пересматривают, а не универсально запрещают ночной вызов.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L34B#why": {
+    "correct": "Без конкретного действия и критерия результата такой пункт нельзя однозначно проверить",
+    "explanation": "Общие призывы нужно переводить в проверяемые действия: обучение с конкретным упражнением, ограничение, контроль, процедура или испытание сигнализации. Это не утверждение, что внимание человека не влияет на исход; нужен проверяемый способ изменения условий.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L35B#why": {
+    "stem": "В данной ручной схеме нет CDC и согласования двух писателей. Почему финальное сведение фиксируют после прекращения старой записи?",
+    "correct": "Иначе старый путь продолжает принимать новые записи, и набор для финального сведения снова меняется",
+    "explanation": "Это ограничение указанной ручной схемы, а не запрет предварительного копирования или онлайн-миграции. При CDC, журнале дельты и проверенном протоколе часть сведения делают до остановки. Для финального перехода всё равно нужен определённый источник истины и обработка конфликтов идентификаторов.",
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L00B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L10A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L12A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L12B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L14A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L14B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L15B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L16B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L17A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L18B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L20A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L20B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L21B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L22A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L27B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L29B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L35A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L36A#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  },
+  "L36B#why": {
+    "reviewed": true,
+    "reviewNote": "Read question, all alternatives and lab context; distinguished supplied data, measured system facts and unproven physical causality."
+  }
+}

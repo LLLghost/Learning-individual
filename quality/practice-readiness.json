@@ -1,0 +1,317 @@
+{
+  "date": "2026-10-27",
+  "environment": "WSL Linux fixtures, not a clean Proxmox VM",
+  "runnerSha256": "ca9b4761106a38b9137b4ded2ae1613ffaa7722495792f58a9e3421cbc23cbc0",
+  "catalogFileSha256": "a493a16689725f04dda0a9d8a1a8b3b314418fc02cbe065565f90480e8625898",
+  "shellScriptsChecked": 180,
+  "runnerCliOperations": 23,
+  "reportScenarios": 13,
+  "results": [
+    {
+      "lesson": "process",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "permissions",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "memory",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "packages",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "shell-data",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "shell-failure",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "python-result",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "git-change",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "boot",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "disk-identity",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "disk-health",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "vm-resources",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "pcie",
+      "status": "unavailable",
+      "reason": [
+        "lspci"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "device-id",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "uefi",
+      "status": "unavailable",
+      "reason": "not booted with UEFI",
+      "phaseCount": 0
+    },
+    {
+      "lesson": "address",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "prefix",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "mtu",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "ipv6",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "firewall",
+      "status": "unavailable",
+      "reason": [
+        "nft"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "segments",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "tcp",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "systemd",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "logs",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "incident",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "unknown-incident",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "mount",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "filesystem",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "lvm",
+      "status": "unavailable",
+      "reason": [
+        "pvcreate",
+        "vgcreate",
+        "lvcreate",
+        "lvs",
+        "vgs",
+        "vgremove",
+        "pvremove",
+        "lvextend"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "dns",
+      "status": "unavailable",
+      "reason": [
+        "dnsmasq"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "latency",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "ansible-state",
+      "status": "unavailable",
+      "reason": [
+        "ansible-playbook"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "tls",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "time",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "baseline",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "lab-setup",
+      "status": "passed",
+      "reason": null,
+      "phaseCount": 12
+    },
+    {
+      "lesson": "mirror",
+      "status": "unavailable",
+      "reason": [
+        "mdadm"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "zfs",
+      "status": "unavailable",
+      "reason": [
+        "zpool",
+        "zfs"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "container",
+      "status": "unavailable",
+      "reason": "Docker daemon unavailable; not started by tests",
+      "phaseCount": 0
+    },
+    {
+      "lesson": "container-network",
+      "status": "unavailable",
+      "reason": "Docker daemon unavailable; not started by tests",
+      "phaseCount": 0
+    },
+    {
+      "lesson": "kubernetes",
+      "status": "unavailable",
+      "reason": [
+        "kind",
+        "kubectl"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "service-selector",
+      "status": "unavailable",
+      "reason": [
+        "kind",
+        "kubectl"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "cpu-numa",
+      "status": "unavailable",
+      "reason": [
+        "numactl"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "network-storage",
+      "status": "unavailable",
+      "reason": [
+        "exportfs",
+        "mount.nfs"
+      ],
+      "phaseCount": 0
+    },
+    {
+      "lesson": "multipath",
+      "status": "unavailable",
+      "reason": "kernel has no DM multipath target",
+      "phaseCount": 0
+    }
+  ],
+  "proxmoxBackup": "not-run: host unavailable",
+  "liveAcceptance": false,
+  "sourceHashNormalization": "LF"
+}

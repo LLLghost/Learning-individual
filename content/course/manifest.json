@@ -155,16 +155,13 @@
       "labIds": [],
       "file": "lessons/terminal.html",
       "checks": [
-        "C02-0",
-        "C02-0b",
-        "C02-1",
-        "C02-1b",
         "S3-0",
         "S3-0b",
         "S3-1",
         "S3-1b"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -180,15 +177,6 @@
       "file": "lessons/one-change.html",
       "checks": [
         "M00-0",
-        "M00-1",
-        "M00-2",
-        "R00",
-        "S00:0",
-        "S00:1",
-        "S00:2",
-        "S00:3",
-        "L00B#why",
-        "L00A#why",
         "C01-0",
         "C01-0b",
         "C01-1",
@@ -196,9 +184,12 @@
         "S5-0",
         "S5-0b",
         "S5-1",
-        "S5-1b"
+        "S5-1b",
+        "L00B#why",
+        "L00A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -212,8 +203,11 @@
       ],
       "labIds": [],
       "file": "lessons/units.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "R00"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -233,7 +227,8 @@
         "C00-1",
         "C00-1b"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -248,7 +243,8 @@
       "labIds": [],
       "file": "lessons/lab-setup.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -266,19 +262,23 @@
         "M02-0",
         "M02-1",
         "M02-2",
-        "R02",
         "S02:0",
         "S02:1",
         "S02:2",
         "S02:3",
-        "L02B#why",
-        "L02A#why",
+        "C02-0",
+        "C02-0b",
+        "C02-1",
+        "C02-1b",
         "S2-0",
         "S2-0b",
         "S2-1",
-        "S2-1b"
+        "S2-1b",
+        "L02B#why",
+        "L02A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -293,18 +293,11 @@
       "labIds": [],
       "file": "lessons/memory.html",
       "checks": [
-        "M03-0",
-        "M03-1",
-        "M03-2",
         "R03",
-        "S03:0",
-        "S03:1",
-        "S03:2",
-        "S03:3",
-        "L03B#why",
-        "L03A#why"
+        "L03B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -319,12 +312,14 @@
       "labIds": [],
       "file": "lessons/permissions.html",
       "checks": [
+        "R04",
         "C03-0",
         "C03-0b",
         "C03-1",
         "C03-1b"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -339,7 +334,8 @@
       "labIds": [],
       "file": "lessons/packages.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -357,21 +353,18 @@
       "file": "lessons/systemd.html",
       "checks": [
         "M04-0",
-        "M04-1",
-        "M04-2",
-        "R04",
         "S04:0",
         "S04:1",
         "S04:2",
         "S04:3",
-        "L04A#why",
-        "L04B#why",
         "C04-0",
         "C04-0b",
         "C04-1",
-        "C04-1b"
+        "C04-1b",
+        "L04A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -385,8 +378,11 @@
       ],
       "labIds": [],
       "file": "lessons/logs.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M04-2"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -401,6 +397,7 @@
       "labIds": [],
       "file": "lessons/boot.html",
       "checks": [
+        "M04-1",
         "M05-0",
         "M05-1",
         "M05-2",
@@ -409,14 +406,16 @@
         "S05:1",
         "S05:2",
         "S05:3",
-        "L05B#why",
-        "L05A#why",
         "C05-0",
         "C05-0b",
         "C05-1",
-        "C05-1b"
+        "C05-1b",
+        "L05B#why",
+        "L04B#why",
+        "L05A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -431,7 +430,8 @@
       "labIds": [],
       "file": "lessons/mount.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -448,14 +448,6 @@
       "checks": [
         "M06-0",
         "M06-1",
-        "M06-2",
-        "R06",
-        "S06:0",
-        "S06:1",
-        "S06:2",
-        "S06:3",
-        "L06B#why",
-        "L06A#why",
         "C06-0",
         "C06-0b",
         "C06-1",
@@ -463,9 +455,11 @@
         "S4-0",
         "S4-0b",
         "S4-1",
-        "S4-1b"
+        "S4-1b",
+        "L06A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -481,8 +475,17 @@
         "L06B"
       ],
       "file": "lessons/prefix.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M06-2",
+        "R06",
+        "S06:0",
+        "S06:1",
+        "S06:2",
+        "S06:3",
+        "L06B#why"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -497,20 +500,11 @@
       "labIds": [],
       "file": "lessons/tcp.html",
       "checks": [
-        "M07-0",
         "M07-1",
-        "M07-2",
-        "R07",
-        "S07:0",
-        "S07:1",
-        "S07:2",
-        "S07:3",
-        "L07B#why",
-        "L07A#why",
-        "C07-0",
-        "C07-0b"
+        "L07A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -524,8 +518,12 @@
       ],
       "labIds": [],
       "file": "lessons/dns.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "C07-0",
+        "C07-0b"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -542,10 +540,19 @@
       ],
       "file": "lessons/mtu.html",
       "checks": [
+        "M07-0",
+        "M07-2",
+        "R07",
+        "S07:0",
+        "S07:1",
+        "S07:2",
+        "S07:3",
         "C07-1",
-        "C07-1b"
+        "C07-1b",
+        "L07B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -560,7 +567,8 @@
       "labIds": [],
       "file": "lessons/ipv6.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -575,22 +583,19 @@
       "labIds": [],
       "file": "lessons/segments.html",
       "checks": [
-        "M08-0",
-        "M08-1",
         "M08-2",
-        "R08",
         "S08:0",
         "S08:1",
         "S08:2",
         "S08:3",
-        "L08B#why",
-        "L08A#why",
         "C08-0",
         "C08-0b",
         "C08-1",
-        "C08-1b"
+        "C08-1b",
+        "L08A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -604,8 +609,12 @@
       ],
       "labIds": [],
       "file": "lessons/firewall.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M08-1",
+        "L08B#why"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -623,21 +632,20 @@
       "file": "lessons/disk-identity.html",
       "checks": [
         "M12-0",
-        "M12-1",
         "M12-2",
-        "R12",
         "S12:0",
         "S12:1",
         "S12:2",
         "S12:3",
-        "L12A#why",
-        "L12B#why",
         "C12-0",
         "C12-0b",
         "C12-1",
-        "C12-1b"
+        "C12-1b",
+        "L12A#why",
+        "L12B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -652,7 +660,8 @@
       "labIds": [],
       "file": "lessons/disk-health.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -667,22 +676,22 @@
       "labIds": [],
       "file": "lessons/filesystem.html",
       "checks": [
-        "M13-0",
-        "M13-1",
-        "M13-2",
-        "R13",
-        "S13:0",
-        "S13:1",
-        "S13:2",
-        "S13:3",
-        "L13B#why",
-        "L13A#why",
+        "M03-1",
+        "M03-2",
+        "S03:0",
+        "S03:1",
+        "S03:2",
+        "S03:3",
         "C13-0",
         "C13-0b",
         "C13-1",
-        "C13-1b"
+        "C13-1b",
+        "L13B#why",
+        "L03A#why",
+        "L13A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -698,8 +707,17 @@
         "L13B"
       ],
       "file": "lessons/lvm.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M13-0",
+        "M13-2",
+        "R13",
+        "S13:0",
+        "S13:1",
+        "S13:2",
+        "S13:3"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -717,20 +735,20 @@
       "file": "lessons/mirror.html",
       "checks": [
         "M14-0",
-        "M14-1",
         "M14-2",
         "R14",
         "S14:0",
         "S14:1",
         "S14:2",
         "S14:3",
-        "L14B#why",
-        "L14A#why",
         "C14-0",
         "C14-1",
-        "C14-1b"
+        "C14-1b",
+        "L14B#why",
+        "L14A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -745,9 +763,11 @@
       "labIds": [],
       "file": "lessons/storage-path.html",
       "checks": [
+        "M14-1",
         "C14-0b"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -761,8 +781,11 @@
       ],
       "labIds": [],
       "file": "lessons/write-cache.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M03-0"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -777,20 +800,13 @@
       "labIds": [],
       "file": "lessons/network-storage.html",
       "checks": [
-        "M15-0",
         "M15-1",
-        "M15-2",
-        "R15",
-        "S15:0",
-        "S15:1",
-        "S15:2",
-        "S15:3",
-        "L15A#why",
-        "L15B#why",
         "C15-0",
-        "C15-0b"
+        "C15-0b",
+        "L15B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -804,8 +820,18 @@
       ],
       "labIds": [],
       "file": "lessons/multipath.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M15-0",
+        "M15-2",
+        "R15",
+        "S15:0",
+        "S15:1",
+        "S15:2",
+        "S15:3",
+        "L15A#why"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -830,12 +856,13 @@
         "S16:1",
         "S16:2",
         "S16:3",
-        "L16B#why",
-        "L16A#why",
         "C15-1",
-        "C15-1b"
+        "C15-1b",
+        "L16B#why",
+        "L16A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -861,7 +888,8 @@
         "L17A#why",
         "L17B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -876,22 +904,28 @@
       "labIds": [],
       "file": "lessons/benchmark.html",
       "checks": [
-        "M18-0",
+        "M00-2",
+        "M12-1",
+        "R12",
         "M18-1",
         "M18-2",
-        "R18",
+        "S00:0",
+        "S00:1",
+        "S00:2",
+        "S00:3",
         "S18:0",
         "S18:1",
         "S18:2",
         "S18:3",
-        "L18B#why",
-        "L18A#why",
         "C16-0",
         "C16-0b",
         "C16-1",
-        "C16-1b"
+        "C16-1b",
+        "L18B#why",
+        "L18A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -905,8 +939,13 @@
       ],
       "labIds": [],
       "file": "lessons/latency.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M00-1",
+        "M18-0",
+        "R18"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -921,22 +960,22 @@
       "labIds": [],
       "file": "lessons/database-write.html",
       "checks": [
+        "M13-1",
         "M32-0",
-        "M32-1",
         "M32-2",
-        "R32",
         "S32:0",
         "S32:1",
         "S32:2",
         "S32:3",
-        "L32A#why",
-        "L32B#why",
         "C29-0",
         "C29-0b",
         "C29-1",
-        "C29-1b"
+        "C29-1b",
+        "L32A#why",
+        "L32B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -950,8 +989,13 @@
       ],
       "labIds": [],
       "file": "lessons/restore-point.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M20-1",
+        "M32-1",
+        "R32"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -967,21 +1011,21 @@
       "file": "lessons/shell-data.html",
       "checks": [
         "M21-0",
-        "M21-1",
         "M21-2",
         "R21",
         "S21:0",
         "S21:1",
         "S21:2",
         "S21:3",
-        "L21A#why",
-        "L21B#why",
         "C19-0",
         "C19-0b",
         "C19-1",
-        "C19-1b"
+        "C19-1b",
+        "L21A#why",
+        "L21B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -995,8 +1039,11 @@
       ],
       "labIds": [],
       "file": "lessons/shell-failure.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M21-1"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1011,7 +1058,6 @@
       "labIds": [],
       "file": "lessons/python-result.html",
       "checks": [
-        "M22-0",
         "M22-1",
         "M22-2",
         "R22",
@@ -1019,14 +1065,15 @@
         "S22:1",
         "S22:2",
         "S22:3",
-        "L22B#why",
-        "L22A#why",
         "C20-0",
         "C20-0b",
         "C20-1",
-        "C20-1b"
+        "C20-1b",
+        "L22B#why",
+        "L22A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1040,8 +1087,11 @@
       ],
       "labIds": [],
       "file": "lessons/api-pages.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M22-0"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1056,25 +1106,19 @@
       "labIds": [],
       "file": "lessons/git-change.html",
       "checks": [
-        "M23-0",
-        "M23-1",
-        "M23-2",
         "R23",
-        "S23:0",
-        "S23:1",
-        "S23:2",
-        "S23:3",
-        "L23A#why",
-        "L23B#why",
         "C21-0",
         "C21-0b",
         "C21-1b",
         "S6-0",
         "S6-0b",
         "S6-1",
-        "S6-1b"
+        "S6-1b",
+        "L23A#why",
+        "L23B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1089,9 +1133,17 @@
       "labIds": [],
       "file": "lessons/ansible-state.html",
       "checks": [
+        "M23-0",
+        "M23-1",
+        "M23-2",
+        "S23:0",
+        "S23:1",
+        "S23:2",
+        "S23:3",
         "C21-1"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1106,7 +1158,6 @@
       "labIds": [],
       "file": "lessons/vm-resources.html",
       "checks": [
-        "M19-0",
         "M19-1",
         "M19-2",
         "R19",
@@ -1114,14 +1165,15 @@
         "S19:1",
         "S19:2",
         "S19:3",
-        "L19A#why",
-        "L19B#why",
         "C17-0",
         "C17-0b",
         "C17-1",
-        "C17-1b"
+        "C17-1b",
+        "L19A#why",
+        "L19B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1135,8 +1187,11 @@
       ],
       "labIds": [],
       "file": "lessons/vm-backup.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M19-0"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1151,7 +1206,6 @@
       "labIds": [],
       "file": "lessons/container.html",
       "checks": [
-        "M24-0",
         "M24-1",
         "M24-2",
         "R24",
@@ -1159,14 +1213,15 @@
         "S24:1",
         "S24:2",
         "S24:3",
-        "L24A#why",
-        "L24B#why",
         "C22-0",
         "C22-0b",
         "C22-1",
-        "C22-1b"
+        "C22-1b",
+        "L24A#why",
+        "L24B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1180,8 +1235,11 @@
       ],
       "labIds": [],
       "file": "lessons/container-network.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M24-0"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1197,20 +1255,20 @@
       "file": "lessons/delivery.html",
       "checks": [
         "M25-0",
-        "M25-1",
         "M25-2",
         "R25",
         "S25:0",
         "S25:1",
         "S25:2",
         "S25:3",
-        "L25A#why",
-        "L25B#why",
         "C23-0",
         "C23-1",
-        "C23-1b"
+        "C23-1b",
+        "L25A#why",
+        "L25B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1224,8 +1282,11 @@
       ],
       "labIds": [],
       "file": "lessons/terraform.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M25-1"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1240,7 +1301,6 @@
       "labIds": [],
       "file": "lessons/kubernetes.html",
       "checks": [
-        "M26-0",
         "M26-1",
         "M26-2",
         "R26",
@@ -1248,11 +1308,12 @@
         "S26:1",
         "S26:2",
         "S26:3",
+        "C23-0b",
         "L26B#why",
-        "L26A#why",
-        "C23-0b"
+        "L26A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1266,8 +1327,11 @@
       ],
       "labIds": [],
       "file": "lessons/service-selector.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M26-0"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1282,12 +1346,10 @@
       "labIds": [],
       "file": "lessons/cpu-numa.html",
       "checks": [
-        "M01-0",
         "M01-1",
-        "M01-2",
         "R01",
+        "R02",
         "M09-0",
-        "M09-1",
         "M09-2",
         "R09",
         "S01:0",
@@ -1298,10 +1360,6 @@
         "S09:1",
         "S09:2",
         "S09:3",
-        "L01A#why",
-        "L09B#why",
-        "L01B#why",
-        "L09A#why",
         "C09-0",
         "C09-0b",
         "C09-1",
@@ -1309,9 +1367,14 @@
         "S1-0",
         "S1-0b",
         "S1-1",
-        "S1-1b"
+        "S1-1b",
+        "L01A#why",
+        "L09B#why",
+        "L01B#why",
+        "L09A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1325,8 +1388,11 @@
       ],
       "labIds": [],
       "file": "lessons/ecc.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M09-1"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1341,6 +1407,8 @@
       "labIds": [],
       "file": "lessons/pcie.html",
       "checks": [
+        "M01-0",
+        "M01-2",
         "M10-0",
         "M10-1",
         "M10-2",
@@ -1349,14 +1417,15 @@
         "S10:1",
         "S10:2",
         "S10:3",
-        "L10B#why",
-        "L10A#why",
         "C10-0",
         "C10-0b",
         "C10-1",
-        "C10-1b"
+        "C10-1b",
+        "L10B#why",
+        "L10A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1371,7 +1440,8 @@
       "labIds": [],
       "file": "lessons/device-id.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1387,21 +1457,20 @@
       "file": "lessons/bmc.html",
       "checks": [
         "M11-0",
-        "M11-1",
         "M11-2",
-        "R11",
         "S11:0",
         "S11:1",
         "S11:2",
         "S11:3",
-        "L11A#why",
-        "L11B#why",
         "C11-0",
         "C11-0b",
         "C11-1",
-        "C11-1b"
+        "C11-1b",
+        "L11A#why",
+        "L11B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1415,8 +1484,12 @@
       ],
       "labIds": [],
       "file": "lessons/power.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M11-1",
+        "R11"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1432,21 +1505,20 @@
       "file": "lessons/uefi.html",
       "checks": [
         "M27-0",
-        "M27-1",
-        "M27-2",
         "R27",
         "S27:0",
         "S27:1",
         "S27:2",
         "S27:3",
-        "L27B#why",
-        "L27A#why",
         "C24-0",
         "C24-0b",
         "C24-1",
-        "C24-1b"
+        "C24-1b",
+        "L27B#why",
+        "L27A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1460,8 +1532,11 @@
       ],
       "labIds": [],
       "file": "lessons/secure-boot.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M27-1"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1476,22 +1551,23 @@
       "labIds": [],
       "file": "lessons/firmware-phases.html",
       "checks": [
+        "M27-2",
         "M28-0",
-        "M28-1",
         "M28-2",
         "R28",
         "S28:0",
         "S28:1",
         "S28:2",
         "S28:3",
-        "L28A#why",
-        "L28B#why",
         "C25-0",
         "C25-0b",
         "C25-1",
-        "C25-1b"
+        "C25-1b",
+        "L28A#why",
+        "L28B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1505,8 +1581,12 @@
       ],
       "labIds": [],
       "file": "lessons/acpi.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M28-1",
+        "M29-2"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1523,20 +1603,20 @@
       "checks": [
         "M29-0",
         "M29-1",
-        "M29-2",
         "R29",
         "S29:0",
         "S29:1",
         "S29:2",
         "S29:3",
-        "L29B#why",
-        "L29A#why",
         "C26-0",
         "C26-0b",
         "C26-1",
-        "C26-1b"
+        "C26-1b",
+        "L29B#why",
+        "L29A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1551,7 +1631,8 @@
       "labIds": [],
       "file": "lessons/redfish.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1566,22 +1647,20 @@
       "labIds": [],
       "file": "lessons/monitor.html",
       "checks": [
-        "M20-0",
-        "M20-1",
-        "M20-2",
         "R20",
         "S20:0",
         "S20:1",
         "S20:2",
         "S20:3",
-        "L20A#why",
-        "L20B#why",
         "C18-0",
         "C18-0b",
         "C18-1",
-        "C18-1b"
+        "C18-1b",
+        "L20A#why",
+        "L20B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1595,8 +1674,12 @@
       ],
       "labIds": [],
       "file": "lessons/alert.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M20-0",
+        "M20-2"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1613,20 +1696,20 @@
       "checks": [
         "M30-0",
         "M30-1",
-        "M30-2",
         "R30",
         "S30:0",
         "S30:1",
         "S30:2",
         "S30:3",
-        "L30B#why",
-        "L30A#why",
         "C27-0",
         "C27-0b",
         "C27-1",
-        "C27-1b"
+        "C27-1b",
+        "L30B#why",
+        "L30A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1642,8 +1725,11 @@
         "L30B"
       ],
       "file": "lessons/tls.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M30-2"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1661,21 +1747,21 @@
       "file": "lessons/time.html",
       "checks": [
         "M31-0",
-        "M31-1",
         "M31-2",
         "R31",
         "S31:0",
         "S31:1",
         "S31:2",
         "S31:3",
-        "L31A#why",
-        "L31B#why",
         "C28-0",
         "C28-0b",
         "C28-1",
-        "C28-1b"
+        "C28-1b",
+        "L31A#why",
+        "L31B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1689,8 +1775,11 @@
       ],
       "labIds": [],
       "file": "lessons/duration.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M31-1"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1705,6 +1794,8 @@
       "labIds": [],
       "file": "lessons/availability.html",
       "checks": [
+        "M08-0",
+        "R08",
         "M33-0",
         "M33-1",
         "M33-2",
@@ -1713,14 +1804,15 @@
         "S33:1",
         "S33:2",
         "S33:3",
-        "L33A#why",
-        "L33B#why",
         "C30-0",
         "C30-0b",
         "C30-1",
-        "C30-1b"
+        "C30-1b",
+        "L33A#why",
+        "L33B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1735,7 +1827,8 @@
       "labIds": [],
       "file": "lessons/recovery-time.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1758,14 +1851,15 @@
         "S34:1",
         "S34:2",
         "S34:3",
-        "L34A#why",
-        "L34B#why",
         "C31-0",
         "C31-0b",
         "C31-1",
-        "C31-1b"
+        "C31-1b",
+        "L34A#why",
+        "L34B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1780,7 +1874,8 @@
       "labIds": [],
       "file": "lessons/incident-close.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1796,21 +1891,21 @@
       "file": "lessons/migration.html",
       "checks": [
         "M35-0",
-        "M35-1",
         "M35-2",
         "R35",
         "S35:0",
         "S35:1",
         "S35:2",
         "S35:3",
-        "L35A#why",
-        "L35B#why",
         "C32-0",
         "C32-0b",
         "C32-1",
-        "C32-1b"
+        "C32-1b",
+        "L35A#why",
+        "L35B#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1824,8 +1919,11 @@
       ],
       "labIds": [],
       "file": "lessons/decommission.html",
-      "checks": [],
-      "reviewed": false
+      "checks": [
+        "M35-1"
+      ],
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "final",
@@ -1848,14 +1946,15 @@
         "S36:1",
         "S36:2",
         "S36:3",
-        "L36B#why",
-        "L36A#why",
         "C33-0",
         "C33-0b",
         "C33-1",
-        "C33-1b"
+        "C33-1b",
+        "L36B#why",
+        "L36A#why"
       ],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     },
     {
       "unit": "final",
@@ -1870,7 +1969,8 @@
       "labIds": [],
       "file": "lessons/unknown-incident.html",
       "checks": [],
-      "reviewed": false
+      "reviewed": false,
+      "baseRevision": "2026-10-27"
     }
   ],
   "assessmentFile": "assessments.json"
