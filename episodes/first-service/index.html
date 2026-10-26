@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="workshop-token" content="WORKSHOP_TOKEN">
+  <title>Маяк · Свой первый сервис</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#task">К заданию</a>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Маяк, начало мастерской"><span class="brand-mark">м</span> маяк<span class="beta">ПРОБА</span></a>
+    <div class="side-intro"><p class="eyebrow">МАСТЕРСКАЯ 01</p><h1>Свой сервис. <br>Первое <br><em>дежурство.</em></h1><p>Создай страницу, сделай её своей и верни в работу, когда что-то пойдёт не так.</p></div>
+    <nav id="journey" aria-label="Этапы эпизода"></nav>
+    <div class="side-bottom"><span class="dot"></span> Всё на твоём компьютере<p>30–40 минут · без установки Linux</p><a href="/api/report" download>Скачать журнал и результат ↗</a></div>
+  </aside>
+  <main>
+    <header class="topbar"><span>От задачи — к пониманию</span><span id="process-label">Локальная лаборатория</span></header>
+    <div id="fatal" role="alert" hidden></div>
+    <div id="workspace" aria-busy="true"><p>Открываем мастерскую…</p></div>
+    <footer class="page-footer">Здесь работают настоящий процесс и HTTP-запросы. «Вход» — локальный посредник на этом же компьютере. Это первый опыт, а не удалённый сервер.</footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

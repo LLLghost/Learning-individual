@@ -7,6 +7,8 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "episode": "node episodes/first-service/server.mjs",
+    "episode:check": "node scripts/check-episode.mjs",
     "assemble": "node scripts/assemble-course.mjs",
     "build": "node scripts/build-static.mjs",
     "validate": "node scripts/validate-site.mjs",
