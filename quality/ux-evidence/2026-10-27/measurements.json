@@ -1,0 +1,152 @@
+[
+  {
+    "route": "/",
+    "width": 1440,
+    "height": 6577,
+    "viewport": 900,
+    "horizontalOverflow": false,
+    "lessonLinks": 82,
+    "firstExercise": null,
+    "notes": null,
+    "practice": null,
+    "navigationScrollable": "auto",
+    "readStates": 0,
+    "headings": [
+      "Серверная инфраструктура",
+      "Продолжить обучение",
+      "Введение",
+      "Первая страница",
+      "Linux и лаборатория",
+      "Сеть",
+      "Хранение и данные",
+      "Автоматизация",
+      "Платформа приложений",
+      "Серверное оборудование",
+      "Эксплуатация",
+      "Итоговая работа"
+    ]
+  },
+  {
+    "route": "/learn/process/",
+    "width": 1440,
+    "height": 5862,
+    "viewport": 900,
+    "horizontalOverflow": false,
+    "lessonLinks": 0,
+    "firstExercise": {
+      "top": 3301,
+      "height": 77
+    },
+    "notes": {
+      "top": 2755,
+      "height": 403
+    },
+    "practice": null,
+    "navigationScrollable": "auto",
+    "readStates": 0,
+    "headings": [
+      "Найти работающую программу и её процесс",
+      "Разберёмся до действия",
+      "Разобранный пример",
+      "Прогноз и опыт с поддержкой",
+      "Самостоятельная задача",
+      "Объясни и вернись позже",
+      "Что скрывается за PID",
+      "Мои наблюдения",
+      "Практикум и отчёты",
+      "Практика на выделенной Linux-ВМ"
+    ]
+  },
+  {
+    "route": "/progress/",
+    "width": 1440,
+    "height": 900,
+    "viewport": 900,
+    "horizontalOverflow": false,
+    "lessonLinks": 0,
+    "firstExercise": null,
+    "notes": null,
+    "practice": null,
+    "navigationScrollable": "auto",
+    "readStates": 0,
+    "headings": [
+      "Мои результаты",
+      "Возвращение к пройденному"
+    ]
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "height": 11336,
+    "viewport": 900,
+    "horizontalOverflow": false,
+    "lessonLinks": 82,
+    "firstExercise": null,
+    "notes": null,
+    "practice": null,
+    "navigationScrollable": "auto",
+    "readStates": 0,
+    "headings": [
+      "Серверная инфраструктура",
+      "Продолжить обучение",
+      "Введение",
+      "Первая страница",
+      "Linux и лаборатория",
+      "Сеть",
+      "Хранение и данные",
+      "Автоматизация",
+      "Платформа приложений",
+      "Серверное оборудование",
+      "Эксплуатация",
+      "Итоговая работа"
+    ]
+  },
+  {
+    "route": "/learn/process/",
+    "width": 390,
+    "height": 7536,
+    "viewport": 900,
+    "horizontalOverflow": false,
+    "lessonLinks": 0,
+    "firstExercise": {
+      "top": 4208,
+      "height": 77
+    },
+    "notes": {
+      "top": 3449,
+      "height": 617
+    },
+    "practice": null,
+    "navigationScrollable": "auto",
+    "readStates": 0,
+    "headings": [
+      "Найти работающую программу и её процесс",
+      "Разберёмся до действия",
+      "Разобранный пример",
+      "Прогноз и опыт с поддержкой",
+      "Самостоятельная задача",
+      "Объясни и вернись позже",
+      "Что скрывается за PID",
+      "Мои наблюдения",
+      "Практикум и отчёты",
+      "Практика на выделенной Linux-ВМ"
+    ]
+  },
+  {
+    "route": "/progress/",
+    "width": 390,
+    "height": 1236,
+    "viewport": 900,
+    "horizontalOverflow": false,
+    "lessonLinks": 0,
+    "firstExercise": null,
+    "notes": null,
+    "practice": null,
+    "navigationScrollable": "auto",
+    "readStates": 0,
+    "headings": [
+      "Мои результаты",
+      "Возвращение к пройденному"
+    ]
+  }
+]

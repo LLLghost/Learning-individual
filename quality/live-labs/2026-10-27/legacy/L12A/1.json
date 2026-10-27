@@ -1,0 +1,29 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L12A",
+  "module": "U12",
+  "kind": "collect",
+  "seed": "4cfb5676",
+  "variant": 0,
+  "collected_utc": "2026-10-27T08:55:18.318814+00:00",
+  "facts": {
+    "serial_of_claimed": "MAYAK-LAB-EMPTY",
+    "claimed_is_system_disk": false,
+    "claimed_exists": true
+  },
+  "claim": {
+    "device": "sdb",
+    "serial": "MAYAK-LAB-EMPTY"
+  },
+  "evidence": [
+    {
+      "cmd": "lsblk -J -o NAME,TYPE,SIZE,MODEL,SERIAL,WWN,FSTYPE,MOUNTPOINTS",
+      "rc": 0,
+      "sha256": "3d46cc2fc1149df3205c2a6e73e22e567423e77720ec6497ddda30b9a6536284",
+      "excerpt": "         \"name\": \"sdb\","
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

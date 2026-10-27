@@ -89,6 +89,8 @@ const numeric=oldEngine.slice(oldEngine.indexOf('function numericOK('),oldEngine
 const oldLabs=JSON.parse((await readFile('content/data/lab-data.html','utf8')).match(/<script[^>]*>([\s\S]*?)<\/script>/)[1]);
 await writeFile(resolve(output,'assets/checker.js'),`const LABDB=${JSON.stringify(oldLabs)};const LABS=new Map(LABDB.labs.map(x=>[x.id,x]));\n${hashLine}\n${pure}\n${numeric}\nexport {labValid,labRows,evaluate};`);
 meta.checkerSha256=sha(hashLine+pure+numeric);
+const liveAcceptance=JSON.parse(await readFile('quality/live-acceptance.json','utf8'));
+meta.liveAcceptance={accepted:liveAcceptance.status==='accepted'&&['sourceSha256','collectorSha256','checkerSha256','practiceSha256'].every(key=>liveAcceptance[key]===meta[key]),date:liveAcceptance.date??null};
 await writeFile(resolve(output,'assets/course-data.json'),JSON.stringify(meta));
 await cp('content/course/ui/course.js',resolve(output,'assets/course.js'));
 for(const file of ['course.css','tokens.css','base.css'])await cp(`content/course/ui/${file}`,resolve(output,`assets/${file}`));

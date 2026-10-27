@@ -1,0 +1,27 @@
+{
+  "kind": "session-execution-receipt; not a raw log",
+  "date": "2026-10-27",
+  "checks": [
+    {
+      "command": "npm run validate:release",
+      "basePath": "/",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:release",
+      "basePath": "/Learning-individual",
+      "exitCode": 0
+    }
+  ],
+  "rootBuildRestored": true,
+  "lessons": 82,
+  "correctAnswers": 536,
+  "incorrectAnswers": 536,
+  "javascriptErrors": 0,
+  "personalNoteSha256Unchanged": "D779B8D4872EC7D573A096DC08587FD258D71A96E8A00624E9E4B4EE77BFE43C",
+  "hostFinalState": {
+    "vm9100": "running; no active practice attempts; UEFI",
+    "vm9101": "stopped; backup source preserved",
+    "temporaryVMs100and101": "removed"
+  }
+}

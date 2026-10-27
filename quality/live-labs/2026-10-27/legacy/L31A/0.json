@@ -1,0 +1,35 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L31A",
+  "module": "U31",
+  "kind": "collect",
+  "seed": "fbd0d15e",
+  "variant": 0,
+  "collected_utc": "2026-10-27T08:55:54.780897+00:00",
+  "facts": {
+    "stratum": 4,
+    "source": "162.159.200.123",
+    "drift_ppm_file": -31.756368,
+    "synchronised": true
+  },
+  "claim": {
+    "drift_ppm": -31.756368
+  },
+  "evidence": [
+    {
+      "cmd": "chronyc -c tracking",
+      "rc": 0,
+      "sha256": "3f91fd5e100822e31f13a95b99e50a8df92b9ce6dd21c9f91fb2557ed0f81bb1",
+      "excerpt": "A29FC87B,162.159.200.123,4,1793091353.157218966,0.002390475,-0.002957155,0.002957155,-31.756,4.940,1.974,0.020993860,0.000232917,1.8,Normal"
+    },
+    {
+      "cmd": "cat /var/lib/chrony/chrony.drift",
+      "rc": 0,
+      "sha256": "146fd767840ff42262284cccb164b39f970fe6911146bb25c2187749cc844d8f",
+      "excerpt": "дрейф из файла: -31.756368"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L04A",
+  "module": "U04",
+  "kind": "collect",
+  "seed": "ba7e4bf3",
+  "variant": 0,
+  "collected_utc": "2026-10-27T08:54:59.106566+00:00",
+  "facts": {
+    "verify_rc": 0,
+    "active_state": "inactive",
+    "result": "success",
+    "has_dropin": true,
+    "ran": true,
+    "succeeded": true,
+    "failure_seen": true
+  },
+  "claim": {
+    "exit_status": 200
+  },
+  "evidence": [
+    {
+      "cmd": "systemd-analyze verify /etc/systemd/system/mayak-legacy-1.service",
+      "rc": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "excerpt": ""
+    },
+    {
+      "cmd": "systemctl show -p ActiveState,SubState,Result,ExecMainStatus,DropInPaths,WorkingDirectory mayak-legacy-1.service",
+      "rc": 0,
+      "sha256": "89fdb31ae589a6a3894fae555eb98aef09ce654e75539b748fd0a400060921fa",
+      "excerpt": "Result=success / ActiveState=inactive / DropInPaths=/etc/systemd/system/mayak-legacy-1.service.d/working.conf"
+    },
+    {
+      "cmd": "journalctl -u mayak-legacy-1.service -b -o json",
+      "rc": 0,
+      "sha256": "632218cb776e22afbbbfb634c8c10f0790fee217890a3dde461a5db5aa54644c",
+      "excerpt": "641257651c1b4ec9a8624d7a40a9e1e7 / 7d4958e842da4a758f6c1cdc7b36dcc5 / 98e322203f7a4ed290d09fe03c09fe15 / d9b373ed55a64feb8242e02dbe79a49c / be02cf6855d2428ba40df7e9d022f03d / 7d4958e842da4a758f6c1cdc7"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

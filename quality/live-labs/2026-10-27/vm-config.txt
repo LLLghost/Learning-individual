@@ -1,0 +1,27 @@
+agent: enabled=1
+bios: ovmf
+boot: order=scsi0
+cicustom: user=local:snippets/mayak-9100.yaml
+cores: 4
+cpu: host
+description: mayak acceptance disposable guest 2026-10-27
+efidisk0: local-lvm:vm-9100-disk-0,efitype=4m,pre-enrolled-keys=0,size=4M
+ide2: local-lvm:vm-9100-cloudinit,media=cdrom
+ipconfig0: ip=172.30.253.2/24,gw=172.30.253.1
+machine: q35
+memory: 6144
+meta: creation-qemu=10.1.2,ctime=1793090242
+name: mayak-acceptance
+nameserver: 10.30.11.199
+net0: virtio=BC:24:11:B3:13:EE,bridge=mayakbr0
+numa: 1
+numa0: cpus=0-1,memory=3072
+numa1: cpus=2-3,memory=3072
+parent: mayak-clean-dependencies
+scsi0: local-lvm:vm-9100-disk-1,size=40G
+scsi1: local-lvm:vm-9100-disk-2,serial=MAYAK-LAB-EMPTY,size=1G
+scsihw: virtio-scsi-pci
+serial0: socket
+smbios1: uuid=a32b11a9-3ebd-4d07-839b-75813dbc97cf
+vga: serial0
+vmgenid: af5648c9-af5a-4be9-a8dd-e6bd70e832d7

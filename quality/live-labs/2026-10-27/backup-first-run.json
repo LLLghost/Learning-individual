@@ -1,0 +1,84 @@
+{
+  "runnerSha256": "696e7f143c6d1f0616aefc401e8f0a998a7546897e505dcd7642b7d74a3b8dde",
+  "sourceVM": 9100,
+  "results": [
+    {
+      "lesson": "vm-backup",
+      "variant": 0,
+      "attempt": "1b7253dbc52741eb9a99ae64217f49aa",
+      "phases": [
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261027/proxmox-backup.py",
+            "prepare",
+            "--source-vmid",
+            "9100",
+            "--storage",
+            "local-lvm",
+            "--attempt",
+            "1b7253dbc52741eb9a99ae64217f49aa",
+            "--variant",
+            "0"
+          ],
+          "code": 2,
+          "seconds": 245.61,
+          "stdout": "",
+          "stderr": "backup-practice: Guest agent unavailable; inspect the isolated guest console\n"
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261027/proxmox-backup.py",
+            "restore"
+          ],
+          "code": 0,
+          "seconds": 2.72,
+          "stdout": "Owned guests removed; source and backup archives retained.\n",
+          "stderr": ""
+        }
+      ],
+      "status": "failed",
+      "error": "{'command': ['python3', '/root/mayak-acceptance-20261027/proxmox-backup.py', 'prepare', '--source-vmid', '9100', '--storage', 'local-lvm', '--attempt', '1b7253dbc52741eb9a99ae64217f49aa', '--variant', '0'], 'code': 2, 'seconds': 245.61, 'stdout': '', 'stderr': 'backup-practice: Guest agent unavailable; inspect the isolated guest console\\n'}"
+    },
+    {
+      "lesson": "vm-backup",
+      "variant": 1,
+      "attempt": "bc0d31f89c8e4f91b4149239760581ee",
+      "phases": [
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261027/proxmox-backup.py",
+            "prepare",
+            "--source-vmid",
+            "9100",
+            "--storage",
+            "local-lvm",
+            "--attempt",
+            "bc0d31f89c8e4f91b4149239760581ee",
+            "--variant",
+            "1"
+          ],
+          "code": 2,
+          "seconds": 316.25,
+          "stdout": "",
+          "stderr": "backup-practice: Guest agent unavailable; inspect the isolated guest console\n"
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261027/proxmox-backup.py",
+            "restore"
+          ],
+          "code": 0,
+          "seconds": 2.72,
+          "stdout": "Owned guests removed; source and backup archives retained.\n",
+          "stderr": ""
+        }
+      ],
+      "status": "failed",
+      "error": "{'command': ['python3', '/root/mayak-acceptance-20261027/proxmox-backup.py', 'prepare', '--source-vmid', '9100', '--storage', 'local-lvm', '--attempt', 'bc0d31f89c8e4f91b4149239760581ee', '--variant', '1'], 'code': 2, 'seconds': 316.25, 'stdout': '', 'stderr': 'backup-practice: Guest agent unavailable; inspect the isolated guest console\\n'}"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L16B",
+  "module": "U16",
+  "kind": "collect",
+  "seed": "b91b2bc2",
+  "variant": 0,
+  "collected_utc": "2026-10-27T08:55:30.581761+00:00",
+  "facts": {
+    "health": "ONLINE",
+    "scrub_finished": true,
+    "scrub_is_new": true,
+    "errors_zero": true,
+    "snapshot_present": true,
+    "received_present": true,
+    "pools_differ": true,
+    "restored_readable": true,
+    "restored_pool": "leg1t",
+    "restored_on_target": true,
+    "source_sha256": "8336fc382398564c5235810dc11a34271555a4eab56033fff2e255c7d4e51f4b",
+    "restored_sha256": "8336fc382398564c5235810dc11a34271555a4eab56033fff2e255c7d4e51f4b"
+  },
+  "claim": {
+    "snapshot": "leg1s/app@trial",
+    "received": "leg1t/app@trial",
+    "restored_file": "/home/course/legacy-acceptance/L16B/1/leg1t/app/control.bin"
+  },
+  "evidence": [
+    {
+      "cmd": "zpool get -H -o value health leg1s",
+      "rc": 0,
+      "sha256": "39978aec2486a58441cc2dd95cc4fbeffdcbfc7e2ba3e3a752f0b7c9ed9ad116",
+      "excerpt": "ONLINE"
+    },
+    {
+      "cmd": "zpool status leg1s",
+      "rc": 0,
+      "sha256": "55f5dee74b3f7cdb2d4e3e94487258e62660bbb3463f47b7787292048b237a8d",
+      "excerpt": "  scan: scrub repaired 0B in 00:00:00 with 0 errors on Tue Oct 27 08:55:30 2026 / errors: No known data errors"
+    },
+    {
+      "cmd": "zfs list -H -t snapshot -o name",
+      "rc": 0,
+      "sha256": "26a1f729d03ccf119cb5bf24f358f959e83ebe330bfe1b207d0765140aa16eb0",
+      "excerpt": "leg1s/app@trial / leg1t/app@trial"
+    },
+    {
+      "cmd": "zfs list -H -o name,mountpoint",
+      "rc": 0,
+      "sha256": "e75ea8f2efd6aa3c97564228f425ca93d924ed2c5bff2f548b5327aa4ac562d3",
+      "excerpt": "leg1s\t/home/course/legacy-acceptance/L16B/1/leg1s / leg1s/app\t/home/course/legacy-acceptance/L16B/1/leg1s/app / leg1t\t/home/course/legacy-acceptance/L16B/1/leg1t"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

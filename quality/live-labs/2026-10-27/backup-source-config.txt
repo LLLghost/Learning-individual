@@ -1,0 +1,22 @@
+agent: enabled=1
+bios: ovmf
+boot: order=scsi0
+cicustom: user=local:snippets/mayak-9101.yaml
+cores: 2
+cpu: host
+description: mayak disposable backup source 2026-10-27
+efidisk0: local-lvm:vm-9101-disk-0,efitype=4m,pre-enrolled-keys=0,size=4M
+ide2: local-lvm:vm-9101-cloudinit,media=cdrom
+ipconfig0: ip=172.30.253.3/24,gw=172.30.253.1
+machine: q35
+memory: 1536
+meta: creation-qemu=10.1.2,ctime=1793092396
+name: mayak-backup-source
+nameserver: 10.30.11.199
+net0: virtio=BC:24:11:F6:F9:BA,bridge=mayakbr0
+scsi0: local-lvm:vm-9101-disk-1,size=3G
+scsihw: virtio-scsi-pci
+serial0: socket
+smbios1: uuid=90fa06e1-abf2-4526-8185-71fc10560a3e
+vga: serial0
+vmgenid: d410c66d-cbae-4f6d-a691-9cc59705210e

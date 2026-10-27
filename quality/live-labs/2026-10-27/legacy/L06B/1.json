@@ -1,0 +1,33 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L06B",
+  "module": "U06",
+  "kind": "stand",
+  "seed": "acceptance-2",
+  "variant": 1,
+  "collected_utc": "2026-10-27T08:55:00.050224+00:00",
+  "facts": {
+    "route_via_gateway": true,
+    "arp_for_remote": false
+  },
+  "claim": {
+    "wrong_prefix": 16
+  },
+  "evidence": [
+    {
+      "cmd": "ip -j route get 10.10.20.12",
+      "rc": 0,
+      "sha256": "5c3ce084243c141b4f65ad6fcc78ceb0e8506a9b5dc8acbe3534cb69264a051c",
+      "excerpt": "[{\"dst\":\"10.10.20.12\",\"gateway\":\"10.10.10.1\",\"dev\":\"lc0\",\"prefsrc\":\"10.10.10.11\",\"flags\":[],\"uid\":0,\"cache\":[]}]"
+    },
+    {
+      "cmd": "ip -j neigh",
+      "rc": 0,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "excerpt": "[]"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

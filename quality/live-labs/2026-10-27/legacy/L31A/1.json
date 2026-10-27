@@ -1,0 +1,35 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L31A",
+  "module": "U31",
+  "kind": "collect",
+  "seed": "b6ee580f",
+  "variant": 0,
+  "collected_utc": "2026-10-27T08:56:17.036538+00:00",
+  "facts": {
+    "stratum": 4,
+    "source": "162.159.200.123",
+    "drift_ppm_file": -31.903122,
+    "synchronised": true
+  },
+  "claim": {
+    "drift_ppm": -31.903122
+  },
+  "evidence": [
+    {
+      "cmd": "chronyc -c tracking",
+      "rc": 0,
+      "sha256": "11b89b7d7d4ec24ce938752d15ad6b0615f9f33fed23c5928413d2a60c5aed1c",
+      "excerpt": "A29FC87B,162.159.200.123,4,1793091374.871402845,-0.000020406,0.000020469,0.000020469,-31.903,108.593,4.966,0.021224074,0.000513308,2.0,Normal"
+    },
+    {
+      "cmd": "cat /var/lib/chrony/chrony.drift",
+      "rc": 0,
+      "sha256": "eb2240d677307430bc25df2793c20f5e1a82a5f5220b4fefec7e3fbc4f994f87",
+      "excerpt": "дрейф из файла: -31.903122"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

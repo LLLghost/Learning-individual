@@ -1,0 +1,2458 @@
+{
+  "collectorSha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "results": [
+    {
+      "lab": "L04A",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": "systemctl daemon-reload",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "start",
+                "mayak-legacy-0.service"
+              ],
+              "code": 1,
+              "stdout": "",
+              "stderr": "Job for mayak-legacy-0.service failed because the control process exited with error code.\nSee \"systemctl status mayak-legacy-0.service\" and \"journalctl -xeu mayak-legacy-0.service\" for details.\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/0",
+                "--unit",
+                "mayak-legacy-0.service"
+              ],
+              "code": 0,
+              "stdout": "L04A: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: exit_status — числовой статус, с которым юнит упал из-за несуществующего WorkingDirectory.\nЗаполните /home/course/legacy-acceptance/L04A/0/answer.json, затем: course_lab.py collect L04A /home/course/legacy-acceptance/L04A/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/0",
+                "--unit",
+                "mayak-legacy-0.service"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L04A/0/lab-report.json. Загрузите его в модуле U04 учебного кабинета.\n  verify_rc: 0\n  active_state: failed\n  result: exit-code\n  has_dropin: False\n  ran: True\n  succeeded: False\n  failure_seen: True\n",
+              "stderr": ""
+            },
+            {
+              "command": "systemctl daemon-reload",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "start",
+                "mayak-legacy-0.service"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/0",
+                "--unit",
+                "mayak-legacy-0.service"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L04A/0/lab-report.json. Загрузите его в модуле U04 учебного кабинета.\n  verify_rc: 0\n  active_state: inactive\n  result: success\n  has_dropin: True\n  ran: True\n  succeeded: True\n  failure_seen: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/0",
+                "--unit",
+                "mayak-legacy-0.service"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "systemctl stop mayak-legacy-0.service || true; rm -rf /etc/systemd/system/mayak-legacy-0.service /etc/systemd/system/mayak-legacy-0.service.d; systemctl daemon-reload; systemctl reset-failed mayak-legacy-0.service || true",
+              "code": 0,
+              "stdout": "",
+              "stderr": "Failed to reset failed state of unit mayak-legacy-0.service: Unit mayak-legacy-0.service not loaded.\n"
+            }
+          ],
+          "state": {
+            "lab": "L04A",
+            "seed": "e97b96c0",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "mayak-legacy-0.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": "systemctl daemon-reload",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "start",
+                "mayak-legacy-1.service"
+              ],
+              "code": 1,
+              "stdout": "",
+              "stderr": "Job for mayak-legacy-1.service failed because the control process exited with error code.\nSee \"systemctl status mayak-legacy-1.service\" and \"journalctl -xeu mayak-legacy-1.service\" for details.\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/1",
+                "--unit",
+                "mayak-legacy-1.service"
+              ],
+              "code": 0,
+              "stdout": "L04A: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: exit_status — числовой статус, с которым юнит упал из-за несуществующего WorkingDirectory.\nЗаполните /home/course/legacy-acceptance/L04A/1/answer.json, затем: course_lab.py collect L04A /home/course/legacy-acceptance/L04A/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/1",
+                "--unit",
+                "mayak-legacy-1.service"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L04A/1/lab-report.json. Загрузите его в модуле U04 учебного кабинета.\n  verify_rc: 0\n  active_state: failed\n  result: exit-code\n  has_dropin: False\n  ran: True\n  succeeded: False\n  failure_seen: True\n",
+              "stderr": ""
+            },
+            {
+              "command": "systemctl daemon-reload",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "start",
+                "mayak-legacy-1.service"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/1",
+                "--unit",
+                "mayak-legacy-1.service"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L04A/1/lab-report.json. Загрузите его в модуле U04 учебного кабинета.\n  verify_rc: 0\n  active_state: inactive\n  result: success\n  has_dropin: True\n  ran: True\n  succeeded: True\n  failure_seen: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L04A",
+                "/home/course/legacy-acceptance/L04A/1",
+                "--unit",
+                "mayak-legacy-1.service"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "systemctl stop mayak-legacy-1.service || true; rm -rf /etc/systemd/system/mayak-legacy-1.service /etc/systemd/system/mayak-legacy-1.service.d; systemctl daemon-reload; systemctl reset-failed mayak-legacy-1.service || true",
+              "code": 0,
+              "stdout": "",
+              "stderr": "Failed to reset failed state of unit mayak-legacy-1.service: Unit mayak-legacy-1.service not loaded.\n"
+            }
+          ],
+          "state": {
+            "lab": "L04A",
+            "seed": "ba7e4bf3",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "mayak-legacy-1.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem"
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L06B",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": "ip netns add lega0; ip netns add legb0; ip link add lc0 type veth peer name lp0; ip link set lc0 netns lega0; ip link set lp0 netns legb0; ip -n lega0 link set lo up; ip -n legb0 link set lo up; ip -n lega0 link set lc0 up; ip -n legb0 link set lp0 up; ip -n lega0 addr add 10.10.10.11/24 dev lc0; ip -n legb0 addr add 10.10.10.1/24 dev lp0; ip -n legb0 addr add 10.10.20.12/32 dev lo; ip -n lega0 route add default via 10.10.10.1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Интерфейс lc0 есть, управляющий lo не затрагивается.\nВыполнено: ip addr add 10.10.10.11/8 dev lc0  (удалённый адрес станет локальным)\nПодсказка по полям: wrong_prefix — длина префикса, из-за которой удалённый адрес считался локальным.\nЗаполните /home/course/legacy-acceptance/L06B/0/answer.json, затем: course_lab.py collect L06B /home/course/legacy-acceptance/L06B/0\nОткат: course_lab.py restore L06B /home/course/legacy-acceptance/L06B/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L06B/0/lab-report.json. Загрузите его в модуле U06 учебного кабинета.\n  route_via_gateway: False\n  arp_for_remote: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "-n",
+                "lega0",
+                "addr",
+                "del",
+                "10.10.10.11/8",
+                "dev",
+                "lc0"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L06B/0/lab-report.json. Загрузите его в модуле U06 учебного кабинета.\n  route_via_gateway: True\n  arp_for_remote: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Неверный адрес уже снят — стенд в исходном состоянии.\n",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids lega0 | xargs -r kill; ip netns del lega0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids legb0 | xargs -r kill; ip netns del legb0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L06B",
+            "seed": "acceptance-0",
+            "variant": 0,
+            "kind": "stand",
+            "iface": "lc0",
+            "peer": "10.10.20.12",
+            "address": "10.10.10.11/8"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": "ip netns add lega1; ip netns add legb1; ip link add lc0 type veth peer name lp0; ip link set lc0 netns lega1; ip link set lp0 netns legb1; ip -n lega1 link set lo up; ip -n legb1 link set lo up; ip -n lega1 link set lc0 up; ip -n legb1 link set lp0 up; ip -n lega1 addr add 10.10.10.11/24 dev lc0; ip -n legb1 addr add 10.10.10.1/24 dev lp0; ip -n legb1 addr add 10.10.20.12/32 dev lo; ip -n lega1 route add default via 10.10.10.1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Интерфейс lc0 есть, управляющий lo не затрагивается.\nВыполнено: ip addr add 10.10.10.11/16 dev lc0  (удалённый адрес станет локальным)\nПодсказка по полям: wrong_prefix — длина префикса, из-за которой удалённый адрес считался локальным.\nЗаполните /home/course/legacy-acceptance/L06B/1/answer.json, затем: course_lab.py collect L06B /home/course/legacy-acceptance/L06B/1\nОткат: course_lab.py restore L06B /home/course/legacy-acceptance/L06B/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L06B/1/lab-report.json. Загрузите его в модуле U06 учебного кабинета.\n  route_via_gateway: False\n  arp_for_remote: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "-n",
+                "lega1",
+                "addr",
+                "del",
+                "10.10.10.11/16",
+                "dev",
+                "lc0"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L06B/1/lab-report.json. Загрузите его в модуле U06 учебного кабинета.\n  route_via_gateway: True\n  arp_for_remote: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L06B",
+                "/home/course/legacy-acceptance/L06B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Неверный адрес уже снят — стенд в исходном состоянии.\n",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids lega1 | xargs -r kill; ip netns del lega1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids legb1 | xargs -r kill; ip netns del legb1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L06B",
+            "seed": "acceptance-2",
+            "variant": 1,
+            "kind": "stand",
+            "iface": "lc0",
+            "peer": "10.10.20.12",
+            "address": "10.10.10.11/16"
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L07B",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": "ip netns add lega0; ip netns add legb0; ip link add lc0 type veth peer name lp0; ip link set lc0 netns lega0; ip link set lp0 netns legb0; ip -n lega0 link set lo up; ip -n legb0 link set lo up; ip -n lega0 link set lc0 up; ip -n legb0 link set lp0 up; ip -n lega0 addr add 10.10.10.11/24 dev lc0; ip -n legb0 addr add 10.10.10.1/24 dev lp0; ip -n legb0 addr add 10.10.20.12/32 dev lo; ip -n lega0 route add default via 10.10.10.1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Интерфейс lc0 есть, управляющий lo не затрагивается.\nВыполнено: ip link set dev lc0 mtu 1400  (было 1500)\nПодсказка по полям: path_mtu — найденный MTU участка.\nЗаполните /home/course/legacy-acceptance/L07B/0/answer.json, затем: course_lab.py collect L07B /home/course/legacy-acceptance/L07B/0\nОткат: course_lab.py restore L07B /home/course/legacy-acceptance/L07B/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L07B/0/lab-report.json. Загрузите его в модуле U07 учебного кабинета.\n  path_mtu: 1400\n  df_max_payload: 1372\n  handshake_ok: True\n  transfer_ok: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "-n",
+                "lega0",
+                "-j",
+                "link",
+                "show",
+                "lc0"
+              ],
+              "code": 0,
+              "stdout": "[{\"ifindex\":73,\"link_index\":72,\"ifname\":\"lc0\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1400,\"qdisc\":\"noqueue\",\"operstate\":\"UP\",\"linkmode\":\"DEFAULT\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"ether\",\"address\":\"b2:13:c9:09:2b:d3\",\"broadcast\":\"ff:ff:ff:ff:ff:ff\",\"link_netnsid\":1}]\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L07B/0/lab-report.json. Загрузите его в модуле U07 учебного кабинета.\n  path_mtu: 1400\n  df_max_payload: 1372\n  handshake_ok: True\n  transfer_ok: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega0",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/0",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-0"
+              ],
+              "code": 0,
+              "stdout": "Внесённое изменение возвращено.\n",
+              "stderr": ""
+            },
+            {
+              "command": "kill 100993 || true",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids lega0 | xargs -r kill; ip netns del lega0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids legb0 | xargs -r kill; ip netns del legb0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L07B",
+            "seed": "acceptance-0",
+            "variant": 0,
+            "kind": "stand",
+            "iface": "lc0",
+            "peer": "10.10.20.12",
+            "mtu_before": 1500
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": "ip netns add lega1; ip netns add legb1; ip link add lc0 type veth peer name lp0; ip link set lc0 netns lega1; ip link set lp0 netns legb1; ip -n lega1 link set lo up; ip -n legb1 link set lo up; ip -n lega1 link set lc0 up; ip -n legb1 link set lp0 up; ip -n lega1 addr add 10.10.10.11/24 dev lc0; ip -n legb1 addr add 10.10.10.1/24 dev lp0; ip -n legb1 addr add 10.10.20.12/32 dev lo; ip -n lega1 route add default via 10.10.10.1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Интерфейс lc0 есть, управляющий lo не затрагивается.\nВыполнено: ip link set dev lc0 mtu 1280  (было 1500)\nПодсказка по полям: path_mtu — найденный MTU участка.\nЗаполните /home/course/legacy-acceptance/L07B/1/answer.json, затем: course_lab.py collect L07B /home/course/legacy-acceptance/L07B/1\nОткат: course_lab.py restore L07B /home/course/legacy-acceptance/L07B/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L07B/1/lab-report.json. Загрузите его в модуле U07 учебного кабинета.\n  path_mtu: 1280\n  df_max_payload: 1252\n  handshake_ok: True\n  transfer_ok: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "-n",
+                "lega1",
+                "-j",
+                "link",
+                "show",
+                "lc0"
+              ],
+              "code": 0,
+              "stdout": "[{\"ifindex\":75,\"link_index\":74,\"ifname\":\"lc0\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1280,\"qdisc\":\"noqueue\",\"operstate\":\"UP\",\"linkmode\":\"DEFAULT\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"ether\",\"address\":\"56:f9:e7:c5:ee:30\",\"broadcast\":\"ff:ff:ff:ff:ff:ff\",\"link_netnsid\":1}]\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L07B/1/lab-report.json. Загрузите его в модуле U07 учебного кабинета.\n  path_mtu: 1280\n  df_max_payload: 1252\n  handshake_ok: True\n  transfer_ok: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "ip",
+                "netns",
+                "exec",
+                "lega1",
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L07B",
+                "/home/course/legacy-acceptance/L07B/1",
+                "--iface",
+                "lc0",
+                "--mgmt",
+                "lo",
+                "--local",
+                "10.10.10.11",
+                "--peer",
+                "10.10.20.12",
+                "--seed",
+                "acceptance-2"
+              ],
+              "code": 0,
+              "stdout": "Внесённое изменение возвращено.\n",
+              "stderr": ""
+            },
+            {
+              "command": "kill 102694 || true",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids lega1 | xargs -r kill; ip netns del lega1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "ip netns pids legb1 | xargs -r kill; ip netns del legb1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L07B",
+            "seed": "acceptance-2",
+            "variant": 1,
+            "kind": "stand",
+            "iface": "lc0",
+            "peer": "10.10.20.12",
+            "mtu_before": 1500
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L12A",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": [
+                "lsblk",
+                "-J",
+                "-o",
+                "NAME,TYPE,SERIAL"
+              ],
+              "code": 0,
+              "stdout": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"serial\": \"drive-scsi0\",\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"serial\": null\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"serial\": null\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"serial\": null\n            }\n         ]\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"serial\": \"MAYAK-LAB-EMPTY\"\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"serial\": \"QM00003\"\n      }\n   ]\n}\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/0"
+              ],
+              "code": 0,
+              "stdout": "L12A: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: device — имя вида sdb, serial — его серийный номер из lsblk.\nЗаполните /home/course/legacy-acceptance/L12A/0/answer.json, затем: course_lab.py collect L12A /home/course/legacy-acceptance/L12A/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L12A/0/lab-report.json. Загрузите его в модуле U12 учебного кабинета.\n  serial_of_claimed: None\n  claimed_is_system_disk: False\n  claimed_exists: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L12A/0/lab-report.json. Загрузите его в модуле U12 учебного кабинета.\n  serial_of_claimed: MAYAK-LAB-EMPTY\n  claimed_is_system_disk: False\n  claimed_exists: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/0"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L12A",
+            "seed": "bf1745b2",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": [
+                "lsblk",
+                "-J",
+                "-o",
+                "NAME,TYPE,SERIAL"
+              ],
+              "code": 0,
+              "stdout": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"serial\": \"drive-scsi0\",\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"serial\": null\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"serial\": null\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"serial\": null\n            }\n         ]\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"serial\": \"MAYAK-LAB-EMPTY\"\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"serial\": \"QM00003\"\n      }\n   ]\n}\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/1"
+              ],
+              "code": 0,
+              "stdout": "L12A: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: device — имя вида sdb, serial — его серийный номер из lsblk.\nЗаполните /home/course/legacy-acceptance/L12A/1/answer.json, затем: course_lab.py collect L12A /home/course/legacy-acceptance/L12A/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/1"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L12A/1/lab-report.json. Загрузите его в модуле U12 учебного кабинета.\n  serial_of_claimed: None\n  claimed_is_system_disk: False\n  claimed_exists: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/1"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L12A/1/lab-report.json. Загрузите его в модуле U12 учебного кабинета.\n  serial_of_claimed: MAYAK-LAB-EMPTY\n  claimed_is_system_disk: False\n  claimed_exists: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L12A",
+                "/home/course/legacy-acceptance/L12A/1"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L12A",
+            "seed": "4cfb5676",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem"
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L13B",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "256M",
+                "/home/course/legacy-acceptance/L13B/0/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "losetup",
+                "--find",
+                "--show",
+                "/home/course/legacy-acceptance/L13B/0/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "/dev/loop0\n",
+              "stderr": ""
+            },
+            {
+              "command": "pvcreate -ff -y /dev/loop0; vgcreate legvg0 /dev/loop0; lvcreate -L 64M -n data legvg0; mkfs.ext4 -F /dev/legvg0/data; mount /dev/legvg0/data /home/course/legacy-acceptance/L13B/0/mnt",
+              "code": 0,
+              "stdout": "  Physical volume \"/dev/loop0\" successfully created.\n  Volume group \"legvg0\" successfully created\n  Logical volume \"data\" created.\nDiscarding device blocks:     0/65536\b\b\b\b\b\b\b\b\b\b\b           \b\b\b\b\b\b\b\b\b\b\bdone                            \nCreating filesystem with 65536 1k blocks and 16384 inodes\nFilesystem UUID: f72502c6-f090-472a-a513-f36fa51a3c03\nSuperblock backups stored on blocks: \n\t8193, 24577, 40961, 57345\n\nAllocating group tables: 0/8\b\b\b   \b\b\bdone                            \nWriting inode tables: 0/8\b\b\b   \b\b\bdone                            \nCreating journal (4096 blocks): done\nWriting superblocks and filesystem accounting information: 0/8\b\b\b   \b\b\bdone\n\n",
+              "stderr": "mke2fs 1.47.0 (5-Feb-2023)\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/0",
+                "--volume",
+                "/dev/legvg0/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/0/mnt"
+              ],
+              "code": 0,
+              "stdout": "L13B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: lv_size_mib — размер логического тома после расширения, gap_seen — видели ли вы расхождение LV и FS. Контрольный файл — control.bin в точке монтирования: его сумма снимается до работы и сверяется после.\nЗаполните /home/course/legacy-acceptance/L13B/0/answer.json, затем: course_lab.py collect L13B /home/course/legacy-acceptance/L13B/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/0",
+                "--volume",
+                "/dev/legvg0/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/0/mnt"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L13B/0/lab-report.json. Загрузите его в модуле U13 учебного кабинета.\n  lv_size_mib: 64\n  fs_size_mib: 64\n  sizes_match: True\n  lv_grew: False\n  fs_grew: False\n  checksum_same: True\n",
+              "stderr": ""
+            },
+            {
+              "command": "lvextend -L 128M /dev/legvg0/data; resize2fs /dev/legvg0/data",
+              "code": 0,
+              "stdout": "  Size of logical volume legvg0/data changed from 64.00 MiB (16 extents) to 128.00 MiB (32 extents).\n  Logical volume legvg0/data successfully resized.\nFilesystem at /dev/legvg0/data is mounted on /home/course/legacy-acceptance/L13B/0/mnt; on-line resizing required\nold_desc_blocks = 1, new_desc_blocks = 1\nThe filesystem on /dev/legvg0/data is now 131072 (1k) blocks long.\n\n",
+              "stderr": "resize2fs 1.47.0 (5-Feb-2023)\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/0",
+                "--volume",
+                "/dev/legvg0/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/0/mnt"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L13B/0/lab-report.json. Загрузите его в модуле U13 учебного кабинета.\n  lv_size_mib: 128\n  fs_size_mib: 128\n  sizes_match: True\n  lv_grew: True\n  fs_grew: True\n  checksum_same: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/0",
+                "--volume",
+                "/dev/legvg0/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/0/mnt"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "umount /home/course/legacy-acceptance/L13B/0/mnt; vgremove -ff -y legvg0; pvremove -ff -y /dev/loop0",
+              "code": 0,
+              "stdout": "  Logical volume \"data\" successfully removed.\n  Volume group \"legvg0\" successfully removed\n  Labels on physical volume \"/dev/loop0\" successfully wiped.\n",
+              "stderr": ""
+            },
+            {
+              "command": "losetup -d /dev/loop0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L13B",
+            "seed": "624bd45c",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/legvg0/data",
+            "mount": "/home/course/legacy-acceptance/L13B/0/mnt",
+            "root": "root.pem",
+            "cert": "server.pem",
+            "lv_size_mib_before": 64,
+            "fs_size_mib_before": 64,
+            "control_file": "/home/course/legacy-acceptance/L13B/0/mnt/control.bin",
+            "control_sha256_before": "c8c7d608cd67c20cd96424ff18bea6329b061f702ee06890e81c807e76815c92"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "256M",
+                "/home/course/legacy-acceptance/L13B/1/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "losetup",
+                "--find",
+                "--show",
+                "/home/course/legacy-acceptance/L13B/1/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "/dev/loop0\n",
+              "stderr": ""
+            },
+            {
+              "command": "pvcreate -ff -y /dev/loop0; vgcreate legvg1 /dev/loop0; lvcreate -L 64M -n data legvg1; mkfs.ext4 -F /dev/legvg1/data; mount /dev/legvg1/data /home/course/legacy-acceptance/L13B/1/mnt",
+              "code": 0,
+              "stdout": "  Physical volume \"/dev/loop0\" successfully created.\n  Volume group \"legvg1\" successfully created\n  Logical volume \"data\" created.\nDiscarding device blocks:     0/65536\b\b\b\b\b\b\b\b\b\b\b           \b\b\b\b\b\b\b\b\b\b\bdone                            \nCreating filesystem with 65536 1k blocks and 16384 inodes\nFilesystem UUID: 822b4bbd-108d-4412-afef-3eb4a040d4ff\nSuperblock backups stored on blocks: \n\t8193, 24577, 40961, 57345\n\nAllocating group tables: 0/8\b\b\b   \b\b\bdone                            \nWriting inode tables: 0/8\b\b\b   \b\b\bdone                            \nCreating journal (4096 blocks): done\nWriting superblocks and filesystem accounting information: 0/8\b\b\b   \b\b\bdone\n\n",
+              "stderr": "mke2fs 1.47.0 (5-Feb-2023)\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/1",
+                "--volume",
+                "/dev/legvg1/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/1/mnt"
+              ],
+              "code": 0,
+              "stdout": "L13B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: lv_size_mib — размер логического тома после расширения, gap_seen — видели ли вы расхождение LV и FS. Контрольный файл — control.bin в точке монтирования: его сумма снимается до работы и сверяется после.\nЗаполните /home/course/legacy-acceptance/L13B/1/answer.json, затем: course_lab.py collect L13B /home/course/legacy-acceptance/L13B/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/1",
+                "--volume",
+                "/dev/legvg1/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/1/mnt"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L13B/1/lab-report.json. Загрузите его в модуле U13 учебного кабинета.\n  lv_size_mib: 64\n  fs_size_mib: 64\n  sizes_match: True\n  lv_grew: False\n  fs_grew: False\n  checksum_same: True\n",
+              "stderr": ""
+            },
+            {
+              "command": "lvextend -L 128M /dev/legvg1/data; resize2fs /dev/legvg1/data",
+              "code": 0,
+              "stdout": "  Size of logical volume legvg1/data changed from 64.00 MiB (16 extents) to 128.00 MiB (32 extents).\n  Logical volume legvg1/data successfully resized.\nFilesystem at /dev/legvg1/data is mounted on /home/course/legacy-acceptance/L13B/1/mnt; on-line resizing required\nold_desc_blocks = 1, new_desc_blocks = 1\nThe filesystem on /dev/legvg1/data is now 131072 (1k) blocks long.\n\n",
+              "stderr": "resize2fs 1.47.0 (5-Feb-2023)\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/1",
+                "--volume",
+                "/dev/legvg1/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/1/mnt"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L13B/1/lab-report.json. Загрузите его в модуле U13 учебного кабинета.\n  lv_size_mib: 128\n  fs_size_mib: 128\n  sizes_match: True\n  lv_grew: True\n  fs_grew: True\n  checksum_same: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L13B",
+                "/home/course/legacy-acceptance/L13B/1",
+                "--volume",
+                "/dev/legvg1/data",
+                "--mount",
+                "/home/course/legacy-acceptance/L13B/1/mnt"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "umount /home/course/legacy-acceptance/L13B/1/mnt; vgremove -ff -y legvg1; pvremove -ff -y /dev/loop0",
+              "code": 0,
+              "stdout": "  Logical volume \"data\" successfully removed.\n  Volume group \"legvg1\" successfully removed\n  Labels on physical volume \"/dev/loop0\" successfully wiped.\n",
+              "stderr": ""
+            },
+            {
+              "command": "losetup -d /dev/loop0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L13B",
+            "seed": "db6eebd7",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/legvg1/data",
+            "mount": "/home/course/legacy-acceptance/L13B/1/mnt",
+            "root": "root.pem",
+            "cert": "server.pem",
+            "lv_size_mib_before": 64,
+            "fs_size_mib_before": 64,
+            "control_file": "/home/course/legacy-acceptance/L13B/1/mnt/control.bin",
+            "control_sha256_before": "e74e984f114b4df11b578961fc6bec3e88a17a64912bf4c5685a557e8420cd5b"
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L14B",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "256M",
+                "/home/course/legacy-acceptance/L14B/0/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "losetup",
+                "--find",
+                "--show",
+                "/home/course/legacy-acceptance/L14B/0/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "/dev/loop0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "256M",
+                "/home/course/legacy-acceptance/L14B/0/disk1.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "losetup",
+                "--find",
+                "--show",
+                "/home/course/legacy-acceptance/L14B/0/disk1.img"
+              ],
+              "code": 0,
+              "stdout": "/dev/loop1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "mdadm",
+                "--create",
+                "/dev/md127",
+                "--run",
+                "--metadata=1.2",
+                "--level=1",
+                "--raid-devices=2",
+                "/dev/loop0",
+                "/dev/loop1"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: array /dev/md127 started.\n"
+            },
+            {
+              "command": "mdadm --wait /dev/md127",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/0",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "L14B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: failed_member — устройство, помеченное отказавшим (например /dev/sdc1).\nЗаполните /home/course/legacy-acceptance/L14B/0/answer.json, затем: course_lab.py collect L14B /home/course/legacy-acceptance/L14B/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/0",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L14B/0/lab-report.json. Загрузите его в модуле U14 учебного кабинета.\n  degraded: 0\n  sync_action: idle\n  level: raid1\n  members: 2\n  failure_logged: False\n  recovery_logged: False\n  claimed_member_back: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "mdadm",
+                "/dev/md127",
+                "--fail",
+                "/dev/loop1",
+                "--remove",
+                "/dev/loop1"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: set /dev/loop1 faulty in /dev/md127\nmdadm: hot removed /dev/loop1 from /dev/md127\n"
+            },
+            {
+              "command": [
+                "mdadm",
+                "/dev/md127",
+                "--add",
+                "/dev/loop1"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: added /dev/loop1\n"
+            },
+            {
+              "command": [
+                "mdadm",
+                "--wait",
+                "/dev/md127"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/0",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L14B/0/lab-report.json. Загрузите его в модуле U14 учебного кабинета.\n  degraded: 0\n  sync_action: idle\n  level: raid1\n  members: 2\n  failure_logged: True\n  recovery_logged: True\n  claimed_member_back: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/0",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "mdadm --stop /dev/md127",
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: stopped /dev/md127\n"
+            },
+            {
+              "command": "losetup -d /dev/loop0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "losetup -d /dev/loop1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L14B",
+            "seed": "9792356b",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem",
+            "started_at": "2026-10-27 08:55:22"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "256M",
+                "/home/course/legacy-acceptance/L14B/1/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "losetup",
+                "--find",
+                "--show",
+                "/home/course/legacy-acceptance/L14B/1/disk0.img"
+              ],
+              "code": 0,
+              "stdout": "/dev/loop0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "256M",
+                "/home/course/legacy-acceptance/L14B/1/disk1.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "losetup",
+                "--find",
+                "--show",
+                "/home/course/legacy-acceptance/L14B/1/disk1.img"
+              ],
+              "code": 0,
+              "stdout": "/dev/loop1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "mdadm",
+                "--create",
+                "/dev/md127",
+                "--run",
+                "--metadata=1.2",
+                "--level=1",
+                "--raid-devices=2",
+                "/dev/loop0",
+                "/dev/loop1"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: array /dev/md127 started.\n"
+            },
+            {
+              "command": "mdadm --wait /dev/md127",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/1",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "L14B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: failed_member — устройство, помеченное отказавшим (например /dev/sdc1).\nЗаполните /home/course/legacy-acceptance/L14B/1/answer.json, затем: course_lab.py collect L14B /home/course/legacy-acceptance/L14B/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/1",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L14B/1/lab-report.json. Загрузите его в модуле U14 учебного кабинета.\n  degraded: 0\n  sync_action: idle\n  level: raid1\n  members: 2\n  failure_logged: False\n  recovery_logged: False\n  claimed_member_back: False\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "mdadm",
+                "/dev/md127",
+                "--fail",
+                "/dev/loop1",
+                "--remove",
+                "/dev/loop1"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: set /dev/loop1 faulty in /dev/md127\nmdadm: hot removed /dev/loop1 from /dev/md127\n"
+            },
+            {
+              "command": [
+                "mdadm",
+                "/dev/md127",
+                "--add",
+                "/dev/loop1"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: added /dev/loop1\n"
+            },
+            {
+              "command": [
+                "mdadm",
+                "--wait",
+                "/dev/md127"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/1",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L14B/1/lab-report.json. Загрузите его в модуле U14 учебного кабинета.\n  degraded: 0\n  sync_action: idle\n  level: raid1\n  members: 2\n  failure_logged: True\n  recovery_logged: True\n  claimed_member_back: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L14B",
+                "/home/course/legacy-acceptance/L14B/1",
+                "--array",
+                "md127"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "mdadm --stop /dev/md127",
+              "code": 0,
+              "stdout": "",
+              "stderr": "mdadm: stopped /dev/md127\n"
+            },
+            {
+              "command": "losetup -d /dev/loop0",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "losetup -d /dev/loop1",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L14B",
+            "seed": "87964992",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem",
+            "started_at": "2026-10-27 08:55:26"
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L16B",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "128M",
+                "/home/course/legacy-acceptance/L16B/0/leg0s.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "zpool",
+                "create",
+                "-m",
+                "/home/course/legacy-acceptance/L16B/0/leg0s",
+                "leg0s",
+                "/home/course/legacy-acceptance/L16B/0/leg0s.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "128M",
+                "/home/course/legacy-acceptance/L16B/0/leg0t.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "zpool",
+                "create",
+                "-m",
+                "/home/course/legacy-acceptance/L16B/0/leg0t",
+                "leg0t",
+                "/home/course/legacy-acceptance/L16B/0/leg0t.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "zfs",
+                "create",
+                "leg0s/app"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/0",
+                "--pool",
+                "leg0s",
+                "--target-pool",
+                "leg0t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/0/leg0s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "L16B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: snapshot — полное имя снимка в исходном пуле (tank/app@before); received — полное имя того же снимка в принимающем пуле; restored_file — путь к файлу, восстановленному в принимающем пуле.\nЗаполните /home/course/legacy-acceptance/L16B/0/answer.json, затем: course_lab.py collect L16B /home/course/legacy-acceptance/L16B/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/0",
+                "--pool",
+                "leg0s",
+                "--target-pool",
+                "leg0t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/0/leg0s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L16B/0/lab-report.json. Загрузите его в модуле U16 учебного кабинета.\n  health: ONLINE\n  scrub_finished: False\n  scrub_is_new: False\n  errors_zero: False\n  snapshot_present: False\n  received_present: False\n  pools_differ: True\n  restored_readable: False\n  restored_pool: None\n  restored_on_target: False\n  source_sha256: 75e9de6014449a74a063b2116fa1f5eb0d09311372d38280f8daca6bdc623f30\n  restored_sha256: None\n",
+              "stderr": ""
+            },
+            {
+              "command": "zfs snapshot leg0s/app@trial; zfs send leg0s/app@trial | zfs receive leg0t/app; zpool scrub leg0s; zpool wait -t scrub leg0s",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/0",
+                "--pool",
+                "leg0s",
+                "--target-pool",
+                "leg0t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/0/leg0s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L16B/0/lab-report.json. Загрузите его в модуле U16 учебного кабинета.\n  health: ONLINE\n  scrub_finished: True\n  scrub_is_new: True\n  errors_zero: True\n  snapshot_present: True\n  received_present: True\n  pools_differ: True\n  restored_readable: True\n  restored_pool: leg0t\n  restored_on_target: True\n  source_sha256: 75e9de6014449a74a063b2116fa1f5eb0d09311372d38280f8daca6bdc623f30\n  restored_sha256: 75e9de6014449a74a063b2116fa1f5eb0d09311372d38280f8daca6bdc623f30\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/0",
+                "--pool",
+                "leg0s",
+                "--target-pool",
+                "leg0t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/0/leg0s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "zpool destroy leg0s",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "zpool destroy leg0t",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L16B",
+            "seed": "9d7fc37e",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "leg0s",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem",
+            "target_pool": "leg0t",
+            "file": "/home/course/legacy-acceptance/L16B/0/leg0s/app/control.bin",
+            "scan_before": "",
+            "source_sha256": "75e9de6014449a74a063b2116fa1f5eb0d09311372d38280f8daca6bdc623f30"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "128M",
+                "/home/course/legacy-acceptance/L16B/1/leg1s.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "zpool",
+                "create",
+                "-m",
+                "/home/course/legacy-acceptance/L16B/1/leg1s",
+                "leg1s",
+                "/home/course/legacy-acceptance/L16B/1/leg1s.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "truncate",
+                "-s",
+                "128M",
+                "/home/course/legacy-acceptance/L16B/1/leg1t.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "zpool",
+                "create",
+                "-m",
+                "/home/course/legacy-acceptance/L16B/1/leg1t",
+                "leg1t",
+                "/home/course/legacy-acceptance/L16B/1/leg1t.img"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "zfs",
+                "create",
+                "leg1s/app"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/1",
+                "--pool",
+                "leg1s",
+                "--target-pool",
+                "leg1t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/1/leg1s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "L16B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: snapshot — полное имя снимка в исходном пуле (tank/app@before); received — полное имя того же снимка в принимающем пуле; restored_file — путь к файлу, восстановленному в принимающем пуле.\nЗаполните /home/course/legacy-acceptance/L16B/1/answer.json, затем: course_lab.py collect L16B /home/course/legacy-acceptance/L16B/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/1",
+                "--pool",
+                "leg1s",
+                "--target-pool",
+                "leg1t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/1/leg1s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L16B/1/lab-report.json. Загрузите его в модуле U16 учебного кабинета.\n  health: ONLINE\n  scrub_finished: False\n  scrub_is_new: False\n  errors_zero: False\n  snapshot_present: False\n  received_present: False\n  pools_differ: True\n  restored_readable: False\n  restored_pool: None\n  restored_on_target: False\n  source_sha256: 8336fc382398564c5235810dc11a34271555a4eab56033fff2e255c7d4e51f4b\n  restored_sha256: None\n",
+              "stderr": ""
+            },
+            {
+              "command": "zfs snapshot leg1s/app@trial; zfs send leg1s/app@trial | zfs receive leg1t/app; zpool scrub leg1s; zpool wait -t scrub leg1s",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/1",
+                "--pool",
+                "leg1s",
+                "--target-pool",
+                "leg1t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/1/leg1s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L16B/1/lab-report.json. Загрузите его в модуле U16 учебного кабинета.\n  health: ONLINE\n  scrub_finished: True\n  scrub_is_new: True\n  errors_zero: True\n  snapshot_present: True\n  received_present: True\n  pools_differ: True\n  restored_readable: True\n  restored_pool: leg1t\n  restored_on_target: True\n  source_sha256: 8336fc382398564c5235810dc11a34271555a4eab56033fff2e255c7d4e51f4b\n  restored_sha256: 8336fc382398564c5235810dc11a34271555a4eab56033fff2e255c7d4e51f4b\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L16B",
+                "/home/course/legacy-acceptance/L16B/1",
+                "--pool",
+                "leg1s",
+                "--target-pool",
+                "leg1t",
+                "--file",
+                "/home/course/legacy-acceptance/L16B/1/leg1s/app/control.bin"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            },
+            {
+              "command": "zpool destroy leg1s",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": "zpool destroy leg1t",
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L16B",
+            "seed": "b91b2bc2",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "leg1s",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem",
+            "target_pool": "leg1t",
+            "file": "/home/course/legacy-acceptance/L16B/1/leg1s/app/control.bin",
+            "scan_before": "",
+            "source_sha256": "8336fc382398564c5235810dc11a34271555a4eab56033fff2e255c7d4e51f4b"
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L30B",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": "openssl req -x509 -newkey rsa:2048 -nodes -subj /CN=MayakRoot -days 2 -addext basicConstraints=critical,CA:TRUE -keyout /home/course/legacy-acceptance/L30B/0/root.key -out /home/course/legacy-acceptance/L30B/0/root.pem; openssl req -newkey rsa:2048 -nodes -subj /CN=notes.test -keyout /home/course/legacy-acceptance/L30B/0/server.key -out /home/course/legacy-acceptance/L30B/0/server.csr",
+              "code": 0,
+              "stdout": "",
+              "stderr": "..+........+....+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..+......+......+.............+..+..........+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*........+...+....+..............+....+..+..................+..........+......+.....+..........+....................+.+......+..+.+.....+.........+......+....+..+.+...............+..+.+......+...........+...+.........+.+.....+.+.........+...........+.+..+...+...+.+........+............................+.........+.....+....+..+.......+.....+............+...+.+.....+.+.....+.+.....+......................+.................+.+.....+....+...+...........+....+...+..+.+......+.....+...+.+...............+............+.....+...+......+.........+......+.+.........+........+...+.......+...+...+..+...+.+...+......+.....................+.....+...+..................+............+.+..+....+.......................+.+..+.......+...+..+.......+......+..+......+......+.+..+.......+...+..+.+...+..+...+..........+..............+.+............+.....+...+..........+.....+..........+.....+....+........+.......+..+....+............+..+.+.....................+........+............+.+........+.+..............+....+...+.....+..................+....+...+..+............+...+..........+......+.....+......+.+.......................+.+...+...+....................+............+.+......+...+......+..+.......+...+.....+...+.+.....................+.........+...+.....+...+...+.+.........+..+...+......+...+...+............+................+.....+......+.+..+.......+.....+...+..........+........+...+.+.....+....+..+.......+..+...+..................+....+...+.....+.+..+.......+..+....+.....+......+......+...+....+...+.........+.....+.+.....+...+......+....+......+.....+..................+............+....+.....+.+.....................+........+.+...+........+.........+.+.........+...+.....+......+....+......+.........+......+......+.....+.+..+.+...........+.+..+......+..........+..+...+..........+.........+..+...+.......+...+...+..+...+...+....+............+......+.........+...+..+.+..................+............+..+.......+.........+..+....+...+.....+.......+....................+...+.+..+.......+...+.....+...+...............+....+..+......+.........+......+...+.+...........+..........+........+.+...........+..........+..............+.+..............+....+.........+..+...+...+....+..................+......+...............+.........+...+.........+...+..+.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n.+....+..+....+........+...+....+........+.+.........+.....+......+...............+....+.....+......+.+.........+.....+.......+...+...........+...+.+..+...+.......+..+.+.........+..+..........+........+.+..+....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*......+.+......+..+.............+..+......+.+.....+.+...+..+.........+.+.....+.......+..+.+...+.....+..........+......+...+.....+.+..+...............+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n-----\n.+.........+..+.+............+.....+.+............+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.......+.......+........+....+..+.+..+..................+....+......+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..........+....+...........+...............+...+...+.............+.........+......+...............+.....+.+.........+.....+.......+..+......+..........+......+...........+....+......+........+......+...+.+..+.......+..+...+.+..+..........+.....+..................+.+........+.+.........+........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n..+......+............+...+....+............+...+.....+......+.+...+...+..................+.....+.+.....+....+.....+......+...............+....+.....+......+.+..+.+..+....+.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*....+......+.+.....+.......+..+.+...+.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..+...+.+.....................+...+.....+.......+...+...+...+......+.........+...........+......+...+....+...+...+..+..........+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n-----\n"
+            },
+            {
+              "command": "openssl x509 -req -in /home/course/legacy-acceptance/L30B/0/server.csr -CA /home/course/legacy-acceptance/L30B/0/root.pem -CAkey /home/course/legacy-acceptance/L30B/0/root.key -CAcreateserial -days 2 -extfile /home/course/legacy-acceptance/L30B/0/ext -out /home/course/legacy-acceptance/L30B/0/server.pem",
+              "code": 0,
+              "stdout": "",
+              "stderr": "Certificate request self-signature ok\nsubject=CN = notes.test\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/0",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/0/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/0/server.pem"
+              ],
+              "code": 0,
+              "stdout": "L30B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: error_without_root — текст ошибки openssl, пока корень не добавлен в хранилище.\nЗаполните /home/course/legacy-acceptance/L30B/0/answer.json, затем: course_lab.py collect L30B /home/course/legacy-acceptance/L30B/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/0",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/0/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/0/server.pem"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L30B/0/lab-report.json. Загрузите его в модуле U30 учебного кабинета.\n  verify_ok: True\n  verify_without_root: False\n  san_present: True\n  server_self_signed: False\n  issued_by_root: True\n  root_is_ca: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/0",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/0/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/0/server.pem"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L30B/0/lab-report.json. Загрузите его в модуле U30 учебного кабинета.\n  verify_ok: True\n  verify_without_root: False\n  san_present: True\n  server_self_signed: False\n  issued_by_root: True\n  root_is_ca: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/0",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/0/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/0/server.pem"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L30B",
+            "seed": "353b9fe1",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "/home/course/legacy-acceptance/L30B/0/root.pem",
+            "cert": "/home/course/legacy-acceptance/L30B/0/server.pem"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": "openssl req -x509 -newkey rsa:2048 -nodes -subj /CN=MayakRoot -days 2 -addext basicConstraints=critical,CA:TRUE -keyout /home/course/legacy-acceptance/L30B/1/root.key -out /home/course/legacy-acceptance/L30B/1/root.pem; openssl req -newkey rsa:2048 -nodes -subj /CN=notes.test -keyout /home/course/legacy-acceptance/L30B/1/server.key -out /home/course/legacy-acceptance/L30B/1/server.csr",
+              "code": 0,
+              "stdout": "",
+              "stderr": "....+.....+...+......+.+...+.....+....+..+.+..+..........+..+....+.........+...........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.....+.....+...+....+......+..+.+..+...+.+..............+.........+...+...+....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+.........+.................................+..+......+...............+.......+..+...+.+..+.............+.........+...+.........+......+..+.......+...+...+..+.............+.....+.......+........+.........+.........+.........+......+....+...+........+.+.....+...+.+......+...............+...+..+.........+.........+...+....+..................+...+..+......+.+........................+..+...+......+......+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n......+....+.....+......+...+.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+................+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.....+.....+.........+.+..+......+.+.........+..+.............+...........+...+...+.......+............+...+.....+.+.....+......+...+...+.......+........+.......+...+...+..+...+......+..........+...+....................+................+.....+.+.....+.+...+......+...+...+..+...........................+.+..+..........+..+.........+.........+...+....+..........................+...+....+.....+...+..................+............+....+...........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n-----\n.+...+......+....+..+.........+...+...+...+....+.....+............+.+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+.....+.........+...+...+...+....+...+..+......+....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+.+......+........+...+....+...+......+......+........+.+......+...........+...............+.......+...+...+..+.........+...+......+....+...+........+....+..+...+......+......+.+...............+..+...+.........+.+...+........................+........+....+...+.....+.+..+...+.+...+...........+.+........+.+..+...+.+.....+......+....+...+...+...+...........+.+...+..+.......+...........+.+.....................+..+.+......+......+............+...........+.......+........+......+...+..........+.....+.+..............+.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+.+..............+......+.+.....+..................+.......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..+.............+...+.........+......+..............+.+...+.....+.+...............+...+...+............+..+.+..+............+....+..+...+.+...............+.....+.+.........+.....+...+...+.......+...........+.+......+........+....+...............+........+....+......+...+............+...+...........+.........+.+...........+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n-----\n"
+            },
+            {
+              "command": "openssl x509 -req -in /home/course/legacy-acceptance/L30B/1/server.csr -CA /home/course/legacy-acceptance/L30B/1/root.pem -CAkey /home/course/legacy-acceptance/L30B/1/root.key -CAcreateserial -days 2 -extfile /home/course/legacy-acceptance/L30B/1/ext -out /home/course/legacy-acceptance/L30B/1/server.pem",
+              "code": 0,
+              "stdout": "",
+              "stderr": "Certificate request self-signature ok\nsubject=CN = notes.test\n"
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/1",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/1/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/1/server.pem"
+              ],
+              "code": 0,
+              "stdout": "L30B: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: error_without_root — текст ошибки openssl, пока корень не добавлен в хранилище.\nЗаполните /home/course/legacy-acceptance/L30B/1/answer.json, затем: course_lab.py collect L30B /home/course/legacy-acceptance/L30B/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/1",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/1/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/1/server.pem"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L30B/1/lab-report.json. Загрузите его в модуле U30 учебного кабинета.\n  verify_ok: True\n  verify_without_root: False\n  san_present: True\n  server_self_signed: False\n  issued_by_root: True\n  root_is_ca: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/1",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/1/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/1/server.pem"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L30B/1/lab-report.json. Загрузите его в модуле U30 учебного кабинета.\n  verify_ok: True\n  verify_without_root: False\n  san_present: True\n  server_self_signed: False\n  issued_by_root: True\n  root_is_ca: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L30B",
+                "/home/course/legacy-acceptance/L30B/1",
+                "--root-cert",
+                "/home/course/legacy-acceptance/L30B/1/root.pem",
+                "--cert",
+                "/home/course/legacy-acceptance/L30B/1/server.pem"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L30B",
+            "seed": "85ad52fe",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "/home/course/legacy-acceptance/L30B/1/root.pem",
+            "cert": "/home/course/legacy-acceptance/L30B/1/server.pem"
+          },
+          "status": "collected"
+        }
+      ]
+    },
+    {
+      "lab": "L31A",
+      "variants": [
+        {
+          "variant": 0,
+          "phases": [
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/0"
+              ],
+              "code": 0,
+              "stdout": "L31A: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: drift_ppm — измеренный собственный дрейф в ppm, знак сохраните.\nЗаполните /home/course/legacy-acceptance/L31A/0/answer.json, затем: course_lab.py collect L31A /home/course/legacy-acceptance/L31A/0\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L31A/0/lab-report.json. Загрузите его в модуле U31 учебного кабинета.\n  stratum: 3\n  source: 5.188.142.196\n  drift_ppm_file: None\n  synchronised: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "chronyc",
+                "burst",
+                "4/4"
+              ],
+              "code": 0,
+              "stdout": "200 OK\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "stop",
+                "chrony"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "start",
+                "chrony"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/0"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L31A/0/lab-report.json. Загрузите его в модуле U31 учебного кабинета.\n  stratum: 4\n  source: 162.159.200.123\n  drift_ppm_file: -31.756368\n  synchronised: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/0"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L31A",
+            "seed": "fbd0d15e",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem"
+          },
+          "status": "collected"
+        },
+        {
+          "variant": 1,
+          "phases": [
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "init",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/1"
+              ],
+              "code": 0,
+              "stdout": "L31A: инцидент не вносится, стенд не меняется. Выполните работу и заполните answer.json.\nПодсказка по полям: drift_ppm — измеренный собственный дрейф в ppm, знак сохраните.\nЗаполните /home/course/legacy-acceptance/L31A/1/answer.json, затем: course_lab.py collect L31A /home/course/legacy-acceptance/L31A/1\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/1"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L31A/1/lab-report.json. Загрузите его в модуле U31 учебного кабинета.\n  stratum: 4\n  source: 162.159.200.123\n  drift_ppm_file: -31.756368\n  synchronised: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "chronyc",
+                "burst",
+                "4/4"
+              ],
+              "code": 0,
+              "stdout": "200 OK\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "stop",
+                "chrony"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "systemctl",
+                "start",
+                "chrony"
+              ],
+              "code": 0,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "collect",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/1"
+              ],
+              "code": 0,
+              "stdout": "Отчёт: /home/course/legacy-acceptance/L31A/1/lab-report.json. Загрузите его в модуле U31 учебного кабинета.\n  stratum: 4\n  source: 162.159.200.123\n  drift_ppm_file: -31.903122\n  synchronised: True\n",
+              "stderr": ""
+            },
+            {
+              "command": [
+                "python3",
+                "/usr/local/lib/mayak-course-lab.py",
+                "restore",
+                "L31A",
+                "/home/course/legacy-acceptance/L31A/1"
+              ],
+              "code": 0,
+              "stdout": "Эта работа стенд не меняла: откатывать нечего.\n",
+              "stderr": ""
+            }
+          ],
+          "state": {
+            "lab": "L31A",
+            "seed": "b6ee580f",
+            "variant": 0,
+            "kind": "collect",
+            "iface": null,
+            "peer": "10.10.20.12",
+            "unit": "course-report.service",
+            "array": "md127",
+            "pool": "tank",
+            "volume": "/dev/course/lvdata",
+            "mount": "/mnt/course-lvm",
+            "root": "root.pem",
+            "cert": "server.pem"
+          },
+          "status": "collected"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L13B",
+  "module": "U13",
+  "kind": "collect",
+  "seed": "624bd45c",
+  "variant": 0,
+  "collected_utc": "2026-10-27T08:55:19.124190+00:00",
+  "facts": {
+    "lv_size_mib": 128,
+    "fs_size_mib": 128,
+    "sizes_match": true,
+    "lv_grew": true,
+    "fs_grew": true,
+    "checksum_same": true
+  },
+  "claim": {
+    "lv_size_mib": 128,
+    "gap_seen": true
+  },
+  "evidence": [
+    {
+      "cmd": "sudo -n lvs --reportformat json --units m -o lv_path,lv_size",
+      "rc": 0,
+      "sha256": "abc4d5cff5abc75309f5f219d6433ed03cbef05aa02b6c5f135237a81be175b4",
+      "excerpt": "                  {\"lv_path\":\"/dev/legvg0/data\", \"lv_size\":\"128.00m\"}"
+    },
+    {
+      "cmd": "sudo -n tune2fs -l /dev/legvg0/data",
+      "rc": 0,
+      "sha256": "27468805e1bda85fababc8c5aae2111304e812746dd659c5ab9980db0140f0ea",
+      "excerpt": "tune2fs 1.47.0 (5-Feb-2023) / Filesystem volume name:   <none> / Last mounted on:          /home/course/legacy-acceptance/L13B/0/mnt"
+    },
+    {
+      "cmd": "sha256sum /home/course/legacy-acceptance/L13B/0/mnt/control.bin",
+      "rc": 0,
+      "sha256": "c8c7d608cd67c20cd96424ff18bea6329b061f702ee06890e81c807e76815c92",
+      "excerpt": "было 64 МиБ / стало 128 МиБ"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

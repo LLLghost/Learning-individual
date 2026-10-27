@@ -1,0 +1,50 @@
+Linux mayak-acceptance 6.1.0-54-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.190-1 (2026-10-16) x86_64 GNU/Linux
+available: 2 nodes (0-1)
+node 0 cpus: 0 1
+node 0 size: 2895 MB
+node 0 free: 1148 MB
+node 1 cpus: 2 3
+node 1 size: 3022 MB
+node 1 free: 277 MB
+node distances:
+node   0   1
+  0:  10  20
+  1:  20  10
+/sys/firmware/efi
+/sys/firmware/efi/mok-variables
+/sys/firmware/efi/fw_platform_size
+/sys/firmware/efi/efivars
+/sys/firmware/efi/systab
+/sys/firmware/efi/config_table
+/sys/firmware/efi/fw_vendor
+/sys/firmware/efi/runtime
+/sys/firmware/efi/runtime-map
+Client: Docker Engine - Community
+ Version:           29.9.2
+ API version:       1.56
+ Go version:        go1.26.10
+ Git commit:        a82e528
+ Built:             Tue Oct 20 18:45:02 2026
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          29.9.2
+  API version:      1.56 (minimum version 1.40)
+  Go version:       go1.26.10
+  Git commit:       0367cbe
+  Built:            Tue Oct 20 18:45:02 2026
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          v2.4.2
+  GitCommit:        b7a25261e029d68978bbf290df0a62fc819b3c51
+ runc:
+  Version:          1.5.2
+  GitCommit:        v1.5.2-0-g29dd3dc2
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+zfs-2.1.11-1+deb12u1
+zfs-kmod-2.1.11-1+deb12u1

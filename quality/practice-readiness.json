@@ -1,317 +1,334 @@
 {
   "date": "2026-10-27",
-  "environment": "WSL Linux fixtures, not a clean Proxmox VM",
-  "runnerSha256": "ca9b4761106a38b9137b4ded2ae1613ffaa7722495792f58a9e3421cbc23cbc0",
-  "catalogFileSha256": "a493a16689725f04dda0a9d8a1a8b3b314418fc02cbe065565f90480e8625898",
+  "environment": "Dedicated Proxmox VM 9100: Debian 12, Linux 6.1.0-54-amd64, OVMF, two virtual NUMA nodes",
+  "sourceHashNormalization": "LF",
+  "runnerSha256": "9f8e310cb7c4c5e75bba19d465be9861a94a9348faaf5862f4e3b16b11a4f69c",
+  "catalogFileSha256": "ad2b79db4378a7148d97c54b19a64d624773dd4b71d24cfc80628a1a2d5a27cd",
+  "packagedRunnerSha256": "db45cfa0afebc302219782d9e1b5a8c8eec725a3c6cdab97d4f3acddfecd92d4",
   "shellScriptsChecked": 180,
-  "runnerCliOperations": 23,
+  "runnerCliOperations": 547,
   "reportScenarios": 13,
+  "evidence": "quality/live-labs/2026-10-27/guest-cycles.json",
   "results": [
     {
       "lesson": "process",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": true
     },
     {
       "lesson": "permissions",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "memory",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "packages",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "shell-data",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "shell-failure",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "python-result",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "git-change",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "boot",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "disk-identity",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "disk-health",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "vm-resources",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "pcie",
-      "status": "unavailable",
-      "reason": [
-        "lspci"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "device-id",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "uefi",
-      "status": "unavailable",
-      "reason": "not booted with UEFI",
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "address",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "prefix",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "mtu",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "ipv6",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "firewall",
-      "status": "unavailable",
-      "reason": [
-        "nft"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "segments",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "tcp",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "systemd",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": true
     },
     {
       "lesson": "logs",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "incident",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "unknown-incident",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "mount",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "filesystem",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "lvm",
-      "status": "unavailable",
-      "reason": [
-        "pvcreate",
-        "vgcreate",
-        "lvcreate",
-        "lvs",
-        "vgs",
-        "vgremove",
-        "pvremove",
-        "lvextend"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "dns",
-      "status": "unavailable",
-      "reason": [
-        "dnsmasq"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "latency",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "ansible-state",
-      "status": "unavailable",
-      "reason": [
-        "ansible-playbook"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "tls",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "time",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "baseline",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "lab-setup",
       "status": "passed",
-      "reason": null,
-      "phaseCount": 12
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "mirror",
-      "status": "unavailable",
-      "reason": [
-        "mdadm"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "zfs",
-      "status": "unavailable",
-      "reason": [
-        "zpool",
-        "zfs"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "container",
-      "status": "unavailable",
-      "reason": "Docker daemon unavailable; not started by tests",
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "container-network",
-      "status": "unavailable",
-      "reason": "Docker daemon unavailable; not started by tests",
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": true
     },
     {
       "lesson": "kubernetes",
-      "status": "unavailable",
-      "reason": [
-        "kind",
-        "kubectl"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "service-selector",
-      "status": "unavailable",
-      "reason": [
-        "kind",
-        "kubectl"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "cpu-numa",
-      "status": "unavailable",
-      "reason": [
-        "numactl"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "network-storage",
-      "status": "unavailable",
-      "reason": [
-        "exportfs",
-        "mount.nfs"
-      ],
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     },
     {
       "lesson": "multipath",
-      "status": "unavailable",
-      "reason": "kernel has no DM multipath target",
-      "phaseCount": 0
+      "status": "passed",
+      "phaseCount": 12,
+      "variants": 2,
+      "changedSystemRejected": null
     }
   ],
-  "proxmoxBackup": "not-run: host unavailable",
-  "liveAcceptance": false,
-  "sourceHashNormalization": "LF"
+  "limitations": [
+    "Reference solutions exercised by the author; not independent learner performance",
+    "Virtual PCIe, NUMA and UEFI do not certify physical hardware",
+    "Native VM backup has a separate protocol"
+  ]
 }
