@@ -4,3 +4,32 @@
 @media print{body{display:block;background:white;color:black}aside,header,footer,.practice-tools,button,.lesson-navigation,#notice{display:none!important}main{padding:0;max-width:none}article{break-before:page}article>section{border:0;padding:0}details[data-block=depth]{display:block;background:white}details[data-block=depth]>*{display:block}pre{background:white;color:black;border:1px solid #aaa}h1{font-size:26pt}h2{font-size:20pt}a{color:black}}
 
 @media print{.legacy-concordance{display:none!important}}
+
+/* Theme overrides stay on screen; the printed book retains white paper. */
+header{flex-wrap:wrap}
+#theme-toggle{white-space:nowrap}
+@media print{:root{color-scheme:light;background:#fff;color:#000}}
+@media screen{
+ :root[data-theme=dark]{color-scheme:dark;color:#dce6dd;background:#111917;--line:#34463a;--dark:#172a20;--green:#c8e5ab}
+ [data-theme=dark] a{color:#badb9f}
+ [data-theme=dark] aside{background:#142119}
+ [data-theme=dark] aside a{color:#d7e7ce}
+ [data-theme=dark] .brand{color:#c8e5ab}
+ [data-theme=dark] .lead{color:#b2c3b3}
+ [data-theme=dark] article>section,[data-theme=dark] .practice-tools,[data-theme=dark] .lesson-list a{background:#1b2721}
+ [data-theme=dark] article>section:first-child{background:transparent}
+ [data-theme=dark] button,[data-theme=dark] .button,[data-theme=dark] .file-button{background:#c8e5ab;color:#17231c;border-color:#c8e5ab}
+ [data-theme=dark] .secondary{background:transparent;color:#c8e5ab}
+ [data-theme=dark] input,[data-theme=dark] textarea,[data-theme=dark] select{background:#141e18;border-color:#586d59;color:#dce6dd;accent-color:#b9d99d}
+ [data-theme=dark] input::placeholder,[data-theme=dark] textarea::placeholder{color:#9caf9e;opacity:1}
+ [data-theme=dark] .help,[data-theme=dark] footer,[data-theme=dark] .lesson-list small{color:#a8bba5}
+ [data-theme=dark] pre{background:#0d1511;color:#d7e9d1;border:1px solid #34463a}
+ [data-theme=dark] details[data-block=depth]{background:#1b2a21}
+ [data-theme=dark] .simple-model span{background:#29392c}
+ [data-theme=dark] .answer-feedback,[data-theme=dark] #lab-feedback,[data-theme=dark] .stats span{background:#25372b}
+ [data-theme=dark] .quality-note{background:#302c22;color:#ead6a5}
+ [data-theme=dark] th{background:#243329}
+ [data-theme=dark] #notice{background:#c8e5ab;color:#17231c}
+ [data-theme=dark] .skip:focus{background:#1b2721}
+ [data-theme=dark] :focus-visible{outline-color:#d2eab8}
+}
