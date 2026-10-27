@@ -129,6 +129,14 @@ if(lesson&&course.practiceLabs?.[lesson.id]){
    if(!record().practice)throw Error('Сначала начни попытку в этом уроке.');
    const envelope=JSON.parse(await file.text());
    const result=await readPracticeReport(envelope,{lesson:lesson.id,runnerSha256:spec.runnerSha256??course.practiceRunnerSha256,...record().practice});
+   const previous=state.reports[`P:${lesson.id}`];
+   if(result.fresh&&previous?.envelope){
+    let prior;try{prior=await readPracticeReport(previous.envelope,{lesson:lesson.id,runnerSha256:spec.runnerSha256??course.practiceRunnerSha256,...record().practice});}catch{}
+    if(prior?.fresh&&result.report.checked<prior.report.checked){
+     archive('report',`P:${lesson.id}`,{kind:'vm-observation',verified:false,historical:true,at:Date.now(),source:course.sourceSha256,envelope});
+     save();feedback.textContent='Этот отчёт старше последней проверки этой попытки. Сохранён в истории; текущий результат не изменён. Если часы гостя были переведены назад, начни новую попытку и собери новый отчёт.';return;
+    }
+   }
    archive('report',`P:${lesson.id}`,state.reports[`P:${lesson.id}`]);state.reports[`P:${lesson.id}`]={kind:'vm-observation',verified:result.verified,historical:!result.fresh,at:Date.now(),source:course.sourceSha256,envelope};
    save();feedback.textContent=result.verified?'Исполнитель подтвердил результат этой попытки. После изменений нужна повторная проверка.':result.fresh?'Проверка завершилась отказом. Исправь причину и собери новый отчёт.':'Отчёт сохранён как история: попытка или версия исполнителя не совпадает.';if(result.clockWarning)feedback.textContent+=' Часы гостя и браузера могут различаться: принадлежность проверена по идентификатору попытки, временные метки требуют отдельной сверки.';
   }catch(error){feedback.textContent=error.message;}
