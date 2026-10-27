@@ -291,7 +291,7 @@ export async function startWorkshop({ port = 4180, stateDir = join(project, '.ep
         }
         // Та же сборка курса работает локально с API и на статической публикации без API.
         const buildRoot=join(project,'build');
-        if(path==='/'||/^\/(?:learn|progress|book|reference|assets|archive|downloads|chapters|start)\//.test(path)||path==='/sw-course.js'){
+        if(path==='/'||/^\/(?:learn|route|progress|book|reference|assets|archive|downloads|chapters|start)\//.test(path)||path==='/sw-course.js'){
           const relative=decodeURIComponent(path).replace(/^\/+/,''),target=resolve(buildRoot,relative,path.endsWith('/')?'index.html':'');
           if(target.startsWith(buildRoot+sep)){
             try{

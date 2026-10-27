@@ -1,0 +1,830 @@
+[
+  {
+    "lesson": "address",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "address",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "ansible-state",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "ansible-state",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "baseline",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "baseline",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "boot",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "boot",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "container",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "container",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "container-network",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": true,
+    "oldSuccessReplayRefused": true,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "container-network",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": true,
+    "oldSuccessReplayRefused": true,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "cpu-numa",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "cpu-numa",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "device-id",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "device-id",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "disk-health",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "disk-health",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "disk-identity",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "disk-identity",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "dns",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "dns",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "filesystem",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "filesystem",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "firewall",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "firewall",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "git-change",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "git-change",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "incident",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "incident",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "ipv6",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "ipv6",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "kubernetes",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "kubernetes",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "lab-setup",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "lab-setup",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "latency",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "latency",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "logs",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "logs",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "lvm",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "lvm",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "memory",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "memory",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "mirror",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "mirror",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "mount",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "mount",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "mtu",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "mtu",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "multipath",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "multipath",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "network-storage",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "network-storage",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "packages",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "packages",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "pcie",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "pcie",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "permissions",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "permissions",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "prefix",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "prefix",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "process",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": true,
+    "oldSuccessReplayRefused": true,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "process",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": true,
+    "oldSuccessReplayRefused": true,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "python-result",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "python-result",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "segments",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "segments",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "service-selector",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "service-selector",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "shell-data",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "shell-data",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "shell-failure",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "shell-failure",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "systemd",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": true,
+    "oldSuccessReplayRefused": true,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "systemd",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": true,
+    "oldSuccessReplayRefused": true,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "tcp",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "tcp",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "time",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "time",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "tls",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "tls",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "uefi",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "uefi",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "unknown-incident",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "unknown-incident",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "vm-backup",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "vm-backup",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "vm-resources",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "vm-resources",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "zfs",
+    "variant": 0,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  },
+  {
+    "lesson": "zfs",
+    "variant": 1,
+    "accepted": true,
+    "changedSystemRefused": null,
+    "oldSuccessReplayRefused": null,
+    "newAttemptRevokes": true,
+    "oldReportHistorical": true
+  }
+]

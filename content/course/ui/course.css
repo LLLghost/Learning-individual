@@ -5,6 +5,7 @@
 /* Hallmark · reworded "Понять, как работает. Сделать своими руками." to "Серверная инфраструктура" · 54 replaces the introductory eyebrow with the actual subject. */
 @import url("./tokens.css");
 @import url("./base.css");
+@import url("./journey.css");
 body { max-width: var(--container); margin-inline: auto; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); }
 a { color: var(--color-link); }
 button, .button, .file-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: 44px; padding: var(--space-xs) var(--space-md); border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-paper-2); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; line-height: 1.5; white-space: nowrap; text-decoration: none; cursor: pointer; }

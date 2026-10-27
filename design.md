@@ -38,3 +38,15 @@
 
 ## Exports
 - content/course/ui/tokens.css and base.css.
+
+## Learning workspace
+- Home shows one genuine current lesson or the first lesson for a new learner.
+- The complete curriculum lives at /route/, grouped by unit, with a local topic filter.
+- All 82 lessons use six navigable steps. Source HTML and explanation anchors remain intact.
+- Prediction and real practice share a step; local reflection stays beside its action.
+- Reading, exercise results, accepted reports and scheduled repetition remain separate states.
+- Supplementary explanations and older report workflows are disclosures, not required setup noise.
+- A saved engaged lesson/step is independent of the last visited URL. Existing v7 backups remain supported.
+- Global search opens on request; all-content reading and white-paper printing remain available.
+- journey.js and journey.css extend the existing tokens; their versions participate in offline cache identity.
+- Historical Hallmark receipts describe the earlier shell. Current functional evidence is in quality/journey-interface.json.

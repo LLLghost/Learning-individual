@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-27",
+  "scope": "All 82 lessons restructured as six-step learning sessions; existing reviewed content and executable lab versions preserved",
+  "sourceHashNormalization": "LF",
+  "sourceHashes": {
+    "content/course/ui/journey.js": "382d08213c3197fb0cdbf390cbf188e4306eddcfbfd7fda3b6d9f850fe74547f",
+    "content/course/ui/journey.css": "e9894b86037beb5a59f42cf87c1940b88a76ff9a956bde0ff16d3953960263ce",
+    "content/course/ui/course.js": "eb476af2e7a61fa3f3dce0c393f11775426715d34799ec0b66545512f5b85ad2",
+    "scripts/build-static.mjs": "d7aaa170d9e0d6ed2df04d370aafe0d1f5ac27331f51036b2d3e6b056b6f6d92",
+    "scripts/test-journey-ui.mjs": "075802490933032e777037f69bda9af796dc388502905d678843341197ac168d"
+  },
+  "checks": {
+    "lessonSteps": 492,
+    "rootReleaseExit": 0,
+    "prefixReleaseExit": 0,
+    "gradedCorrect": 536,
+    "gradedIncorrect": 536,
+    "javascriptErrors": 0,
+    "viewports": [
+      320,
+      390,
+      1440
+    ],
+    "textZoom": "200%",
+    "print": "shared title and all six source blocks visible",
+    "progress": [
+      "step resume after reload",
+      "browsing preserves engaged lesson",
+      "v7 export/import restores step and drafts",
+      "legacy notes preserved",
+      "read status independent from visiting steps"
+    ],
+    "offline": "new module, styles, route, lessons and exercises cached by service worker"
+  },
+  "reports": {
+    "newPracticeImports": 92,
+    "legacyImports": 18,
+    "previouslyCollectedOnProxmox": true,
+    "newVmMutationsDuringThisUiRewrite": false,
+    "sameAttemptOldSuccessReplayRejected": 6
+  },
+  "personalNoteSha256": "D779B8D4872EC7D573A096DC08587FD258D71A96E8A00624E9E4B4EE77BFE43C",
+  "evidence": "quality/journey-interface/",
+  "notVerified": [
+    "Independent beginner learning and delayed transfer",
+    "Firefox/Safari",
+    "Screen-reader manual acceptance",
+    "Physical hardware skills"
+  ]
+}

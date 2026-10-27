@@ -1,3 +1,4 @@
+import { mountJourney } from './journey.js';
 import { labValid, labRows, evaluate } from './checker.js';
 import { readPracticeReport } from './practice-report.js';
 const base=document.querySelector('meta[name="course-base"]').content;
@@ -11,7 +12,7 @@ const [course,bank]=await Promise.all(['course-data','assessments'].map(n=>fetch
 if(course.liveAcceptance?.accepted){const note=document.querySelector('.home-notice');if(note)note.textContent=`В каждом уроке — объяснение, пример, опыт и самостоятельная задача. Программные работы этой версии прошли авторский прогон на Proxmox ${course.liveAcceptance.date}. Аппаратные навыки требуют отдельного испытания.`;}
 const practiceAcceptance=course.liveAcceptance?.accepted?'Исполнитель этой версии прошёл авторский прогон на Proxmox. ':'Стендовая приёмка сценария пока не проведена. ';
 const items=new Map(bank.items.map(x=>[x.id,x]));
-const newState=()=>({schema:'course-journey-v7',version:7,lessons:{},results:{},reports:{},history:[],legacy:{},last:null});
+const newState=()=>({schema:'course-journey-v7',version:7,lessons:{},results:{},reports:{},history:[],legacy:{},last:null,focus:null});
 let state;try{state=JSON.parse(localStorage.getItem(KEY)||'null')}catch{}
 if(!state||state.schema!=='course-journey-v7')state=newState();
 state.legacy??={};
@@ -26,7 +27,8 @@ for(const [id,r] of Object.entries(state.reports??{})){
  }
 }
 for(const key of Object.keys(localStorage))if(key.startsWith('server-infrastructure-')&&!Object.hasOwn(state.legacy,key))state.legacy[key]=localStorage.getItem(key);
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch{notice('Не удалось сохранить прогресс в браузере. Скачай резервную копию перед закрытием.');return false}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));document.dispatchEvent(new Event('course-state-change'));return true}catch{notice('Не удалось сохранить прогресс в браузере. Скачай резервную копию перед закрытием.');return false}};
+if(!state.focus&&course.lessons.some(l=>l.id===state.last))state.focus={lesson:state.last,step:state.lessons[state.last]?.journeyStep??'goal'};
 const lesson=course.lessons.find(l=>l.id===document.body.dataset.lesson);
 const at=id=>id==='@reference'?`${base}/reference/`:`${base}/learn/${id}/`;
 if(lesson){state.last=lesson.id;state.lessons[lesson.id]??={startedAt:Date.now(),read:false,prediction:'',reflection:'',note:'',local:[]};const requested=Number(new URLSearchParams(location.search).get('review'));if(Number.isInteger(requested)&&requested>0&&requested>(state.lessons[lesson.id].reviewCount??0))state.lessons[lesson.id].reviewCount=requested;save();}
@@ -183,15 +185,17 @@ const importer=document.querySelector('#import-progress');if(importer)importer.o
    for(const[id,r]of Object.entries(incoming.results))if(state.results[id]&&JSON.stringify(state.results[id])!==JSON.stringify(r))archive('answer',id,state.results[id]);
    for(const id of Object.keys(incoming.reports))archive('report',id,state.reports[id]);
    incoming.history=[...new Map([...state.history,...incoming.history].map(x=>[JSON.stringify(x),x])).values()];
-   incoming.legacy={...state.legacy,...data.legacy};incoming.last=course.lessons.some(l=>l.id===data.last)?data.last:null;state={...incoming,lessons:{...state.lessons,...incoming.lessons},results:{...state.results,...incoming.results},reports:{...state.reports,...incoming.reports}};
+   incoming.legacy={...state.legacy,...data.legacy};incoming.last=course.lessons.some(l=>l.id===data.last)?data.last:null;incoming.focus=course.lessons.some(l=>l.id===data.focus?.lesson)&&['goal','explain','example','guided','independent','reflection'].includes(data.focus?.step)?data.focus:state.focus;Object.assign(state,{...incoming,lessons:{...state.lessons,...incoming.lessons},results:{...state.results,...incoming.results},reports:{...state.reports,...incoming.reports}});
   }else if(data.data&&typeof data.data==='object'){for(const[k,v]of Object.entries(data.data))if(k.startsWith('server-infrastructure-')&&typeof v==='string')state.legacy[k]=v;}
   else if(data.schema==='course-study-progress'){state.legacy['imported-v6']=JSON.stringify(data);}
   else throw Error('Этот формат резервной копии не поддерживается.');
-  const persisted=save();summary();if(persisted)notice('Копия объединена с сохранёнными результатами. Импортированные стендовые отчёты считаются историческими до новой проверки.');
+  const persisted=save();summary();document.dispatchEvent(new Event('course-state-change'));if(persisted)notice('Копия объединена с сохранёнными результатами. Импортированные стендовые отчёты считаются историческими до новой проверки.');
  }catch(error){notice(error.message)}
 };
 document.querySelector('#search-form').onsubmit=async e=>{e.preventDefault();const q=document.querySelector('#search').value.trim().toLocaleLowerCase('ru');const target=document.querySelector('#search-results');target.hidden=false;if(!q){target.textContent='Введи слово или название темы.';return;}try{const response=await fetch(`${base}/assets/search-course.json`);if(!response.ok)throw Error();const index=await response.json();const matches=index.filter(l=>(l.title+' '+l.text).toLocaleLowerCase('ru').includes(q)).slice(0,25);target.innerHTML='<h2>Найденные уроки</h2>'+(matches.map(l=>`<p><a href="${at(l.id)}">${esc(l.title)}</a></p>`).join('')||'<p>Не найдено</p>');}catch{target.textContent='Поиск недоступен. Подключись к сети и сохрани курс для чтения без сети.';}};
 if('serviceWorker'in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register(`${base}/sw-course.js`,{scope:`${base}/`}).catch(()=>{});navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type==='course-offline-progress')notice(`Сохранено ${e.data.done} из ${e.data.total}; ошибок: ${e.data.failed}.`)});}
+const journey=mountJourney({course,state,save,lesson,at,base});
+document.addEventListener('course-state-change',journey.refresh);
 document.body.dataset.courseReady='true';
 }
 initialize().catch(()=>notice('Не удалось загрузить данные курса. Текст урока доступен; для упражнений и прогресса подключись к сети и обнови страницу.'));
