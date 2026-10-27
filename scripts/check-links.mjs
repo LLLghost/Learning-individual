@@ -2,13 +2,16 @@
 // Проверка внешних ссылок учебника. В обычный прогон не входит: ей нужна сеть,
 // а чужой сайт может лежать по причинам, к учебнику отношения не имеющим.
 // Запускать руками — например перед выпуском: node scripts/check-links.mjs
+// Для прежней редакции: node scripts/check-links.mjs --archive
 //
 // Только подтверждённые 404/410 называем мёртвыми. Тайм-аут, DNS, TLS и
 // защита от роботов ничего не доказывают о доступности страницы для читателя.
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const source = await readFile(resolve(process.cwd(), 'public', 'course.html'), 'utf8');
+const filename = process.argv.includes('--archive') ? 'course.html' : 'practical-course.html';
+const source = await readFile(resolve(process.cwd(), 'public', filename), 'utf8');
+console.log(`Источник: public/${filename}`);
 const links = new Map();
 for (const match of source.matchAll(/<a[^>]+href="(https?:\/\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/g)) {
   const address = match[1].replace(/&amp;/g, '&');
