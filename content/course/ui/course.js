@@ -1,6 +1,7 @@
 import { mountJourney } from './journey.js';
 import { labValid, labRows, evaluate } from './checker.js';
 import { readPracticeReport } from './practice-report.js';
+import { loadProgress } from './progress-state.js';
 const base=document.querySelector('meta[name="course-base"]').content;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const notice=(s)=>{const el=document.querySelector('#notice');el.hidden=false;el.textContent=s;};
@@ -12,11 +13,9 @@ const [course,bank]=await Promise.all(['course-data','assessments'].map(n=>fetch
 if(course.liveAcceptance?.accepted){const note=document.querySelector('.home-notice');if(note)note.textContent=`В каждом уроке — объяснение, пример, опыт и самостоятельная задача. Программные работы этой версии прошли авторский прогон на Proxmox ${course.liveAcceptance.date}. Аппаратные навыки требуют отдельного испытания.`;}
 const practiceAcceptance=course.liveAcceptance?.accepted?'Исполнитель этой версии прошёл авторский прогон на Proxmox. ':'Стендовая приёмка сценария пока не проведена. ';
 const items=new Map(bank.items.map(x=>[x.id,x]));
-const newState=()=>({schema:'course-journey-v7',version:7,lessons:{},results:{},reports:{},history:[],legacy:{},last:null,focus:null});
-let state;try{state=JSON.parse(localStorage.getItem(KEY)||'null')}catch{}
-if(!state||state.schema!=='course-journey-v7')state=newState();
-state.legacy??={};
-if(!Array.isArray(state.history))state.history=[];
+const rawProgress=localStorage.getItem(KEY);
+const {state,recovery}=loadProgress(rawProgress);
+if(recovery){const recoveryKey=`${KEY}-recovery-${Date.now()}`;localStorage.setItem(recoveryKey,rawProgress);state.legacy[recoveryKey]=rawProgress;notice('Сохранена исходная копия повреждённого прогресса: она включена в экспорт результатов. Доступные записи восстановлены.');}
 const archive=(kind,id,value)=>{if(value)state.history.push({kind,id,value:structuredClone(value)});};
 for(const [id,r] of Object.entries(state.reports??{})){
  if(r.source!==course.sourceSha256){r.verified=false;r.historical=true;}
