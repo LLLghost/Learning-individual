@@ -1,7 +1,7 @@
 import { mountJourney } from './journey.js';
 import { labValid, labRows, evaluate } from './checker.js';
 import { readPracticeReport } from './practice-report.js';
-import { loadProgress } from './progress-state.js';
+import { loadProgress, newProgress as newState } from './progress-state.js';
 const base=document.querySelector('meta[name="course-base"]').content;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const notice=(s)=>{const el=document.querySelector('#notice');el.hidden=false;el.textContent=s;};
