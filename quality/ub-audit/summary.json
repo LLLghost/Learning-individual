@@ -1,0 +1,109 @@
+{
+  "baseline": "ee4e95046b729a812b4bd6db014493b07b7632a3",
+  "date": "2026-10-27",
+  "tools": {
+    "crapper": "6fd92c4c9bcc56efb64a2f8743d5a2993bcfd42d",
+    "dryer": "66ff6d21a42c04afcad89c78a80066176d1294b0",
+    "mutator": "a5a0cb803b66e0cdb8bf471b3b08af701d424a41"
+  },
+  "complexity": {
+    "functions": 183,
+    "atLeast10": 15,
+    "coverage": "not measured project-wide",
+    "hotspots": [
+      {
+        "function": "initialize",
+        "namespace": "content.course.ui.course",
+        "complexity": 242
+      },
+      {
+        "function": "startWorkshop",
+        "namespace": "episodes.first-service.server",
+        "complexity": 151
+      },
+      {
+        "function": "mountJourney",
+        "namespace": "content.course.ui.journey",
+        "complexity": 150
+      },
+      {
+        "function": "main",
+        "namespace": "scripts.practice.runner",
+        "complexity": 44
+      },
+      {
+        "function": "main",
+        "namespace": "scripts.practice.proxmox_backup",
+        "complexity": 36
+      },
+      {
+        "function": "render",
+        "namespace": "episodes.first-service.app",
+        "complexity": 32
+      },
+      {
+        "function": "readPracticeReport",
+        "namespace": "content.course.ui.practice-report",
+        "complexity": 23
+      },
+      {
+        "function": "journey",
+        "namespace": "episodes.first-service.app",
+        "complexity": 15
+      },
+      {
+        "function": "introductionHTML",
+        "namespace": "episodes.first-service.introduction",
+        "complexity": 15
+      },
+      {
+        "function": "rewrite",
+        "namespace": "scripts.build-static",
+        "complexity": 12
+      },
+      {
+        "function": "writeCourse",
+        "namespace": "scripts.course-source",
+        "complexity": 12
+      },
+      {
+        "function": "execute",
+        "namespace": "scripts.practice.runner",
+        "complexity": 12
+      },
+      {
+        "function": "locate",
+        "namespace": "scripts.course-source",
+        "complexity": 11
+      },
+      {
+        "function": "indexPage",
+        "namespace": "scripts.build-legacy",
+        "complexity": 10
+      },
+      {
+        "function": "targetFile",
+        "namespace": "scripts.validate-legacy",
+        "complexity": 10
+      }
+    ]
+  },
+  "mutation": {
+    "scannedProductionSites": 952,
+    "executedNewBoundarySites": 24,
+    "killed": 24,
+    "survived": 0,
+    "selection": "Three new boundary modules only; --no-coverage forces all their sites; full module coverage independently measured with c8"
+  },
+  "wsl": {
+    "passed": 30,
+    "unavailable": 15,
+    "failed": 0
+  },
+  "openFindings": [
+    "P1: simultaneous tabs overwrite progress",
+    "P2: 15 functions cannot reach CRAP < 10 without structural changes",
+    "P2: no project-wide coverage/mutation result",
+    "P3: one duplicate score 1.00 retained in standalone downloadable executors"
+  ]
+}

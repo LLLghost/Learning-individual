@@ -1,0 +1,13 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForSelector: Timeout 3000ms exceeded.
+Call log:
+  - waiting for locator('body[data-course-ready="true"]') to be visible
+
+    at D:\Codex_projects\Learning\Learning-individual\scripts\test-progress-boundary.mjs:23:16 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

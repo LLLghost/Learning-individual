@@ -1,0 +1,12 @@
+Wrote /tmp/mayak-ub-audit.dUPTaz/project/.metrics/mutate/content.course.ui.progress-state.edn
+Wrote /tmp/mayak-ub-audit.dUPTaz/project/.metrics/mutate/episodes.first-service.http-json.edn
+Wrote /tmp/mayak-ub-audit.dUPTaz/project/.metrics/mutate/scripts.verify-evidence.edn
+KILLED    scripts/verify-evidence.mjs:9 delete !
+KILLED    scripts/verify-evidence.mjs:12 delete !
+KILLED    scripts/verify-evidence.mjs:12 + -> -
+KILLED    scripts/verify-evidence.mjs:16 !== -> ===
+Function       Namespace                Killed  Survived  Uncovered  Sites   Score
+----------------------------------------------------------------------------------
+verifyEvidence scripts.verify-evidence       4         0          0      4 100.0%
+----------------------------------------------------------------------------------
+Total                                        4         0          0      4  100.0%

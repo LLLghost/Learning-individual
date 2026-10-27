@@ -1,0 +1,85 @@
+
+> server-infrastructure-course@1.0.0 validate:release
+> npm run build && npm run validate && npm run test:practice && npm run test:boundaries && node scripts/validate-site.mjs --strict && node scripts/smoke-browser.mjs && npm run verify:live
+
+
+> server-infrastructure-course@1.0.0 build
+> node scripts/build-static.mjs
+
+Multipage site built: 50 routes, 34 chapters, 37 lab modules.
+Практический курс: 82 урока, 530 привязок; архив v6 сохранён. Редакционный статус: accepted.
+
+> server-infrastructure-course@1.0.0 validate
+> node scripts/validate-site.mjs
+
+Editorial: 76 rewritten lessons match reviewed hashes; 1312 legacy anchors have explicit new targets and archive links. Human learning and live labs remain separate.
+Курс: 82 урока; 34 главы, 37 модулей, 530 заданий и исходные разделы сохранены.
+Редакционная приёмка: осталось 0 уроков и 0 привязок. Это проверка структуры, а не готовности содержания.
+
+> server-infrastructure-course@1.0.0 test:practice
+> node scripts/practice/check-catalog.mjs && node scripts/practice/test-report.mjs && node scripts/check-calculations.mjs
+
+Practice registry: 46 outcomes, 45 guest recipes + native Proxmox restore; artifact hashes match.
+Reports: 13 acceptance, refusal and stale-attempt scenarios passed. Checksums are not attestations.
+Arithmetic: 37 reviewed problems, 68 fields match independent formulas and contracts. Tests do not replace semantic review.
+
+> server-infrastructure-course@1.0.0 test:boundaries
+> node --test scripts/test-http-json.mjs scripts/test-progress-state.mjs scripts/test-workshop-http.mjs scripts/test-links.mjs scripts/test-evidence.mjs && node scripts/test-progress-boundary.mjs
+
+✔ evidence registry distinguishes normalized text from exact archive bytes (24.2528ms)
+✔ release verification rejects changed evidence even when report checks still pass (345.9039ms)
+✔ a complete object at the byte limit is accepted (1.5991ms)
+✔ the byte limit applies across chunks and to multibyte text (1.2035ms)
+✔ a split UTF-8 letter is decoded after all bytes arrive (1.3934ms)
+✔ only JSON objects enter the action handler (0.7341ms)
+✔ malformed UTF-8 is rejected instead of saving replacement letters (0.2527ms)
+✔ link checking uses the current course and distinguishes unavailable responses (77.8136ms)
+✔ first visit and a saved valid journey retain their meaning (2.0054ms)
+✔ broken JSON and wrong top-level formats require a recovery copy (0.3899ms)
+✔ malformed collections and records do not erase usable notes (1.1312ms)
+✔ HTTP preserves a Russian name split inside a UTF-8 character (198.9075ms)
+✔ JSON null is a client error and does not change the saved name (55.1631ms)
+✔ oversized and malformed JSON requests are rejected (36.8629ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 478.3337
+Corrupt progress: course opens, original backed up, valid notes retained, reload OK (3 cases).
+Editorial: 76 rewritten lessons match reviewed hashes; 1312 legacy anchors have explicit new targets and archive links. Human learning and live labs remain separate.
+Курс: 82 урока; 34 главы, 37 модулей, 530 заданий и исходные разделы сохранены.
+Редакционная приёмка: осталось 0 уроков и 0 привязок. Это проверка структуры, а не готовности содержания.
+Темы: тёмная по умолчанию, переключение, сохранение при переходе/обновлении и белая печать: OK.
+Chromium: пройдено 82 урока.
+Учебный маршрут: 82 урока × 6 шагов; прогноз рядом с опытом, возврат, экспорт/импорт шага, клавиатура, печать, 320/390 px и 200%: OK.
+Новая практика: 46 интерфейсов; приём отчёта, отказ, новая попытка, повреждение и импорт истории: OK (браузерные фикстуры).
+Проверка оценивания: 536 верных и 536 неверных ответов; другой вариант повторения сохраняется после обновления.
+Прогресс, экспорт/импорт, старые заметки, поиск, повторы, 390 px, офлайн и старые ссылки: OK.
+Исторический отчёт не засчитан как новая практика; подмена факта отклонена. Ошибок JavaScript: 0. Ошибка загрузки данных объяснена, текст сохранён.
+
+> server-infrastructure-course@1.0.0 verify:live
+> node scripts/verify-live-reports.mjs
+
+Verified 40 evidence hashes (LF text / raw archives).
+L04A/0: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L04A/1: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L06B/0: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L06B/1: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L07B/0: 5/5 accepted; 5/5 alterations rejected; format/source OK
+L07B/1: 5/5 accepted; 5/5 alterations rejected; format/source OK
+L12A/0: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L12A/1: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L13B/0: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L13B/1: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L14B/0: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L14B/1: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L16B/0: 10/10 accepted; 10/10 alterations rejected; format/source OK
+L16B/1: 10/10 accepted; 10/10 alterations rejected; format/source OK
+L30B/0: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L30B/1: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L31A/0: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L31A/1: 3/3 accepted; 3/3 alterations rejected; format/source OK
+Verified 18 current live reports with the published checker. Browser import is recorded separately.

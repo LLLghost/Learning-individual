@@ -1,0 +1,2460 @@
+{
+  "environment": "WSL Linux fixtures, not a clean Proxmox VM",
+  "at": 1793109084.594444,
+  "sourceHashNormalization": "LF",
+  "sourceHashes": {
+    "runner.py": "9f8e310cb7c4c5e75bba19d465be9861a94a9348faaf5862f4e3b16b11a4f69c",
+    "catalog.json": "ad2b79db4378a7148d97c54b19a64d624773dd4b71d24cfc80628a1a2d5a27cd"
+  },
+  "syntax": 180,
+  "results": [
+    {
+      "lesson": "process",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /tmp/mayak-practice-test-owye6aqs/process/work/pid.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "python3 -c import time; time.sleep(3600) mayak-mkb151bfbecf \n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /tmp/mayak-practice-test-owye6aqs/process/work/pid.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "python3 -c import time; time.sleep(3600) mayak-mk93fe64f24a \n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "permissions",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "private note\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "private note\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "memory",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 2, in <module>\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/mayak-practice-test-owye6aqs/memory/work/memory.json'\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{'available_kib': 14238088, 'total_kib': 16334744, 'pressure_source': '/proc/pressure/memory'}\nsome avg10=0.00 avg60=0.00 avg300=0.00 total=1216101\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1214170\n\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 2, in <module>\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/mayak-practice-test-owye6aqs/memory/work/memory.json'\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{'available_kib': 14221772, 'total_kib': 16334744, 'pressure_source': '/proc/pressure/memory'}\nsome avg10=0.00 avg60=0.00 avg300=0.00 total=1216101\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1214170\n\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "packages",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "python3-minimal: /usr/bin/python3\npython3-minimal 3.12.3-0ubuntu2.1\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "python3-minimal: /usr/bin/python3\npython3-minimal 3.12.3-0ubuntu2.1\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "shell-data",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "cmp: /tmp/mayak-practice-test-owye6aqs/shell-data/work/names.bin: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "[b'first note', b'second note', b'']\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "cmp: /tmp/mayak-practice-test-owye6aqs/shell-data/work/names.bin: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "[b'first note', b'second note', b'third note', b'']\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "shell-failure",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Timeout is 1 seconds\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: ('', 'bash: /tmp/mayak-practice-test-owye6aqs/shell-failure/work/solution.sh: No such file or directory\\n', 0.007383800926618278)\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "Observed timeout: 124 elapsed seconds: 1.0086605940014124\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Timeout is 2 seconds\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: ('', 'bash: /tmp/mayak-practice-test-owye6aqs/shell-failure/work/solution.sh: No such file or directory\\n', 0.006180899916216731)\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "Observed timeout: 124 elapsed seconds: 2.008422567974776\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "python-result",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/tmp/mayak-practice-test-owye6aqs/python-result/work/solution.py': [Errno 2] No such file or directory\n\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{'stdout': 'out\\n', 'stderr': 'err\\n', 'code': 7}\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/tmp/mayak-practice-test-owye6aqs/python-result/work/solution.py': [Errno 2] No such file or directory\n\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{'stdout': 'another out\\n', 'stderr': 'another err\\n', 'code': 8}\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "git-change",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "port=8081\nMove note port to avoid listener conflict\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "port=8082\nMove note port to avoid listener conflict\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "boot",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "/dev/sdd ext4\ninitrd=\\initrd.img WSL_ROOT_INIT=1 panic=-1 nr_cpus=16 hv_utils.timesync_implicit=1 printk.devkmsg=on page_reporting.page_reporting_order=5 hv_storvsc.storvsc_max_hw_queues=4 console=hvc0 debug pty.legacy_count=0 WSL_ENABLE_CRASH_DUMP=1\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "/dev/sdd ext4\ninitrd=\\initrd.img WSL_ROOT_INIT=1 panic=-1 nr_cpus=16 hv_utils.timesync_implicit=1 printk.devkmsg=on page_reporting.page_reporting_order=5 hv_storvsc.storvsc_max_hw_queues=4 console=hvc0 debug pty.legacy_count=0 WSL_ENABLE_CRASH_DUMP=1\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "disk-identity",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"722.9M\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480868249a0407bd58c47bd59e3\",\n         \"wwn\": \"0x60022480868249a0407bd58c47bd59e3\"\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"size\": \"97M\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480f6c40205e42841f4e04d5afb\",\n         \"wwn\": \"0x60022480f6c40205e42841f4e04d5afb\"\n      },{\n         \"name\": \"sdc\",\n         \"type\": \"disk\",\n         \"size\": \"4G\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480a6dbbd7b2327f12589c47146\",\n         \"wwn\": \"0x60022480a6dbbd7b2327f12589c47146\"\n      },{\n         \"name\": \"sdd\",\n         \"type\": \"disk\",\n         \"size\": \"1T\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"6002248076296887e7797741c3771fe0\",\n         \"wwn\": \"0x6002248076296887e7797741c3771fe0\"\n      },{\n         \"name\": \"sde\",\n         \"type\": \"disk\",\n         \"size\": \"1T\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480f5cf9745d49c506ebcc3d43d\",\n         \"wwn\": \"0x60022480f5cf9745d49c506ebcc3d43d\"\n      }\n   ]\n}\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"722.9M\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480868249a0407bd58c47bd59e3\",\n         \"wwn\": \"0x60022480868249a0407bd58c47bd59e3\"\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"size\": \"97M\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480f6c40205e42841f4e04d5afb\",\n         \"wwn\": \"0x60022480f6c40205e42841f4e04d5afb\"\n      },{\n         \"name\": \"sdc\",\n         \"type\": \"disk\",\n         \"size\": \"4G\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480a6dbbd7b2327f12589c47146\",\n         \"wwn\": \"0x60022480a6dbbd7b2327f12589c47146\"\n      },{\n         \"name\": \"sdd\",\n         \"type\": \"disk\",\n         \"size\": \"1T\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"6002248076296887e7797741c3771fe0\",\n         \"wwn\": \"0x6002248076296887e7797741c3771fe0\"\n      },{\n         \"name\": \"sde\",\n         \"type\": \"disk\",\n         \"size\": \"1T\",\n         \"model\": \"Virtual Disk\",\n         \"serial\": \"60022480f5cf9745d49c506ebcc3d43d\",\n         \"wwn\": \"0x60022480f5cf9745d49c506ebcc3d43d\"\n      }\n   ]\n}\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "disk-health",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "sda  disk      Virtual Disk\nsdb  disk      Virtual Disk\nsdc  disk      Virtual Disk\nsdd  disk      Virtual Disk\nsde  disk      Virtual Disk\nguest-data-only\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "sda  disk      Virtual Disk\nsdb  disk      Virtual Disk\nsdc  disk      Virtual Disk\nsdd  disk      Virtual Disk\nsde  disk      Virtual Disk\nguest-data-only\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "vm-resources",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"39 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"GenuineIntel\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"6\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"158\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"13\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"7200.02\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves vnmi md_clear flush_l1d arch_capabilities\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"VT-x\"\n      },{\n         \"field\": \"Hypervisor vendor:\",\n         \"data\": \"Microsoft\"\n      },{\n         \"field\": \"Virtualization type:\",\n         \"data\": \"full\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"2 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"16 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Unknown: Dependent on hypervisor status\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Mitigation; Aligned branch/return thunks\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"KVM: Mitigation: Split huge pages\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Mitigation; Enhanced IBRS\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Unknown: Dependent on hypervisor status\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Mitigation; TSX disabled\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\nMemTotal:       16334744 kB\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"39 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"GenuineIntel\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"6\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"158\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"13\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"7200.02\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves vnmi md_clear flush_l1d arch_capabilities\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"VT-x\"\n      },{\n         \"field\": \"Hypervisor vendor:\",\n         \"data\": \"Microsoft\"\n      },{\n         \"field\": \"Virtualization type:\",\n         \"data\": \"full\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"2 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"16 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Unknown: Dependent on hypervisor status\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Mitigation; Aligned branch/return thunks\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"KVM: Mitigation: Split huge pages\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Mitigation; Enhanced IBRS\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Unknown: Dependent on hypervisor status\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Mitigation; TSX disabled\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\nMemTotal:       16334744 kB\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "pcie",
+      "status": "unavailable",
+      "reason": [
+        "lspci"
+      ]
+    },
+    {
+      "lesson": "device-id",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "eth0 /sys/bus/vmbus/drivers/hv_netvsc\nlo ",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "eth0 /sys/bus/vmbus/drivers/hv_netvsc\nlo ",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "uefi",
+      "status": "unavailable",
+      "reason": "not booted with UEFI"
+    },
+    {
+      "lesson": "address",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/address/work/route.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.236 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.236/0.236/0.236/0.000 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/address/work/route.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.176 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.176/0.176/0.176/0.000 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "prefix",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "224: eth0    inet 192.0.2.1/24 scope global eth0\\       valid_lft forever preferred_lft forever\nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.136 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.136/0.136/0.136/0.000 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "226: eth0    inet 192.0.2.1/24 scope global eth0\\       valid_lft forever preferred_lft forever\nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.171 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.171/0.171/0.171/0.000 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "mtu",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /tmp/mayak-practice-test-owye6aqs/mtu/work/payload.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "PING 192.0.2.2 (192.0.2.2) 1252(1280) bytes of data.\n1260 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.330 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.330/0.330/0.330/0.000 ms\nPING 192.0.2.2 (192.0.2.2) 1253(1281) bytes of data.\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms\n\n",
+          "stderr": "ping: local error: message too long, mtu=1280\n"
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /tmp/mayak-practice-test-owye6aqs/mtu/work/payload.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "PING 192.0.2.2 (192.0.2.2) 1352(1380) bytes of data.\n1360 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.085 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.085/0.085/0.085/0.000 ms\nPING 192.0.2.2 (192.0.2.2) 1353(1381) bytes of data.\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms\n\n",
+          "stderr": "ping: local error: message too long, mtu=1380\n"
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "ipv6",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "RTNETLINK answers: Network is unreachable\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "2001:db8::2 from :: dev eth0 proto kernel src 2001:db8::1 metric 256 pref medium\nPING 2001:db8::2 (2001:db8::2) 56 data bytes\n64 bytes from 2001:db8::2: icmp_seq=1 ttl=64 time=0.312 ms\n\n--- 2001:db8::2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.312/0.312/0.312/0.000 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "RTNETLINK answers: Network is unreachable\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "2001:db8::2 from :: dev eth0 proto kernel src 2001:db8::1 metric 256 pref medium\nPING 2001:db8::2 (2001:db8::2) 56 data bytes\n64 bytes from 2001:db8::2: icmp_seq=1 ttl=64 time=0.117 ms\n\n--- 2001:db8::2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.117/0.117/0.117/0.000 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "firewall",
+      "status": "unavailable",
+      "reason": [
+        "nft"
+      ]
+    },
+    {
+      "lesson": "segments",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\nFrom 198.51.100.1 icmp_seq=1 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=2 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=3 Destination Host Unreachable\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2041ms\npipe 3\n",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\n64 bytes from 198.51.100.2: icmp_seq=1 ttl=64 time=0.135 ms\n64 bytes from 198.51.100.2: icmp_seq=2 ttl=64 time=0.035 ms\n64 bytes from 198.51.100.2: icmp_seq=3 ttl=64 time=0.053 ms\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss, time 2034ms\nrtt min/avg/max/mdev = 0.035/0.074/0.135/0.043 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\nFrom 198.51.100.1 icmp_seq=1 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=2 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=3 Destination Host Unreachable\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2045ms\npipe 3\n",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\n64 bytes from 198.51.100.2: icmp_seq=1 ttl=64 time=0.076 ms\n64 bytes from 198.51.100.2: icmp_seq=2 ttl=64 time=0.036 ms\n64 bytes from 198.51.100.2: icmp_seq=3 ttl=64 time=0.073 ms\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss, time 2034ms\nrtt min/avg/max/mdev = 0.036/0.061/0.076/0.018 ms\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "tcp",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \n",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/tcp/work/response.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \nnote\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \n",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/tcp/work/response.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \nnote\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "systemd",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 3,
+          "stdout": "inactive\n",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "active\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": "Failed to stop mke5bc7455eb.service: Unit mke5bc7455eb.service not loaded.\n"
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 3,
+          "stdout": "inactive\n",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "active\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": "Failed to stop mk0b67d7dd49.service: Unit mk0b67d7dd49.service not loaded.\n"
+        }
+      ]
+    },
+    {
+      "lesson": "logs",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/logs/work/events.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "start attempt mk2aec636f9a\nfailure port 8081\nstart attempt mk2aec636f9a\nfailure port 8081\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/logs/work/events.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "start attempt mk3e281b06fa\nfailure port 8082\nstart attempt mk3e281b06fa\nfailure port 8082\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "incident",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/incident/work/before.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "ActiveState=inactive\nactive\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": "Failed to stop mk7bb141b6a4.service: Unit mk7bb141b6a4.service not loaded.\n"
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/incident/work/before.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "ActiveState=inactive\nactive\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": "Failed to stop mk885473647a.service: Unit mk885473647a.service not loaded.\n"
+        }
+      ]
+    },
+    {
+      "lesson": "unknown-incident",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/unknown-incident/work/before.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 -m http.server 28150 --bind 127.0.0.2 --directory /tmp/mayak-practice-test-owye6aqs/unknown-incident/work ; ignore_errors=no ; start_time=[Tue 2026-10-27 16:51:18 MSK] ; stop_time=[n/a] ; pid=1426910 ; code=(null) ; status=0/0 }\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": "Failed to stop mka9c0f8d817.service: Unit mka9c0f8d817.service not loaded.\n"
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "grep: /tmp/mayak-practice-test-owye6aqs/unknown-incident/work/before.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 -m http.server 28151 --bind 127.0.0.2 --directory /tmp/mayak-practice-test-owye6aqs/unknown-incident/work ; ignore_errors=no ; start_time=[Tue 2026-10-27 16:51:19 MSK] ; stop_time=[n/a] ; pid=1427139 ; code=(null) ; status=0/0 }\nnote\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": "Failed to stop mk71e8a2d8e5.service: Unit mk71e8a2d8e5.service not loaded.\n"
+        }
+      ]
+    },
+    {
+      "lesson": "mount",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 32,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "note\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 32,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "note\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "filesystem",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "/dev/loop0      27234304 28672  24862720   1% /tmp/mayak-practice-test-owye6aqs/filesystem/work/mnt\n/dev/loop0       8192    62  8130    1% /tmp/mayak-practice-test-owye6aqs/filesystem/work/mnt\nFilesystem     Inodes IUsed IFree IUse% Mounted on\n/dev/loop0       8192    62  8130    1% /tmp/mayak-practice-test-owye6aqs/filesystem/work/mnt\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "/dev/loop0      27234304 28672  24862720   1% /tmp/mayak-practice-test-owye6aqs/filesystem/work/mnt\n/dev/loop0       8192    72  8120    1% /tmp/mayak-practice-test-owye6aqs/filesystem/work/mnt\nFilesystem     Inodes IUsed IFree IUse% Mounted on\n/dev/loop0       8192    72  8120    1% /tmp/mayak-practice-test-owye6aqs/filesystem/work/mnt\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "lvm",
+      "status": "unavailable",
+      "reason": [
+        "pvcreate",
+        "vgcreate",
+        "lvcreate",
+        "lvs",
+        "vgs",
+        "vgremove",
+        "pvremove",
+        "lvextend"
+      ]
+    },
+    {
+      "lesson": "dns",
+      "status": "unavailable",
+      "reason": [
+        "dnsmasq"
+      ]
+    },
+    {
+      "lesson": "latency",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Use a monotonic clock; measure five real waits.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/tmp/mayak-practice-test-owye6aqs/latency/work/measure.py': [Errno 2] No such file or directory\n\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{'samples_ms': [10.16159902792424, 10.160200065001845, 10.134599986486137, 10.159399942494929, 200.13889495749027], 'mean_ms': 48.15093879587948, 'max_ms': 200.13889495749027}\nObserved wall duration: 0.27306889393366873\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Use a monotonic clock; measure five real waits.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/tmp/mayak-practice-test-owye6aqs/latency/work/measure.py': [Errno 2] No such file or directory\n\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "{'samples_ms': [10.126198991201818, 10.143700055778027, 10.17280004452914, 10.129199945367873, 300.12879299465567], 'mean_ms': 68.1401384063065, 'max_ms': 300.12879299465567}\nObserved wall duration: 0.367699992028065\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "ansible-state",
+      "status": "unavailable",
+      "reason": [
+        "ansible-playbook"
+      ]
+    },
+    {
+      "lesson": "tls",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "/tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: OK\n",
+          "stderr": "CN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: verification failed\ngrep: /tmp/mayak-practice-test-owye6aqs/tls/work/valid.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "/tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: OK\n/tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: OK\nerror 62 at 0 depth lookup: hostname mismatch\n",
+          "stderr": "CN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: verification failed\n"
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "/tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: OK\n",
+          "stderr": "CN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: verification failed\ngrep: /tmp/mayak-practice-test-owye6aqs/tls/work/valid.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "/tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: OK\n/tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: OK\nerror 62 at 0 depth lookup: hostname mismatch\n",
+          "stderr": "CN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /tmp/mayak-practice-test-owye6aqs/tls/work/cert.pem: verification failed\n"
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "time",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "diff: /tmp/mayak-practice-test-owye6aqs/time/work/clock.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "Timezone=Europe/Moscow\nNTPSynchronized=yes\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 2,
+          "stdout": "",
+          "stderr": "diff: /tmp/mayak-practice-test-owye6aqs/time/work/clock.txt: No such file or directory\n"
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "Timezone=Europe/Moscow\nNTPSynchronized=yes\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "baseline",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "PC12919957\nPRETTY_NAME=\"Ubuntu 24.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.3 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"722.9M\"\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"size\": \"97M\"\n      },{\n         \"name\": \"sdc\",\n         \"type\": \"disk\",\n         \"size\": \"4G\"\n      },{\n         \"name\": \"sdd\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      },{\n         \"name\": \"sde\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet\",\"local\":\"10.255.255.254\",\"prefixlen\":32,\"broadcast\":\"10.255.255.254\",\"scope\":\"global\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n3e5851448bae5b36f351becde037a8b13b77307279f484eda808f8177d9a4293  /etc/os-release\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "PC12919957\nPRETTY_NAME=\"Ubuntu 24.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.3 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"722.9M\"\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"size\": \"97M\"\n      },{\n         \"name\": \"sdc\",\n         \"type\": \"disk\",\n         \"size\": \"4G\"\n      },{\n         \"name\": \"sdd\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      },{\n         \"name\": \"sde\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet\",\"local\":\"10.255.255.254\",\"prefixlen\":32,\"broadcast\":\"10.255.255.254\",\"scope\":\"global\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n3e5851448bae5b36f351becde037a8b13b77307279f484eda808f8177d9a4293  /etc/os-release\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "lab-setup",
+      "status": "passed",
+      "phases": [
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "PC12919957\nPRETTY_NAME=\"Ubuntu 24.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.3 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"722.9M\"\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"size\": \"97M\"\n      },{\n         \"name\": \"sdc\",\n         \"type\": \"disk\",\n         \"size\": \"4G\"\n      },{\n         \"name\": \"sdd\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      },{\n         \"name\": \"sde\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet\",\"local\":\"10.255.255.254\",\"prefixlen\":32,\"broadcast\":\"10.255.255.254\",\"scope\":\"global\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "prepare",
+          "code": 0,
+          "stdout": "Read the lesson and record the requested facts.\n",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "solve",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "check",
+          "code": 0,
+          "stdout": "PC12919957\nPRETTY_NAME=\"Ubuntu 24.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.3 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"722.9M\"\n      },{\n         \"name\": \"sdb\",\n         \"type\": \"disk\",\n         \"size\": \"97M\"\n      },{\n         \"name\": \"sdc\",\n         \"type\": \"disk\",\n         \"size\": \"4G\"\n      },{\n         \"name\": \"sdd\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      },{\n         \"name\": \"sde\",\n         \"type\": \"disk\",\n         \"size\": \"1T\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet\",\"local\":\"10.255.255.254\",\"prefixlen\":32,\"broadcast\":\"10.255.255.254\",\"scope\":\"global\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "action": "restore",
+          "code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "lesson": "mirror",
+      "status": "unavailable",
+      "reason": [
+        "mdadm"
+      ]
+    },
+    {
+      "lesson": "zfs",
+      "status": "unavailable",
+      "reason": [
+        "zpool",
+        "zfs"
+      ]
+    },
+    {
+      "lesson": "container",
+      "status": "unavailable",
+      "reason": "Docker daemon unavailable; not started by tests"
+    },
+    {
+      "lesson": "container-network",
+      "status": "unavailable",
+      "reason": "Docker daemon unavailable; not started by tests"
+    },
+    {
+      "lesson": "kubernetes",
+      "status": "unavailable",
+      "reason": [
+        "kind",
+        "kubectl"
+      ]
+    },
+    {
+      "lesson": "service-selector",
+      "status": "unavailable",
+      "reason": [
+        "kind",
+        "kubectl"
+      ]
+    },
+    {
+      "lesson": "cpu-numa",
+      "status": "unavailable",
+      "reason": [
+        "numactl"
+      ]
+    },
+    {
+      "lesson": "network-storage",
+      "status": "unavailable",
+      "reason": [
+        "exportfs",
+        "mount.nfs"
+      ]
+    },
+    {
+      "lesson": "multipath",
+      "status": "unavailable",
+      "reason": "kernel has no DM multipath target"
+    }
+  ]
+}

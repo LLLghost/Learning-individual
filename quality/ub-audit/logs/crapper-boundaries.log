@@ -1,0 +1,13 @@
+CRAP Report
+===========
+Languages: typescript
+
+Function                       Namespace                             CC    Cov%     CRAP
+----------------------------------------------------------------------------------------
+loadProgress                   content.course.ui.progress-state       8 100.0%      8.0
+readJSONObject                 episodes.first-service.http-json       7 100.0%      7.0
+verifyEvidence                 scripts.verify-evidence                6 100.0%      6.0
+object                         content.course.ui.progress-state       3 100.0%      3.0
+records                        content.course.ui.progress-state       2 100.0%      2.0
+newProgress                    content.course.ui.progress-state       1 100.0%      1.0
+Wrote D:\Codex_projects\Learning\Learning-individual\.metrics\crap.edn

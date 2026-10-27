@@ -1,0 +1,46 @@
+process passed 
+permissions passed 
+memory passed 
+packages passed 
+shell-data passed 
+shell-failure passed 
+python-result passed 
+git-change passed 
+boot passed 
+disk-identity passed 
+disk-health passed 
+vm-resources passed 
+pcie unavailable ['lspci']
+device-id passed 
+uefi unavailable not booted with UEFI
+address passed 
+prefix passed 
+mtu passed 
+ipv6 passed 
+firewall unavailable ['nft']
+segments passed 
+tcp passed 
+systemd passed 
+logs passed 
+incident passed 
+unknown-incident passed 
+mount passed 
+filesystem passed 
+lvm unavailable ['pvcreate', 'vgcreate', 'lvcreate', 'lvs', 'vgs', 'vgremove', 'pvremove', 'lvextend']
+dns unavailable ['dnsmasq']
+latency passed 
+ansible-state unavailable ['ansible-playbook']
+tls passed 
+time passed 
+baseline passed 
+lab-setup passed 
+mirror unavailable ['mdadm']
+zfs unavailable ['zpool', 'zfs']
+container unavailable Docker daemon unavailable; not started by tests
+container-network unavailable Docker daemon unavailable; not started by tests
+kubernetes unavailable ['kind', 'kubectl']
+service-selector unavailable ['kind', 'kubectl']
+cpu-numa unavailable ['numactl']
+network-storage unavailable ['exportfs', 'mount.nfs']
+multipath unavailable kernel has no DM multipath target
+Shell syntax: 180 scripts; actual two-variant recipes: 30

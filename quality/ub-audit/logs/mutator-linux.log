@@ -1,0 +1,13 @@
+KILLED    episodes/first-service/http-json.mjs:4 0 -> 1
+KILLED    episodes/first-service/http-json.mjs:7 > -> >=
+KILLED    episodes/first-service/http-json.mjs:11 true -> false
+KILLED    episodes/first-service/http-json.mjs:13 === -> !==
+KILLED    episodes/first-service/http-json.mjs:13 || -> &&
+KILLED    episodes/first-service/http-json.mjs:13 !== -> ===
+KILLED    episodes/first-service/http-json.mjs:13 || -> &&
+Function       Namespace                         Killed  Survived  Uncovered  Sites   Score
+-------------------------------------------------------------------------------------------
+readJSONObject episodes.first-service.http-json       7         0          0      7 100.0%
+-------------------------------------------------------------------------------------------
+Total                                                 7         0          0      7  100.0%
+Wrote /tmp/mayak-ub-audit.dUPTaz/project/.metrics/mutate/episodes.first-service.http-json.edn

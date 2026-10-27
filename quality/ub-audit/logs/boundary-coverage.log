@@ -1,0 +1,29 @@
+✔ evidence registry distinguishes normalized text from exact archive bytes (23.4338ms)
+✔ release verification rejects changed evidence even when report checks still pass (384.4474ms)
+✔ a complete object at the byte limit is accepted (2.7862ms)
+✔ the byte limit applies across chunks and to multibyte text (0.7342ms)
+✔ a split UTF-8 letter is decoded after all bytes arrive (0.3684ms)
+✔ only JSON objects enter the action handler (0.6078ms)
+✔ malformed UTF-8 is rejected instead of saving replacement letters (0.2374ms)
+✔ first visit and a saved valid journey retain their meaning (4.2709ms)
+✔ broken JSON and wrong top-level formats require a recovery copy (0.4902ms)
+✔ malformed collections and records do not erase usable notes (0.3829ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 524.3266
+------------------------|---------|----------|---------|---------|-------------------
+File                    | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------------------|---------|----------|---------|---------|-------------------
+All files               |     100 |      100 |     100 |     100 |                   
+ content/course/ui      |     100 |      100 |     100 |     100 |                   
+  progress-state.js     |     100 |      100 |     100 |     100 |                   
+ episodes/first-service |     100 |      100 |     100 |     100 |                   
+  http-json.mjs         |     100 |      100 |     100 |     100 |                   
+ scripts                |     100 |      100 |     100 |     100 |                   
+  verify-evidence.mjs   |     100 |      100 |     100 |     100 |                   
+------------------------|---------|----------|---------|---------|-------------------

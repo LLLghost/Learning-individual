@@ -1,0 +1,11 @@
+✔ HTTP preserves a Russian name split inside a UTF-8 character (191.6119ms)
+✔ JSON null is a client error and does not change the saved name (48.6085ms)
+✔ oversized and malformed JSON requests are rejected (40.9863ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 398.5139

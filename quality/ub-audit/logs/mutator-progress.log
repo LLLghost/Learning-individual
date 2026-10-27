@@ -1,0 +1,23 @@
+Wrote /tmp/mayak-ub-audit.dUPTaz/project/.metrics/mutate/content.course.ui.progress-state.edn
+Wrote /tmp/mayak-ub-audit.dUPTaz/project/.metrics/mutate/episodes.first-service.http-json.edn
+KILLED    content/course/ui/progress-state.js:5 !== -> ===
+KILLED    content/course/ui/progress-state.js:5 && -> ||
+KILLED    content/course/ui/progress-state.js:5 === -> !==
+KILLED    content/course/ui/progress-state.js:5 && -> ||
+KILLED    content/course/ui/progress-state.js:5 delete !
+KILLED    content/course/ui/progress-state.js:11 === -> !==
+KILLED    content/course/ui/progress-state.js:11 false -> true
+KILLED    content/course/ui/progress-state.js:14 true -> false
+KILLED    content/course/ui/progress-state.js:15 delete !
+KILLED    content/course/ui/progress-state.js:15 || -> &&
+KILLED    content/course/ui/progress-state.js:15 !== -> ===
+KILLED    content/course/ui/progress-state.js:15 true -> false
+KILLED    content/course/ui/progress-state.js:20 !== -> ===
+Function     Namespace                         Killed  Survived  Uncovered  Sites   Score
+-----------------------------------------------------------------------------------------
+newProgress  content.course.ui.progress-state       0         0          0      0    n/a
+records      content.course.ui.progress-state       0         0          0      0    n/a
+loadProgress content.course.ui.progress-state       8         0          0      8 100.0%
+object       content.course.ui.progress-state       5         0          0      5 100.0%
+-----------------------------------------------------------------------------------------
+Total                                              13         0          0     13  100.0%
