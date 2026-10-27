@@ -105,7 +105,7 @@ for lesson in manifest['lessons']:
     text = path.read_text(encoding='utf-8')
     text = re.sub(r'<!-- ASSESSMENT-MECHANISMS -->[\s\S]*?<!-- /ASSESSMENT-MECHANISMS -->\n?', '', text)
     if cards[lesson['id']]:
-        block = '<!-- ASSESSMENT-MECHANISMS --><details data-block="mechanisms"><summary>Механизмы для заданий углубления</summary><p>Прочитай механизм до решения. Вопросы и варианты ответов сверены с этими объяснениями; сохранены идентификаторы прежних заданий. Полная редактура подробных разборов прежнего издания отмечена отдельно.</p>'+''.join(cards[lesson['id']])+'</details><!-- /ASSESSMENT-MECHANISMS -->\n'
+        block = '<!-- ASSESSMENT-MECHANISMS --><details data-block="mechanisms"><summary>Механизмы для заданий углубления</summary><p>Прочитай механизм до решения. Вопросы и варианты ответов сверены с этими объяснениями; сохранены идентификаторы прежних заданий. Новые углубления разбирают другие условия; подробный исходный текст остаётся в архиве.</p>'+''.join(cards[lesson['id']])+'</details><!-- /ASSESSMENT-MECHANISMS -->\n'
         boundary = text.find('<details data-block="depth">')
         if boundary < 0: boundary = text.rfind('</article>')
         text = text[:boundary]+block+text[boundary:]
@@ -116,5 +116,5 @@ write(ROOT / 'quality/curriculum-map.json',mapping)
 write(ROOT / 'quality/assessment-revision.json',{
     'date':'2026-10-27', 'corrected':changed,
     'directExplanations':len(entries), 'acceptedChecks':[id for id,p in corrections.items() if p.get('reviewed')], 'acceptance':'accepted' if all(e['reviewed'] for e in entries.values()) else 'partial',
-    'note':'Manual review decisions are explicit in the editorial source. Assessment acceptance does not accept the retained legacy depth or the live labs.'})
+    'note':'Manual review decisions are explicit in the editorial source. Assessment acceptance is separate from lesson editorial hashes and live lab acceptance.'})
 print(f'{len(changed)} corrections; {sum(p.get("reviewed") is True for p in corrections.values())} explicitly reviewed items; {len(entries)} direct teaching links.')

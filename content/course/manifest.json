@@ -1,7 +1,7 @@
 {
   "schema": "practical-course-v1",
   "version": 7,
-  "editorialStatus": "pending",
+  "editorialStatus": "accepted",
   "units": [
     {
       "id": "intro",
@@ -160,8 +160,9 @@
         "S3-1",
         "S3-1b"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -188,8 +189,9 @@
         "L00B#why",
         "L00A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -206,8 +208,9 @@
       "checks": [
         "R00"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -227,8 +230,9 @@
         "C00-1",
         "C00-1b"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -243,8 +247,9 @@
       "labIds": [],
       "file": "lessons/lab-setup.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -277,8 +282,9 @@
         "L02B#why",
         "L02A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -296,8 +302,9 @@
         "R03",
         "L03B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -318,8 +325,9 @@
         "C03-1",
         "C03-1b"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -334,8 +342,9 @@
       "labIds": [],
       "file": "lessons/packages.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -363,8 +372,9 @@
         "C04-1b",
         "L04A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -381,8 +391,9 @@
       "checks": [
         "M04-2"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -414,8 +425,9 @@
         "L04B#why",
         "L05A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
@@ -430,8 +442,9 @@
       "labIds": [],
       "file": "lessons/mount.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -458,8 +471,9 @@
         "S4-1b",
         "L06A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -484,8 +498,9 @@
         "S06:3",
         "L06B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -503,8 +518,9 @@
         "M07-1",
         "L07A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -522,8 +538,9 @@
         "C07-0",
         "C07-0b"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -551,8 +568,9 @@
         "C07-1b",
         "L07B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -567,8 +585,9 @@
       "labIds": [],
       "file": "lessons/ipv6.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -594,8 +613,9 @@
         "C08-1b",
         "L08A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "network",
@@ -613,8 +633,9 @@
         "M08-1",
         "L08B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -644,8 +665,9 @@
         "L12A#why",
         "L12B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -660,8 +682,9 @@
       "labIds": [],
       "file": "lessons/disk-health.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -690,8 +713,9 @@
         "L03A#why",
         "L13A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -716,8 +740,9 @@
         "S13:2",
         "S13:3"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -747,8 +772,9 @@
         "L14B#why",
         "L14A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -766,8 +792,9 @@
         "M14-1",
         "C14-0b"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -784,8 +811,9 @@
       "checks": [
         "M03-0"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -805,8 +833,9 @@
         "C15-0b",
         "L15B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -830,8 +859,9 @@
         "S15:3",
         "L15A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -861,8 +891,9 @@
         "L16B#why",
         "L16A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -888,8 +919,9 @@
         "L17A#why",
         "L17B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -924,8 +956,9 @@
         "L18B#why",
         "L18A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -944,8 +977,9 @@
         "M18-0",
         "R18"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -974,8 +1008,9 @@
         "L32A#why",
         "L32B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "storage",
@@ -994,8 +1029,9 @@
         "M32-1",
         "R32"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1024,8 +1060,9 @@
         "L21A#why",
         "L21B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1042,8 +1079,9 @@
       "checks": [
         "M21-1"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1072,8 +1110,9 @@
         "L22B#why",
         "L22A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1090,8 +1129,9 @@
       "checks": [
         "M22-0"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1117,8 +1157,9 @@
         "L23A#why",
         "L23B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "automation",
@@ -1142,8 +1183,9 @@
         "S23:3",
         "C21-1"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1172,8 +1214,9 @@
         "L19A#why",
         "L19B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1190,8 +1233,9 @@
       "checks": [
         "M19-0"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1220,8 +1264,9 @@
         "L24A#why",
         "L24B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1238,8 +1283,9 @@
       "checks": [
         "M24-0"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1267,8 +1313,9 @@
         "L25A#why",
         "L25B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1285,8 +1332,9 @@
       "checks": [
         "M25-1"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1312,8 +1360,9 @@
         "L26B#why",
         "L26A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "platform",
@@ -1330,8 +1379,9 @@
       "checks": [
         "M26-0"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1373,8 +1423,9 @@
         "L01B#why",
         "L09A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1391,8 +1442,9 @@
       "checks": [
         "M09-1"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1424,8 +1476,9 @@
         "L10B#why",
         "L10A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1440,8 +1493,9 @@
       "labIds": [],
       "file": "lessons/device-id.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1469,8 +1523,9 @@
         "L11A#why",
         "L11B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1488,8 +1543,9 @@
         "M11-1",
         "R11"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1517,8 +1573,9 @@
         "L27B#why",
         "L27A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1535,8 +1592,9 @@
       "checks": [
         "M27-1"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1566,8 +1624,9 @@
         "L28A#why",
         "L28B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1585,8 +1644,9 @@
         "M28-1",
         "M29-2"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1615,8 +1675,9 @@
         "L29B#why",
         "L29A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "hardware",
@@ -1631,8 +1692,9 @@
       "labIds": [],
       "file": "lessons/redfish.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1659,8 +1721,9 @@
         "L20A#why",
         "L20B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1678,8 +1741,9 @@
         "M20-0",
         "M20-2"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1708,8 +1772,9 @@
         "L30B#why",
         "L30A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1728,8 +1793,9 @@
       "checks": [
         "M30-2"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1760,8 +1826,9 @@
         "L31A#why",
         "L31B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1778,8 +1845,9 @@
       "checks": [
         "M31-1"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1811,8 +1879,9 @@
         "L33A#why",
         "L33B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1827,8 +1896,9 @@
       "labIds": [],
       "file": "lessons/recovery-time.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1858,8 +1928,9 @@
         "L34A#why",
         "L34B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1874,8 +1945,9 @@
       "labIds": [],
       "file": "lessons/incident-close.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1904,8 +1976,9 @@
         "L35A#why",
         "L35B#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "operations",
@@ -1922,8 +1995,9 @@
       "checks": [
         "M35-1"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "final",
@@ -1953,8 +2027,9 @@
         "L36B#why",
         "L36A#why"
       ],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     },
     {
       "unit": "final",
@@ -1969,9 +2044,11 @@
       "labIds": [],
       "file": "lessons/unknown-incident.html",
       "checks": [],
-      "reviewed": false,
-      "baseRevision": "2026-10-27"
+      "reviewed": true,
+      "baseRevision": "2026-10-27",
+      "depthRevision": "2026-10-27"
     }
   ],
-  "assessmentFile": "assessments.json"
+  "assessmentFile": "assessments.json",
+  "editorialReviewMode": "author-self-review"
 }

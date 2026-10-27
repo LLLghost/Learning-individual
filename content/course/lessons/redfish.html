@@ -7,45 +7,14 @@ GET выбранного Member → состояние системы</code></pr
 <section data-block="guided" id="redfish-guided"><h2>Прогноз и опыт с поддержкой</h2><p>Предскажи, почему статический путь Systems/1 может отсутствовать. По предоставленному JSON пройди ссылки до нужной системы и сохрани только несекретные поля состояния.</p></section>
 <section data-block="independent" id="redfish-independent"><h2>Самостоятельная задача</h2><p>Коллекция содержит несколько Members и nextLink. Выбери систему по проверенному идентификатору и учти пагинацию; не отправляй Reset в опыте чтения.</p></section>
 <section data-block="reflection" id="redfish-reflection"><h2>Объясни и вернись позже</h2><p>Как отличить 401, 403 и отсутствие ресурса? Через день пройди другой ответ без запоминания URI производителя.</p><p>Свободное объяснение сохраняется для самопроверки; автоматическая проверка не оценивает его смысл.</p><p>Первоисточник для сверки поведения и версии: <a href="https://www.dmtf.org/standards/redfish">документация</a>. Команды Linux рассчитаны на Debian 12/13; доступность конкретной функции проверяется предпосылками работы.</p></section>
-<details data-block="depth"><summary>Подробные механизмы, команды и дополнительные примеры</summary><p class="provenance">Здесь сохранены технические разборы предыдущей редакции. Они ещё проходят сверку с новым уроком; статус редакционной приёмки указан в карте качества.</p><section id="b26-s010" data-origin="v6"><h2>26.8. Модель ресурсов Redfish</h2>
-<p>Корень:</p>
-<pre><code class="language-text">/redfish/v1/
-</code></pre>
-<p>обычно ведёт к наборам и ресурсам вроде:</p>
-<pre><code class="language-text">Systems
-Chassis
-Managers
-UpdateService
-TaskService
-</code></pre>
-<p>Конкретные пути поддерживает реализация.</p>
-<p>Пример идеи автоматизации только на чтение:</p>
-<pre><code class="language-python">GET /redfish/v1/Systems/1
-GET /redfish/v1/UpdateService/FirmwareInventory
-</code></pre>
-<p>и собрать инвентарь прошивок нескольких серверов в один отчёт в JSON или CSV.</p>
-</section>
-<section id="b26-s015" data-origin="v6"><h3>Действия</h3>
-<pre><code class="language-bash">lspci -tv | grep -A6 '86:'
-lspci -nn | grep -i nvme
-nvme list
-dmesg -T | grep -iE 'pcie|link|bifurcat'
-</code></pre>
-<p>Плюс то, что видно только вне операционной системы: настройка разделения линий в BIOS Setup, вывод <code>pci</code> в UEFI Shell и журнал изменений BIOS в BMC, если он ведётся.</p>
-<p>Получено:</p>
-<pre><code class="language-text"># до обновления (из старого отчёта об инвентаризации)
- +-[0000:85]-+-00.0  NVMe SSD
-             +-01.0  NVMe SSD
-             +-02.0  NVMe SSD
-             \-03.0  NVMe SSD
-
-# сейчас
- +-[0000:85]-+-00.0  NVMe SSD
-             \-01.0  NVMe SSD
-
-# BIOS Setup → PCIe Bifurcation: Auto   (было: x4x4x4x4)
-</code></pre>
-</section>
-<section id="b26-s019" data-origin="v6"><h3>Redfish как граница автоматизации</h3>
-<p>Redfish представляет инвентарь, состояние здоровья и настройки через ресурсы REST и JSON. Это удобно для управления парком серверов, но не отменяет расширений производителя и особенностей работы с задачами. Автоматизация должна проверять код ответа HTTP, завершение асинхронной задачи и фактическое состояние после операции.</p>
-</section></details></article>
+<details data-block="depth"><summary>Углубление: API управления не равен синхронной команде</summary>
+<section id="redfish-depth-model"><h2>API управления не равен синхронной команде</h2><p>Redfish моделирует системы, managers, chassis и связанные ресурсы через HTTPS и JSON. Ресурс даёт свойства и ссылки, Action описывает доступное действие. Идентификаторы и пути конкретных Systems/Managers следует получать из ответов, а не придумывать. Аутентификация, сертификат сервера и право выполнить действие проверяются отдельно.</p><p>HTTP 202 может вернуть задачу или monitor для отслеживания. Терминальное состояние задачи и фактическая версия ресурса нужны отдельно. ExtendedInfo и MessageId уточняют ошибку; строка HTTP success не заменяет содержимое ответа. Инвентарь может быть paginated и частично недоступен из-за прав.</p></section>
+<section id="redfish-depth-case"><h3>Другие условия: разобранный случай</h3><p><strong>Даны наблюдения:</strong> BMC вернул 202 на обновление, затем задача завершилась Exception.</p><p><strong>Разбор:</strong> Был принят запрос, но изменение не завершено успешно. Скрипт обязан сохранить конечный статус и причину, а не объявить новую версию по факту первого ответа.</p><p>Это учебные данные, а не протокол выполненного действия.</p></section>
+<section id="redfish-depth-transfer"><h3>Проверь перенос понимания</h3><p>Нарисуй цикл GET inventory → разрешённый Action → task monitor → terminal state → повторный GET. Какие шаги являются только чтением?</p><p><strong>Граница вывода и безопасного действия:</strong> Power и firmware actions меняют реальное оборудование. Учебный разбор использует предоставленный JSON; токены и пароли не включаются в отчёт.</p><p>Сохрани решение в своих наблюдениях. При остановке запиши последнее подтверждённое состояние и следующий вопрос; позже начни с проверки этого состояния.</p></section>
+<details class="legacy-concordance"><summary>Соответствие разделам прежнего издания</summary><p>Повторные миссии, примеры и итоги объединены в разбор выше. Здесь сохранены прежние адреса; полный исходный текст доступен в архиве.</p>
+<section id="b26-s010" data-origin="v6-index"><h3>26.8. Модель ресурсов Redfish</h3><p><a href="#redfish-depth-model">Новый разбор темы</a> · <a href="/archive/v6/book/#b26-s010">Исходный раздел в архиве</a></p></section>
+<section id="b26-s015" data-origin="v6-index"><h3>Действия</h3><p><a href="#redfish-depth-model">Новый разбор темы</a> · <a href="/archive/v6/book/#b26-s015">Исходный раздел в архиве</a></p></section>
+<section id="b26-s019" data-origin="v6-index"><h3>Redfish как граница автоматизации</h3><p><a href="#redfish-depth-model">Новый разбор темы</a> · <a href="/archive/v6/book/#b26-s019">Исходный раздел в архиве</a></p></section>
+</details>
+</details>
+</article>

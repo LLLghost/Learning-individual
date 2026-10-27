@@ -6,7 +6,10 @@ const oldMap=JSON.parse(await readFile('quality/coverage-map.json','utf8'));
 const bank=JSON.parse(await readFile('content/course/assessments.json','utf8'));
 const built=JSON.parse(await readFile('build/course-build.json','utf8'));
 const base=(process.env.BASE_PATH??'').replace(/\/+$/,'');
+if(manifest.editorialStatus==='accepted')await import('./check-editorial.mjs');
 const failures=[],seen=new Set(),anchors=new Map();
+const linkedFiles=new Map();
+const linkedBody=async file=>{if(!linkedFiles.has(file))linkedFiles.set(file,readFile(file,'utf8'));return linkedFiles.get(file);};
 const plain=s=>s.replace(/<[^>]+>/g,' ').replace(/&(?:nbsp|amp|lt|gt|quot);/g,e=>({'&nbsp;':' ','&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"'}[e])).replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(n)).replace(/\s+/g,' ').replace(/\s+([.,:;!?])/g,'$1').trim();
 const htmls=new Map();
 for(const l of manifest.lessons){
@@ -27,7 +30,7 @@ for(const l of manifest.lessons){
   if(!path.startsWith('/'))continue;
   if(base&&!path.startsWith(base+'/')){failures.push(`${l.id}: потерян BASE_PATH ${address}`);continue;}
   const relative=base?path.slice(base.length):path,file=resolve('build','.'+relative+(relative.endsWith('/')?'index.html':''));
-  try{await stat(file);if(hash){const body=await readFile(file,'utf8');if(!body.includes(`id="${hash}"`))failures.push(`${l.id}: отсутствует ${address}`)}}catch{failures.push(`${l.id}: отсутствует файл ${address}`)}
+  try{await stat(file);if(hash){const body=await linkedBody(file);if(!body.includes(`id="${hash}"`))failures.push(`${l.id}: отсутствует ${address}`)}}catch{failures.push(`${l.id}: отсутствует файл ${address}`)}
  }
 }
 if(map.chapters.length!==34||map.modules.length!==37)failures.push('Потеряна глава или модуль прежнего курса');

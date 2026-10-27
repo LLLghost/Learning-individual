@@ -1,0 +1,42 @@
+{
+  "schema": "course-rewrite-verification-v1",
+  "date": "2026-10-27",
+  "sourceSha256": "8cdfcc3cc7bc0cc571fb1d8682b7d2f3feab513f10e7c9708dbda444379aa4bc",
+  "editorialMode": "author-self-review",
+  "rewrittenLessons": 76,
+  "legacyAnchors": 1312,
+  "oldChapters": 34,
+  "oldModules": 37,
+  "oldAssessments": 530,
+  "rootBrowser": {
+    "passed": true,
+    "lessons": 82,
+    "rewrittenDepthOpened": 76,
+    "correctAnswers": 536,
+    "incorrectAnswers": 536,
+    "javascriptErrors": 0
+  },
+  "subdirectoryBrowser": {
+    "basePath": "/Learning-individual",
+    "passed": true,
+    "lessons": 82,
+    "rewrittenDepthOpened": 76,
+    "correctAnswers": 536,
+    "incorrectAnswers": 536,
+    "javascriptErrors": 0
+  },
+  "progressImportExport": true,
+  "legacyLinks": true,
+  "mobileWidth": 390,
+  "offlineInitializedExercises": true,
+  "editorialRenderIdempotent": true,
+  "changedTextRefused": true,
+  "archiveRoutes": 50,
+  "practiceReportCases": 13,
+  "arithmeticProblems": 37,
+  "userNoteUnchanged": true,
+  "releaseAccepted": false,
+  "releaseBlocker": "No fresh live acceptance of current content and practice runners",
+  "humanLearningAcceptance": false,
+  "liveProxmoxAcceptance": false
+}

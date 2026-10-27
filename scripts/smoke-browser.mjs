@@ -16,7 +16,7 @@ const origin=`http://127.0.0.1:${server.address().port}`;
 let browser,workshop;const temporary=await mkdtemp(join(tmpdir(),'mayak-course-'));const errors=[];
 try{
  browser=await launchBrowser();const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));
- for(const l of course.lessons){await page.goto(`${origin}${base}/learn/${l.id}/`);await page.waitForSelector('body[data-course-ready="true"]');assert.equal(await page.locator('[data-block="explain"]').count(),1,l.id);assert.equal(await page.locator('.practice-tools').count(),1,l.id);}
+ for(const l of course.lessons){await page.goto(`${origin}${base}/learn/${l.id}/`);await page.waitForSelector('body[data-course-ready="true"]');assert.equal(await page.locator('[data-block="explain"]').count(),1,l.id);assert.equal(await page.locator('.practice-tools').count(),1,l.id);if(l.depthRevision){const depth=page.locator('[data-block="depth"]');await depth.locator(':scope > summary').click();assert.ok(await page.locator(`#${l.id}-depth-case`).isVisible(),l.id);assert.ok(await page.locator(`#${l.id}-depth-transfer`).isVisible(),l.id);assert.equal(await depth.locator('[data-origin="v6"]').count(),0,l.id);}}
  console.log(`Chromium: пройдено ${course.lessons.length} урока.`);
  {
  const vmLessons=course.lessons.filter(l=>['vm','stand'].includes(l.environment));

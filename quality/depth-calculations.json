@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-27",
+  "note": "Independent arithmetic of authored depth examples; not live measurements.",
+  "results": {
+    "bandwidth_Mbit_s": 100.0,
+    "binary_transfer_s": 8.0,
+    "ICMP_payload": 1472,
+    "tunnel_payload": 1412,
+    "IO_MiB_s": 39.0625,
+    "mean_ms": 20.0,
+    "little_L": 10.0,
+    "budget_min": 43.20000000000004,
+    "common_component_percent": 98.9901,
+    "recovery_min": 40
+  }
+}

@@ -7,35 +7,14 @@ kubectl -n &quot;$NS&quot; get endpointslices</code></pre><p><strong>Ожида�
 <section data-block="guided" id="service-selector-guided"><h2>Прогноз и опыт с поддержкой</h2><p>Предскажи endpoint для несовпадающих app=notes и app=wrong. Подготовь service-selector, сравни метки, исправь selector в своём namespace и проверь конечные точки и HTTP.</p></section>
 <section data-block="independent" id="service-selector-independent"><h2>Самостоятельная задача</h2><p>Повтори с правильным selector, но неверным targetPort. Покажи, какое наблюдение отличает этот отказ от пустого набора endpoints.</p></section>
 <section data-block="reflection" id="service-selector-reflection"><h2>Объясни и вернись позже</h2><p>Почему правка DNS не исправляет неверный targetPort? Через день нарисуй путь DNS → Service → EndpointSlice → Pod → listener.</p><p>Свободное объяснение сохраняется для самопроверки; автоматическая проверка не оценивает его смысл.</p><p>Первоисточник для сверки поведения и версии: <a href="https://kubernetes.io/docs/concepts/services-networking/service/">документация</a>. Команды Linux рассчитаны на Debian 12/13; доступность конкретной функции проверяется предпосылками работы.</p></section>
-<!-- ASSESSMENT-MECHANISMS --><details data-block="mechanisms"><summary>Механизмы для заданий углубления</summary><p>Прочитай механизм до решения. Вопросы и варианты ответов сверены с этими объяснениями; сохранены идентификаторы прежних заданий. Полная редактура подробных разборов прежнего издания отмечена отдельно.</p><section id="mechanism-M26-0" data-assessment-source="M26-0"><h3>M26-0: Pod Running, Service без endpoints. Где искать?</h3><p>Фаза Pod не гарантирует, что он стал конечной точкой Service. Фаза Pod и включение его адреса в готовые конечные точки Service проверяются отдельно.</p></section></details><!-- /ASSESSMENT-MECHANISMS -->
-<details data-block="depth"><summary>Подробные механизмы, команды и дополнительные примеры</summary><p class="provenance">Здесь сохранены технические разборы предыдущей редакции. Они ещё проходят сверку с новым уроком; статус редакционной приёмки указан в карте качества.</p><section id="b23-s011" data-origin="v6"><h2>23.9. Service</h2>
-<p>Service даёт устойчивую логическую точку доступа для группы Pod, обычно выбранных по меткам.</p>
-<pre><code class="language-text">client → Service virtual IP/name → endpoints → Pods
-</code></pre>
-<p>Если Pod здоров, но Service не работает, проверяйте селектор, список конечных точек, порты и сетевые политики, а не пересобирайте образ.</p>
-<pre><code class="language-bash">kubectl get svc,endpoints
-kubectl get pods -o wide
-</code></pre>
-</section>
-<section id="b23-s042" data-origin="v6"><h2>23.18. Путь запроса: от Service до процесса в поде</h2>
-<p>Симптом «сервис не отвечает» разбирается по цепочке, и у каждого звена свой вопрос и своя команда.</p>
-<ol>
-<li><strong>Есть ли поды и готовы ли они.</strong> <code>Running</code> означает, что контейнер запущен, <code>Ready</code> — что он прошёл проверку готовности. Разница видна в колонке <code>READY</code>:
-<pre><code class="language-bash">kubectl get pods -l app=web -o wide</code></pre></li>
-<li><strong>Попали ли поды в конечные точки службы.</strong> Это ключевой шаг, который пропускают чаще всего: Service направляет трафик не на поды, а на список конечных точек, и попадают в него только готовые:
-<pre><code class="language-bash">kubectl get endpoints web
-kubectl get endpointslices -l kubernetes.io/service-name=web</code></pre>
-Пустой список при живых подах означает одно из двух: не совпал селектор или поды не проходят проверку готовности.</li>
-<li><strong>Совпадает ли селектор с метками.</strong> Ошибка на один символ здесь не даёт ни ошибки применения, ни предупреждения:
-<pre><code class="language-bash">kubectl describe service web | grep -i selector
-kubectl get pods --show-labels</code></pre></li>
-<li><strong>Тот ли порт.</strong> У службы три разных числа: <code>port</code> (на котором слушает служба), <code>targetPort</code> (на котором слушает контейнер) и <code>nodePort</code> (внешний). Несовпадение <code>targetPort</code> с портом приложения выглядит точно так же, как сетевой отказ.</li>
-<li><strong>Слушает ли процесс нужный адрес.</strong> Приложение, привязанное к <code>127.0.0.1</code>, недоступно даже внутри своего пода извне:
-<pre><code class="language-bash">kubectl exec -it ПОД -- ss -lntp</code></pre></li>
-<li><strong>Разрешает ли сетевая политика.</strong> Если в пространстве имён есть NetworkPolicy, трафик, не описанный явно, запрещён — и это не отказ сети.</li>
-</ol>
-<p>Проверка, которая экономит половину шагов: обратиться к поду напрямую, минуя службу. Если так работает, а через службу нет — дело в конечных точках, селекторе или портах, и в журналы приложения смотреть незачем:</p>
-<pre><code class="language-bash">kubectl port-forward pod/ИМЯ 8080:80
-curl -sS http://127.0.0.1:8080/ | head</code></pre>
-
-</section></details></article>
+<!-- ASSESSMENT-MECHANISMS --><details data-block="mechanisms"><summary>Механизмы для заданий углубления</summary><p>Прочитай механизм до решения. Вопросы и варианты ответов сверены с этими объяснениями; сохранены идентификаторы прежних заданий. Новые углубления разбирают другие условия; подробный исходный текст остаётся в архиве.</p><section id="mechanism-M26-0" data-assessment-source="M26-0"><h3>M26-0: Pod Running, Service без endpoints. Где искать?</h3><p>Фаза Pod не гарантирует, что он стал конечной точкой Service. Фаза Pod и включение его адреса в готовые конечные точки Service проверяются отдельно.</p></section></details><!-- /ASSESSMENT-MECHANISMS -->
+<details data-block="depth"><summary>Углубление: Как Service выбирает получателей</summary>
+<section id="service-selector-depth-model"><h2>Как Service выбирает получателей</h2><p>Service выбирает набор Pod по labels через selector. EndpointSlice описывает адреса, порты и условия endpoints; наличие строки с адресом не равнозначно ready=true. Service port и targetPort относятся к разным концам перенаправления; именованный targetPort должен соответствовать порту Pod. DNS-имя Service обычно приводит к сервисной точке, а не проверяет готовность приложения.</p><p>Путь зависит от реализации dataplane, CNI и политики сети. Сначала отделяют отсутствие подходящих endpoints от ошибки доставки к готовому Pod. Прямое обращение к Pod полезно как диагностическое сравнение, но не является ремонтом Service. Изменение label может повлиять на несколько selectors и политики одновременно.</p></section>
+<section id="service-selector-depth-case"><h3>Другие условия: разобранный случай</h3><p><strong>Даны наблюдения:</strong> Service ищет app=notes, а готовый Pod имеет app=note. Условия readiness успешны.</p><p><strong>Разбор:</strong> Готовый процесс не выбран этим Service. Минимальное исправление должно согласовать намеренный selector и метку, сохранив область выбора.</p><p>Это учебные данные, а не протокол выполненного действия.</p></section>
+<section id="service-selector-depth-transfer"><h3>Проверь перенос понимания</h3><p>Запиши путь «Service → selector → EndpointSlice → targetPort → слушатель». Предскажи результат при правильной метке, но неверном targetPort.</p><p><strong>Граница вывода и безопасного действия:</strong> Не расширяй selector до всех Pod ради появления адресов. Проверяй отсутствие лишних получателей и реальный ответ через Service.</p><p>Сохрани решение в своих наблюдениях. При остановке запиши последнее подтверждённое состояние и следующий вопрос; позже начни с проверки этого состояния.</p></section>
+<details class="legacy-concordance"><summary>Соответствие разделам прежнего издания</summary><p>Повторные миссии, примеры и итоги объединены в разбор выше. Здесь сохранены прежние адреса; полный исходный текст доступен в архиве.</p>
+<section id="b23-s011" data-origin="v6-index"><h3>23.9. Service</h3><p><a href="#service-selector-depth-model">Новый разбор темы</a> · <a href="/archive/v6/book/#b23-s011">Исходный раздел в архиве</a></p></section>
+<section id="b23-s042" data-origin="v6-index"><h3>23.18. Путь запроса: от Service до процесса в поде</h3><p><a href="#service-selector-depth-model">Новый разбор темы</a> · <a href="/archive/v6/book/#b23-s042">Исходный раздел в архиве</a></p></section>
+</details>
+</details>
+</article>

@@ -786,5 +786,5 @@
     "L36B#why"
   ],
   "acceptance": "accepted",
-  "note": "Manual review decisions are explicit in the editorial source. Assessment acceptance does not accept the retained legacy depth or the live labs."
+  "note": "Manual review decisions are explicit in the editorial source. Assessment acceptance is separate from lesson editorial hashes and live lab acceptance."
 }
