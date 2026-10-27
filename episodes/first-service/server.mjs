@@ -4,6 +4,7 @@ import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir, rename, open, unlink } from 'node:fs/promises';
 import { dirname, resolve, join, sep, extname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { readJSONObject } from './http-json.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const project = resolve(here, '../..');
@@ -94,11 +95,6 @@ export async function startWorkshop({ port = 4180, stateDir = join(project, '.ep
   const send = (response, status, body, type = 'application/json; charset=utf-8') => {
     response.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' });
     response.end(type.startsWith('application/json') ? JSON.stringify(body) : body);
-  };
-  const readBody = async (request) => {
-    let body = '';
-    for await (const part of request) { body += part; if (Buffer.byteLength(body) > 12000) throw fail('Слишком большой запрос.', 413); }
-    try { return JSON.parse(body); } catch { throw fail('Ожидался JSON.'); }
   };
   const observed = (command) => { const stage = current(); if (stage && !stage.observations.includes(command)) stage.observations.push(command); };
   const commands = async (command) => {
@@ -264,7 +260,7 @@ export async function startWorkshop({ port = 4180, stateDir = join(project, '.ep
           if (request.headers.origin && request.headers.origin !== `http://${host}`) throw fail('Запрос из другого сайта отклонён.', 403);
           if (request.headers['x-workshop-token'] !== token) throw fail('Обнови страницу мастерской.', 403);
           if (!request.headers['content-type']?.startsWith('application/json')) throw fail('Ожидался JSON.', 415);
-          const body = await readBody(request);
+          const body = await readJSONObject(request);
           if (busy) throw fail('Предыдущее действие ещё выполняется.', 409);
           busy = true;
           try {
