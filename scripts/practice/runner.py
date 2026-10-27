@@ -46,7 +46,7 @@ def checked_root(lesson):
 def execute(script, path, state, timeout=60):
     env = {**os.environ, 'WORK': str(path / 'work'), 'STATE': str(path),
            'NS': 'mk' + state['attempt'][:10], 'VARIANT': str(state['variant']),
-           'COURSE_USER': state['user'], 'PORT': str(state.get('port',18080+state['variant'])), 'LC_ALL': 'C', 'HOME': '/root'}
+           'COURSE_USER': state['user'], 'PORT': str(state.get('port',18080+state['variant'])), 'LC_ALL': 'C.UTF-8', 'HOME': '/root'}
     # Only scripts from the packaged catalog are executable; no submitted commands.
     process = subprocess.Popen(['bash', '-euo', 'pipefail', '-c', script],
                                env=env, cwd=path, stdout=subprocess.PIPE,

@@ -154,7 +154,7 @@ lab('firewall', 'Разрешить ICMP в локальном фильтре б
 lab('segments', 'Пропустить трафик через совпадающие VLAN', ['ip','ping'],
     NET_PREP+'\nfor n in a b; do ip -n "$NS-$n" addr flush dev eth0; ip -n "$NS-$n" link add link eth0 name vlan10 type vlan id 10; ip -n "$NS-$n" link set vlan10 up; done\nip -n "$NS-a" addr add 198.51.100.1/24 dev vlan10',
     'ip -n "$NS-b" addr add 198.51.100.2/24 dev vlan10',
-    'ip -n "$NS-b" -d link show vlan10 | grep -F "id 10"; ip netns exec "$NS-a" ping -c 1 -W 2 198.51.100.2',NET_RESTORE,
+    'ip -n "$NS-b" -d link show vlan10 | grep -F "id 10"; ip netns exec "$NS-a" ping -c 3 -W 2 198.51.100.2',NET_RESTORE,
     'Назначь 198.51.100.2/24 интерфейсу vlan10 второго узла. Объясни отличие VLAN ID от IP-префикса.')
 lab('tcp', 'Отличить TCP listener от успешного ответа HTTP', ['ip','curl','ss'],
     NET_PREP+'\nprintf "note\\n" > "$WORK/index.html"; ip netns exec "$NS-b" python3 -m http.server 8080 --bind 192.0.2.2 --directory "$WORK" > "$STATE/http.log" 2>&1 &\nsleep 0.5',

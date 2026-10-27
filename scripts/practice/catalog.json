@@ -300,7 +300,7 @@
       ],
       "prepare": "ip netns add \"$NS-a\"\nip netns add \"$NS-b\"\nip link add \"$NS-x\" type veth peer name \"$NS-y\"\nip link set \"$NS-x\" netns \"$NS-a\"\nip link set \"$NS-y\" netns \"$NS-b\"\nip -n \"$NS-a\" link set \"$NS-x\" name eth0\nip -n \"$NS-b\" link set \"$NS-y\" name eth0\nfor n in a b; do ip -n \"$NS-$n\" link set lo up; ip -n \"$NS-$n\" link set eth0 up; done\nip -n \"$NS-a\" addr add 192.0.2.1/24 dev eth0\nip -n \"$NS-b\" addr add 192.0.2.2/24 dev eth0\nfor n in a b; do ip -n \"$NS-$n\" addr flush dev eth0; ip -n \"$NS-$n\" link add link eth0 name vlan10 type vlan id 10; ip -n \"$NS-$n\" link set vlan10 up; done\nip -n \"$NS-a\" addr add 198.51.100.1/24 dev vlan10",
       "solve": "ip -n \"$NS-b\" addr add 198.51.100.2/24 dev vlan10",
-      "check": "ip -n \"$NS-b\" -d link show vlan10 | grep -F \"id 10\"; ip netns exec \"$NS-a\" ping -c 1 -W 2 198.51.100.2",
+      "check": "ip -n \"$NS-b\" -d link show vlan10 | grep -F \"id 10\"; ip netns exec \"$NS-a\" ping -c 3 -W 2 198.51.100.2",
       "restore": "for n in a b; do\n if ip netns list | cut -d ' ' -f1 | grep -qx \"$NS-$n\"; then\n  for pid in $(ip netns pids \"$NS-$n\"); do kill \"$pid\" 2>/dev/null || true; done\n  ip netns del \"$NS-$n\"\n fi\ndone\nfind \"$WORK\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +",
       "task": "Назначь 198.51.100.2/24 интерфейсу vlan10 второго узла. Объясни отличие VLAN ID от IP-префикса.",
       "timeout": 120,
