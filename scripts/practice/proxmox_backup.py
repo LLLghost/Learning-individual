@@ -49,7 +49,9 @@ def guest(vmid, *command):
 
 
 def ready(vmid):
-    deadline=time.monotonic()+90
+    # An intentionally disconnected Debian clone can spend 120 seconds in
+    # networkd-wait-online before basic boot services become available.
+    deadline=time.monotonic()+180
     while time.monotonic()<deadline:
         try:
             if run('qm', 'agent', vmid, 'ping', timeout=min(5,max(.1,deadline-time.monotonic())), tolerate=True).returncode == 0:
