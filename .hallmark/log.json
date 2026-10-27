@@ -1,0 +1,29 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "app",
+  "shape": "app screen",
+  "theme": "console",
+  "axes": "dark/grotesk-sans/chromatic-green",
+  "hero": "none: app scope",
+  "nav": "curriculum sidebar and mobile disclosure",
+  "footer": "local progress record",
+  "imagery": "real course and reports; no photos",
+  "photos": [],
+  "entry": "ordered curriculum",
+  "fingerprint": "Console-green-offline-Cyrillic",
+  "sections": [
+   "route",
+   "reading",
+   "assessment",
+   "progress",
+   "reference"
+  ],
+  "signature": "ordered learning route and reading workbench",
+  "waived": [],
+  "prompt": "Hallmark: rebuild the course interface",
+  "review": "in-thread; no independent review",
+  "date": "2026-10-27"
+ }
+]

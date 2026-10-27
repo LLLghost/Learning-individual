@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-27",
+  "baselineCommit": "724ceaa",
+  "scope": "interface only; curriculum source unchanged",
+  "sourceHashes": {
+    "content/course/ui/course.css": "66da4103e9bbca72316efdbb2f0e5f159a1b9fb04123c3876f43c267e5b91934",
+    "content/course/ui/course.js": "ac97dcdeaaffb7c6b293a295cbb09011518a8ec9c16550cbd0c906f20c1d6c2f",
+    "content/course/ui/tokens.css": "f1c53e8b26d157e862df178fe56d08965c7beb86b149973fce0f62601b8d3ace",
+    "content/course/ui/base.css": "891ea0ab09df1ffc40f4da0628f8b868c37c98b5747fbbac15d36c020fa27c27",
+    "scripts/build-static.mjs": "8945ef2487a2d6d595209347295a1dabc08661f0daee91d810519599350b2769"
+  },
+  "hallmark": {
+    "summary": {
+      "fails": 0,
+      "reflex": 0,
+      "warns": 0,
+      "waived": 0,
+      "rejected": 0,
+      "answered": 0,
+      "dismissed": 0,
+      "notes": 0,
+      "files": 3,
+      "render": "ran",
+      "kept": "kept: links 213/213, fields 11/11, headings 387/388 (1 dropped on record), figures 21/21; before 80 FAIL, 46 REFLEX, now 0 FAIL, 0 REFLEX"
+    },
+    "findings": []
+  },
+  "browser": {
+    "engine": "Chromium",
+    "basePaths": [
+      "/",
+      "/Learning-individual/"
+    ],
+    "lessons": 82,
+    "practiceInterfaces": 46,
+    "correctAnswers": 536,
+    "incorrectAnswers": 536,
+    "javascriptErrors": 0,
+    "checks": [
+      "theme default, toggle, reload, white print",
+      "progress export/import and old notes",
+      "search, repeat, mobile 390px, offline, old links",
+      "report acceptance/rejection/history/corruption",
+      "data-load error explanation"
+    ]
+  },
+  "visualReview": {
+    "mode": "in-thread",
+    "evidence": ".hallmark/finish-review.txt",
+    "independent": false
+  },
+  "userNote": {
+    "sha256": "D779B8D4872EC7D573A096DC08587FD258D71A96E8A00624E9E4B4EE77BFE43C",
+    "unchanged": true
+  },
+  "notVerified": [
+    "Firefox/Safari",
+    "independent human usability",
+    "live Proxmox acceptance (outside interface change)"
+  ]
+}

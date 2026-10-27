@@ -4,6 +4,8 @@ const base=document.querySelector('meta[name="course-base"]').content;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const notice=(s)=>{const el=document.querySelector('#notice');el.hidden=false;el.textContent=s;};
 const KEY='mayak-course-progress-v7';
+const menu=document.querySelector('#course-menu');
+if(menu){const desktop=matchMedia('(min-width: 60rem)');const sync=()=>{menu.open=desktop.matches;};sync();desktop.addEventListener('change',sync);}
 async function initialize(){
 const [course,bank]=await Promise.all(['course-data','assessments'].map(n=>fetch(`${base}/assets/${n}.json`).then(r=>{if(!r.ok)throw Error('Данные курса недоступны');return r.json()})));
 const items=new Map(bank.items.map(x=>[x.id,x]));
@@ -39,6 +41,7 @@ const summary=()=>{
 };
 summary();
 const resume=document.querySelector('#resume');if(resume&&state.last)resume.href=at(state.last);
+const resumeTitle=document.querySelector('#resume-title');if(resumeTitle&&state.last)resumeTitle.textContent=course.lessons.find(l=>l.id===state.last)?.title??resumeTitle.textContent;
 const revealAnchor=()=>{try{if(!location.hash)return;const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(!target)return;for(let parent=target.parentElement;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true;target.scrollIntoView({block:'start'});}catch{}};
 revealAnchor();addEventListener('hashchange',revealAnchor);
 for(const el of document.querySelectorAll('[data-course-lesson]'))if(state.lessons[el.dataset.courseLesson]?.read)el.classList.add('read');
@@ -101,7 +104,7 @@ const labId=document.querySelector('#lab-id');
 if(lesson&&course.practiceLabs?.[lesson.id]){
  const spec=course.practiceLabs[lesson.id],panel=document.createElement('section');
  panel.id='vm-practice';
- panel.innerHTML=`<h2>Практика на выделенной Linux-ВМ</h2><p>${esc(spec.goal)}</p><p>${esc(spec.task)}</p><p data-guest-instructions><strong>Предпосылки:</strong> Debian 12/13, Python 3.11 или новее; ${spec.requires.map(esc).join(', ')}. Подготовка требует sudo внутри учебного гостя. Исполнитель отказывается работать на хосте Proxmox.</p><p><a href="${base}/downloads/course-practice.py" download>Скачать исполнитель этой версии</a>. SHA-256: <code>${esc(course.practiceRunnerSha256)}</code></p><p data-guest-instructions>Сверь сумму через sha256sum course-practice.py и прочитай файл перед запуском. На выделенном госте однократно выполни <code>sudo python3 course-practice.py enroll --disposable-guest</code>. Это разрешение на изменение только учебной ВМ.</p><button id="practice-start">Начать новую попытку и показать команды</button><pre id="practice-commands"></pre><p data-guest-instructions>Между prepare и check выполни задачу самостоятельно. solve предназначен для проверки сценария автором, а не заменяет твоё решение. Откат удаляет только ресурсы своей попытки; экспортируй нужные наблюдения заранее.</p><label>Загрузить отчёт новой практики<input id="practice-report" type="file" accept=".json,application/json"></label><p id="practice-feedback" role="status"></p><p class="help">Стендовая приёмка сценария пока не проведена. Отчёт фиксирует последнее наблюдение, не наблюдает ВМ непрерывно. После изменения системы выполни check заново. Контрольная сумма защищает от случайного повреждения; это не подпись доверенного сервера.</p>`;
+ panel.innerHTML=`<h2>Практика на выделенной Linux-ВМ</h2><p>${esc(spec.goal)}</p><p>${esc(spec.task)}</p><p data-guest-instructions><strong>Предпосылки:</strong> Debian 12/13, Python 3.11 или новее; ${spec.requires.map(esc).join(', ')}. Подготовка требует sudo внутри учебного гостя. Исполнитель отказывается работать на хосте Proxmox.</p><p><a href="${base}/downloads/course-practice.py" download>Скачать исполнитель этой версии</a>. SHA-256: <code>${esc(course.practiceRunnerSha256)}</code></p><p data-guest-instructions>Сверь сумму через sha256sum course-practice.py и прочитай файл перед запуском. На выделенном госте однократно выполни <code>sudo python3 course-practice.py enroll --disposable-guest</code>. Это разрешение на изменение только учебной ВМ.</p><button id="practice-start" type="button">Новая попытка</button><pre id="practice-commands"></pre><p data-guest-instructions>Между prepare и check выполни задачу самостоятельно. solve предназначен для проверки сценария автором, а не заменяет твоё решение. Откат удаляет только ресурсы своей попытки; экспортируй нужные наблюдения заранее.</p><label>Загрузить отчёт новой практики<input id="practice-report" type="file" accept=".json,application/json"></label><p id="practice-feedback" role="status"></p><p class="help">Стендовая приёмка сценария пока не проведена. Отчёт фиксирует последнее наблюдение, не наблюдает ВМ непрерывно. После изменения системы выполни check заново. Контрольная сумма защищает от случайного повреждения; это не подпись доверенного сервера.</p>`;
  document.querySelector('.practice-tools').append(panel);
  if(spec.backend==='proxmox'){
   for(const el of panel.querySelectorAll('[data-guest-instructions]'))el.remove();

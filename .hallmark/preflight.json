@@ -1,0 +1,38 @@
+{
+  "scanned": "2026-10-27",
+  "findings": {
+    "fonts": "Segoe UI / Georgia / Consolas in ui/course.css:1; offline system fonts",
+    "palette": "dark green default and light alternate; course.css and theme.js",
+    "framework": "static Node generator scripts/build-static.mjs:54, no framework",
+    "state": "course.js:6 KEY=mayak-course-progress-v7; theme key separate",
+    "material": "82 real lessons, learning route, notes, reports, archive; no photographs or testimonials"
+  },
+  "preserve": [
+    "all lesson text and source hashes",
+    "all routes and controls",
+    "progress schema and user note",
+    "dark/light preference"
+  ],
+  "introduce": [
+    "Console app surfaces with existing green anchor",
+    "capped reading layout",
+    "collapsible navigation",
+    "lesson contents rail"
+  ],
+  "scope": "app",
+  "mode": "redesign",
+  "depth": "full",
+  "files": {
+    "edit": [
+      "scripts/build-static.mjs",
+      "content/course/ui/course.css",
+      "content/course/ui/course.js"
+    ],
+    "create": [
+      "content/course/ui/tokens.css",
+      "content/course/ui/base.css",
+      "design.md"
+    ],
+    "delete": []
+  }
+}

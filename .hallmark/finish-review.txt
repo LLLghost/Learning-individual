@@ -1,0 +1,11 @@
+ship
+
+In-thread finish review, not an independent reviewer. App scope; no marketing hero rules applied.
+
+Reviewed the rendered home desktop and phone, process lesson desktop and phone, and four-route mechanical render/kept report. Navigation, reading width, form hierarchy and compact course rows match Console. Mobile navigation collapses and lesson contents become inline. No additional visible defect found in inspected captures.
+
+Largest gap from theme: Cyrillic offline system fonts and existing green action replace the theme's original font/accent; recorded intentional adaptation.
+
+What the old page did better: the old narrow navigation took slightly less horizontal space. The new 256px sidebar keeps all unit names on one line; lesson prose remains capped at 68ch. No removed destination or field in the mechanical comparison.
+
+Preserve: real curriculum, all assessment/report controls, local progress, offline reading, both colour modes. This is an in-thread visual review, not a human learning/usability acceptance.
