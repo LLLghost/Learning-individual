@@ -47,8 +47,11 @@ def execute(script, path, state, timeout=60):
     env = {**os.environ, 'WORK': str(path / 'work'), 'STATE': str(path),
            'NS': 'mk' + state['attempt'][:10], 'VARIANT': str(state['variant']),
            'COURSE_USER': state['user'], 'PORT': str(state.get('port',18080+state['variant'])), 'LC_ALL': 'C.UTF-8', 'HOME': '/root'}
+    # An SSH session or BASH_ENV must not add operator profile code to a fixed recipe.
+    for startup in ('BASH_ENV', 'ENV'):
+        env.pop(startup, None)
     # Only scripts from the packaged catalog are executable; no submitted commands.
-    process = subprocess.Popen(['bash', '-euo', 'pipefail', '-c', script],
+    process = subprocess.Popen(['bash', '--noprofile', '--norc', '-euo', 'pipefail', '-c', script],
                                env=env, cwd=path, stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE, text=True, start_new_session=True)
     def stop():

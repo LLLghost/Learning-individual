@@ -56,6 +56,9 @@ jobs:
       - name: Проверить реестр практики, отчёты и расчёты
         run: npm run test:practice
 
+      - name: Проверить изоляцию shell исполнителя от профиля оператора
+        run: python3 scripts/practice/test_shell_boundary.py
+
       - name: Проверить собранный сайт
         run: node scripts/validate-site.mjs --strict
 
