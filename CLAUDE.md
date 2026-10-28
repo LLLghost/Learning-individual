@@ -12,6 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 node scripts/build-static.mjs          # сборка в build/ + пересборка course.html (pnpm build)
 node scripts/assemble-course.mjs       # только content/ → public/course.html; --check ловит устаревший файл
 node scripts/validate-site.mjs         # проверка собранного сайта (pnpm validate)
+node scripts/regress-marker.mjs        # регрессии поиска маркера фрагмента (входит в pnpm validate и CI)
 BASE_PATH=/Learning-individual node scripts/build-static.mjs   # для GitHub Pages в подкаталоге
 node --check build/assets/site.js      # синтаксис сгенерированного клиентского JS
 python3 -m http.server 4175 --directory build   # посмотреть результат

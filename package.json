@@ -11,7 +11,7 @@
     "episode:check": "node scripts/check-episode.mjs",
     "assemble": "node scripts/assemble-course.mjs",
     "build": "node scripts/build-static.mjs",
-    "validate": "node scripts/validate-site.mjs",
+    "validate": "node scripts/validate-site.mjs && node scripts/regress-marker.mjs",
     "validate:release": "npm run build && npm run validate && npm run test:practice && npm run test:boundaries && node scripts/validate-site.mjs --strict && node scripts/smoke-browser.mjs && npm run verify:live",
     "test:boundaries": "node --test scripts/test-http-json.mjs scripts/test-progress-state.mjs scripts/test-workshop-http.mjs scripts/test-links.mjs scripts/test-evidence.mjs && node scripts/test-progress-boundary.mjs",
     "test:practice": "node scripts/practice/check-catalog.mjs && node scripts/practice/test-report.mjs && node scripts/check-calculations.mjs",
@@ -19,6 +19,7 @@
     "validate:editorial": "node scripts/check-editorial.mjs",
     "test:course": "node scripts/smoke-browser.mjs",
     "validate:archive": "node scripts/validate-legacy.mjs && node scripts/check-coverage.mjs --strict",
-    "verify:live": "node scripts/verify-live-reports.mjs"
+    "verify:live": "node scripts/verify-live-reports.mjs",
+    "test:archive": "node scripts/smoke-legacy.mjs"
   }
 }
