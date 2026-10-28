@@ -1,0 +1,6 @@
+mayak-acceptance
+6.1.0-54-amd64
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             172.30.253.2/24 fe80::be24:11ff:feb3:13ee/64 
+docker0          DOWN           172.17.0.1/16 
+br-e8ebc0f2c339  DOWN           172.18.0.1/16 fc00:f853:ccd:e793::1/64 

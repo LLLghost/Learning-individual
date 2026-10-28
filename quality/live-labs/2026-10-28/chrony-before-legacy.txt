@@ -1,0 +1,13 @@
+Reference ID    : B214D0F3 (178.20.208.243)
+Stratum         : 3
+Ref time (UTC)  : Wed Oct 28 09:42:12 2026
+System time     : 0.000000001 seconds fast of NTP time
+Last offset     : -0.000032558 seconds
+RMS offset      : 0.000032558 seconds
+Frequency       : 29.766 ppm slow
+Residual freq   : -35.590 ppm
+Skew            : 2.522 ppm
+Root delay      : 0.008943559 seconds
+Root dispersion : 0.000784634 seconds
+Update interval : 1.6 seconds
+Leap status     : Normal

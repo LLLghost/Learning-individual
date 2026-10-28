@@ -1,0 +1,10 @@
+[Unit]
+Description=Mayak owned inventory port filter
+Before=mayak-inventory.service
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/usr/sbin/nft -f /etc/mayak-infrastructure/firewall.nft
+ExecStop=-/usr/sbin/nft delete table inet mayak_infrastructure
+[Install]
+WantedBy=multi-user.target

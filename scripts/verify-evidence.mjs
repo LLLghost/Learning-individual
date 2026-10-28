@@ -11,7 +11,7 @@ export async function verifyEvidence(folder) {
     const path = resolve(root, name);
     if (!path.startsWith(root + sep)) throw Error(`Evidence path outside directory: ${name}`);
     const raw = await readFile(path);
-    const bytes = name.endsWith('.tgz') ? raw : Buffer.from(raw.toString('utf8').replace(/\r\n/g, '\n'));
+    const bytes = /\.(?:tgz|tar|gz|zst)$/i.test(name) ? raw : Buffer.from(raw.toString('utf8').replace(/\r\n/g, '\n'));
     const hash = createHash('sha256').update(bytes).digest('hex');
     if (hash !== expected) throw Error(`Evidence hash mismatch: ${name}`);
   }

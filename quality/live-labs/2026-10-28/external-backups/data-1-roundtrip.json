@@ -1,0 +1,10 @@
+{
+  "run": "20261028-093009",
+  "variant": 1,
+  "sha256": "bedc48dc2a97ebb19635d58a78c7f23f3ba48758eb9342efbc8552218d70954e",
+  "bytes": 10240,
+  "externalHost": "Windows operator computer",
+  "localFile": "D:\\Codex_projects\\Learning\\Learning-individual\\work\\stand-2026-10-28\\external-backups\\20261028-093009\\data-1.tar",
+  "returnedPath": "/root/mayak-acceptance-20261028/returned/20261028-093009/data-1.tar",
+  "method": "SFTP download, local SHA-256 check, SFTP upload; no archive synthesis"
+}

@@ -1,0 +1,554 @@
+{
+  "lab-setup": [
+    {
+      "attempt": "c5de470c48344135b03dcfdf85e7e5e0",
+      "variant": 0,
+      "startedAt": 1793177072013
+    },
+    {
+      "attempt": "e427cf03a44642b0979ebb4ffe08f233",
+      "variant": 1,
+      "startedAt": 1793177072149
+    }
+  ],
+  "process": [
+    {
+      "attempt": "776787a09dbf4d8baca65c5b37bd1fa0",
+      "variant": 0,
+      "startedAt": 1793177072296
+    },
+    {
+      "attempt": "8e237db9fabc4db6b1c9420f7f84d84b",
+      "variant": 1,
+      "startedAt": 1793177072429
+    }
+  ],
+  "memory": [
+    {
+      "attempt": "bf25aff2672948a3aa83a1ee163760e7",
+      "variant": 0,
+      "startedAt": 1793177072547
+    },
+    {
+      "attempt": "3ebe40869a394242b01cb7d2b2c1b582",
+      "variant": 1,
+      "startedAt": 1793177072663
+    }
+  ],
+  "permissions": [
+    {
+      "attempt": "c7eb6b8aaa4b407a842a380b6d159a1a",
+      "variant": 0,
+      "startedAt": 1793177072780
+    },
+    {
+      "attempt": "eea197ea39c74d51b2ebe57d311fc4c0",
+      "variant": 1,
+      "startedAt": 1793177072896
+    }
+  ],
+  "packages": [
+    {
+      "attempt": "15b7a300f23f4b91b4f8a6777509e62c",
+      "variant": 0,
+      "startedAt": 1793177073014
+    },
+    {
+      "attempt": "45fb39f3437b4215a52731fb2175de51",
+      "variant": 1,
+      "startedAt": 1793177073147
+    }
+  ],
+  "systemd": [
+    {
+      "attempt": "5017518454044fa1b09ed636fa0a2d29",
+      "variant": 0,
+      "startedAt": 1793177073264
+    },
+    {
+      "attempt": "654089168986417c8b14bf05ddb4c943",
+      "variant": 1,
+      "startedAt": 1793177073379
+    }
+  ],
+  "logs": [
+    {
+      "attempt": "b62cc79fc99c4677a9a8fabffb146cc5",
+      "variant": 0,
+      "startedAt": 1793177073497
+    },
+    {
+      "attempt": "7759ddd0c1944bf0945b587a4e317b97",
+      "variant": 1,
+      "startedAt": 1793177073613
+    }
+  ],
+  "boot": [
+    {
+      "attempt": "17e9d7a409b445c5811dc13cde734ca4",
+      "variant": 0,
+      "startedAt": 1793177073729
+    },
+    {
+      "attempt": "728b939e6dd446e69da24d352246ecdc",
+      "variant": 1,
+      "startedAt": 1793177073863
+    }
+  ],
+  "mount": [
+    {
+      "attempt": "9633f74cb9984266ae6b61ae8455c326",
+      "variant": 0,
+      "startedAt": 1793177073980
+    },
+    {
+      "attempt": "8d70b917456842398ab2cdff90163e7f",
+      "variant": 1,
+      "startedAt": 1793177074113
+    }
+  ],
+  "address": [
+    {
+      "attempt": "108629cf99f94d0d8a6f53fba9791f81",
+      "variant": 0,
+      "startedAt": 1793177074230
+    },
+    {
+      "attempt": "118bc9971d0c4d04abc047857c84e724",
+      "variant": 1,
+      "startedAt": 1793177074346
+    }
+  ],
+  "prefix": [
+    {
+      "attempt": "d2559a4dff7542a79ed9748cb67622c2",
+      "variant": 0,
+      "startedAt": 1793177074464
+    },
+    {
+      "attempt": "793ed8a4221a4b54b2e97baca4798637",
+      "variant": 1,
+      "startedAt": 1793177074580
+    }
+  ],
+  "tcp": [
+    {
+      "attempt": "539d788370f742288085f46ef19955d3",
+      "variant": 0,
+      "startedAt": 1793177074697
+    },
+    {
+      "attempt": "8d2c070a78e14b6a9072479c4ca70085",
+      "variant": 1,
+      "startedAt": 1793177074813
+    }
+  ],
+  "dns": [
+    {
+      "attempt": "099835af75984817814933b37cf711bd",
+      "variant": 0,
+      "startedAt": 1793177074930
+    },
+    {
+      "attempt": "88a2026726be4ec79ad19551b75c1c41",
+      "variant": 1,
+      "startedAt": 1793177075047
+    }
+  ],
+  "mtu": [
+    {
+      "attempt": "a14f6e42954646d28db1bf65f8de0f96",
+      "variant": 0,
+      "startedAt": 1793177075180
+    },
+    {
+      "attempt": "e18ad74ed9b24790912126efa29b97a3",
+      "variant": 1,
+      "startedAt": 1793177075296
+    }
+  ],
+  "ipv6": [
+    {
+      "attempt": "601c7bcd54d74dd9aab1b384485939ba",
+      "variant": 0,
+      "startedAt": 1793177075415
+    },
+    {
+      "attempt": "1cf6d0213745410c96b7d90a2203316b",
+      "variant": 1,
+      "startedAt": 1793177075530
+    }
+  ],
+  "segments": [
+    {
+      "attempt": "004936a49ed9476c94c8a637818ed6a0",
+      "variant": 0,
+      "startedAt": 1793177075680
+    },
+    {
+      "attempt": "49bfaabf84f54df681f09fd818c478d7",
+      "variant": 1,
+      "startedAt": 1793177075795
+    }
+  ],
+  "firewall": [
+    {
+      "attempt": "0f83f628409d4b13b07254160079b00c",
+      "variant": 0,
+      "startedAt": 1793177075913
+    },
+    {
+      "attempt": "c4e5864f112a4df89c19cfdb6f80d9aa",
+      "variant": 1,
+      "startedAt": 1793177076030
+    }
+  ],
+  "disk-identity": [
+    {
+      "attempt": "fc7c5f80d1b54237900bb9b693b1c650",
+      "variant": 0,
+      "startedAt": 1793177076162
+    },
+    {
+      "attempt": "8486f9241abd4adb85e5da16c0144e66",
+      "variant": 1,
+      "startedAt": 1793177076279
+    }
+  ],
+  "disk-health": [
+    {
+      "attempt": "d633ef2e698c4642b9e7e206fda318cf",
+      "variant": 0,
+      "startedAt": 1793177076395
+    },
+    {
+      "attempt": "b19b5553b2a2430cb4bf355bb763e7c2",
+      "variant": 1,
+      "startedAt": 1793177076513
+    }
+  ],
+  "filesystem": [
+    {
+      "attempt": "ad7e64fa67884429a5e62e204ae80aca",
+      "variant": 0,
+      "startedAt": 1793177076630
+    },
+    {
+      "attempt": "b86357cbb755489597a224669e08684e",
+      "variant": 1,
+      "startedAt": 1793177076747
+    }
+  ],
+  "lvm": [
+    {
+      "attempt": "f717ff06dbfd47f691f87e273f28c776",
+      "variant": 0,
+      "startedAt": 1793177076880
+    },
+    {
+      "attempt": "54edcf0b234e41f2a3a3594663d41f19",
+      "variant": 1,
+      "startedAt": 1793177076997
+    }
+  ],
+  "mirror": [
+    {
+      "attempt": "d739ae246bed48449f579cfa68691be6",
+      "variant": 0,
+      "startedAt": 1793177077147
+    },
+    {
+      "attempt": "993e9a01f3444181a30f8ca0ac6d2dc7",
+      "variant": 1,
+      "startedAt": 1793177077280
+    }
+  ],
+  "network-storage": [
+    {
+      "attempt": "bd05ff6c58ee49d2b70bdef0c55c846b",
+      "variant": 0,
+      "startedAt": 1793177077448
+    },
+    {
+      "attempt": "2482978ddfaa4d4d9844364ebbbc970c",
+      "variant": 1,
+      "startedAt": 1793177077564
+    }
+  ],
+  "multipath": [
+    {
+      "attempt": "b1f53612ee9a4fa2be02eeda544d2a9b",
+      "variant": 0,
+      "startedAt": 1793177077681
+    },
+    {
+      "attempt": "7bf225a7b4b14c929df7211ac9ef87ac",
+      "variant": 1,
+      "startedAt": 1793177077796
+    }
+  ],
+  "zfs": [
+    {
+      "attempt": "7f956ab8aabf43c6915433cd9aacc0e3",
+      "variant": 0,
+      "startedAt": 1793177077913
+    },
+    {
+      "attempt": "53a79ff42f924896ba088bcef91e35f1",
+      "variant": 1,
+      "startedAt": 1793177078031
+    }
+  ],
+  "latency": [
+    {
+      "attempt": "4130983bc2714402ba76c5cbafab48e6",
+      "variant": 0,
+      "startedAt": 1793177078164
+    },
+    {
+      "attempt": "67281c0114794c888a88a7fc1d22f4a6",
+      "variant": 1,
+      "startedAt": 1793177078297
+    }
+  ],
+  "shell-data": [
+    {
+      "attempt": "312dbd5242b944789a2b45133d89f0ec",
+      "variant": 0,
+      "startedAt": 1793177078430
+    },
+    {
+      "attempt": "b4bf96cc626449a98f0e8b51f022b4d5",
+      "variant": 1,
+      "startedAt": 1793177078549
+    }
+  ],
+  "shell-failure": [
+    {
+      "attempt": "ac456bc22ea04374bce299471662e91a",
+      "variant": 0,
+      "startedAt": 1793177078663
+    },
+    {
+      "attempt": "4e8b1d3fe5fe49698af42531399a0bb1",
+      "variant": 1,
+      "startedAt": 1793177078780
+    }
+  ],
+  "python-result": [
+    {
+      "attempt": "3f97ef037b0f42128580a8d8220393c6",
+      "variant": 0,
+      "startedAt": 1793177078914
+    },
+    {
+      "attempt": "e7d97846ab714c37b24d35af3b75141b",
+      "variant": 1,
+      "startedAt": 1793177079030
+    }
+  ],
+  "git-change": [
+    {
+      "attempt": "f8e2e86422d648fd84dd30df224ede9a",
+      "variant": 0,
+      "startedAt": 1793177079147
+    },
+    {
+      "attempt": "fea2a971c27e4cdb92a201b93545f312",
+      "variant": 1,
+      "startedAt": 1793177079264
+    }
+  ],
+  "ansible-state": [
+    {
+      "attempt": "ca3a8a2e179141d4bad91934c9f1628d",
+      "variant": 0,
+      "startedAt": 1793177079398
+    },
+    {
+      "attempt": "0ddc05c4f6744b95a694d5869704269f",
+      "variant": 1,
+      "startedAt": 1793177079562
+    }
+  ],
+  "vm-resources": [
+    {
+      "attempt": "b90bf81871574b89ae366d1e7059c6f5",
+      "variant": 0,
+      "startedAt": 1793177079713
+    },
+    {
+      "attempt": "0036b36c47f44c15bd3fa52d0ff3f4d4",
+      "variant": 1,
+      "startedAt": 1793177079831
+    }
+  ],
+  "vm-backup": [
+    {
+      "attempt": "b53ff7e768154d3bb63198c35844699e",
+      "variant": 0,
+      "startedAt": 1793177079947
+    },
+    {
+      "attempt": "647c49b86d2a45bb95fe2a3daabce0b3",
+      "variant": 1,
+      "startedAt": 1793177080063
+    }
+  ],
+  "container": [
+    {
+      "attempt": "59f30b74d02e49a983789c6ff2b7b50d",
+      "variant": 0,
+      "startedAt": 1793177080198
+    },
+    {
+      "attempt": "782708a2029b443f8d1b2dcf53f747f3",
+      "variant": 1,
+      "startedAt": 1793177080346
+    }
+  ],
+  "container-network": [
+    {
+      "attempt": "f6c9f053eb454f89af95108644c0f867",
+      "variant": 0,
+      "startedAt": 1793177080479
+    },
+    {
+      "attempt": "55c2ada08e3e4965a0f4f3f943a505d5",
+      "variant": 1,
+      "startedAt": 1793177080612
+    }
+  ],
+  "kubernetes": [
+    {
+      "attempt": "14eacc90741743298371a2efa05a2957",
+      "variant": 0,
+      "startedAt": 1793177080730
+    },
+    {
+      "attempt": "65938c3d99a64b50b8246c0b5c469f8c",
+      "variant": 1,
+      "startedAt": 1793177080847
+    }
+  ],
+  "service-selector": [
+    {
+      "attempt": "61013756a65e4a53b19e359c12eeef70",
+      "variant": 0,
+      "startedAt": 1793177080964
+    },
+    {
+      "attempt": "89c420f782f6483589b726f6f0de527e",
+      "variant": 1,
+      "startedAt": 1793177081097
+    }
+  ],
+  "cpu-numa": [
+    {
+      "attempt": "35a651b3d36b47a39b60c3e2336c49e5",
+      "variant": 0,
+      "startedAt": 1793177081249
+    },
+    {
+      "attempt": "d4f38607c0b345baade1d138d2125c91",
+      "variant": 1,
+      "startedAt": 1793177081398
+    }
+  ],
+  "pcie": [
+    {
+      "attempt": "a9ef6a3adca04e679da1972478697ebd",
+      "variant": 0,
+      "startedAt": 1793177081548
+    },
+    {
+      "attempt": "db3124db9ad94303b4bb57e98b8d88a0",
+      "variant": 1,
+      "startedAt": 1793177081680
+    }
+  ],
+  "device-id": [
+    {
+      "attempt": "d5139296bbcf45298994432ee44e5cca",
+      "variant": 0,
+      "startedAt": 1793177081797
+    },
+    {
+      "attempt": "2905ec70aefd480f8dfd930a2485c7de",
+      "variant": 1,
+      "startedAt": 1793177081931
+    }
+  ],
+  "uefi": [
+    {
+      "attempt": "1e92567f36f0425fa5a053dbb648dee9",
+      "variant": 0,
+      "startedAt": 1793177082065
+    },
+    {
+      "attempt": "522ea4d619dc4f3a840bf255ef9e43d5",
+      "variant": 1,
+      "startedAt": 1793177082198
+    }
+  ],
+  "tls": [
+    {
+      "attempt": "9609e295056b42c3b057c2f931dcfd21",
+      "variant": 0,
+      "startedAt": 1793177082330
+    },
+    {
+      "attempt": "bb9debd2ee104d69a5c48896fbd63b12",
+      "variant": 1,
+      "startedAt": 1793177082484
+    }
+  ],
+  "time": [
+    {
+      "attempt": "9a44844fa1f34fe0aa2a51802099e9ea",
+      "variant": 0,
+      "startedAt": 1793177082682
+    },
+    {
+      "attempt": "61cdfca1de564f60b247aba04d7af7ef",
+      "variant": 1,
+      "startedAt": 1793177082848
+    }
+  ],
+  "incident": [
+    {
+      "attempt": "f7fe88d46ea548acafbaa838b7f7d228",
+      "variant": 0,
+      "startedAt": 1793177083014
+    },
+    {
+      "attempt": "470714355a6a4d558d16bd5404a6e023",
+      "variant": 1,
+      "startedAt": 1793177083164
+    }
+  ],
+  "baseline": [
+    {
+      "attempt": "815141c9afec491f8408980caa8d99aa",
+      "variant": 0,
+      "startedAt": 1793177083315
+    },
+    {
+      "attempt": "218a088e1bcf4b6bbd558183cfd7a136",
+      "variant": 1,
+      "startedAt": 1793177083447
+    }
+  ],
+  "unknown-incident": [
+    {
+      "attempt": "7a7c752de592449281efb420a13384c0",
+      "variant": 0,
+      "startedAt": 1793177083581
+    },
+    {
+      "attempt": "016cafa4daf04f16b147b4528be8e30a",
+      "variant": 1,
+      "startedAt": 1793177083764
+    }
+  ]
+}

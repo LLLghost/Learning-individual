@@ -58,6 +58,17 @@ const pendingAssessments=map.assessments.filter(x=>x.reviewed!==true).length;
 if(process.argv.includes('--strict')&&(pendingLessons||pendingAssessments||manifest.editorialStatus!=='accepted'))failures.push(`Редакционная приёмка не завершена: ${pendingLessons} уроков и ${pendingAssessments} привязок. Выпуск заблокирован.`);
 if(process.argv.includes('--strict')){
  const live=JSON.parse(await readFile('quality/live-acceptance.json','utf8'));
+ if(manifest.curriculum){
+  if(!live.integratedLaboratory?.accepted)failures.push('Нет приёмки новой интегрированной лаборатории.');
+  else{
+   try{
+    const {validateIntegratedLab}=await import('./check-integrated-lab.mjs');
+    const report=JSON.parse(await readFile(resolve(live.evidenceDirectory,'integrated-lab.json'),'utf8'));
+    const course=JSON.parse(await readFile('build/assets/course-data.json','utf8'));
+    validateIntegratedLab(report,course);
+   }catch(error){failures.push(`Интегрированная лаборатория: ${error.message}`);}
+  }
+ }
  if(live.status!=='accepted'||live.sourceSha256!==built.sourceSha256||live.collectorSha256!==built.collectorSha256||live.checkerSha256!==built.checkerSha256)failures.push('Нет стендовой приёмки текущей версии содержания, сборщика и проверяющего кода.');
  if(live.practiceSha256!==built.practiceSha256)failures.push('Нет стендовой приёмки текущей версии новых исполнителей практики.');
  for(const lab of bank.labs.filter(x=>x.kind!=='dataset'))if(!live.runs.some(r=>r.lab===lab.id&&r.firstPassed&&r.repeatPassed&&r.restored&&r.reportAccepted&&r.commit&&r.vmState))failures.push(`${lab.id}: нет полного свежего протокола нового курса.`);

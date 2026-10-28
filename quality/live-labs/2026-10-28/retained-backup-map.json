@@ -1,0 +1,5 @@
+{
+  "original": "/root/mayak-acceptance-20261028/integrated-vm-backups/0/vzdump-qemu-9200-2026_10_28-12_21_52.vma.zst",
+  "retained": "/root/mayak-acceptance-20261028/retained-failed-run-backups/20261028-091916/vzdump-qemu-9200-2026_10_28-12_21_52.vma.zst",
+  "sha256": "01ea9d000826d211158d1688e01fe0744569c30d3b0edc04cf0a3724854887a7"
+}

@@ -1,0 +1,66 @@
+{
+  "active": [],
+  "checks": [
+    {
+      "command": [
+        "ip",
+        "netns",
+        "list"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "losetup",
+        "-a"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "zpool",
+        "list",
+        "-H"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "dmsetup",
+        "ls"
+      ],
+      "code": 0,
+      "stdout": "No devices found\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "ps",
+        "-a",
+        "--format",
+        "{{.Names}}"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "findmnt",
+        "-rn",
+        "-o",
+        "TARGET"
+      ],
+      "code": 0,
+      "stdout": "/sys\n/proc\n/dev\n/dev/pts\n/run\n/\n/sys/kernel/security\n/dev/shm\n/run/lock\n/sys/fs/cgroup\n/sys/fs/pstore\n/sys/firmware/efi/efivars\n/sys/fs/bpf\n/proc/sys/fs/binfmt_misc\n/dev/hugepages\n/dev/mqueue\n/sys/kernel/debug\n/sys/kernel/tracing\n/proc/fs/nfsd\n/sys/fs/fuse/connections\n/sys/kernel/config\n/run/credentials/systemd-sysusers.service\n/run/credentials/systemd-tmpfiles-setup-dev.service\n/boot/efi\n/run/credentials/systemd-sysctl.service\n/run/credentials/systemd-tmpfiles-setup.service\n/run/rpc_pipefs\n/proc/sys/fs/binfmt_misc\n/run/netns\n/run/user/0\n",
+      "stderr": ""
+    }
+  ]
+}

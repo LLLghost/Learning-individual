@@ -1,0 +1,2925 @@
+{
+  "schema": "mayak-integrated-lab-v1",
+  "run": "20261028-091916",
+  "metadata": {
+    "sourceSha256": "3487879b9e1107755c6657c8d4ffb4936405a81069c320081473db50c30e3ae6",
+    "collectorSha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+    "checkerSha256": "59129c79a2e2dfd98f66a9d3f8825a144a8ec0ded38dde3c9b24d37586517cf6",
+    "practiceSha256": "130a2c1f97456044af5b979367469bba26084272b42e0b1e8792830ddde1c237",
+    "practiceRunnerSha256": "64c7ba5de1fe49c8a811511072c75a2b98d8bbb4db25f94278ad1b20099aa844",
+    "commit": "be38fc1fd8c22c9884e2f5cca094b97cb935a3c0",
+    "date": "2026-10-28",
+    "guestVM": 9200,
+    "clientVM": 9201,
+    "storageVM": 9202,
+    "sourceVM": 9100,
+    "snapshot": "mayak-clean-dependencies",
+    "coldBootVerified": true
+  },
+  "variants": [
+    {
+      "variant": 0,
+      "status": "failed",
+      "machineIds": {
+        "9200": "932cda8a5f73406f9f577874cc988501",
+        "9201": "d2bab2d05b224be3b27044c0c086265b",
+        "9202": "3f155060b6114402a159b322096fd007"
+      },
+      "port": 8443,
+      "dataSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+      "assets": [
+        {
+          "vmid": 9200,
+          "role": "application and DNS",
+          "address": "172.30.253.20",
+          "memoryMiB": 6144,
+          "cores": 4,
+          "kernel": "6.1.0-54-amd64",
+          "virtualFirmware": "ovmf"
+        },
+        {
+          "vmid": 9201,
+          "role": "client and observation",
+          "address": "172.30.253.21",
+          "memoryMiB": 1024,
+          "cores": 1,
+          "kernel": "6.1.0-54-amd64",
+          "virtualFirmware": "ovmf"
+        },
+        {
+          "vmid": 9202,
+          "role": "separate data backup",
+          "address": "172.30.253.22",
+          "memoryMiB": 1024,
+          "cores": 1,
+          "kernel": "6.1.0-54-amd64",
+          "virtualFirmware": "ovmf"
+        }
+      ],
+      "initialProbe": {
+        "bytes": 789,
+        "client": "mayak-9201",
+        "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+        "passed": true,
+        "seconds": 0.0067,
+        "sha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+        "status": 200,
+        "url": "https://inventory.mayak.test:8443/inventory.json"
+      },
+      "idempotentApply": true,
+      "untrustedCaRefused": true,
+      "wrongTlsNameRefused": true,
+      "unauthorizedClientRefused": true,
+      "configurationCommit": "4a127157124bf34514590d64c1e971e236afdc9b",
+      "dataBackup": {
+        "storageVM": 9202,
+        "path": "/srv/mayak-backups/20261028-091916/data-0.tar",
+        "archiveSha256": "7613d6986d61d7536f2bfe0942a4fbc43b1d912a14f8cb2b9bb7b1bfc3affd5c",
+        "exportPath": "/root/mayak-acceptance-20261028/exports/20261028-091916/data-0.tar"
+      },
+      "externalBackup": {
+        "run": "20261028-091916",
+        "variant": 0,
+        "sha256": "7613d6986d61d7536f2bfe0942a4fbc43b1d912a14f8cb2b9bb7b1bfc3affd5c",
+        "bytes": 10240,
+        "externalHost": "Windows operator computer",
+        "localFile": "D:\\Codex_projects\\Learning\\Learning-individual\\work\\stand-2026-10-28\\external-backups\\20261028-091916\\data-0.tar",
+        "returnedPath": "/root/mayak-acceptance-20261028/returned/20261028-091916/data-0.tar",
+        "method": "SFTP download, local SHA-256 check, SFTP upload; no archive synthesis"
+      },
+      "restoreSource": "/srv/mayak-backups/20261028-091916/data-0-external-roundtrip.tar",
+      "faults": [
+        {
+          "name": "stopped-process",
+          "refusal": {
+            "client": "mayak-9201",
+            "error": "<urlopen error [Errno 111] Connection refused>",
+            "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+            "passed": false,
+            "seconds": 0.0033,
+            "url": "https://inventory.mayak.test:8443/inventory.json"
+          },
+          "monitorUnitObservedFailure": true,
+          "recovered": true
+        },
+        {
+          "name": "network-filter",
+          "refusal": {
+            "client": "mayak-9201",
+            "error": "<urlopen error timed out>",
+            "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+            "passed": false,
+            "seconds": 3.0057,
+            "url": "https://inventory.mayak.test:8443/inventory.json"
+          },
+          "recovered": true
+        },
+        {
+          "name": "wrong-dns-record",
+          "refusal": {
+            "client": "mayak-9201",
+            "error": "<urlopen error timed out>",
+            "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+            "passed": false,
+            "seconds": 3.0055,
+            "url": "https://inventory.mayak.test:8443/inventory.json"
+          },
+          "recovered": true
+        },
+        {
+          "name": "data-permission",
+          "refusal": {
+            "client": "mayak-9201",
+            "error": "HTTP Error 404: File not found",
+            "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+            "passed": false,
+            "seconds": 0.0059,
+            "url": "https://inventory.mayak.test:8443/inventory.json"
+          },
+          "recovered": true
+        },
+        {
+          "name": "lost-data",
+          "refusal": {
+            "client": "mayak-9201",
+            "error": "HTTP Error 404: File not found",
+            "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+            "passed": false,
+            "seconds": 0.0066,
+            "url": "https://inventory.mayak.test:8443/inventory.json"
+          },
+          "restoreSeconds": 0.952,
+          "recovered": true
+        },
+        {
+          "name": "corrupt-content-with-http-200",
+          "refusal": {
+            "bytes": 22,
+            "client": "mayak-9201",
+            "error": "Response content differs from the accepted data",
+            "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+            "passed": false,
+            "seconds": 0.0064,
+            "sha256": "5592f807e517e4447eebb923b4fe98634d8bef860716e8c876be4576b2faa99c",
+            "status": 200,
+            "url": "https://inventory.mayak.test:8443/inventory.json"
+          },
+          "restoreSeconds": 0.893,
+          "recovered": true
+        }
+      ],
+      "bootPersistence": {
+        "before": "3dc66d81-0360-470c-9db7-cc2e297b1b35",
+        "after": "818b8273-6018-45b5-bb57-45fa74b42062",
+        "probe": {
+          "bytes": 789,
+          "client": "mayak-9201",
+          "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+          "passed": true,
+          "seconds": 0.0123,
+          "sha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+          "status": 200,
+          "url": "https://inventory.mayak.test:8443/inventory.json"
+        }
+      },
+      "peerBootPersistence": {
+        "9201": {
+          "before": "e0ccfe51-edb4-42b2-8bcc-15e338fd7466",
+          "after": "b31d9191-fb6d-441a-9457-f2736bf6dcfc"
+        },
+        "9202": {
+          "before": "bab78704-5edf-4093-820b-5041e5b457cc",
+          "after": "4d9a7fb9-01a7-493b-a2f4-f642fc84d2a7"
+        }
+      },
+      "wholeVmRestore": {
+        "archive": "/root/mayak-acceptance-20261028/integrated-vm-backups/0/vzdump-qemu-9200-2026_10_28-12_21_52.vma.zst",
+        "archiveSha256": "01ea9d000826d211158d1688e01fe0744569c30d3b0edc04cf0a3724854887a7",
+        "sourceVM": 9200,
+        "restoredVM": 9203,
+        "restoredBootId": "a281c002-835c-46c7-bb68-7494c86dd879",
+        "seconds": 112.617,
+        "probe": {
+          "bytes": 789,
+          "client": "mayak-9201",
+          "expectedSha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+          "passed": true,
+          "seconds": 0.0135,
+          "sha256": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720",
+          "status": 200,
+          "url": "https://inventory.mayak.test:8443/inventory.json"
+        }
+      },
+      "error": ""
+    }
+  ],
+  "events": [
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: running\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "shutdown",
+        "9200",
+        "--timeout",
+        "90"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "listsnapshot",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "`-> mayak-infrastructure-base   2026-10-28 12:14:37     Cold configured identity/network; before integrated application\n `-> current                                            You are here!\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "status: running\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "shutdown",
+        "9201",
+        "--timeout",
+        "90"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "listsnapshot",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "`-> mayak-infrastructure-base   2026-10-28 12:14:44     Cold configured identity/network; before integrated application\n `-> current                                            You are here!\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "status: running\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "shutdown",
+        "9202",
+        "--timeout",
+        "90"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "listsnapshot",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "`-> mayak-infrastructure-base   2026-10-28 12:14:50     Cold configured identity/network; before integrated application\n `-> current                                            You are here!\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "rollback",
+        "9200",
+        "mayak-infrastructure-base"
+      ],
+      "code": 0,
+      "stdout": "  Logical volume \"vm-9200-disk-1\" successfully removed.\n  Logical volume \"vm-9200-disk-1\" created.\n  Logical volume pve/vm-9200-disk-1 changed.\n  Logical volume \"vm-9200-disk-0\" successfully removed.\n  Logical volume \"vm-9200-disk-0\" created.\n  Logical volume pve/vm-9200-disk-0 changed.\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "start",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "rollback",
+        "9201",
+        "mayak-infrastructure-base"
+      ],
+      "code": 0,
+      "stdout": "  Logical volume \"vm-9201-disk-1\" successfully removed.\n  Logical volume \"vm-9201-disk-1\" created.\n  Logical volume pve/vm-9201-disk-1 changed.\n  Logical volume \"vm-9201-disk-0\" successfully removed.\n  Logical volume \"vm-9201-disk-0\" created.\n  Logical volume pve/vm-9201-disk-0 changed.\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "start",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "rollback",
+        "9202",
+        "mayak-infrastructure-base"
+      ],
+      "code": 0,
+      "stdout": "  Logical volume \"vm-9202-disk-1\" successfully removed.\n  Logical volume \"vm-9202-disk-1\" created.\n  Logical volume pve/vm-9202-disk-1 changed.\n  Logical volume \"vm-9202-disk-0\" successfully removed.\n  Logical volume \"vm-9202-disk-0\" created.\n  Logical volume pve/vm-9202-disk-0 changed.\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "start",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+      "stderr": ""
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "hostname"
+      ],
+      "code": 0,
+      "seconds": 0.379,
+      "stdout": "mayak-9200\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "hostname"
+      ],
+      "code": 0,
+      "seconds": 0.294,
+      "stdout": "mayak-9201\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9202,
+      "command": [
+        "hostname"
+      ],
+      "code": 0,
+      "seconds": 0.292,
+      "stdout": "mayak-9202\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "uname",
+        "-r"
+      ],
+      "code": 0,
+      "seconds": 0.214,
+      "stdout": "6.1.0-54-amd64\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "uname",
+        "-r"
+      ],
+      "code": 0,
+      "seconds": 0.191,
+      "stdout": "6.1.0-54-amd64\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9202,
+      "command": [
+        "uname",
+        "-r"
+      ],
+      "code": 0,
+      "seconds": 0.205,
+      "stdout": "6.1.0-54-amd64\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "mkdir",
+        "-p",
+        "/root/mayak-acceptance-20261028/deploy"
+      ],
+      "code": 0,
+      "seconds": 0.214,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/mayak-dns.service",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/mayak-dns.service"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/app.env",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/app.env"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/server.key",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/server.key"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/probe.py",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/probe.py"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/mayak-probe.service",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/mayak-probe.service"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/apply-server.sh",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/apply-server.sh"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/apply-client.sh",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/apply-client.sh"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/mayak-inventory.service",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/mayak-inventory.service"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/mayak-firewall.service",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/mayak-firewall.service"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/firewall.nft",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/firewall.nft"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/mayak-probe.timer",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/mayak-probe.timer"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/inventory-server.py",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/inventory-server.py"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/server.crt",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/server.crt"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/ca.crt",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/ca.crt"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/probe.json",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/probe.json"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/dnsmasq.conf",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/dnsmasq.conf"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/inventory.json",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/deploy/inventory.json"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "mkdir",
+        "-p",
+        "/root/mayak-acceptance-20261028/deploy"
+      ],
+      "code": 0,
+      "seconds": 0.19,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/probe.py",
+        "root@172.30.253.21:/root/mayak-acceptance-20261028/deploy/probe.py"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/mayak-probe.service",
+        "root@172.30.253.21:/root/mayak-acceptance-20261028/deploy/mayak-probe.service"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/apply-client.sh",
+        "root@172.30.253.21:/root/mayak-acceptance-20261028/deploy/apply-client.sh"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/mayak-probe.timer",
+        "root@172.30.253.21:/root/mayak-acceptance-20261028/deploy/mayak-probe.timer"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/ca.crt",
+        "root@172.30.253.21:/root/mayak-acceptance-20261028/deploy/ca.crt"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/variants/0/deploy/probe.json",
+        "root@172.30.253.21:/root/mayak-acceptance-20261028/deploy/probe.json"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "bash",
+        "--noprofile",
+        "--norc",
+        "/root/mayak-acceptance-20261028/deploy/apply-server.sh"
+      ],
+      "code": 0,
+      "seconds": 0.709,
+      "stdout": "configuration_changes=10\n",
+      "stderr": "Created symlink /etc/systemd/system/multi-user.target.wants/mayak-firewall.service → /etc/systemd/system/mayak-firewall.service.\nCreated symlink /etc/systemd/system/multi-user.target.wants/mayak-dns.service → /etc/systemd/system/mayak-dns.service.\nCreated symlink /etc/systemd/system/multi-user.target.wants/mayak-inventory.service → /etc/systemd/system/mayak-inventory.service.\n",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0640",
+        "-o",
+        "root",
+        "-g",
+        "mayak-service",
+        "/root/mayak-acceptance-20261028/deploy/inventory.json",
+        "/srv/mayak-infrastructure/data/inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.211,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "bash",
+        "--noprofile",
+        "--norc",
+        "/root/mayak-acceptance-20261028/deploy/apply-client.sh"
+      ],
+      "code": 0,
+      "seconds": 0.691,
+      "stdout": "",
+      "stderr": "Created symlink /etc/systemd/system/timers.target.wants/mayak-probe.timer → /etc/systemd/system/mayak-probe.timer.\n",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.258,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0067, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "show",
+        "mayak-inventory",
+        "-p",
+        "MainPID",
+        "--value"
+      ],
+      "code": 0,
+      "seconds": 0.233,
+      "stdout": "1312\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "bash",
+        "--noprofile",
+        "--norc",
+        "/root/mayak-acceptance-20261028/deploy/apply-server.sh"
+      ],
+      "code": 0,
+      "seconds": 0.506,
+      "stdout": "configuration_changes=0\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "show",
+        "mayak-inventory",
+        "-p",
+        "MainPID",
+        "--value"
+      ],
+      "code": 0,
+      "seconds": 0.216,
+      "stdout": "1312\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.239,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0067, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "show",
+        "mayak-inventory",
+        "-p",
+        "User",
+        "-p",
+        "NoNewPrivileges",
+        "-p",
+        "ProtectSystem"
+      ],
+      "code": 0,
+      "seconds": 0.207,
+      "stdout": "User=mayak-service\nProtectSystem=strict\nNoNewPrivileges=yes\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe",
+        "--cafile",
+        "/etc/ssl/certs/ca-certificates.crt"
+      ],
+      "code": 1,
+      "seconds": 0.259,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:992)>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0256, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe",
+        "--url",
+        "https://172.30.253.20:8443/inventory.json"
+      ],
+      "code": 1,
+      "seconds": 0.238,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '172.30.253.20'. (_ssl.c:992)>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.005, \"url\": \"https://172.30.253.20:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "vmid": 9202,
+      "command": [
+        "python3",
+        "-c",
+        "import socket; s=socket.socket();s.settimeout(2);s.connect(('172.30.253.20',8443))"
+      ],
+      "code": 1,
+      "seconds": 2.217,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nTimeoutError: timed out\n",
+      "expected": null
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-d",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/home/course/infrastructure"
+      ],
+      "code": 0,
+      "seconds": 0.22,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "runuser",
+        "-u",
+        "course",
+        "--",
+        "git",
+        "init",
+        "-b",
+        "main",
+        "/home/course/infrastructure"
+      ],
+      "code": 0,
+      "seconds": 0.263,
+      "stdout": "Initialized empty Git repository in /home/course/infrastructure/.git/\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/mayak-dns.service",
+        "/home/course/infrastructure/mayak-dns.service"
+      ],
+      "code": 0,
+      "seconds": 0.207,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/app.env",
+        "/home/course/infrastructure/app.env"
+      ],
+      "code": 0,
+      "seconds": 0.203,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/probe.py",
+        "/home/course/infrastructure/probe.py"
+      ],
+      "code": 0,
+      "seconds": 0.211,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/mayak-probe.service",
+        "/home/course/infrastructure/mayak-probe.service"
+      ],
+      "code": 0,
+      "seconds": 0.211,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/apply-server.sh",
+        "/home/course/infrastructure/apply-server.sh"
+      ],
+      "code": 0,
+      "seconds": 0.203,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/apply-client.sh",
+        "/home/course/infrastructure/apply-client.sh"
+      ],
+      "code": 0,
+      "seconds": 0.203,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/mayak-inventory.service",
+        "/home/course/infrastructure/mayak-inventory.service"
+      ],
+      "code": 0,
+      "seconds": 0.223,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/mayak-firewall.service",
+        "/home/course/infrastructure/mayak-firewall.service"
+      ],
+      "code": 0,
+      "seconds": 0.198,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/firewall.nft",
+        "/home/course/infrastructure/firewall.nft"
+      ],
+      "code": 0,
+      "seconds": 0.213,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/mayak-probe.timer",
+        "/home/course/infrastructure/mayak-probe.timer"
+      ],
+      "code": 0,
+      "seconds": 0.223,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/inventory-server.py",
+        "/home/course/infrastructure/inventory-server.py"
+      ],
+      "code": 0,
+      "seconds": 0.193,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/server.crt",
+        "/home/course/infrastructure/server.crt"
+      ],
+      "code": 0,
+      "seconds": 0.212,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/ca.crt",
+        "/home/course/infrastructure/ca.crt"
+      ],
+      "code": 0,
+      "seconds": 0.211,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/probe.json",
+        "/home/course/infrastructure/probe.json"
+      ],
+      "code": 0,
+      "seconds": 0.221,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/root/mayak-acceptance-20261028/deploy/dnsmasq.conf",
+        "/home/course/infrastructure/dnsmasq.conf"
+      ],
+      "code": 0,
+      "seconds": 0.219,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "install",
+        "-m",
+        "0644",
+        "-o",
+        "course",
+        "-g",
+        "course",
+        "/srv/mayak-infrastructure/data/inventory.json",
+        "/home/course/infrastructure/inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.215,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "runuser",
+        "-u",
+        "course",
+        "--",
+        "git",
+        "-C",
+        "/home/course/infrastructure",
+        "add",
+        "."
+      ],
+      "code": 0,
+      "seconds": 0.233,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "runuser",
+        "-u",
+        "course",
+        "--",
+        "git",
+        "-C",
+        "/home/course/infrastructure",
+        "-c",
+        "user.name=Mayak learner",
+        "-c",
+        "user.email=mayak@example.invalid",
+        "commit",
+        "-m",
+        "Infrastructure variant 0: port and inventory control data"
+      ],
+      "code": 0,
+      "seconds": 0.244,
+      "stdout": "[main (root-commit) 4a12715] Infrastructure variant 0: port and inventory control data\n 16 files changed, 245 insertions(+)\n create mode 100644 app.env\n create mode 100644 apply-client.sh\n create mode 100644 apply-server.sh\n create mode 100644 ca.crt\n create mode 100644 dnsmasq.conf\n create mode 100644 firewall.nft\n create mode 100644 inventory-server.py\n create mode 100644 inventory.json\n create mode 100644 mayak-dns.service\n create mode 100644 mayak-firewall.service\n create mode 100644 mayak-inventory.service\n create mode 100644 mayak-probe.service\n create mode 100644 mayak-probe.timer\n create mode 100644 probe.json\n create mode 100644 probe.py\n create mode 100644 server.crt\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "runuser",
+        "-u",
+        "course",
+        "--",
+        "git",
+        "-C",
+        "/home/course/infrastructure",
+        "ls-files",
+        "*.key"
+      ],
+      "code": 0,
+      "seconds": 0.208,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "runuser",
+        "-u",
+        "course",
+        "--",
+        "git",
+        "-C",
+        "/home/course/infrastructure",
+        "rev-parse",
+        "HEAD"
+      ],
+      "code": 0,
+      "seconds": 0.211,
+      "stdout": "4a127157124bf34514590d64c1e971e236afdc9b\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "runuser",
+        "-u",
+        "course",
+        "--",
+        "git",
+        "-C",
+        "/home/course/infrastructure",
+        "bundle",
+        "create",
+        "/home/course/source-v0.bundle",
+        "--all"
+      ],
+      "code": 0,
+      "seconds": 0.217,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "root@172.30.253.20:/home/course/source-v0.bundle",
+        "/root/mayak-acceptance-20261028/source-v0.bundle"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vmid": 9202,
+      "command": [
+        "install",
+        "-d",
+        "-m",
+        "0700",
+        "/srv/mayak-backups/20261028-091916"
+      ],
+      "code": 0,
+      "seconds": 0.203,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "tar",
+        "--numeric-owner",
+        "-cpf",
+        "/root/mayak-acceptance-20261028/data-0.tar",
+        "-C",
+        "/srv/mayak-infrastructure/data",
+        "inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.22,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/data-0.tar",
+        "/root/mayak-acceptance-20261028/exports/20261028-091916/data-0.tar"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/exports/20261028-091916/data-0.tar",
+        "root@172.30.253.22:/srv/mayak-backups/20261028-091916/data-0.tar"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vmid": 9202,
+      "command": [
+        "sha256sum",
+        "/srv/mayak-backups/20261028-091916/data-0.tar"
+      ],
+      "code": 0,
+      "seconds": 0.2,
+      "stdout": "7613d6986d61d7536f2bfe0942a4fbc43b1d912a14f8cb2b9bb7b1bfc3affd5c  /srv/mayak-backups/20261028-091916/data-0.tar\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "rm",
+        "--",
+        "/root/mayak-acceptance-20261028/data-0.tar"
+      ],
+      "code": 0,
+      "seconds": 0.201,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/returned/20261028-091916/data-0.tar",
+        "root@172.30.253.22:/srv/mayak-backups/20261028-091916/data-0-external-roundtrip.tar"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vmid": 9202,
+      "command": [
+        "sha256sum",
+        "/srv/mayak-backups/20261028-091916/data-0-external-roundtrip.tar"
+      ],
+      "code": 0,
+      "seconds": 0.201,
+      "stdout": "7613d6986d61d7536f2bfe0942a4fbc43b1d912a14f8cb2b9bb7b1bfc3affd5c  /srv/mayak-backups/20261028-091916/data-0-external-roundtrip.tar\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "stop",
+        "mayak-inventory"
+      ],
+      "code": 0,
+      "seconds": 0.217,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.315,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno 111] Connection refused>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0033, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "systemctl",
+        "start",
+        "mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.253,
+      "stdout": "",
+      "stderr": "Job for mayak-probe.service failed because the control process exited with error code.\nSee \"systemctl status mayak-probe.service\" and \"journalctl -xeu mayak-probe.service\" for details.\n",
+      "expected": 1
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "systemctl",
+        "show",
+        "mayak-probe",
+        "-p",
+        "ExecMainStatus",
+        "--value"
+      ],
+      "code": 0,
+      "seconds": 0.2,
+      "stdout": "1\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "is-active",
+        "mayak-inventory"
+      ],
+      "code": 3,
+      "seconds": 0.214,
+      "stdout": "inactive\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "start",
+        "mayak-inventory"
+      ],
+      "code": 0,
+      "seconds": 0.232,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.244,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.009, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "python3",
+        "-c",
+        "import subprocess;subprocess.run(['nft','-c','-f','-'],input='table inet mayak_fault {\\n chain input {\\n  type filter hook input priority -5; policy accept;\\n  ip saddr 172.30.253.21 tcp dport 8443 drop\\n }\\n}\\n',text=True,check=True);subprocess.run(['nft','-f','-'],input='table inet mayak_fault {\\n chain input {\\n  type filter hook input priority -5; policy accept;\\n  ip saddr 172.30.253.21 tcp dport 8443 drop\\n }\\n}\\n',text=True,check=True)"
+      ],
+      "code": 0,
+      "seconds": 0.254,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 3.243,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error timed out>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 3.0057, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "is-active",
+        "mayak-inventory"
+      ],
+      "code": 0,
+      "seconds": 0.218,
+      "stdout": "active\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "curl",
+        "--fail",
+        "--silent",
+        "--show-error",
+        "--cacert",
+        "/etc/mayak-infrastructure/ca.crt",
+        "--resolve",
+        "inventory.mayak.test:8443:127.0.0.1",
+        "https://inventory.mayak.test:8443/inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.23,
+      "stdout": "{\n  \"schema\": \"mayak-inventory-v1\",\n  \"run\": \"20261028-091916\",\n  \"variant\": 0,\n  \"assets\": [\n    {\n      \"vmid\": 9200,\n      \"role\": \"application and DNS\",\n      \"address\": \"172.30.253.20\",\n      \"memoryMiB\": 6144,\n      \"cores\": 4,\n      \"kernel\": \"6.1.0-54-amd64\",\n      \"virtualFirmware\": \"ovmf\"\n    },\n    {\n      \"vmid\": 9201,\n      \"role\": \"client and observation\",\n      \"address\": \"172.30.253.21\",\n      \"memoryMiB\": 1024,\n      \"cores\": 1,\n      \"kernel\": \"6.1.0-54-amd64\",\n      \"virtualFirmware\": \"ovmf\"\n    },\n    {\n      \"vmid\": 9202,\n      \"role\": \"separate data backup\",\n      \"address\": \"172.30.253.22\",\n      \"memoryMiB\": 1024,\n      \"cores\": 1,\n      \"kernel\": \"6.1.0-54-amd64\",\n      \"virtualFirmware\": \"ovmf\"\n    }\n  ],\n  \"controlData\": \"independent-data-variant-0\"\n}\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "nft",
+        "delete",
+        "table",
+        "inet",
+        "mayak_fault"
+      ],
+      "code": 0,
+      "seconds": 0.231,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.24,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0065, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "python3",
+        "-c",
+        "from pathlib import Path;p=Path('/etc/mayak-infrastructure/dnsmasq.conf');p.write_text(p.read_text().replace('/172.30.253.20','/172.30.253.254'))"
+      ],
+      "code": 0,
+      "seconds": 0.218,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "restart",
+        "mayak-dns"
+      ],
+      "code": 0,
+      "seconds": 0.231,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 3.244,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error timed out>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 3.0055, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "python3",
+        "-c",
+        "import socket;print(socket.gethostbyname('inventory.mayak.test'))"
+      ],
+      "code": 0,
+      "seconds": 0.21,
+      "stdout": "172.30.253.254\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "python3",
+        "-c",
+        "from pathlib import Path;p=Path('/etc/mayak-infrastructure/dnsmasq.conf');p.write_text(p.read_text().replace('/172.30.253.254','/172.30.253.20'))"
+      ],
+      "code": 0,
+      "seconds": 0.226,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "systemctl",
+        "restart",
+        "mayak-dns"
+      ],
+      "code": 0,
+      "seconds": 0.232,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.236,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0066, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "chmod",
+        "000",
+        "/srv/mayak-infrastructure/data/inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.206,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.24,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"HTTP Error 404: File not found\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0059, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-service",
+        "--",
+        "test",
+        "-r",
+        "/srv/mayak-infrastructure/data/inventory.json"
+      ],
+      "code": 1,
+      "seconds": 0.215,
+      "stdout": "",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "sha256sum",
+        "/srv/mayak-infrastructure/data/inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.207,
+      "stdout": "f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720  /srv/mayak-infrastructure/data/inventory.json\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "chmod",
+        "0640",
+        "/srv/mayak-infrastructure/data/inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.207,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.237,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0067, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "rm",
+        "--",
+        "/srv/mayak-infrastructure/data/inventory.json"
+      ],
+      "code": 0,
+      "seconds": 0.216,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.24,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"HTTP Error 404: File not found\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0066, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "root@172.30.253.22:/srv/mayak-backups/20261028-091916/data-0-external-roundtrip.tar",
+        "/root/mayak-acceptance-20261028/restore-data.tar"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "tar",
+        "tf",
+        "/root/mayak-acceptance-20261028/restore-data.tar"
+      ],
+      "code": 0,
+      "stdout": "inventory.json\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/restore-data.tar",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/restore-data.tar"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "tar",
+        "--numeric-owner",
+        "-xpf",
+        "/root/mayak-acceptance-20261028/restore-data.tar",
+        "-C",
+        "/srv/mayak-infrastructure/data"
+      ],
+      "code": 0,
+      "seconds": 0.208,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.241,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0067, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "python3",
+        "-c",
+        "from pathlib import Path;Path('/srv/mayak-infrastructure/data/inventory.json').write_text('wrong accepted content')"
+      ],
+      "code": 0,
+      "seconds": 0.232,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.238,
+      "stdout": "{\"bytes\": 22, \"client\": \"mayak-9201\", \"error\": \"Response content differs from the accepted data\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0064, \"sha256\": \"5592f807e517e4447eebb923b4fe98634d8bef860716e8c876be4576b2faa99c\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 1
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "root@172.30.253.22:/srv/mayak-backups/20261028-091916/data-0-external-roundtrip.tar",
+        "/root/mayak-acceptance-20261028/restore-data.tar"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "tar",
+        "tf",
+        "/root/mayak-acceptance-20261028/restore-data.tar"
+      ],
+      "code": 0,
+      "stdout": "inventory.json\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=/root/mayak-acceptance-20261028/guest-known-hosts",
+        "-i",
+        "/root/mayak-acceptance-key",
+        "/root/mayak-acceptance-20261028/restore-data.tar",
+        "root@172.30.253.20:/root/mayak-acceptance-20261028/restore-data.tar"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vmid": 9200,
+      "command": [
+        "tar",
+        "--numeric-owner",
+        "-xpf",
+        "/root/mayak-acceptance-20261028/restore-data.tar",
+        "-C",
+        "/srv/mayak-infrastructure/data"
+      ],
+      "code": 0,
+      "seconds": 0.22,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.237,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0066, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "systemctl",
+        "reset-failed",
+        "mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.198,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "systemctl",
+        "start",
+        "mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.262,
+      "stdout": "",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "journalctl",
+        "-u",
+        "mayak-probe",
+        "-n",
+        "25",
+        "--no-pager"
+      ],
+      "code": 0,
+      "seconds": 0.199,
+      "stdout": "Oct 28 09:20:04 mayak-9201 systemd[1]: Starting mayak-probe.service - Mayak end-to-end client probe...\nOct 28 09:20:04 mayak-9201 mayak-probe[550]: {\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0123, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\nOct 28 09:20:04 mayak-9201 systemd[1]: mayak-probe.service: Deactivated successfully.\nOct 28 09:20:04 mayak-9201 systemd[1]: Finished mayak-probe.service - Mayak end-to-end client probe.\nOct 28 09:20:19 mayak-9201 systemd[1]: Starting mayak-probe.service - Mayak end-to-end client probe...\nOct 28 09:20:19 mayak-9201 mayak-probe[615]: {\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno 111] Connection refused>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0033, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\nOct 28 09:20:19 mayak-9201 systemd[1]: mayak-probe.service: Main process exited, code=exited, status=1/FAILURE\nOct 28 09:20:19 mayak-9201 systemd[1]: mayak-probe.service: Failed with result 'exit-code'.\nOct 28 09:20:19 mayak-9201 systemd[1]: Failed to start mayak-probe.service - Mayak end-to-end client probe.\nOct 28 09:20:34 mayak-9201 systemd[1]: Starting mayak-probe.service - Mayak end-to-end client probe...\nOct 28 09:20:34 mayak-9201 mayak-probe[748]: {\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0065, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\nOct 28 09:20:34 mayak-9201 systemd[1]: mayak-probe.service: Deactivated successfully.\nOct 28 09:20:34 mayak-9201 systemd[1]: Finished mayak-probe.service - Mayak end-to-end client probe.\n",
+      "stderr": "",
+      "expected": 0
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: running\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "shutdown",
+        "9200",
+        "--timeout",
+        "90"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "start",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+      "stderr": ""
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.3,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0029, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.234,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0031, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.238,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.003, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.236,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.003, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.233,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.003, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.238,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0031, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.24,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0029, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.244,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.003, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.252,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0123, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "status: running\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "shutdown",
+        "9201",
+        "--timeout",
+        "90"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "start",
+        "9201"
+      ],
+      "code": 0,
+      "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "status: running\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "shutdown",
+        "9202",
+        "--timeout",
+        "90"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "start",
+        "9202"
+      ],
+      "code": 0,
+      "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+      "stderr": ""
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.338,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0065, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "scope": "host",
+      "command": [
+        "vzdump",
+        "9200",
+        "--mode",
+        "stop",
+        "--compress",
+        "zstd",
+        "--dumpdir",
+        "/root/mayak-acceptance-20261028/integrated-vm-backups/0"
+      ],
+      "code": 0,
+      "stdout": "INFO: starting new backup job: vzdump 9200 --dumpdir /root/mayak-acceptance-20261028/integrated-vm-backups/0 --mode stop --compress zstd\nINFO: Starting Backup of VM 9200 (qemu)\nINFO: Backup started at 2026-10-28 12:21:52\nINFO: status = running\nINFO: backup mode: stop\nINFO: ionice priority: 7\nINFO: VM Name: mayak-infra-9200\nINFO: include disk 'scsi0' 'local-lvm:vm-9200-disk-1' 40G\nINFO: include disk 'efidisk0' 'local-lvm:vm-9200-disk-0' 4M\nINFO: stopping virtual guest\nINFO: snapshots found (not included into backup)\nINFO: creating vzdump archive '/root/mayak-acceptance-20261028/integrated-vm-backups/0/vzdump-qemu-9200-2026_10_28-12_21_52.vma.zst'\nINFO: starting kvm to execute backup task\ngenerating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nINFO: started backup task '02e2a08f-a5c1-4423-940a-cce357173bb8'\nINFO: resuming VM again after 4 seconds\nINFO:   2% (1.1 GiB of 40.0 GiB) in 3s, read: 387.9 MiB/s, write: 275.9 MiB/s\nINFO:   5% (2.0 GiB of 40.0 GiB) in 6s, read: 298.5 MiB/s, write: 261.5 MiB/s\nINFO:   7% (3.0 GiB of 40.0 GiB) in 9s, read: 333.5 MiB/s, write: 284.4 MiB/s\nINFO:   9% (3.7 GiB of 40.0 GiB) in 12s, read: 249.5 MiB/s, write: 231.6 MiB/s\nINFO:  12% (5.1 GiB of 40.0 GiB) in 15s, read: 470.6 MiB/s, write: 234.5 MiB/s\nINFO:  17% (6.9 GiB of 40.0 GiB) in 18s, read: 600.5 MiB/s, write: 211.6 MiB/s\nINFO:  21% (8.5 GiB of 40.0 GiB) in 21s, read: 554.6 MiB/s, write: 224.4 MiB/s\nINFO:  23% (9.2 GiB of 40.0 GiB) in 24s, read: 259.8 MiB/s, write: 258.1 MiB/s\nINFO:  25% (10.1 GiB of 40.0 GiB) in 27s, read: 290.0 MiB/s, write: 232.1 MiB/s\nINFO:  29% (11.6 GiB of 40.0 GiB) in 30s, read: 517.2 MiB/s, write: 147.5 MiB/s\nINFO:  36% (14.7 GiB of 40.0 GiB) in 33s, read: 1.0 GiB/s, write: 179.0 MiB/s\nINFO:  38% (15.5 GiB of 40.0 GiB) in 36s, read: 290.7 MiB/s, write: 235.5 MiB/s\nINFO:  41% (16.6 GiB of 40.0 GiB) in 39s, read: 369.8 MiB/s, write: 141.6 MiB/s\nINFO:  48% (19.4 GiB of 40.0 GiB) in 42s, read: 937.7 MiB/s, write: 85.4 MiB/s\nINFO:  69% (27.9 GiB of 40.0 GiB) in 45s, read: 2.9 GiB/s, write: 5.3 KiB/s\nINFO:  84% (34.0 GiB of 40.0 GiB) in 48s, read: 2.0 GiB/s, write: 4.0 KiB/s\nINFO: 100% (40.0 GiB of 40.0 GiB) in 51s, read: 2.0 GiB/s, write: 148.0 KiB/s\nINFO: backup is sparse: 31.20 GiB (78%) total zero data\nINFO: transferred 40.00 GiB in 51 seconds (803.1 MiB/s)\nINFO: archive file size: 3.35GB\nINFO: Finished Backup of VM 9200 (00:00:55)\nINFO: Backup finished at 2026-10-28 12:22:47\nINFO: Backup job finished successfully\nINFO: notified via target `mail-to-root`\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: running\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "shutdown",
+        "9200",
+        "--timeout",
+        "90"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "status",
+        "9200"
+      ],
+      "code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qmrestore",
+        "/root/mayak-acceptance-20261028/integrated-vm-backups/0/vzdump-qemu-9200-2026_10_28-12_21_52.vma.zst",
+        "9203",
+        "--storage",
+        "local-lvm"
+      ],
+      "code": 0,
+      "stdout": "restore vma archive: zstd -q -d -c /root/mayak-acceptance-20261028/integrated-vm-backups/0/vzdump-qemu-9200-2026_10_28-12_21_52.vma.zst | vma extract -v -r /var/tmp/vzdumptmp257916.fifo - /var/tmp/vzdumptmp257916\nCFG: size: 834 name: qemu-server.conf\nDEV: dev_id=1 size: 540672 devname: drive-efidisk0\nDEV: dev_id=2 size: 42949672960 devname: drive-scsi0\nCTIME: Wed Oct 28 12:21:56 2026\n  Rounding up size to full physical extent 4.00 MiB\n  Logical volume \"vm-9203-disk-0\" created.\n  Logical volume pve/vm-9203-disk-0 changed.\nnew volume ID is 'local-lvm:vm-9203-disk-0'\n  Logical volume \"vm-9203-cloudinit\" created.\n  Logical volume pve/vm-9203-cloudinit changed.\nnew volume ID is 'local-lvm:vm-9203-cloudinit'\n  Logical volume \"vm-9203-disk-1\" created.\n  Logical volume pve/vm-9203-disk-1 changed.\nnew volume ID is 'local-lvm:vm-9203-disk-1'\nmap 'drive-efidisk0' to '/dev/pve/vm-9203-disk-0' (write zeros = 0)\nmap 'drive-scsi0' to '/dev/pve/vm-9203-disk-1' (write zeros = 0)\nprogress 1% (read 429522944 bytes, duration 0 sec)\nprogress 2% (read 859045888 bytes, duration 1 sec)\nprogress 3% (read 1288568832 bytes, duration 3 sec)\nprogress 4% (read 1718026240 bytes, duration 4 sec)\nprogress 5% (read 2147549184 bytes, duration 7 sec)\nprogress 6% (read 2577072128 bytes, duration 9 sec)\nprogress 7% (read 3006529536 bytes, duration 14 sec)\nprogress 8% (read 3436052480 bytes, duration 16 sec)\nprogress 9% (read 3865575424 bytes, duration 17 sec)\nprogress 10% (read 4295032832 bytes, duration 21 sec)\nprogress 11% (read 4724555776 bytes, duration 23 sec)\nprogress 12% (read 5154078720 bytes, duration 24 sec)\nprogress 13% (read 5583536128 bytes, duration 24 sec)\nprogress 14% (read 6013059072 bytes, duration 24 sec)\nprogress 15% (read 6442582016 bytes, duration 24 sec)\nprogress 16% (read 6872039424 bytes, duration 25 sec)\nprogress 17% (read 7301562368 bytes, duration 28 sec)\nprogress 18% (read 7731085312 bytes, duration 31 sec)\nprogress 19% (read 8160542720 bytes, duration 31 sec)\nprogress 20% (read 8590065664 bytes, duration 31 sec)\nprogress 21% (read 9019588608 bytes, duration 33 sec)\nprogress 22% (read 9449046016 bytes, duration 36 sec)\nprogress 23% (read 9878568960 bytes, duration 40 sec)\nprogress 24% (read 10308091904 bytes, duration 43 sec)\nprogress 25% (read 10737549312 bytes, duration 45 sec)\nprogress 26% (read 11167072256 bytes, duration 47 sec)\nprogress 27% (read 11596595200 bytes, duration 49 sec)\nprogress 28% (read 12026118144 bytes, duration 49 sec)\nprogress 29% (read 12455575552 bytes, duration 49 sec)\nprogress 30% (read 12885098496 bytes, duration 49 sec)\nprogress 31% (read 13314621440 bytes, duration 49 sec)\nprogress 32% (read 13744078848 bytes, duration 49 sec)\nprogress 33% (read 14173601792 bytes, duration 49 sec)\nprogress 34% (read 14603124736 bytes, duration 49 sec)\nprogress 35% (read 15032582144 bytes, duration 49 sec)\nprogress 36% (read 15462105088 bytes, duration 52 sec)\nprogress 37% (read 15891628032 bytes, duration 55 sec)\nprogress 38% (read 16321085440 bytes, duration 57 sec)\nprogress 39% (read 16750608384 bytes, duration 60 sec)\nprogress 40% (read 17180131328 bytes, duration 61 sec)\nprogress 41% (read 17609588736 bytes, duration 61 sec)\nprogress 42% (read 18039111680 bytes, duration 63 sec)\nprogress 43% (read 18468634624 bytes, duration 63 sec)\nprogress 44% (read 18898092032 bytes, duration 65 sec)\nprogress 45% (read 19327614976 bytes, duration 65 sec)\nprogress 46% (read 19757137920 bytes, duration 65 sec)\nprogress 47% (read 20186595328 bytes, duration 65 sec)\nprogress 48% (read 20616118272 bytes, duration 65 sec)\nprogress 49% (read 21045641216 bytes, duration 65 sec)\nprogress 50% (read 21475098624 bytes, duration 65 sec)\nprogress 51% (read 21904621568 bytes, duration 65 sec)\nprogress 52% (read 22334144512 bytes, duration 65 sec)\nprogress 53% (read 22763667456 bytes, duration 65 sec)\nprogress 54% (read 23193124864 bytes, duration 65 sec)\nprogress 55% (read 23622647808 bytes, duration 65 sec)\nprogress 56% (read 24052170752 bytes, duration 65 sec)\nprogress 57% (read 24481628160 bytes, duration 65 sec)\nprogress 58% (read 24911151104 bytes, duration 65 sec)\nprogress 59% (read 25340674048 bytes, duration 65 sec)\nprogress 60% (read 25770131456 bytes, duration 65 sec)\nprogress 61% (read 26199654400 bytes, duration 65 sec)\nprogress 62% (read 26629177344 bytes, duration 65 sec)\nprogress 63% (read 27058634752 bytes, duration 65 sec)\nprogress 64% (read 27488157696 bytes, duration 65 sec)\nprogress 65% (read 27917680640 bytes, duration 65 sec)\nprogress 66% (read 28347138048 bytes, duration 65 sec)\nprogress 67% (read 28776660992 bytes, duration 65 sec)\nprogress 68% (read 29206183936 bytes, duration 65 sec)\nprogress 69% (read 29635641344 bytes, duration 65 sec)\nprogress 70% (read 30065164288 bytes, duration 65 sec)\nprogress 71% (read 30494687232 bytes, duration 65 sec)\nprogress 72% (read 30924144640 bytes, duration 65 sec)\nprogress 73% (read 31353667584 bytes, duration 65 sec)\nprogress 74% (read 31783190528 bytes, duration 65 sec)\nprogress 75% (read 32212647936 bytes, duration 65 sec)\nprogress 76% (read 32642170880 bytes, duration 65 sec)\nprogress 77% (read 33071693824 bytes, duration 65 sec)\nprogress 78% (read 33501216768 bytes, duration 65 sec)\nprogress 79% (read 33930674176 bytes, duration 65 sec)\nprogress 80% (read 34360197120 bytes, duration 65 sec)\nprogress 81% (read 34789720064 bytes, duration 65 sec)\nprogress 82% (read 35219177472 bytes, duration 65 sec)\nprogress 83% (read 35648700416 bytes, duration 65 sec)\nprogress 84% (read 36078223360 bytes, duration 65 sec)\nprogress 85% (read 36507680768 bytes, duration 65 sec)\nprogress 86% (read 36937203712 bytes, duration 65 sec)\nprogress 87% (read 37366726656 bytes, duration 65 sec)\nprogress 88% (read 37796184064 bytes, duration 65 sec)\nprogress 89% (read 38225707008 bytes, duration 65 sec)\nprogress 90% (read 38655229952 bytes, duration 65 sec)\nprogress 91% (read 39084687360 bytes, duration 65 sec)\nprogress 92% (read 39514210304 bytes, duration 65 sec)\nprogress 93% (read 39943733248 bytes, duration 65 sec)\nprogress 94% (read 40373190656 bytes, duration 65 sec)\nprogress 95% (read 40802713600 bytes, duration 65 sec)\nprogress 96% (read 41232236544 bytes, duration 65 sec)\nprogress 97% (read 41661693952 bytes, duration 65 sec)\nprogress 98% (read 42091216896 bytes, duration 65 sec)\nprogress 99% (read 42520739840 bytes, duration 65 sec)\nprogress 100% (read 42950197248 bytes, duration 65 sec)\ntotal bytes read 42950262784, sparse bytes 33502875648 (78%)\nspace reduction due to 4K zero blocks 1.89%\nrescan volumes...\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "set",
+        "9203",
+        "--description",
+        "mayak-infrastructure-20261028:restored-20261028-091916-0"
+      ],
+      "code": 0,
+      "stdout": "update VM 9203: -description mayak-infrastructure-20261028:restored-20261028-091916-0\n",
+      "stderr": ""
+    },
+    {
+      "scope": "host",
+      "command": [
+        "qm",
+        "start",
+        "9203"
+      ],
+      "code": 0,
+      "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+      "stderr": ""
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.317,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0036, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.235,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0031, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 1.253,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 1.0039, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 1.238,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 1.0041, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.238,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0031, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.236,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.0029, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 1,
+      "seconds": 0.236,
+      "stdout": "{\"client\": \"mayak-9201\", \"error\": \"<urlopen error [Errno -3] Temporary failure in name resolution>\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": false, \"seconds\": 0.003, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    },
+    {
+      "vmid": 9201,
+      "command": [
+        "runuser",
+        "-u",
+        "mayak-observer",
+        "--",
+        "/usr/local/bin/mayak-probe"
+      ],
+      "code": 0,
+      "seconds": 0.256,
+      "stdout": "{\"bytes\": 789, \"client\": \"mayak-9201\", \"expectedSha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"passed\": true, \"seconds\": 0.0135, \"sha256\": \"f1f30af59aec46bf5aabe2a95cd958be90e173480bf9632f54a23df3460a5720\", \"status\": 200, \"url\": \"https://inventory.mayak.test:8443/inventory.json\"}\n",
+      "stderr": "",
+      "expected": null
+    }
+  ],
+  "stage": "failed",
+  "status": "failed",
+  "error": "",
+  "traceback": "Traceback (most recent call last):\n  File \"/root/mayak-acceptance-20261028/integration.py\", line 311, in <module>\n    try:main()\n        ~~~~^^\n  File \"/root/mayak-acceptance-20261028/integration.py\", line 305, in main\n    clean_start();port=deploy(number);backup_data(number);faults(port);reboot_and_restore_vm(number)\n                                                                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^\n  File \"/root/mayak-acceptance-20261028/integration.py\", line 294, in reboot_and_restore_vm\n    assert config(9203)['description']==token\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}

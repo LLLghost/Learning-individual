@@ -1,0 +1,197 @@
+{
+  "schema": "mayak-final-stand-audit-v1",
+  "configs": {
+    "9200": {
+      "agent": "enabled=1",
+      "bios": "ovmf",
+      "boot": "order=scsi0",
+      "cicustom": "user=local:snippets/mayak-9100.yaml",
+      "cores": "4",
+      "cpu": "host",
+      "description": "mayak-infrastructure-20261028",
+      "efidisk0": "local-lvm:vm-9200-disk-0,efitype=4m,pre-enrolled-keys=0,size=4M",
+      "ide2": "local-lvm:vm-9200-cloudinit,media=cdrom,size=4M",
+      "ipconfig0": "ip=172.30.253.20/24,gw=172.30.253.1",
+      "machine": "q35",
+      "memory": "6144",
+      "meta": "creation-qemu=10.1.2,ctime=1793090242",
+      "name": "mayak-infra-9200",
+      "nameserver": "10.30.11.199",
+      "net0": "virtio=BC:24:11:20:AC:59,bridge=mayakbr0",
+      "numa": "1",
+      "numa0": "cpus=0-1,memory=3072",
+      "numa1": "cpus=2-3,memory=3072",
+      "parent": "mayak-infrastructure-base",
+      "scsi0": "local-lvm:vm-9200-disk-1,size=40G",
+      "scsi1": "local-lvm:vm-9200-disk-2,serial=MAYAK-LAB-EMPTY,size=1G",
+      "scsihw": "virtio-scsi-pci",
+      "serial0": "socket",
+      "smbios1": "uuid=0cb71f22-712b-41e3-922a-8ceb1c39da3f",
+      "vga": "serial0",
+      "vmgenid": "3cf5abaa-f519-43f4-9dc8-90be73ce5406"
+    },
+    "9201": {
+      "agent": "enabled=1",
+      "bios": "ovmf",
+      "boot": "order=scsi0",
+      "cicustom": "user=local:snippets/mayak-9101.yaml",
+      "cores": "1",
+      "cpu": "host",
+      "description": "mayak-infrastructure-20261028",
+      "efidisk0": "local-lvm:vm-9201-disk-0,efitype=4m,pre-enrolled-keys=0,size=4M",
+      "ide2": "local-lvm:vm-9201-cloudinit,media=cdrom,size=4M",
+      "ipconfig0": "ip=172.30.253.21/24,gw=172.30.253.1",
+      "machine": "q35",
+      "memory": "1024",
+      "meta": "creation-qemu=10.1.2,ctime=1793092396",
+      "name": "mayak-infra-9201",
+      "nameserver": "10.30.11.199",
+      "net0": "virtio=BC:24:11:23:3B:02,bridge=mayakbr0",
+      "parent": "mayak-infrastructure-base",
+      "scsi0": "local-lvm:vm-9201-disk-1,size=3G",
+      "scsihw": "virtio-scsi-pci",
+      "serial0": "socket",
+      "smbios1": "uuid=b3e45aaa-2887-4903-8e50-426e0f6e46d9",
+      "vga": "serial0",
+      "vmgenid": "9304a41f-cf94-45d1-aad4-a2680b74777e"
+    },
+    "9202": {
+      "agent": "enabled=1",
+      "bios": "ovmf",
+      "boot": "order=scsi0",
+      "cicustom": "user=local:snippets/mayak-9101.yaml",
+      "cores": "1",
+      "cpu": "host",
+      "description": "mayak-infrastructure-20261028",
+      "efidisk0": "local-lvm:vm-9202-disk-0,efitype=4m,pre-enrolled-keys=0,size=4M",
+      "ide2": "local-lvm:vm-9202-cloudinit,media=cdrom,size=4M",
+      "ipconfig0": "ip=172.30.253.22/24,gw=172.30.253.1",
+      "machine": "q35",
+      "memory": "1024",
+      "meta": "creation-qemu=10.1.2,ctime=1793092396",
+      "name": "mayak-infra-9202",
+      "nameserver": "10.30.11.199",
+      "net0": "virtio=BC:24:11:52:6B:E8,bridge=mayakbr0",
+      "parent": "mayak-infrastructure-base",
+      "scsi0": "local-lvm:vm-9202-disk-1,size=3G",
+      "scsihw": "virtio-scsi-pci",
+      "serial0": "socket",
+      "smbios1": "uuid=54d20477-1886-4ef2-9f58-b13e133c9f67",
+      "vga": "serial0",
+      "vmgenid": "6db820f5-b9f2-4a7a-8f7f-276ffa68a2b7"
+    }
+  },
+  "status": [
+    "status: running\n",
+    "status: running\n",
+    "status: running\n"
+  ],
+  "clientProbe": {
+    "bytes": 789,
+    "client": "mayak-9201",
+    "expectedSha256": "b747da2ed0992f8c816fbd51a8bd778ddf50b34a5d5f6ffca52a88e347b5e136",
+    "passed": true,
+    "seconds": 0.0064,
+    "sha256": "b747da2ed0992f8c816fbd51a8bd778ddf50b34a5d5f6ffca52a88e347b5e136",
+    "status": 200,
+    "url": "https://inventory.mayak.test:8444/inventory.json"
+  },
+  "temporaryVmIdsAbsent": [
+    100,
+    101,
+    9203
+  ],
+  "temporaryVolumesAbsent": true,
+  "originals": {
+    "9100": {
+      "config": {
+        "agent": "enabled=1",
+        "bios": "ovmf",
+        "boot": "order=scsi0",
+        "cicustom": "user=local:snippets/mayak-9100.yaml",
+        "cores": "4",
+        "cpu": "host",
+        "description": "mayak acceptance disposable guest 2026-10-27",
+        "efidisk0": "local-lvm:vm-9100-disk-0,efitype=4m,pre-enrolled-keys=0,size=4M",
+        "ide2": "local-lvm:vm-9100-cloudinit,media=cdrom",
+        "ipconfig0": "ip=172.30.253.2/24,gw=172.30.253.1",
+        "machine": "q35",
+        "memory": "6144",
+        "meta": "creation-qemu=10.1.2,ctime=1793090242",
+        "name": "mayak-acceptance",
+        "nameserver": "10.30.11.199",
+        "net0": "virtio=BC:24:11:B3:13:EE,bridge=mayakbr0",
+        "numa": "1",
+        "numa0": "cpus=0-1,memory=3072",
+        "numa1": "cpus=2-3,memory=3072",
+        "parent": "mayak-before-20261028",
+        "scsi0": "local-lvm:vm-9100-disk-1,size=40G",
+        "scsi1": "local-lvm:vm-9100-disk-2,serial=MAYAK-LAB-EMPTY,size=1G",
+        "scsihw": "virtio-scsi-pci",
+        "serial0": "socket",
+        "smbios1": "uuid=a32b11a9-3ebd-4d07-839b-75813dbc97cf",
+        "vga": "serial0",
+        "vmgenid": "af5648c9-af5a-4be9-a8dd-e6bd70e832d7"
+      },
+      "status": "status: stopped\n",
+      "snapshots": "`-> mayak-clean-dependencies    2026-10-27 11:48:33     Clean Debian guest with pinned practice prerequisites, before acceptance\n `-> mayak-tested-clean         2026-10-27 12:03:16     All guest/legacy runs completed; see versioned logs\n  `-> mayak-before-20261028     2026-10-28 11:28:38     Preserve original state before fresh infrastructure acceptance\n   `-> current                                          You are here!\n"
+    },
+    "9101": {
+      "config": {
+        "agent": "enabled=1",
+        "bios": "ovmf",
+        "boot": "order=scsi0",
+        "cicustom": "user=local:snippets/mayak-9101.yaml",
+        "cores": "2",
+        "cpu": "host",
+        "description": "mayak disposable backup source 2026-10-27",
+        "efidisk0": "local-lvm:vm-9101-disk-0,efitype=4m,pre-enrolled-keys=0,size=4M",
+        "ide2": "local-lvm:vm-9101-cloudinit,media=cdrom",
+        "ipconfig0": "ip=172.30.253.3/24,gw=172.30.253.1",
+        "machine": "q35",
+        "memory": "1536",
+        "meta": "creation-qemu=10.1.2,ctime=1793092396",
+        "name": "mayak-backup-source",
+        "nameserver": "10.30.11.199",
+        "net0": "virtio=BC:24:11:F6:F9:BA,bridge=mayakbr0",
+        "parent": "mayak-backup-clean",
+        "scsi0": "local-lvm:vm-9101-disk-1,size=3G",
+        "scsihw": "virtio-scsi-pci",
+        "serial0": "socket",
+        "smbios1": "uuid=90fa06e1-abf2-4526-8185-71fc10560a3e",
+        "vga": "serial0",
+        "vmgenid": "d410c66d-cbae-4f6d-a691-9cc59705210e"
+      },
+      "status": "status: stopped\n",
+      "snapshots": "`-> mayak-backup-clean          2026-10-27 12:18:13     Minimal Debian backup source with Python and guest agent; cloud-init disabled after provisioning\n `-> current                                            You are here!\n"
+    }
+  },
+  "guestResources": {
+    "activeAttempts": [],
+    "namespaces": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "loops": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "pools": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "mappings": {
+      "code": 0,
+      "stdout": "No devices found\n",
+      "stderr": ""
+    },
+    "containers": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  }
+}

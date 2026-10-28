@@ -1,0 +1,10 @@
+✔ evidence registry distinguishes normalized text from exact archive bytes (25.3251ms)
+✔ release verification rejects changed evidence even when report checks still pass (310.4474ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 426.8238

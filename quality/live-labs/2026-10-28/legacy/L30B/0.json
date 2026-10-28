@@ -1,0 +1,49 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L30B",
+  "module": "U30",
+  "kind": "collect",
+  "seed": "c183fd61",
+  "variant": 0,
+  "collected_utc": "2026-10-28T09:42:59.717424+00:00",
+  "facts": {
+    "verify_ok": true,
+    "verify_without_root": false,
+    "san_present": true,
+    "server_self_signed": false,
+    "issued_by_root": true,
+    "root_is_ca": true
+  },
+  "claim": {
+    "error_without_root": "unable to get local issuer certificate"
+  },
+  "evidence": [
+    {
+      "cmd": "openssl verify -CAfile /home/course/legacy-acceptance-20261028-final/L30B/0/root.pem /home/course/legacy-acceptance-20261028-final/L30B/0/server.pem",
+      "rc": 0,
+      "sha256": "07fd69aec2984ac68cf593b3c764fafa8a138468b61abb9d7086dd221f459676",
+      "excerpt": "/home/course/legacy-acceptance-20261028-final/L30B/0/server.pem: OK"
+    },
+    {
+      "cmd": "openssl verify /home/course/legacy-acceptance-20261028-final/L30B/0/server.pem",
+      "rc": 2,
+      "sha256": "7af3eeaa6595030f0731573f07d756cafde2ec30ec9049b1f33af68d674bba2d",
+      "excerpt": "CN = notes.test / error 20 at 0 depth lookup: unable to get local issuer certificate / error /home/course/legacy-acceptance-20261028-final/L30B/0/server.pem: verification failed"
+    },
+    {
+      "cmd": "openssl x509 -noout -ext subjectAltName -in /home/course/legacy-acceptance-20261028-final/L30B/0/server.pem",
+      "rc": 0,
+      "sha256": "683bea73cdd4e7a155c2ab7700e0da9ae20a6c39844bcec49f469cd0dca99617",
+      "excerpt": "    DNS:notes.test"
+    },
+    {
+      "cmd": "openssl x509 -noout -subject -issuer -in /home/course/legacy-acceptance-20261028-final/L30B/0/server.pem",
+      "rc": 0,
+      "sha256": "63476b61c149d1aff5e0f5336de0f91f08255a829d7514e6e1834bcab4a29114",
+      "excerpt": "субъект: CN = notes.test / издатель: CN = MayakRoot"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

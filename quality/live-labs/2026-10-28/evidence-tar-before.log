@@ -1,0 +1,20 @@
+✖ evidence registry distinguishes normalized text from exact archive bytes (12.4332ms)
+✔ release verification rejects changed evidence even when report checks still pass (335.2786ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 430.2912
+
+✖ failing tests:
+
+test at scripts\test-evidence.mjs:10:1
+✖ evidence registry distinguishes normalized text from exact archive bytes (12.4332ms)
+  Error: Evidence hash mismatch: roundtrip.tar
+      at verifyEvidence (file:///D:/Codex_projects/Learning/Learning-individual/scripts/verify-evidence.mjs:16:34)
+      at async TestContext.<anonymous> (file:///D:/Codex_projects/Learning/Learning-individual/scripts/test-evidence.mjs:20:18)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

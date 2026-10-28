@@ -1,0 +1,4496 @@
+{
+  "environment": "fresh Proxmox clone VM 9200 from clean-dependencies snapshot, Debian 12, OVMF, two virtual NUMA nodes",
+  "at": 1793176453.3983028,
+  "runnerSha256": "db45cfa0afebc302219782d9e1b5a8c8eec725a3c6cdab97d4f3acddfecd92d4",
+  "results": [
+    {
+      "lesson": "process",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "d0b74d3ae91449438f84970f2792c1e9",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.34,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncat: /var/lib/mayak-practice/process/work/pid.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "python3 -c import time; time.sleep(3600) mayak-mkd0b74d3ae9 \nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "mutation": {
+            "command": [
+              "runuser",
+              "-u",
+              "course",
+              "--",
+              "kill",
+              "2193"
+            ],
+            "code": 0
+          },
+          "checkAfterChange": {
+            "action": "check",
+            "code": 1,
+            "seconds": 0.04,
+            "stdout": "FAIL\n",
+            "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n/etc/bash.bashrc: line 1: /proc/2193/cmdline: No such file or directory\n"
+          },
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "409daface6f34e0c97273f485f260d05",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.34,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncat: /var/lib/mayak-practice/process/work/pid.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "python3 -c import time; time.sleep(3600) mayak-mk409daface6 \nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "mutation": {
+            "command": [
+              "runuser",
+              "-u",
+              "course",
+              "--",
+              "kill",
+              "2225"
+            ],
+            "code": 0
+          },
+          "checkAfterChange": {
+            "action": "check",
+            "code": 1,
+            "seconds": 0.04,
+            "stdout": "FAIL\n",
+            "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n/etc/bash.bashrc: line 1: /proc/2225/cmdline: No such file or directory\n"
+          },
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "permissions",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "74ba9ed152344b3f91c474aab22ae31c",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "private note\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "2a3b76fc5c8e4bb79d34f5cf81010194",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "private note\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "memory",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "2e744d4f28c9494b8b2abcb490c10573",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.05,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 2, in <module>\nFileNotFoundError: [Errno 2] No such file or directory: '/var/lib/mayak-practice/memory/work/memory.json'\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "{'available_kib': 5497808, 'total_kib': 6059600, 'pressure_source': '/proc/pressure/memory'}\nsome avg10=0.00 avg60=0.00 avg300=0.00 total=0\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "4c9be294b3c34503bda2c3527d88dc8a",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.05,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 2, in <module>\nFileNotFoundError: [Errno 2] No such file or directory: '/var/lib/mayak-practice/memory/work/memory.json'\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "{'available_kib': 5489812, 'total_kib': 6059600, 'pressure_source': '/proc/pressure/memory'}\nsome avg10=0.00 avg60=0.00 avg300=0.00 total=0\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "packages",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "a88c36739f16474eaec796e39685c28e",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "python3-minimal: /usr/bin/python3\npython3-minimal 3.11.2-1+b1\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "0906de96e13f4bb0895902df0bf38cd3",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.03,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "python3-minimal: /usr/bin/python3\npython3-minimal 3.11.2-1+b1\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "shell-data",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "4f64039dd5f44bb188ed5707500a33f2",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncmp: /var/lib/mayak-practice/shell-data/work/names.bin: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "[b'first note', b'second note', b'']\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "83fddb52a95441169799de561dc0041f",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncmp: /var/lib/mayak-practice/shell-data/work/names.bin: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "[b'first note', b'second note', b'third note', b'']\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "shell-failure",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "414c732c46eb4676a617f74ae4c17285",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Timeout is 1 seconds\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.06,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: ('', 'bash: /var/lib/mayak-practice/shell-failure/work/solution.sh: No such file or directory\\n', 0.005328187999992906)\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 1.06,
+              "stdout": "Observed timeout: 124 elapsed seconds: 1.008813508000003\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "d3341892dad54a29b8758c3cff2005f5",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Timeout is 2 seconds\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.06,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: ('', 'bash: /var/lib/mayak-practice/shell-failure/work/solution.sh: No such file or directory\\n', 0.004882542000018475)\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 2.06,
+              "stdout": "Observed timeout: 124 elapsed seconds: 2.0068768239999883\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "python-result",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "5924080fc4a44383a827c351e5a1c0c4",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.07,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/var/lib/mayak-practice/python-result/work/solution.py': [Errno 2] No such file or directory\n\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.08,
+              "stdout": "{'stdout': 'out\\n', 'stderr': 'err\\n', 'code': 7}\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "5b306324b3d548258599ad8270aa25a9",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.07,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/var/lib/mayak-practice/python-result/work/solution.py': [Errno 2] No such file or directory\n\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.09,
+              "stdout": "{'stdout': 'another out\\n', 'stderr': 'another err\\n', 'code': 8}\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "git-change",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "3b53398762c948e5a2cb2a03a7eef591",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.11,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.06,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "port=8081\nMove note port to avoid listener conflict\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "fc055fc7f0c043e49273758615773d79",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.05,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "port=8082\nMove note port to avoid listener conflict\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "boot",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "aa344d8cdcc64ac1b423aca216788ae6",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "/dev/sda1 ext4\nBOOT_IMAGE=/boot/vmlinuz-6.1.0-54-amd64 root=PARTUUID=be22c4a2-1d9c-4f22-ad33-9612ac4dae03 ro console=tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "c02db26c95c649cbb201cdce08721167",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "/dev/sda1 ext4\nBOOT_IMAGE=/boot/vmlinuz-6.1.0-54-amd64 root=PARTUUID=be22c4a2-1d9c-4f22-ad33-9612ac4dae03 ro console=tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "disk-identity",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "99f2188e14574c72a54ad15c01ae3b19",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"40G\",\n         \"model\": \"QEMU HARDDISK\",\n         \"serial\": \"drive-scsi0\",\n         \"wwn\": null,\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"size\": \"39.9G\",\n               \"model\": null,\n               \"serial\": null,\n               \"wwn\": null\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"size\": \"3M\",\n               \"model\": null,\n               \"serial\": null,\n               \"wwn\": null\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"size\": \"124M\",\n               \"model\": null,\n               \"serial\": null,\n               \"wwn\": null\n            }\n         ]\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"size\": \"4M\",\n         \"model\": \"QEMU DVD-ROM\",\n         \"serial\": \"QM00003\",\n         \"wwn\": null\n      }\n   ]\n}\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "a21b3f7e2d614c8699fe6892fa4f678a",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"40G\",\n         \"model\": \"QEMU HARDDISK\",\n         \"serial\": \"drive-scsi0\",\n         \"wwn\": null,\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"size\": \"39.9G\",\n               \"model\": null,\n               \"serial\": null,\n               \"wwn\": null\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"size\": \"3M\",\n               \"model\": null,\n               \"serial\": null,\n               \"wwn\": null\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"size\": \"124M\",\n               \"model\": null,\n               \"serial\": null,\n               \"wwn\": null\n            }\n         ]\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"size\": \"4M\",\n         \"model\": \"QEMU DVD-ROM\",\n         \"serial\": \"QM00003\",\n         \"wwn\": null\n      }\n   ]\n}\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "disk-health",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "6a6d2646dcec47aa86802c040de7d3b6",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.03,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "sda     disk        QEMU HARDDISK\n├─sda1  part        \n├─sda14 part        \n└─sda15 part        \nsr0     rom  sata   QEMU DVD-ROM\nguest-data-only\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "62a481b50b454adb91e177059bd016a1",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.03,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "sda     disk        QEMU HARDDISK\n├─sda1  part        \n├─sda14 part        \n└─sda15 part        \nsr0     rom  sata   QEMU DVD-ROM\nguest-data-only\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "vm-resources",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "e081499dbb2640d8b4b336c4a1f800f9",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"BIOS Vendor ID:\",\n         \"data\": \"QEMU\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 5 7430U with Radeon Graphics\"\n      },{\n         \"field\": \"BIOS Model name:\",\n         \"data\": \"pc-q35-10.1  CPU @ 2.0GHz\"\n      },{\n         \"field\": \"BIOS CPU family:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"25\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"80\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"4591.37\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload vgif umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor fsrm\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"Hypervisor vendor:\",\n         \"data\": \"KVM\"\n      },{\n         \"field\": \"Virtualization type:\",\n         \"data\": \"full\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"256 KiB (4 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (4 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"2 MiB (4 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"64 MiB (4 instances)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0,1\"\n      },{\n         \"field\": \"NUMA node1 CPU(s):\",\n         \"data\": \"2,3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; safe RET\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Vulnerable: Clear CPU buffers attempted, no microcode\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\nMemTotal:        6059600 kB\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "af809fa8943143da8f1413b098ab3df0",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"BIOS Vendor ID:\",\n         \"data\": \"QEMU\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 5 7430U with Radeon Graphics\"\n      },{\n         \"field\": \"BIOS Model name:\",\n         \"data\": \"pc-q35-10.1  CPU @ 2.0GHz\"\n      },{\n         \"field\": \"BIOS CPU family:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"25\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"80\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"4591.37\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload vgif umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor fsrm\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"Hypervisor vendor:\",\n         \"data\": \"KVM\"\n      },{\n         \"field\": \"Virtualization type:\",\n         \"data\": \"full\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"256 KiB (4 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (4 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"2 MiB (4 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"64 MiB (4 instances)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0,1\"\n      },{\n         \"field\": \"NUMA node1 CPU(s):\",\n         \"data\": \"2,3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; safe RET\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Vulnerable: Clear CPU buffers attempted, no microcode\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\nMemTotal:        6059600 kB\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "pcie",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "5e0b5312a31640e79a1d38a2454285ff",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.03,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "0000:00:00.0 Host bridge [0600]: Intel Corporation 82G33/G31/P35/P31 Express DRAM Controller [8086:29c0]\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n0000:00:1a.0 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #4 [8086:2937] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1a.1 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #5 [8086:2938] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1a.2 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #6 [8086:2939] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1a.7 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB2 EHCI Controller #2 [8086:293c] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: ehci-pci\n\tKernel modules: ehci_pci\n0000:00:1b.0 Audio device [0403]: Intel Corporation 82801I (ICH9 Family) HD Audio Controller [8086:293e] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: snd_hda_intel\n\tKernel modules: snd_hda_intel\n0000:00:1c.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1c.1 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1c.2 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1c.3 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1d.0 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #1 [8086:2934] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1d.1 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #2 [8086:2935] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1d.2 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #3 [8086:2936] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1d.7 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB2 EHCI Controller #1 [8086:293a] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: ehci-pci\n\tKernel modules: ehci_pci\n0000:00:1e.0 PCI bridge [0604]: Intel Corporation 82801 PCI Bridge [8086:244e] (rev 92)\n0000:00:1f.0 ISA bridge [0601]: Intel Corporation 82801IB (ICH9) LPC Interface Controller [8086:2918] (rev 02)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: lpc_ich\n\tKernel modules: lpc_ich\n0000:00:1f.2 SATA controller [0106]: Intel Corporation 82801IR/IO/IH (ICH9R/DO/DH) 6 port SATA Controller [AHCI mode] [8086:2922] (rev 02)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: ahci\n\tKernel modules: ahci\n0000:00:1f.3 SMBus [0c05]: Intel Corporation 82801I (ICH9 Family) SMBus Controller [8086:2930] (rev 02)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: i801_smbus\n\tKernel modules: i2c_i801\n0000:05:01.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:05:02.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:05:03.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:05:04.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:06:03.0 Unclassified device [00ff]: Red Hat, Inc. Virtio memory balloon [1af4:1002]\n\tSubsystem: Red Hat, Inc. Virtio memory balloon [1af4:0005]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\n0000:06:05.0 SCSI storage controller [0100]: Red Hat, Inc. Virtio SCSI [1af4:1004]\n\tSubsystem: Red Hat, Inc. Virtio SCSI [1af4:0008]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\n0000:06:08.0 Communication controller [0780]: Red Hat, Inc. Virtio console [1af4:1003]\n\tSubsystem: Red Hat, Inc. Virtio console [1af4:0003]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\n0000:06:12.0 Ethernet controller [0200]: Red Hat, Inc. Virtio network device [1af4:1000]\n\tSubsystem: Red Hat, Inc. Virtio network device [1af4:0001]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "195e910aa0d64f8ab034a5d7fad7aad4",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.03,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "0000:00:00.0 Host bridge [0600]: Intel Corporation 82G33/G31/P35/P31 Express DRAM Controller [8086:29c0]\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n0000:00:1a.0 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #4 [8086:2937] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1a.1 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #5 [8086:2938] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1a.2 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #6 [8086:2939] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1a.7 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB2 EHCI Controller #2 [8086:293c] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: ehci-pci\n\tKernel modules: ehci_pci\n0000:00:1b.0 Audio device [0403]: Intel Corporation 82801I (ICH9 Family) HD Audio Controller [8086:293e] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: snd_hda_intel\n\tKernel modules: snd_hda_intel\n0000:00:1c.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1c.1 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1c.2 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1c.3 PCI bridge [0604]: Red Hat, Inc. QEMU PCIe Root port [1b36:000c]\n\tSubsystem: Red Hat, Inc. QEMU PCIe Root port [1b36:0000]\n\tKernel driver in use: pcieport\n0000:00:1d.0 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #1 [8086:2934] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1d.1 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #2 [8086:2935] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1d.2 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB UHCI Controller #3 [8086:2936] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: uhci_hcd\n\tKernel modules: uhci_hcd\n0000:00:1d.7 USB controller [0c03]: Intel Corporation 82801I (ICH9 Family) USB2 EHCI Controller #1 [8086:293a] (rev 03)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: ehci-pci\n\tKernel modules: ehci_pci\n0000:00:1e.0 PCI bridge [0604]: Intel Corporation 82801 PCI Bridge [8086:244e] (rev 92)\n0000:00:1f.0 ISA bridge [0601]: Intel Corporation 82801IB (ICH9) LPC Interface Controller [8086:2918] (rev 02)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: lpc_ich\n\tKernel modules: lpc_ich\n0000:00:1f.2 SATA controller [0106]: Intel Corporation 82801IR/IO/IH (ICH9R/DO/DH) 6 port SATA Controller [AHCI mode] [8086:2922] (rev 02)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: ahci\n\tKernel modules: ahci\n0000:00:1f.3 SMBus [0c05]: Intel Corporation 82801I (ICH9 Family) SMBus Controller [8086:2930] (rev 02)\n\tSubsystem: Red Hat, Inc. QEMU Virtual Machine [1af4:1100]\n\tKernel driver in use: i801_smbus\n\tKernel modules: i2c_i801\n0000:05:01.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:05:02.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:05:03.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:05:04.0 PCI bridge [0604]: Red Hat, Inc. QEMU PCI-PCI bridge [1b36:0001]\n0000:06:03.0 Unclassified device [00ff]: Red Hat, Inc. Virtio memory balloon [1af4:1002]\n\tSubsystem: Red Hat, Inc. Virtio memory balloon [1af4:0005]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\n0000:06:05.0 SCSI storage controller [0100]: Red Hat, Inc. Virtio SCSI [1af4:1004]\n\tSubsystem: Red Hat, Inc. Virtio SCSI [1af4:0008]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\n0000:06:08.0 Communication controller [0780]: Red Hat, Inc. Virtio console [1af4:1003]\n\tSubsystem: Red Hat, Inc. Virtio console [1af4:0003]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\n0000:06:12.0 Ethernet controller [0200]: Red Hat, Inc. Virtio network device [1af4:1000]\n\tSubsystem: Red Hat, Inc. Virtio network device [1af4:0001]\n\tKernel driver in use: virtio-pci\n\tKernel modules: virtio_pci\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "device-id",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "2dbcfee473ba49188567761a2698ec26",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "docker0 eth0 /sys/bus/virtio/drivers/virtio_net\nlo PASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "97934cef29cc4b8aa25bf51761739908",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "docker0 eth0 /sys/bus/virtio/drivers/virtio_net\nlo PASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "uefi",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "54f3e54404e14a8ca3f19d3127554b5a",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.03,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "UEFI\nBootOrder-8be4df61-93ca-11d2-aa0d-00e098032b8c\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "af46ca38f81b42ffbf351a9994317a83",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.03,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "UEFI\nBootOrder-8be4df61-93ca-11d2-aa0d-00e098032b8c\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "address",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "94227584ea424473bac349fe2b73a448",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.19,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/address/work/route.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.038 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.038/0.038/0.038/0.000 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "30ab8c86b7134948853eed5f895c5c06",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/address/work/route.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.038 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.038/0.038/0.038/0.000 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "prefix",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "507091ed7b79482a91fe5b13f32c3dd0",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "9: eth0    inet 192.0.2.1/24 scope global eth0\\       valid_lft forever preferred_lft forever\nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.051 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.051/0.051/0.051/0.000 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "4c2a40df645e40ba8c4922623b3fb081",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.17,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "11: eth0    inet 192.0.2.1/24 scope global eth0\\       valid_lft forever preferred_lft forever\nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.034 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.034/0.034/0.034/0.000 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "mtu",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "17aa7428a0ad4e138027c27457e2ee66",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncat: /var/lib/mayak-practice/mtu/work/payload.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 1.06,
+              "stdout": "PING 192.0.2.2 (192.0.2.2) 1252(1280) bytes of data.\n1260 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.039 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.039/0.039/0.039/0.000 ms\nPING 192.0.2.2 (192.0.2.2) 1253(1281) bytes of data.\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms\n\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nping: local error: message too long, mtu=1280\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "fef4e9018d0248d5b7d1ad9a327609b0",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.19,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncat: /var/lib/mayak-practice/mtu/work/payload.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 1.05,
+              "stdout": "PING 192.0.2.2 (192.0.2.2) 1352(1380) bytes of data.\n1360 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.038 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.038/0.038/0.038/0.000 ms\nPING 192.0.2.2 (192.0.2.2) 1353(1381) bytes of data.\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms\n\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nping: local error: message too long, mtu=1380\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "ipv6",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "b211748159604e0eb6d199bad5cb52d6",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.23,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nRTNETLINK answers: Network is unreachable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "2001:db8::2 from :: dev eth0 proto kernel src 2001:db8::1 metric 256 pref medium\nPING 2001:db8::2(2001:db8::2) 56 data bytes\n64 bytes from 2001:db8::2: icmp_seq=1 ttl=64 time=0.056 ms\n\n--- 2001:db8::2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.056/0.056/0.056/0.000 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "ef18020161ff4582b4aabc3f5bf2427c",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.23,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nRTNETLINK answers: Network is unreachable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "2001:db8::2 from :: dev eth0 proto kernel src 2001:db8::1 metric 256 pref medium\nPING 2001:db8::2(2001:db8::2) 56 data bytes\n64 bytes from 2001:db8::2: icmp_seq=1 ttl=64 time=0.042 ms\n\n--- 2001:db8::2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.042/0.042/0.042/0.000 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "firewall",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "f001c7ed2ef34e609e9eec1d6295a1ca",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.15,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 2.04,
+              "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \n    cache \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 0 received, 100% packet loss, time 0ms\n\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \n    cache \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.028 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.028/0.028/0.028/0.000 ms\n\t\ttype filter hook input priority filter; policy drop;\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "a25368563adf492ab6b61609aee900eb",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.22,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 2.04,
+              "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \n    cache \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 0 received, 100% packet loss, time 0ms\n\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "192.0.2.2 dev eth0 src 192.0.2.1 uid 0 \n    cache \nPING 192.0.2.2 (192.0.2.2) 56(84) bytes of data.\n64 bytes from 192.0.2.2: icmp_seq=1 ttl=64 time=0.022 ms\n\n--- 192.0.2.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.022/0.022/0.022/0.000 ms\n\t\ttype filter hook input priority filter; policy drop;\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "segments",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "03ba71a30b2c401bb2e6e923552db7ec",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 3.12,
+              "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\nFrom 198.51.100.1 icmp_seq=1 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=2 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=3 Destination Host Unreachable\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2051ms\npipe 3\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 2.07,
+              "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\n64 bytes from 198.51.100.2: icmp_seq=1 ttl=64 time=0.044 ms\n64 bytes from 198.51.100.2: icmp_seq=2 ttl=64 time=0.068 ms\n64 bytes from 198.51.100.2: icmp_seq=3 ttl=64 time=0.089 ms\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss, time 2028ms\nrtt min/avg/max/mdev = 0.044/0.067/0.089/0.018 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "87a7893c46df4f98ae78136deb884b35",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.21,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 3.12,
+              "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\nFrom 198.51.100.1 icmp_seq=1 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=2 Destination Host Unreachable\nFrom 198.51.100.1 icmp_seq=3 Destination Host Unreachable\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2056ms\npipe 3\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 2.07,
+              "stdout": "    vlan protocol 802.1Q id 10 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 \nPING 198.51.100.2 (198.51.100.2) 56(84) bytes of data.\n64 bytes from 198.51.100.2: icmp_seq=1 ttl=64 time=0.040 ms\n64 bytes from 198.51.100.2: icmp_seq=2 ttl=64 time=0.053 ms\n64 bytes from 198.51.100.2: icmp_seq=3 ttl=64 time=0.085 ms\n\n--- 198.51.100.2 ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss, time 2029ms\nrtt min/avg/max/mdev = 0.040/0.059/0.085/0.018 ms\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "tcp",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "ee86e118886d40149bd5f9de56088272",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.73,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.05,
+              "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/tcp/work/response.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \nnote\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "8d9a61ef5a074dfb94d1da4c4bc1df10",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.71,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/tcp/work/response.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "LISTEN 0      5          192.0.2.2:8080      0.0.0.0:*          \nnote\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "systemd",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "1b249a1ed5244b09ae872855d9dc7401",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 3,
+              "seconds": 0.04,
+              "stdout": "inactive\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "active\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "mutation": {
+            "command": [
+              "systemctl",
+              "stop",
+              "mk1b249a1ed5.service"
+            ],
+            "code": 0
+          },
+          "checkAfterChange": {
+            "action": "check",
+            "code": 3,
+            "seconds": 0.04,
+            "stdout": "inactive\nFAIL\n",
+            "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+          },
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "6ab230008a044f00bb56cc20410bdbfa",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.19,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 3,
+              "seconds": 0.04,
+              "stdout": "inactive\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "active\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "mutation": {
+            "command": [
+              "systemctl",
+              "stop",
+              "mk6ab230008a.service"
+            ],
+            "code": 0
+          },
+          "checkAfterChange": {
+            "action": "check",
+            "code": 3,
+            "seconds": 0.04,
+            "stdout": "inactive\nFAIL\n",
+            "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+          },
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "logs",
+      "status": "failed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "42b2341e30e246c6bf99c256225e21d1",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.15,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/logs/work/events.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            }
+          ]
+        }
+      ],
+      "error": "check expected success=True: {'action': 'check', 'code': 1, 'seconds': 0.04, 'stdout': 'FAIL\\n', 'stderr': '/etc/bash.bashrc: line 7: PS1: unbound variable\\n'}",
+      "cleanup": {
+        "action": "restore",
+        "code": 0,
+        "seconds": 0.04,
+        "stdout": "",
+        "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+      }
+    },
+    {
+      "lesson": "incident",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "2ee28bda583a4a9fa4b689bd2ef1279e",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.23,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/incident/work/before.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "ActiveState=inactive\nactive\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.19,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "9628780b17854843888d8e7ef9129708",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.23,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/incident/work/before.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "ActiveState=inactive\nactive\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "unknown-incident",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "00dd5693c9964eefb6b49d86302a4bd1",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.37,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/unknown-incident/work/before.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.23,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 -m http.server 18080 --bind 127.0.0.2 --directory /var/lib/mayak-practice/unknown-incident/work ; ignore_errors=no ; start_time=[Wed 2026-10-28 08:33:18 UTC] ; stop_time=[n/a] ; pid=3891 ; code=(null) ; status=0/0 }\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.22,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "cb228f7d966a485e9f98915ec9822578",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.39,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/unknown-incident/work/before.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.21,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 -m http.server 18081 --bind 127.0.0.2 --directory /var/lib/mayak-practice/unknown-incident/work ; ignore_errors=no ; start_time=[Wed 2026-10-28 08:33:19 UTC] ; stop_time=[n/a] ; pid=4013 ; code=(null) ; status=0/0 }\nnote\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "mount",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "c150eaf4ea394db4a8e37817878b2412",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 32,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "note\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "fca092791e6349cf9a66a5a34e18b14d",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 32,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "note\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "filesystem",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "5ca1f01ecc7b4eb8bcfcbfec5c7054a1",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.08,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "/dev/loop0      26464256 15360  24100864   1% /var/lib/mayak-practice/filesystem/work/mnt\n/dev/loop0       8192    62  8130    1% /var/lib/mayak-practice/filesystem/work/mnt\nFilesystem     Inodes IUsed IFree IUse% Mounted on\n/dev/loop0       8192    62  8130    1% /var/lib/mayak-practice/filesystem/work/mnt\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "bee64023dfe44996a1c6fa490269f9c5",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.09,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "/dev/loop0      26464256 15360  24100864   1% /var/lib/mayak-practice/filesystem/work/mnt\n/dev/loop0       8192    72  8120    1% /var/lib/mayak-practice/filesystem/work/mnt\nFilesystem     Inodes IUsed IFree IUse% Mounted on\n/dev/loop0       8192    72  8120    1% /var/lib/mayak-practice/filesystem/work/mnt\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "lvm",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "e66ff37b6ce94712890963b6bd5d1d61",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.33,
+              "stdout": "  Physical volume \"/dev/loop0\" successfully created.\n  Volume group \"mke66ff37b6c\" successfully created\n  Logical volume \"notes\" created.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.09,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.16,
+              "stdout": "  Size of logical volume mke66ff37b6c/notes changed from 16.00 MiB (4 extents) to 32.00 MiB (8 extents).\n  Logical volume mke66ff37b6c/notes successfully resized.\nFilesystem at /dev/mke66ff37b6c/notes is mounted on /var/lib/mayak-practice/lvm/work/mnt; on-line resizing required\nold_desc_blocks = 1, new_desc_blocks = 1\nThe filesystem on /dev/mke66ff37b6c/notes is now 32768 (1k) blocks long.\n\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nresize2fs 1.47.0 (5-Feb-2023)\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.11,
+              "stdout": "30003200\nkeep me\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.35,
+              "stdout": "  Logical volume \"notes\" successfully removed.\n  Volume group \"mke66ff37b6c\" successfully removed\n  Labels on physical volume \"/dev/loop0\" successfully wiped.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "d49fcaf475d5434ca6c27239f0257b55",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.32,
+              "stdout": "  Physical volume \"/dev/loop0\" successfully created.\n  Volume group \"mkd49fcaf475\" successfully created\n  Logical volume \"notes\" created.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.1,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.16,
+              "stdout": "  Size of logical volume mkd49fcaf475/notes changed from 16.00 MiB (4 extents) to 48.00 MiB (12 extents).\n  Logical volume mkd49fcaf475/notes successfully resized.\nFilesystem at /dev/mkd49fcaf475/notes is mounted on /var/lib/mayak-practice/lvm/work/mnt; on-line resizing required\nold_desc_blocks = 1, new_desc_blocks = 1\nThe filesystem on /dev/mkd49fcaf475/notes is now 49152 (1k) blocks long.\n\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nresize2fs 1.47.0 (5-Feb-2023)\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.11,
+              "stdout": "45595648\nkeep me\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.33,
+              "stdout": "  Logical volume \"notes\" successfully removed.\n  Volume group \"mkd49fcaf475\" successfully removed\n  Labels on physical volume \"/dev/loop0\" successfully wiped.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "dns",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "e35758f702ea4ad391784124f04ddb99",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.67,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/dns/work/address.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.1,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "192.0.2.2\n192.0.2.2\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "eb3fa44cafac44d99e5b4e6d47f86581",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.69,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/dns/work/address.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "192.0.2.2\n192.0.2.2\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "latency",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "5671810a97e44cc6b9c5681ae6856845",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Use a monotonic clock; measure five real waits.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.07,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/var/lib/mayak-practice/latency/work/measure.py': [Errno 2] No such file or directory\n\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.32,
+              "stdout": "{'samples_ms': [10.601474999987204, 10.095543000005591, 10.113028000006352, 10.197927000007212, 200.27900899998485], 'mean_ms': 48.25739639999824, 'max_ms': 200.27900899998485}\nObserved wall duration: 0.26303483800001004\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "b7014c161f864c9a8db03bba928cc7d6",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Use a monotonic clock; measure five real waits.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.07,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nTraceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\nAssertionError: python3: can't open file '/var/lib/mayak-practice/latency/work/measure.py': [Errno 2] No such file or directory\n\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.42,
+              "stdout": "{'samples_ms': [10.110695000008718, 10.408689999991338, 10.43214399999215, 10.39123399999653, 300.150785999989], 'mean_ms': 68.29870979999555, 'max_ms': 300.150785999989}\nObserved wall duration: 0.36371605399997975\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "ansible-state",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "df3bb4dc66d64305ab6d1f3073660738",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/ansible-state/work/service.conf: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 1.92,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "port=8081\nlocalhost                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   \nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "707c8cc02d3648098be86b0e1c379098",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/ansible-state/work/service.conf: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 1.6,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "port=8082\nlocalhost                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   \nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "tls",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "4a08fa8ed9e14315821d03e12582cc13",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.23,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "/var/lib/mayak-practice/tls/work/cert.pem: OK\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nCN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /var/lib/mayak-practice/tls/work/cert.pem: verification failed\ngrep: /var/lib/mayak-practice/tls/work/valid.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "/var/lib/mayak-practice/tls/work/cert.pem: OK\n/var/lib/mayak-practice/tls/work/cert.pem: OK\nerror 62 at 0 depth lookup: hostname mismatch\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nCN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /var/lib/mayak-practice/tls/work/cert.pem: verification failed\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "99158303c4db4958bcfbaf37cbb6d826",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.17,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "/var/lib/mayak-practice/tls/work/cert.pem: OK\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nCN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /var/lib/mayak-practice/tls/work/cert.pem: verification failed\ngrep: /var/lib/mayak-practice/tls/work/valid.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "/var/lib/mayak-practice/tls/work/cert.pem: OK\n/var/lib/mayak-practice/tls/work/cert.pem: OK\nerror 62 at 0 depth lookup: hostname mismatch\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nCN = notes.test\nerror 62 at 0 depth lookup: hostname mismatch\nerror /var/lib/mayak-practice/tls/work/cert.pem: verification failed\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "time",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "97bf0b72ee0245f19620e5e44ba48b3c",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.1,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ndiff: /var/lib/mayak-practice/time/work/clock.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Timezone=Etc/UTC\nNTPSynchronized=yes\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "c3172f4b447f4941acd4c44aa5581a6c",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ndiff: /var/lib/mayak-practice/time/work/clock.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Timezone=Etc/UTC\nNTPSynchronized=yes\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "baseline",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "af8afa8a03334154898ce02d468beb6d",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "mayak-9200\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"40G\",\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"size\": \"39.9G\"\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"size\": \"3M\"\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"size\": \"124M\"\n            }\n         ]\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"size\": \"4M\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"noprefixroute\":true,\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n59a77b5f2666d9c85c489bd1911a6eebbd91ef22fe48b90a3b75f1b21f3844d4  /etc/os-release\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "5b535065816f4434a6eb8a87bbf8a6e2",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "mayak-9200\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"40G\",\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"size\": \"39.9G\"\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"size\": \"3M\"\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"size\": \"124M\"\n            }\n         ]\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"size\": \"4M\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"noprefixroute\":true,\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n59a77b5f2666d9c85c489bd1911a6eebbd91ef22fe48b90a3b75f1b21f3844d4  /etc/os-release\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "lab-setup",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "461b9d1fb3df47be893d565a5bd98465",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "mayak-9200\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"40G\",\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"size\": \"39.9G\"\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"size\": \"3M\"\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"size\": \"124M\"\n            }\n         ]\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"size\": \"4M\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"noprefixroute\":true,\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "0509d702490940f1932e441d906f9922",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Read the lesson and record the requested facts.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "mayak-9200\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n{\n   \"blockdevices\": [\n      {\n         \"name\": \"sda\",\n         \"type\": \"disk\",\n         \"size\": \"40G\",\n         \"children\": [\n            {\n               \"name\": \"sda1\",\n               \"type\": \"part\",\n               \"size\": \"39.9G\"\n            },{\n               \"name\": \"sda14\",\n               \"type\": \"part\",\n               \"size\": \"3M\"\n            },{\n               \"name\": \"sda15\",\n               \"type\": \"part\",\n               \"size\": \"124M\"\n            }\n         ]\n      },{\n         \"name\": \"sr0\",\n         \"type\": \"rom\",\n         \"size\": \"4M\"\n      }\n   ]\n}\n[{\"ifindex\":1,\"ifname\":\"lo\",\"flags\":[\"LOOPBACK\",\"UP\",\"LOWER_UP\"],\"mtu\":65536,\"qdisc\":\"noqueue\",\"operstate\":\"UNKNOWN\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"loopback\",\"address\":\"00:00:00:00:00:00\",\"broadcast\":\"00:00:00:00:00:00\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"127.0.0.1\",\"prefixlen\":8,\"scope\":\"host\",\"label\":\"lo\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295},{\"family\":\"inet6\",\"local\":\"::1\",\"prefixlen\":128,\"scope\":\"host\",\"noprefixroute\":true,\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "mirror",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "8bc0e082ca9644ef8bb02662fdd7a2e3",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.6,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nmdadm: array /dev/md/mk8bc0e082ca started.\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.09,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nmdadm: set /dev/loop0 faulty in /dev/md/mk8bc0e082ca\nmdadm: hot removed /dev/loop0 from /dev/md/mk8bc0e082ca\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "keep me\n/dev/md/mk8bc0e082ca:\n           Version : 1.2\n     Creation Time : Wed Oct 28 08:33:33 2026\n        Raid Level : raid1\n        Array Size : 64512 (63.00 MiB 66.06 MB)\n     Used Dev Size : 64512 (63.00 MiB 66.06 MB)\n      Raid Devices : 2\n     Total Devices : 1\n       Persistence : Superblock is persistent\n\n       Update Time : Wed Oct 28 08:33:33 2026\n             State : active, degraded \n    Active Devices : 1\n   Working Devices : 1\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              Name : mayak-9200:mk8bc0e082ca  (local to host mayak-9200)\n              UUID : 0e4f55c9:1c1803dd:cba1b580:274ac945\n            Events : 21\n\n    Number   Major   Minor   RaidDevice State\n       -       0        0        0      removed\n       1       7        1        1      active sync   /dev/loop1\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.1,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nmdadm: stopped /dev/md/mk8bc0e082ca\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "07f23aaff7ca4bb29d6629db6aec733e",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.6,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nmdadm: array /dev/md/mk07f23aaff7 started.\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.09,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nmdadm: set /dev/loop1 faulty in /dev/md/mk07f23aaff7\nmdadm: hot removed /dev/loop1 from /dev/md/mk07f23aaff7\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "keep me\n/dev/md/mk07f23aaff7:\n           Version : 1.2\n     Creation Time : Wed Oct 28 08:33:34 2026\n        Raid Level : raid1\n        Array Size : 64512 (63.00 MiB 66.06 MB)\n     Used Dev Size : 64512 (63.00 MiB 66.06 MB)\n      Raid Devices : 2\n     Total Devices : 1\n       Persistence : Superblock is persistent\n\n       Update Time : Wed Oct 28 08:33:34 2026\n             State : active, degraded \n    Active Devices : 1\n   Working Devices : 1\n    Failed Devices : 0\n     Spare Devices : 0\n\nConsistency Policy : resync\n\n              Name : mayak-9200:mk07f23aaff7  (local to host mayak-9200)\n              UUID : 950bc19d:c4300083:4f2d954d:e5804f9f\n            Events : 22\n\n    Number   Major   Minor   RaidDevice State\n       0       7        0        0      active sync   /dev/loop0\n       -       0        0        1      removed\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.1,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nmdadm: stopped /dev/md/mk07f23aaff7\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "zfs",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "dc527c1d80cc49e696bff6c419776736",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/zfs/work/target/restored/note.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.08,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "note variant 0\nNAME                              USED  AVAIL     REFER  MOUNTPOINT\nmkdc527c1d80s                     149K  55.9M       24K  /var/lib/mayak-practice/zfs/work/source\nmkdc527c1d80s/notes              24.5K  55.9M     24.5K  /var/lib/mayak-practice/zfs/work/source/notes\nmkdc527c1d80s/notes@baseline        0B      -     24.5K  -\nmkdc527c1d80t                     148K  55.9M       24K  /var/lib/mayak-practice/zfs/work/target\nmkdc527c1d80t/restored           24.5K  55.9M     24.5K  /var/lib/mayak-practice/zfs/work/target/restored\nmkdc527c1d80t/restored@baseline     0B      -     24.5K  -\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.13,
+              "stdout": "\t  /var/lib/mayak-practice/zfs/source.img  ONLINE       0     0     0\n\t  /var/lib/mayak-practice/zfs/target.img  ONLINE       0     0     0\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "a9a58b44215d45009225b2c0e0a648f4",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.19,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 2,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ngrep: /var/lib/mayak-practice/zfs/work/target/restored/note.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "note variant 1\nNAME                              USED  AVAIL     REFER  MOUNTPOINT\nmka9a58b4421s                     150K  55.9M       24K  /var/lib/mayak-practice/zfs/work/source\nmka9a58b4421s/notes              24.5K  55.9M     24.5K  /var/lib/mayak-practice/zfs/work/source/notes\nmka9a58b4421s/notes@baseline        0B      -     24.5K  -\nmka9a58b4421t                     149K  55.9M       24K  /var/lib/mayak-practice/zfs/work/target\nmka9a58b4421t/restored           24.5K  55.9M     24.5K  /var/lib/mayak-practice/zfs/work/target/restored\nmka9a58b4421t/restored@baseline     0B      -     24.5K  -\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.13,
+              "stdout": "\t  /var/lib/mayak-practice/zfs/source.img  ONLINE       0     0     0\n\t  /var/lib/mayak-practice/zfs/target.img  ONLINE       0     0     0\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "container",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "4a3f1b37831345a3888ee7c88a41ee8d",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.42,
+              "stdout": "cd8476e8ed8f179697dbc0ea5db51931258236c48f68d9ee73e3fea58db602a4\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.06,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.58,
+              "stdout": "mk4a3f1b3783\n2f8575aa3c0e836e220164841df47b34a373e12556b9f5424c8750e5c39a4597\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.17,
+              "stdout": "note variant 0\n[{\"Type\":\"bind\",\"Source\":\"/var/lib/mayak-practice/container/work\",\"Destination\":\"/notes\",\"Mode\":\"\",\"RW\":false,\"Propagation\":\"rprivate\"}]\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.34,
+              "stdout": "mk4a3f1b3783\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "fb647fe63fb247f2abcfdb21aeea59d3",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.35,
+              "stdout": "98c2b77d46efb45bfa3c8e4ac96ca74a0a06cf841588fc7590c32c5338343bbe\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.06,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.62,
+              "stdout": "mkfb647fe63f\na4700ab8cff61c17989fd3f80ecfac56816f07eacb93bb26b72cebdf084a1c7f\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.17,
+              "stdout": "note variant 1\n[{\"Type\":\"bind\",\"Source\":\"/var/lib/mayak-practice/container/work\",\"Destination\":\"/notes\",\"Mode\":\"\",\"RW\":false,\"Propagation\":\"rprivate\"}]\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.34,
+              "stdout": "mkfb647fe63f\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "container-network",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "9fe04d0201474aa7952f06580ca25eb3",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.37,
+              "stdout": "d0b4c0c2429bf68aaf1523652ddf40d1c59025b517f6f94992442b431fde953d\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 3.34,
+              "stdout": "127.0.0.1:18080\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.59,
+              "stdout": "mk9fe04d0201\nccfd1540fd3366696fe2f18ba945adb6739d5c6feb2c7f0348da3844987e56bd\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "127.0.0.1:18080\nnote variant 0\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncurl: (56) Recv failure: Connection reset by peer\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.09,
+              "stdout": "mk9fe04d0201\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "mutation": {
+            "command": [
+              "docker",
+              "stop",
+              "mk9fe04d0201"
+            ],
+            "code": 0
+          },
+          "checkAfterChange": {
+            "action": "check",
+            "code": 1,
+            "seconds": 0.07,
+            "stdout": "FAIL\n",
+            "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nError: No public port '8080/tcp' published for mk9fe04d0201\n"
+          },
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "69ea9ad722e84d648ec4edfed6d0a11c",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.34,
+              "stdout": "c45b510e370fac41191f3a38d92b7d1e53d3169f7615c5999dd6401ee52046c6\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 3.35,
+              "stdout": "127.0.0.1:18081\nFAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\ncurl: (56) Recv failure: Connection reset by peer\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.61,
+              "stdout": "mk69ea9ad722\ne21c747fc09f020da6803d30f23fd9669c50fa75c2d64df4b7e2d1e2fecc2ffc\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.2,
+              "stdout": "127.0.0.1:18081\nnote variant 1\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncurl: (56) Recv failure: Connection reset by peer\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.1,
+              "stdout": "mk69ea9ad722\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "mutation": {
+            "command": [
+              "docker",
+              "stop",
+              "mk69ea9ad722"
+            ],
+            "code": 0
+          },
+          "checkAfterChange": {
+            "action": "check",
+            "code": 1,
+            "seconds": 0.07,
+            "stdout": "FAIL\n",
+            "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nError: No public port '8080/tcp' published for mk69ea9ad722\n"
+          },
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "kubernetes",
+      "status": "failed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "f9565f7d9230445483bcd08fa22f89b0",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            }
+          ]
+        }
+      ],
+      "error": "prepare expected success=True: {'action': 'prepare', 'code': 1, 'seconds': 0.04, 'stdout': '', 'stderr': '/etc/bash.bashrc: line 7: PS1: unbound variable\\n'}",
+      "cleanup": {
+        "action": "restore",
+        "code": 0,
+        "seconds": 0.14,
+        "stdout": "",
+        "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nNo kind clusters found.\n"
+      }
+    },
+    {
+      "lesson": "service-selector",
+      "status": "failed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "bc0d200176504edfa144a6e2751f6743",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            }
+          ]
+        }
+      ],
+      "error": "prepare expected success=True: {'action': 'prepare', 'code': 1, 'seconds': 0.04, 'stdout': '', 'stderr': '/etc/bash.bashrc: line 7: PS1: unbound variable\\n'}",
+      "cleanup": {
+        "action": "restore",
+        "code": 0,
+        "seconds": 0.07,
+        "stdout": "",
+        "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\nNo kind clusters found.\n"
+      }
+    },
+    {
+      "lesson": "cpu-numa",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "9795370cb30c4fbdb40cc5a60ef96d86",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Requires two guest-visible NUMA nodes. Physical topology is not certified.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncat: /var/lib/mayak-practice/cpu-numa/work/pid.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 1.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "python3 -c import time; a=bytearray(32*1024*1024); time.sleep(120) mayak-mk9795370cb3 \npid 8269's current affinity list: 0\n00400000 bind:0 file=/usr/bin/python3.11 mapped=31 mapmax=4 N0=31 kernelpagesize_kB=4\n0041f000 bind:0 file=/usr/bin/python3.11 mapped=415 mapmax=4 N0=411 N1=4 kernelpagesize_kB=4\n006cf000 bind:0 file=/usr/bin/python3.11 mapped=251 mapmax=4 N0=251 kernelpagesize_kB=4\n00941000 bind:0 file=/usr/bin/python3.11 anon=283 dirty=283 mapped=303 mapmax=4 active=20 N0=303 kernelpagesize_kB=4\n131ed000 bind:0 heap anon=115 dirty=115 active=0 N0=115 kernelpagesize_kB=4\n7ff893ddf000 bind:0 anon=8413 dirty=8413 active=0 N0=8413 kernelpagesize_kB=4\n7ff8960a2000 bind:0 file=/usr/lib/x86_64-linux-gnu/libc.so.6 mapped=38 mapmax=28 N0=38 kernelpagesize_kB=4\n7ff8960c8000 bind:0 file=/usr/lib/x86_64-linux-gnu/libc.so.6 mapped=278 mapmax=35 N0=278 kernelpagesize_kB=4\n7ff89621e000 bind:0 file=/usr/lib/x86_64-linux-gnu/libc.so.6 mapped=50 mapmax=35 N0=50 kernelpagesize_kB=4\n7ff896288000 bind:0 file=/usr/lib/x86_64-linux-gnu/libexpat.so.1.8.10 mapped=16 mapmax=5 N0=16 kernelpagesize_kB=4\n7ff8962b5000 bind:0 file=/usr/lib/x86_64-linux-gnu/libz.so.1.2.13 mapped=16 mapmax=7 N0=16 kernelpagesize_kB=4\n7ff8962d1000 bind:0 file=/usr/lib/x86_64-linux-gnu/libm.so.6 mapped=16 mapmax=17 N0=16 kernelpagesize_kB=4\n7ff8962e1000 bind:0 file=/usr/lib/x86_64-linux-gnu/libm.so.6 mapped=79 mapmax=16 N0=79 kernelpagesize_kB=4\n7ff8963ba000 bind:0 file=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 mapped=38 mapmax=29 N0=38 kernelpagesize_kB=4\n7ff8963e0000 bind:0 file=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 mapped=10 mapmax=27 N0=10 kernelpagesize_kB=4\n0-1\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "6496b575440c40d5bebd676c1b6e1c6e",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "Requires two guest-visible NUMA nodes. Physical topology is not certified.\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 1,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\ncat: /var/lib/mayak-practice/cpu-numa/work/pid.txt: No such file or directory\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 1.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "python3 -c import time; a=bytearray(32*1024*1024); time.sleep(120) mayak-mk6496b57544 \npid 8310's current affinity list: 0\n00400000 bind:0 file=/usr/bin/python3.11 mapped=31 mapmax=4 N0=31 kernelpagesize_kB=4\n0041f000 bind:0 file=/usr/bin/python3.11 mapped=415 mapmax=4 N0=411 N1=4 kernelpagesize_kB=4\n006cf000 bind:0 file=/usr/bin/python3.11 mapped=251 mapmax=4 N0=251 kernelpagesize_kB=4\n00941000 bind:0 file=/usr/bin/python3.11 anon=283 dirty=283 mapped=303 mapmax=4 active=20 N0=303 kernelpagesize_kB=4\n0c9af000 bind:0 heap anon=115 dirty=115 active=0 N0=115 kernelpagesize_kB=4\n7fc6ff04e000 bind:0 anon=8413 dirty=8413 active=0 N0=8413 kernelpagesize_kB=4\n7fc701311000 bind:0 file=/usr/lib/x86_64-linux-gnu/libc.so.6 mapped=38 mapmax=28 N0=38 kernelpagesize_kB=4\n7fc701337000 bind:0 file=/usr/lib/x86_64-linux-gnu/libc.so.6 mapped=262 mapmax=35 N0=262 kernelpagesize_kB=4\n7fc70148d000 bind:0 file=/usr/lib/x86_64-linux-gnu/libc.so.6 mapped=48 mapmax=35 N0=48 kernelpagesize_kB=4\n7fc7014f7000 bind:0 file=/usr/lib/x86_64-linux-gnu/libexpat.so.1.8.10 mapped=16 mapmax=5 N0=16 kernelpagesize_kB=4\n7fc701524000 bind:0 file=/usr/lib/x86_64-linux-gnu/libz.so.1.2.13 mapped=16 mapmax=7 N0=16 kernelpagesize_kB=4\n7fc701540000 bind:0 file=/usr/lib/x86_64-linux-gnu/libm.so.6 mapped=16 mapmax=17 N0=16 kernelpagesize_kB=4\n7fc701550000 bind:0 file=/usr/lib/x86_64-linux-gnu/libm.so.6 mapped=80 mapmax=16 N0=79 N1=1 kernelpagesize_kB=4\n7fc701629000 bind:0 file=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 mapped=38 mapmax=29 N0=38 kernelpagesize_kB=4\n7fc70164f000 bind:0 file=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 mapped=10 mapmax=27 N0=10 kernelpagesize_kB=4\n0-1\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "network-storage",
+      "status": "passed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "d3e7b0ae1b844dcbbecdee859d6beb05",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 32,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.4,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "nfs4\nclient note\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.09,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        },
+        {
+          "variant": 1,
+          "attempt": "3bc3e1a08ddb46089606e36cda970a42",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 0,
+              "seconds": 0.06,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 32,
+              "seconds": 0.04,
+              "stdout": "FAIL\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "solve",
+              "code": 0,
+              "seconds": 0.09,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "check",
+              "code": 0,
+              "seconds": 0.04,
+              "stdout": "nfs4\nclient note\nPASS\n",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.07,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            },
+            {
+              "action": "restore",
+              "code": 0,
+              "seconds": 0.03,
+              "stdout": "Already restored\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "lesson": "multipath",
+      "status": "failed",
+      "variants": [
+        {
+          "variant": 0,
+          "attempt": "b4e266a381f342cba1f6b901028caf3d",
+          "phases": [
+            {
+              "action": "prepare",
+              "code": 1,
+              "seconds": 0.05,
+              "stdout": "",
+              "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+            }
+          ]
+        }
+      ],
+      "error": "prepare expected success=True: {'action': 'prepare', 'code': 1, 'seconds': 0.05, 'stdout': '', 'stderr': '/etc/bash.bashrc: line 7: PS1: unbound variable\\n'}",
+      "cleanup": {
+        "action": "restore",
+        "code": 0,
+        "seconds": 0.04,
+        "stdout": "",
+        "stderr": "/etc/bash.bashrc: line 7: PS1: unbound variable\n"
+      }
+    }
+  ]
+}

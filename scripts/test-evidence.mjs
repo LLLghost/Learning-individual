@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdtemp, mkdir, cp, writeFile, appendFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, cp, writeFile, appendFile, readFile, rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -15,8 +15,9 @@ test('evidence registry distinguishes normalized text from exact archive bytes',
     await writeFile(join(folder, 'note.txt'), 'line\r\n');
     const archive = Buffer.from([255, 13, 10, 0]);
     await writeFile(join(folder, 'sample.tgz'), archive);
-    await registry({ 'note.txt': digest('line\n'), 'sample.tgz': digest(archive) });
-    assert.equal(await verifyEvidence(folder), 2);
+    await writeFile(join(folder, 'roundtrip.tar'), archive);
+    await registry({ 'note.txt': digest('line\n'), 'sample.tgz': digest(archive), 'roundtrip.tar': digest(archive) });
+    assert.equal(await verifyEvidence(folder), 3);
     await appendFile(join(folder, 'sample.tgz'), 'changed');
     await assert.rejects(verifyEvidence(folder), /Evidence hash mismatch: sample.tgz/);
     await registry({});
@@ -31,8 +32,8 @@ test('release verification rejects changed evidence even when report checks stil
   try {
     for (const directory of ['quality', 'content/course', 'build/assets']) await mkdir(join(folder, directory), { recursive: true });
     await writeFile(join(folder, 'package.json'), '{"type":"module"}');
-    for (const file of ['quality/live-acceptance.json', 'content/course/assessments.json', 'build/assets/checker.js']) await cp(file, join(folder, file));
-    const evidence = 'quality/live-labs/2026-10-27';
+    for (const file of ['quality/live-acceptance.json', 'content/course/assessments.json', 'build/assets/checker.js', 'build/assets/course-data.json']) await cp(file, join(folder, file));
+    const evidence = JSON.parse(await readFile('quality/live-acceptance.json','utf8')).evidenceDirectory;
     await cp(evidence, join(folder, evidence), { recursive: true });
     const run = () => spawnSync(process.execPath, [resolve('scripts/verify-live-reports.mjs')], { cwd: folder, encoding: 'utf8' });
     const intact = run();

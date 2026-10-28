@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { verifyEvidence } from './verify-evidence.mjs';
+import { verifyPracticeEvidence } from './verify-practice-evidence.mjs';
 
 const explicitFolder = process.argv[2];
 const live = JSON.parse(await readFile('quality/live-acceptance.json', 'utf8'));
@@ -10,6 +11,7 @@ if (!explicitFolder && (live.status !== 'accepted' || !live.evidenceDirectory)) 
 }
 const folder = resolve(explicitFolder ?? live.evidenceDirectory);
 if (!explicitFolder) console.log(`Verified ${await verifyEvidence(folder)} evidence hashes (LF text / raw archives).`);
+if (!explicitFolder && live.integratedLaboratory?.accepted) await verifyPracticeEvidence(folder);
 const bank = JSON.parse(await readFile('content/course/assessments.json', 'utf8'));
 const { labValid, labRows } = await import(pathToFileURL(resolve('build/assets/checker.js')).href);
 const labs = bank.labs.filter(lab => lab.kind !== 'dataset');

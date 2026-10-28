@@ -1,0 +1,17 @@
+[Unit]
+Description=Mayak laboratory inventory data service
+Wants=network-online.target
+After=network-online.target mayak-firewall.service
+Requires=mayak-firewall.service
+[Service]
+User=mayak-service
+Group=mayak-service
+EnvironmentFile=/etc/mayak-infrastructure/app.env
+ExecStart=/usr/bin/python3 /usr/local/lib/mayak-inventory.py
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

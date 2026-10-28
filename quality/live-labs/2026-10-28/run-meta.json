@@ -1,0 +1,15 @@
+{
+  "sourceSha256": "3487879b9e1107755c6657c8d4ffb4936405a81069c320081473db50c30e3ae6",
+  "collectorSha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "checkerSha256": "59129c79a2e2dfd98f66a9d3f8825a144a8ec0ded38dde3c9b24d37586517cf6",
+  "practiceSha256": "130a2c1f97456044af5b979367469bba26084272b42e0b1e8792830ddde1c237",
+  "practiceRunnerSha256": "64c7ba5de1fe49c8a811511072c75a2b98d8bbb4db25f94278ad1b20099aa844",
+  "commit": "be38fc1fd8c22c9884e2f5cca094b97cb935a3c0",
+  "date": "2026-10-28",
+  "guestVM": 9200,
+  "clientVM": 9201,
+  "storageVM": 9202,
+  "sourceVM": 9100,
+  "snapshot": "mayak-clean-dependencies",
+  "coldBootVerified": true
+}

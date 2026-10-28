@@ -1,0 +1,7 @@
+test_operator_startup_file_does_not_run_in_a_recipe (__main__.ShellBoundary.test_operator_startup_file_does_not_run_in_a_recipe) ... ok
+test_ssh_session_does_not_source_interactive_profiles (__main__.ShellBoundary.test_ssh_session_does_not_source_interactive_profiles) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.007s
+
+OK

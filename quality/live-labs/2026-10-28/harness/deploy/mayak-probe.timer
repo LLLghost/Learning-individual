@@ -1,0 +1,8 @@
+[Unit]
+Description=Observe the laboratory service from its client
+[Timer]
+OnBootSec=5s
+OnUnitActiveSec=15s
+Unit=mayak-probe.service
+[Install]
+WantedBy=timers.target

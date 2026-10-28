@@ -1,0 +1,57 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L16B",
+  "module": "U16",
+  "kind": "collect",
+  "seed": "f97541c4",
+  "variant": 0,
+  "collected_utc": "2026-10-28T09:42:58.235183+00:00",
+  "facts": {
+    "health": "ONLINE",
+    "scrub_finished": true,
+    "scrub_is_new": true,
+    "errors_zero": true,
+    "snapshot_present": true,
+    "received_present": true,
+    "pools_differ": true,
+    "restored_readable": true,
+    "restored_pool": "leg0t",
+    "restored_on_target": true,
+    "source_sha256": "05c12fdf88f116a75f87662563beba2e279ffbba8236c1853cc9bd8e0b0f48ef",
+    "restored_sha256": "05c12fdf88f116a75f87662563beba2e279ffbba8236c1853cc9bd8e0b0f48ef"
+  },
+  "claim": {
+    "snapshot": "leg0s/app@trial",
+    "received": "leg0t/app@trial",
+    "restored_file": "/home/course/legacy-acceptance-20261028-final/L16B/0/leg0t/app/control.bin"
+  },
+  "evidence": [
+    {
+      "cmd": "zpool get -H -o value health leg0s",
+      "rc": 0,
+      "sha256": "39978aec2486a58441cc2dd95cc4fbeffdcbfc7e2ba3e3a752f0b7c9ed9ad116",
+      "excerpt": "ONLINE"
+    },
+    {
+      "cmd": "zpool status leg0s",
+      "rc": 0,
+      "sha256": "0ce94260cd38e06dd2663bf1c3b55f726bfcd1d8bc11d90cca8d76392bf109cf",
+      "excerpt": "  scan: scrub repaired 0B in 00:00:00 with 0 errors on Wed Oct 28 09:42:58 2026 / errors: No known data errors"
+    },
+    {
+      "cmd": "zfs list -H -t snapshot -o name",
+      "rc": 0,
+      "sha256": "eae2ea57e5169dc6336358029354ef7b8ee66c3e84d0b2a11847f4565f81502f",
+      "excerpt": "leg0s/app@trial / leg0t/app@trial"
+    },
+    {
+      "cmd": "zfs list -H -o name,mountpoint",
+      "rc": 0,
+      "sha256": "9272a3820513e718e9dd173edbd043e5ddea8ba44881883dda186c97a3523286",
+      "excerpt": "leg0s\t/home/course/legacy-acceptance-20261028-final/L16B/0/leg0s / leg0s/app\t/home/course/legacy-acceptance-20261028-final/L16B/0/leg0s/app / leg0t\t/home/course/legacy-acceptance-20261028-final/L16B/0/leg0t"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

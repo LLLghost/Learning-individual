@@ -1,0 +1,286 @@
+{
+  "runnerSha256": "d240d7758f553657f0a8719ad709329de5bcafeb2116f9e2f977ae80036b5e64",
+  "sourceVM": 9101,
+  "results": [
+    {
+      "lesson": "vm-backup",
+      "variant": 0,
+      "attempt": "b53ff7e768154d3bb63198c35844699e",
+      "phases": [
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "prepare",
+            "--source-vmid",
+            "9101",
+            "--storage",
+            "local-lvm",
+            "--attempt",
+            "b53ff7e768154d3bb63198c35844699e",
+            "--variant",
+            "0"
+          ],
+          "code": 0,
+          "seconds": 40.69,
+          "stdout": "{\n  \"attempt\": \"b53ff7e768154d3bb63198c35844699e\",\n  \"variant\": 0,\n  \"started\": 1793177572.473821,\n  \"active\": true,\n  \"source\": 9101,\n  \"clone\": 100,\n  \"restored\": 101,\n  \"token\": \"mayak-backup-b53ff7e768154d3bb63198c35844699e\",\n  \"storage\": \"local-lvm\",\n  \"note\": \"note-b53ff7e768154d3bb63198c35844699e\",\n  \"backupDir\": \"/var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e\"\n}\nLearner steps on this host:\nvzdump 100 --mode stop --compress zstd --dumpdir /var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e\nqmrestore <exact archive in /var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e> 101 --storage local-lvm\nqm set 101 --description mayak-backup-b53ff7e768154d3bb63198c35844699e\nqm start 101\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "check"
+          ],
+          "code": 2,
+          "seconds": 0.57,
+          "stdout": "",
+          "stderr": "backup-practice: Restored guest must exist and have no network adapters\n"
+        },
+        {
+          "command": [
+            "vzdump",
+            "100",
+            "--mode",
+            "stop",
+            "--compress",
+            "zstd",
+            "--dumpdir",
+            "/var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e"
+          ],
+          "code": 0,
+          "seconds": 7.39,
+          "stdout": "INFO: starting new backup job: vzdump 100 --dumpdir /var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e --mode stop --compress zstd\nINFO: Starting Backup of VM 100 (qemu)\nINFO: Backup started at 2026-10-28 11:53:32\nINFO: status = stopped\nINFO: backup mode: stop\nINFO: ionice priority: 7\nINFO: VM Name: Copy-of-VM-mayak-backup-source\nINFO: include disk 'scsi0' 'local-lvm:vm-100-disk-1' 3G\nINFO: include disk 'efidisk0' 'local-lvm:vm-100-disk-0' 4M\nINFO: creating vzdump archive '/var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e/vzdump-qemu-100-2026_10_28-11_53_32.vma.zst'\nINFO: starting kvm to execute backup task\ngenerating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nINFO: started backup task 'f3b480c0-a919-47ae-bfb8-a95f74d94356'\nINFO:  40% (1.2 GiB of 3.0 GiB) in 3s, read: 416.9 MiB/s, write: 254.4 MiB/s\nINFO: 100% (3.0 GiB of 3.0 GiB) in 6s, read: 607.3 MiB/s, write: 204.8 MiB/s\nINFO: backup is sparse: 1.66 GiB (55%) total zero data\nINFO: transferred 3.00 GiB in 6 seconds (512.1 MiB/s)\nINFO: stopping kvm after backup task\nINFO: archive file size: 399MB\nINFO: Finished Backup of VM 100 (00:00:07)\nINFO: Backup finished at 2026-10-28 11:53:39\nINFO: Backup job finished successfully\nINFO: notified via target `mail-to-root`\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "qmrestore",
+            "/var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e/vzdump-qemu-100-2026_10_28-11_53_32.vma.zst",
+            "101",
+            "--storage",
+            "local-lvm"
+          ],
+          "code": 0,
+          "seconds": 13.55,
+          "stdout": "restore vma archive: zstd -q -d -c /var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e/vzdump-qemu-100-2026_10_28-11_53_32.vma.zst | vma extract -v -r /var/tmp/vzdumptmp248781.fifo - /var/tmp/vzdumptmp248781\nCFG: size: 747 name: qemu-server.conf\nDEV: dev_id=1 size: 540672 devname: drive-efidisk0\nDEV: dev_id=2 size: 3221225472 devname: drive-scsi0\nCTIME: Wed Oct 28 11:53:33 2026\n  Rounding up size to full physical extent 4.00 MiB\n  Logical volume \"vm-101-disk-0\" created.\n  Logical volume pve/vm-101-disk-0 changed.\nnew volume ID is 'local-lvm:vm-101-disk-0'\n  Logical volume \"vm-101-cloudinit\" created.\n  Logical volume pve/vm-101-cloudinit changed.\nnew volume ID is 'local-lvm:vm-101-cloudinit'\n  Logical volume \"vm-101-disk-1\" created.\n  Logical volume pve/vm-101-disk-1 changed.\nnew volume ID is 'local-lvm:vm-101-disk-1'\nmap 'drive-efidisk0' to '/dev/pve/vm-101-disk-0' (write zeros = 0)\nmap 'drive-scsi0' to '/dev/pve/vm-101-disk-1' (write zeros = 0)\nprogress 1% (read 32243712 bytes, duration 0 sec)\nprogress 2% (read 64487424 bytes, duration 0 sec)\nprogress 3% (read 96665600 bytes, duration 0 sec)\nprogress 4% (read 128909312 bytes, duration 0 sec)\nprogress 5% (read 161087488 bytes, duration 0 sec)\nprogress 6% (read 193331200 bytes, duration 0 sec)\nprogress 7% (read 225574912 bytes, duration 0 sec)\nprogress 8% (read 257753088 bytes, duration 0 sec)\nprogress 9% (read 289996800 bytes, duration 0 sec)\nprogress 10% (read 322174976 bytes, duration 0 sec)\nprogress 11% (read 354418688 bytes, duration 1 sec)\nprogress 12% (read 386662400 bytes, duration 1 sec)\nprogress 13% (read 418840576 bytes, duration 1 sec)\nprogress 14% (read 451084288 bytes, duration 1 sec)\nprogress 15% (read 483262464 bytes, duration 1 sec)\nprogress 16% (read 515506176 bytes, duration 1 sec)\nprogress 17% (read 547749888 bytes, duration 1 sec)\nprogress 18% (read 579928064 bytes, duration 1 sec)\nprogress 19% (read 612171776 bytes, duration 1 sec)\nprogress 20% (read 644349952 bytes, duration 1 sec)\nprogress 21% (read 676593664 bytes, duration 1 sec)\nprogress 22% (read 708837376 bytes, duration 1 sec)\nprogress 23% (read 741015552 bytes, duration 1 sec)\nprogress 24% (read 773259264 bytes, duration 1 sec)\nprogress 25% (read 805437440 bytes, duration 1 sec)\nprogress 26% (read 837681152 bytes, duration 1 sec)\nprogress 27% (read 869924864 bytes, duration 1 sec)\nprogress 28% (read 902103040 bytes, duration 1 sec)\nprogress 29% (read 934346752 bytes, duration 1 sec)\nprogress 30% (read 966524928 bytes, duration 1 sec)\nprogress 31% (read 998768640 bytes, duration 1 sec)\nprogress 32% (read 1031012352 bytes, duration 1 sec)\nprogress 33% (read 1063190528 bytes, duration 1 sec)\nprogress 34% (read 1095434240 bytes, duration 1 sec)\nprogress 35% (read 1127612416 bytes, duration 1 sec)\nprogress 36% (read 1159856128 bytes, duration 2 sec)\nprogress 37% (read 1192099840 bytes, duration 2 sec)\nprogress 38% (read 1224278016 bytes, duration 2 sec)\nprogress 39% (read 1256521728 bytes, duration 2 sec)\nprogress 40% (read 1288699904 bytes, duration 2 sec)\nprogress 41% (read 1320943616 bytes, duration 2 sec)\nprogress 42% (read 1353187328 bytes, duration 2 sec)\nprogress 43% (read 1385365504 bytes, duration 3 sec)\nprogress 44% (read 1417609216 bytes, duration 3 sec)\nprogress 45% (read 1449787392 bytes, duration 3 sec)\nprogress 46% (read 1482031104 bytes, duration 3 sec)\nprogress 47% (read 1514274816 bytes, duration 3 sec)\nprogress 48% (read 1546452992 bytes, duration 3 sec)\nprogress 49% (read 1578696704 bytes, duration 3 sec)\nprogress 50% (read 1610874880 bytes, duration 4 sec)\nprogress 51% (read 1643118592 bytes, duration 4 sec)\nprogress 52% (read 1675362304 bytes, duration 4 sec)\nprogress 53% (read 1707540480 bytes, duration 4 sec)\nprogress 54% (read 1739784192 bytes, duration 4 sec)\nprogress 55% (read 1771962368 bytes, duration 4 sec)\nprogress 56% (read 1804206080 bytes, duration 4 sec)\nprogress 57% (read 1836449792 bytes, duration 4 sec)\nprogress 58% (read 1868627968 bytes, duration 7 sec)\nprogress 59% (read 1900871680 bytes, duration 7 sec)\nprogress 60% (read 1933049856 bytes, duration 7 sec)\nprogress 61% (read 1965293568 bytes, duration 7 sec)\nprogress 62% (read 1997537280 bytes, duration 7 sec)\nprogress 63% (read 2029715456 bytes, duration 7 sec)\nprogress 64% (read 2061959168 bytes, duration 7 sec)\nprogress 65% (read 2094137344 bytes, duration 7 sec)\nprogress 66% (read 2126381056 bytes, duration 7 sec)\nprogress 67% (read 2158624768 bytes, duration 7 sec)\nprogress 68% (read 2190802944 bytes, duration 7 sec)\nprogress 69% (read 2223046656 bytes, duration 7 sec)\nprogress 70% (read 2255224832 bytes, duration 7 sec)\nprogress 71% (read 2287468544 bytes, duration 7 sec)\nprogress 72% (read 2319712256 bytes, duration 7 sec)\nprogress 73% (read 2351890432 bytes, duration 7 sec)\nprogress 74% (read 2384134144 bytes, duration 7 sec)\nprogress 75% (read 2416312320 bytes, duration 7 sec)\nprogress 76% (read 2448556032 bytes, duration 7 sec)\nprogress 77% (read 2480799744 bytes, duration 7 sec)\nprogress 78% (read 2512977920 bytes, duration 7 sec)\nprogress 79% (read 2545221632 bytes, duration 7 sec)\nprogress 80% (read 2577399808 bytes, duration 7 sec)\nprogress 81% (read 2609643520 bytes, duration 7 sec)\nprogress 82% (read 2641887232 bytes, duration 7 sec)\nprogress 83% (read 2674065408 bytes, duration 7 sec)\nprogress 84% (read 2706309120 bytes, duration 7 sec)\nprogress 85% (read 2738487296 bytes, duration 7 sec)\nprogress 86% (read 2770731008 bytes, duration 7 sec)\nprogress 87% (read 2802974720 bytes, duration 7 sec)\nprogress 88% (read 2835152896 bytes, duration 7 sec)\nprogress 89% (read 2867396608 bytes, duration 7 sec)\nprogress 90% (read 2899574784 bytes, duration 7 sec)\nprogress 91% (read 2931818496 bytes, duration 7 sec)\nprogress 92% (read 2964062208 bytes, duration 7 sec)\nprogress 93% (read 2996240384 bytes, duration 7 sec)\nprogress 94% (read 3028484096 bytes, duration 7 sec)\nprogress 95% (read 3060662272 bytes, duration 7 sec)\nprogress 96% (read 3092905984 bytes, duration 7 sec)\nprogress 97% (read 3125149696 bytes, duration 7 sec)\nprogress 98% (read 3157327872 bytes, duration 7 sec)\nprogress 99% (read 3189571584 bytes, duration 7 sec)\nprogress 100% (read 3221749760 bytes, duration 7 sec)\ntotal bytes read 3221815296, sparse bytes 1777319936 (55.2%)\nspace reduction due to 4K zero blocks 7.05%\nrescan volumes...\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "qm",
+            "set",
+            "101",
+            "--description",
+            "mayak-backup-b53ff7e768154d3bb63198c35844699e"
+          ],
+          "code": 0,
+          "seconds": 0.55,
+          "stdout": "update VM 101: -description mayak-backup-b53ff7e768154d3bb63198c35844699e\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "qm",
+            "start",
+            "101"
+          ],
+          "code": 0,
+          "seconds": 1.01,
+          "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "check",
+            "--output",
+            "/root/mayak-acceptance-20261028/vm-backup-0.json"
+          ],
+          "code": 0,
+          "seconds": 11.67,
+          "stdout": "PASS /root/mayak-acceptance-20261028/vm-backup-0.json\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "restore"
+          ],
+          "code": 0,
+          "seconds": 4.9,
+          "stdout": "Owned guests removed; source and backup archives retained.\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "restore"
+          ],
+          "code": 0,
+          "seconds": 0.03,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "state": {
+        "attempt": "b53ff7e768154d3bb63198c35844699e",
+        "variant": 0,
+        "started": 1793177572.473821,
+        "active": true,
+        "source": 9101,
+        "clone": 100,
+        "restored": 101,
+        "token": "mayak-backup-b53ff7e768154d3bb63198c35844699e",
+        "storage": "local-lvm",
+        "note": "note-b53ff7e768154d3bb63198c35844699e",
+        "backupDir": "/var/lib/mayak-backup-practice/b53ff7e768154d3bb63198c35844699e"
+      },
+      "archiveSha256": "8104ab1771fa63617d088922aa360cba6de09325c4d09953deb40b392ae5e13e",
+      "status": "passed"
+    },
+    {
+      "lesson": "vm-backup",
+      "variant": 1,
+      "attempt": "647c49b86d2a45bb95fe2a3daabce0b3",
+      "phases": [
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "prepare",
+            "--source-vmid",
+            "9101",
+            "--storage",
+            "local-lvm",
+            "--attempt",
+            "647c49b86d2a45bb95fe2a3daabce0b3",
+            "--variant",
+            "1"
+          ],
+          "code": 0,
+          "seconds": 40.03,
+          "stdout": "{\n  \"attempt\": \"647c49b86d2a45bb95fe2a3daabce0b3\",\n  \"variant\": 1,\n  \"started\": 1793177652.9599342,\n  \"active\": true,\n  \"source\": 9101,\n  \"clone\": 100,\n  \"restored\": 101,\n  \"token\": \"mayak-backup-647c49b86d2a45bb95fe2a3daabce0b3\",\n  \"storage\": \"local-lvm\",\n  \"note\": \"note-647c49b86d2a45bb95fe2a3daabce0b3\",\n  \"backupDir\": \"/var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3\"\n}\nLearner steps on this host:\nvzdump 100 --mode stop --compress zstd --dumpdir /var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3\nqmrestore <exact archive in /var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3> 101 --storage local-lvm\nqm set 101 --description mayak-backup-647c49b86d2a45bb95fe2a3daabce0b3\nqm start 101\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "check"
+          ],
+          "code": 2,
+          "seconds": 0.58,
+          "stdout": "",
+          "stderr": "backup-practice: Restored guest must exist and have no network adapters\n"
+        },
+        {
+          "command": [
+            "vzdump",
+            "100",
+            "--mode",
+            "stop",
+            "--compress",
+            "zstd",
+            "--dumpdir",
+            "/var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3"
+          ],
+          "code": 0,
+          "seconds": 7.46,
+          "stdout": "INFO: starting new backup job: vzdump 100 --compress zstd --dumpdir /var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3 --mode stop\nINFO: Starting Backup of VM 100 (qemu)\nINFO: Backup started at 2026-10-28 11:54:52\nINFO: status = stopped\nINFO: backup mode: stop\nINFO: ionice priority: 7\nINFO: VM Name: Copy-of-VM-mayak-backup-source\nINFO: include disk 'scsi0' 'local-lvm:vm-100-disk-1' 3G\nINFO: include disk 'efidisk0' 'local-lvm:vm-100-disk-0' 4M\nINFO: creating vzdump archive '/var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3/vzdump-qemu-100-2026_10_28-11_54_52.vma.zst'\nINFO: starting kvm to execute backup task\ngenerating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nINFO: started backup task '48cc19d9-dcc0-464f-8916-7004b4fcadc9'\nINFO:  40% (1.2 GiB of 3.0 GiB) in 3s, read: 416.9 MiB/s, write: 254.3 MiB/s\nINFO: 100% (3.0 GiB of 3.0 GiB) in 6s, read: 607.3 MiB/s, write: 204.8 MiB/s\nINFO: backup is sparse: 1.66 GiB (55%) total zero data\nINFO: transferred 3.00 GiB in 6 seconds (512.1 MiB/s)\nINFO: stopping kvm after backup task\nINFO: archive file size: 402MB\nINFO: Finished Backup of VM 100 (00:00:07)\nINFO: Backup finished at 2026-10-28 11:54:59\nINFO: Backup job finished successfully\nINFO: notified via target `mail-to-root`\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "qmrestore",
+            "/var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3/vzdump-qemu-100-2026_10_28-11_54_52.vma.zst",
+            "101",
+            "--storage",
+            "local-lvm"
+          ],
+          "code": 0,
+          "seconds": 13.57,
+          "stdout": "restore vma archive: zstd -q -d -c /var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3/vzdump-qemu-100-2026_10_28-11_54_52.vma.zst | vma extract -v -r /var/tmp/vzdumptmp249375.fifo - /var/tmp/vzdumptmp249375\nCFG: size: 747 name: qemu-server.conf\nDEV: dev_id=1 size: 540672 devname: drive-efidisk0\nDEV: dev_id=2 size: 3221225472 devname: drive-scsi0\nCTIME: Wed Oct 28 11:54:53 2026\n  Rounding up size to full physical extent 4.00 MiB\n  Logical volume \"vm-101-disk-0\" created.\n  Logical volume pve/vm-101-disk-0 changed.\nnew volume ID is 'local-lvm:vm-101-disk-0'\n  Logical volume \"vm-101-cloudinit\" created.\n  Logical volume pve/vm-101-cloudinit changed.\nnew volume ID is 'local-lvm:vm-101-cloudinit'\n  Logical volume \"vm-101-disk-1\" created.\n  Logical volume pve/vm-101-disk-1 changed.\nnew volume ID is 'local-lvm:vm-101-disk-1'\nmap 'drive-efidisk0' to '/dev/pve/vm-101-disk-0' (write zeros = 0)\nmap 'drive-scsi0' to '/dev/pve/vm-101-disk-1' (write zeros = 0)\nprogress 1% (read 32243712 bytes, duration 0 sec)\nprogress 2% (read 64487424 bytes, duration 0 sec)\nprogress 3% (read 96665600 bytes, duration 0 sec)\nprogress 4% (read 128909312 bytes, duration 0 sec)\nprogress 5% (read 161087488 bytes, duration 0 sec)\nprogress 6% (read 193331200 bytes, duration 0 sec)\nprogress 7% (read 225574912 bytes, duration 0 sec)\nprogress 8% (read 257753088 bytes, duration 0 sec)\nprogress 9% (read 289996800 bytes, duration 0 sec)\nprogress 10% (read 322174976 bytes, duration 0 sec)\nprogress 11% (read 354418688 bytes, duration 0 sec)\nprogress 12% (read 386662400 bytes, duration 0 sec)\nprogress 13% (read 418840576 bytes, duration 0 sec)\nprogress 14% (read 451084288 bytes, duration 0 sec)\nprogress 15% (read 483262464 bytes, duration 0 sec)\nprogress 16% (read 515506176 bytes, duration 0 sec)\nprogress 17% (read 547749888 bytes, duration 0 sec)\nprogress 18% (read 579928064 bytes, duration 0 sec)\nprogress 19% (read 612171776 bytes, duration 0 sec)\nprogress 20% (read 644349952 bytes, duration 0 sec)\nprogress 21% (read 676593664 bytes, duration 0 sec)\nprogress 22% (read 708837376 bytes, duration 0 sec)\nprogress 23% (read 741015552 bytes, duration 0 sec)\nprogress 24% (read 773259264 bytes, duration 0 sec)\nprogress 25% (read 805437440 bytes, duration 0 sec)\nprogress 26% (read 837681152 bytes, duration 0 sec)\nprogress 27% (read 869924864 bytes, duration 0 sec)\nprogress 28% (read 902103040 bytes, duration 0 sec)\nprogress 29% (read 934346752 bytes, duration 1 sec)\nprogress 30% (read 966524928 bytes, duration 1 sec)\nprogress 31% (read 998768640 bytes, duration 1 sec)\nprogress 32% (read 1031012352 bytes, duration 1 sec)\nprogress 33% (read 1063190528 bytes, duration 1 sec)\nprogress 34% (read 1095434240 bytes, duration 1 sec)\nprogress 35% (read 1127612416 bytes, duration 1 sec)\nprogress 36% (read 1159856128 bytes, duration 2 sec)\nprogress 37% (read 1192099840 bytes, duration 2 sec)\nprogress 38% (read 1224278016 bytes, duration 2 sec)\nprogress 39% (read 1256521728 bytes, duration 2 sec)\nprogress 40% (read 1288699904 bytes, duration 2 sec)\nprogress 41% (read 1320943616 bytes, duration 2 sec)\nprogress 42% (read 1353187328 bytes, duration 2 sec)\nprogress 43% (read 1385365504 bytes, duration 2 sec)\nprogress 44% (read 1417609216 bytes, duration 2 sec)\nprogress 45% (read 1449787392 bytes, duration 2 sec)\nprogress 46% (read 1482031104 bytes, duration 2 sec)\nprogress 47% (read 1514274816 bytes, duration 2 sec)\nprogress 48% (read 1546452992 bytes, duration 3 sec)\nprogress 49% (read 1578696704 bytes, duration 3 sec)\nprogress 50% (read 1610874880 bytes, duration 3 sec)\nprogress 51% (read 1643118592 bytes, duration 3 sec)\nprogress 52% (read 1675362304 bytes, duration 3 sec)\nprogress 53% (read 1707540480 bytes, duration 3 sec)\nprogress 54% (read 1739784192 bytes, duration 3 sec)\nprogress 55% (read 1771962368 bytes, duration 4 sec)\nprogress 56% (read 1804206080 bytes, duration 4 sec)\nprogress 57% (read 1836449792 bytes, duration 4 sec)\nprogress 58% (read 1868627968 bytes, duration 4 sec)\nprogress 59% (read 1900871680 bytes, duration 4 sec)\nprogress 60% (read 1933049856 bytes, duration 4 sec)\nprogress 61% (read 1965293568 bytes, duration 4 sec)\nprogress 62% (read 1997537280 bytes, duration 5 sec)\nprogress 63% (read 2029715456 bytes, duration 5 sec)\nprogress 64% (read 2061959168 bytes, duration 5 sec)\nprogress 65% (read 2094137344 bytes, duration 5 sec)\nprogress 66% (read 2126381056 bytes, duration 5 sec)\nprogress 67% (read 2158624768 bytes, duration 5 sec)\nprogress 68% (read 2190802944 bytes, duration 5 sec)\nprogress 69% (read 2223046656 bytes, duration 5 sec)\nprogress 70% (read 2255224832 bytes, duration 5 sec)\nprogress 71% (read 2287468544 bytes, duration 5 sec)\nprogress 72% (read 2319712256 bytes, duration 5 sec)\nprogress 73% (read 2351890432 bytes, duration 5 sec)\nprogress 74% (read 2384134144 bytes, duration 5 sec)\nprogress 75% (read 2416312320 bytes, duration 5 sec)\nprogress 76% (read 2448556032 bytes, duration 5 sec)\nprogress 77% (read 2480799744 bytes, duration 5 sec)\nprogress 78% (read 2512977920 bytes, duration 5 sec)\nprogress 79% (read 2545221632 bytes, duration 5 sec)\nprogress 80% (read 2577399808 bytes, duration 5 sec)\nprogress 81% (read 2609643520 bytes, duration 5 sec)\nprogress 82% (read 2641887232 bytes, duration 5 sec)\nprogress 83% (read 2674065408 bytes, duration 5 sec)\nprogress 84% (read 2706309120 bytes, duration 5 sec)\nprogress 85% (read 2738487296 bytes, duration 5 sec)\nprogress 86% (read 2770731008 bytes, duration 5 sec)\nprogress 87% (read 2802974720 bytes, duration 5 sec)\nprogress 88% (read 2835152896 bytes, duration 5 sec)\nprogress 89% (read 2867396608 bytes, duration 5 sec)\nprogress 90% (read 2899574784 bytes, duration 5 sec)\nprogress 91% (read 2931818496 bytes, duration 5 sec)\nprogress 92% (read 2964062208 bytes, duration 5 sec)\nprogress 93% (read 2996240384 bytes, duration 5 sec)\nprogress 94% (read 3028484096 bytes, duration 5 sec)\nprogress 95% (read 3060662272 bytes, duration 5 sec)\nprogress 96% (read 3092905984 bytes, duration 5 sec)\nprogress 97% (read 3125149696 bytes, duration 5 sec)\nprogress 98% (read 3157327872 bytes, duration 5 sec)\nprogress 99% (read 3189571584 bytes, duration 5 sec)\nprogress 100% (read 3221749760 bytes, duration 5 sec)\ntotal bytes read 3221815296, sparse bytes 1777303552 (55.2%)\nspace reduction due to 4K zero blocks 7.05%\nrescan volumes...\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "qm",
+            "set",
+            "101",
+            "--description",
+            "mayak-backup-647c49b86d2a45bb95fe2a3daabce0b3"
+          ],
+          "code": 0,
+          "seconds": 0.55,
+          "stdout": "update VM 101: -description mayak-backup-647c49b86d2a45bb95fe2a3daabce0b3\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "qm",
+            "start",
+            "101"
+          ],
+          "code": 0,
+          "seconds": 1.0,
+          "stdout": "generating cloud-init ISO\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\nUse of uninitialized value in string ne at /usr/share/perl5/PVE/QemuServer.pm line 5424.\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "check",
+            "--output",
+            "/root/mayak-acceptance-20261028/vm-backup-1.json"
+          ],
+          "code": 0,
+          "seconds": 11.9,
+          "stdout": "PASS /root/mayak-acceptance-20261028/vm-backup-1.json\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "restore"
+          ],
+          "code": 0,
+          "seconds": 4.84,
+          "stdout": "Owned guests removed; source and backup archives retained.\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python3",
+            "/root/mayak-acceptance-20261028/proxmox-backup.py",
+            "restore"
+          ],
+          "code": 0,
+          "seconds": 0.03,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "state": {
+        "attempt": "647c49b86d2a45bb95fe2a3daabce0b3",
+        "variant": 1,
+        "started": 1793177652.9599342,
+        "active": true,
+        "source": 9101,
+        "clone": 100,
+        "restored": 101,
+        "token": "mayak-backup-647c49b86d2a45bb95fe2a3daabce0b3",
+        "storage": "local-lvm",
+        "note": "note-647c49b86d2a45bb95fe2a3daabce0b3",
+        "backupDir": "/var/lib/mayak-backup-practice/647c49b86d2a45bb95fe2a3daabce0b3"
+      },
+      "archiveSha256": "445c75b86ef7f25d2b8f26c913c07ae285c15de676857215b5831bd7d7d331d8",
+      "status": "passed"
+    }
+  ]
+}

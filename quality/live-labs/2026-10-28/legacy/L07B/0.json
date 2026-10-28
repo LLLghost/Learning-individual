@@ -1,0 +1,41 @@
+{
+  "schema": "course-lab-report",
+  "version": "2",
+  "lab": "L07B",
+  "module": "U07",
+  "kind": "stand",
+  "seed": "acceptance-0",
+  "variant": 0,
+  "collected_utc": "2026-10-28T09:42:33.324219+00:00",
+  "facts": {
+    "path_mtu": 1400,
+    "df_max_payload": 1372,
+    "handshake_ok": true,
+    "transfer_ok": true
+  },
+  "claim": {
+    "path_mtu": 1400
+  },
+  "evidence": [
+    {
+      "cmd": "ip -j link show dev lc0",
+      "rc": 0,
+      "sha256": "b14b950d729873645fc55c515aee8843c671079ea924e3bda2363fa7ddd671a9",
+      "excerpt": "[{\"ifindex\":10,\"link_index\":9,\"ifname\":\"lc0\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1400,\"qdisc\":\"noqueue\",\"operstate\":\"UP\",\"linkmode\":\"DEFAULT\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"ether\",\"address\":\"3a:f5:91:63:40:c4\",\"broadcast\":\"ff:ff:ff:ff:ff:ff\",\"link_netnsid\":1}]"
+    },
+    {
+      "cmd": "tracepath -n 10.10.20.12",
+      "rc": 0,
+      "sha256": "5307134cf06fc59933a0cc4e2f42fd9debff5aa06d3e28fe0e8b24aaf92b00cb",
+      "excerpt": " 1?: [LOCALHOST]                      pmtu 1400 /      Resume: pmtu 1400 hops 1 back 1 "
+    },
+    {
+      "cmd": "ping -M do -s N 10.10.20.12",
+      "rc": 0,
+      "sha256": "a2144767f33525b47ccdbeb90311911fc7966c0975d14ae1df69712264d9ad47",
+      "excerpt": "наибольшая прошедшая нагрузка: 1372"
+    }
+  ],
+  "collector_sha256": "39af8e8f3e3f162831a082c9fa935dbe1e4c53d787e10aad23d178c958ed5aa1",
+  "scope": "факты с вашей машины; вердикт выносит учебник"
+}

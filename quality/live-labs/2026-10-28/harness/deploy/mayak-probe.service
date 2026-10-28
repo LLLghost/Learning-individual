@@ -1,0 +1,11 @@
+[Unit]
+Description=Mayak end-to-end client probe
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+User=mayak-observer
+ExecStart=/usr/local/bin/mayak-probe
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true

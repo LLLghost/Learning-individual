@@ -1,0 +1,24 @@
+✔ recorded real laboratory run passes for its recorded code version (2.5308ms)
+✔ rejects incomplete run (2.9227ms)
+✔ rejects missing second variant (1.0905ms)
+✔ rejects non-idempotent deployment (1.0806ms)
+✔ rejects undetected fault (1.0285ms)
+✔ rejects unrecovered fault (1.1041ms)
+✔ rejects monitor never detected failure (1.5934ms)
+✔ rejects HTTP 200 content case missing (1.348ms)
+✔ rejects external backup changed (1.3702ms)
+✔ rejects server never rebooted (1.1505ms)
+✔ rejects restored over original VM (1.1691ms)
+✔ rejects wrong restored content (1.799ms)
+✔ rejects temporary restore left behind (1.0855ms)
+✔ rejects cloned machine identities (1.0539ms)
+✔ rejects configuration history lost (0.9835ms)
+✔ a report from another code version cannot qualify current code (0.4167ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 116.5885

@@ -1,14 +1,14 @@
 {
-  "date": "2026-10-27",
-  "environment": "Dedicated Proxmox VM 9100: Debian 12, Linux 6.1.0-54-amd64, OVMF, two virtual NUMA nodes",
+  "date": "2026-10-28",
+  "environment": "VM9200 / cold clone mayak-clean-dependencies; Debian12 6.1.0-54-amd64; OVMF; two virtual NUMA nodes; independent identity; final resource audit",
   "sourceHashNormalization": "LF",
-  "runnerSha256": "9f8e310cb7c4c5e75bba19d465be9861a94a9348faaf5862f4e3b16b11a4f69c",
+  "runnerSha256": "771310b31824627eb8bc4e11a1467868356c2dcb397982eac22cfdade9ade79f",
   "catalogFileSha256": "ad2b79db4378a7148d97c54b19a64d624773dd4b71d24cfc80628a1a2d5a27cd",
-  "packagedRunnerSha256": "db45cfa0afebc302219782d9e1b5a8c8eec725a3c6cdab97d4f3acddfecd92d4",
+  "packagedRunnerSha256": "64c7ba5de1fe49c8a811511072c75a2b98d8bbb4db25f94278ad1b20099aa844",
   "shellScriptsChecked": 180,
-  "runnerCliOperations": 547,
+  "runnerCliOperations": 552,
   "reportScenarios": 13,
-  "evidence": "quality/live-labs/2026-10-27/guest-cycles.json",
+  "evidence": "quality/live-labs/2026-10-28/guest-cycles.json",
   "results": [
     {
       "lesson": "process",
@@ -326,9 +326,18 @@
       "changedSystemRejected": null
     }
   ],
-  "limitations": [
-    "Reference solutions exercised by the author; not independent learner performance",
-    "Virtual PCIe, NUMA and UEFI do not certify physical hardware",
-    "Native VM backup has a separate protocol"
-  ]
+  "nativeBackup": {
+    "status": "passed",
+    "evidence": "quality/live-labs/2026-10-28/backup-acceptance.json"
+  },
+  "integratedLaboratory": {
+    "accepted": true,
+    "evidence": "quality/live-labs/2026-10-28/integrated-lab.json",
+    "variants": 2,
+    "faults": 12,
+    "dataRestores": 4,
+    "wholeVmRestores": 2,
+    "externalRoundtrips": 2,
+    "nodeReboots": 6
+  }
 }

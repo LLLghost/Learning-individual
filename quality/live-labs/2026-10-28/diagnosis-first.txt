@@ -1,0 +1,80 @@
+LESSON process
+0 prepare 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+0 check 1 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+cat: /var/lib/mayak-practice/process/work/pid.txt: No such file or directory
+ out= FAIL
+
+0 solve 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+0 check 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= python3 -c import time; time.sleep(3600) mayak-mkd0b74d3ae9 
+PASS
+
+0 restore 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+0 restore 0 err=  out= Already restored
+
+1 prepare 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+1 check 1 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+cat: /var/lib/mayak-practice/process/work/pid.txt: No such file or directory
+ out= FAIL
+
+1 solve 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+1 check 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= python3 -c import time; time.sleep(3600) mayak-mk409daface6 
+PASS
+
+1 restore 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+1 restore 0 err=  out= Already restored
+
+LESSON logs
+0 prepare 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+0 check 2 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+grep: /var/lib/mayak-practice/logs/work/events.txt: No such file or directory
+ out= FAIL
+
+0 solve 0 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+0 check 1 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= FAIL
+
+LESSON kubernetes
+0 prepare 1 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+LESSON multipath
+0 prepare 1 err= /etc/bash.bashrc: line 7: PS1: unbound variable
+ out= 
+BASH PROBE ['bash', '-euo', 'pipefail', '-c', 'printf executed'] 0 'executed' '/etc/bash.bashrc: line 7: PS1: unbound variable\n'
+BASH PROBE ['bash', '--noprofile', '--norc', '-euo', 'pipefail', '-c', 'printf executed'] 0 'executed' ''
+PREREQUISITE ['systemctl', 'status', 'systemd-journald', '--no-pager'] 0 ● systemd-journald.service - Journal Service
+     Loaded: loaded (/lib/systemd/system/systemd-journald.service; static)
+     Active: active (running) since Wed 2026-10-28 08:30:03 UTC; 8min ago
+TriggeredBy: ● systemd-journald-audit.socket
+             ● systemd-journald-dev-log.socket
+             ● systemd-journald.socket
+       Docs: man:systemd-journald.service(8)
+             man:journald.conf(5)
+   Main PID: 322 (systemd-journal)
+     Status: "Processing requests..."
+      Tasks: 1 (limit: 6997)
+     Memory: 13.8M
+        CPU: 544ms
+     CGroup: /system.slice/systemd-journald.service
+             └─322 /lib/systemd/systemd-journald
+ 
+PREREQUISITE ['journalctl', '-t', 'test-mayak', '-o', 'cat', '--no-pager'] 0  
+PREREQUISITE ['dmsetup', 'targets'] 0 striped          v1.6.0
+linear           v1.4.0
+error            v1.5.0
+ 
+PREREQUISITE ['docker', 'image', 'ls', '--digests'] 0 REPOSITORY     TAG         DIGEST                                                                    IMAGE ID       CREATED         SIZE
+python         3.11-slim   sha256:ae952e0a57138a4317b9b61caaa19a8217c2f356803f8d7e63aad08769950937   1ba42ef4e94c   34 hours ago    126MB
+kindest/node   <none>      sha256:7416a61b42b1662ca6ca89f02028ac133a309a2a30ba309614e8ec94d976dc5a   4357c93ef232   14 months ago   985MB
+ 
+JOURNAL PATHS [('/var/log/journal/a32b11a93ebd4d07839b75813dbc97cf', 17901)]
+

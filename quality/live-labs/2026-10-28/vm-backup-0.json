@@ -1,0 +1,5 @@
+{
+  "schema": "mayak-practice-envelope-v1",
+  "payload": "{\"attempt\":\"b53ff7e768154d3bb63198c35844699e\",\"catalogSha256\":\"native-proxmox-backup-v1\",\"checked\":1793177646.7984204,\"environment\":{\"host\":\"pxe\",\"kernel\":\"6.17.2-1-pve\"},\"error\":\"\",\"guest\":\"16dc368a89b428b2485484313ba67a3912ca03f2b2b42429174a4f8b3dc84e44\",\"lesson\":\"vm-backup\",\"observations\":\"Restored VMID 101; guest note matches: True\",\"passed\":true,\"runnerSha256\":\"d240d7758f553657f0a8719ad709329de5bcafeb2116f9e2f977ae80036b5e64\",\"schema\":\"mayak-practice-report-v1\",\"started\":1793177572.473821,\"variant\":0}",
+  "sha256": "d0de331c0f00b1a1bc818fba14a90aa7f22188a92f81be482c45e459bc9efbfd"
+}

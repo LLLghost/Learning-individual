@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-28",
+  "checks": [
+    {
+      "command": "npm run validate:release",
+      "basePath": "",
+      "exitCode": 0,
+      "log": "release-root.log"
+    },
+    {
+      "command": "npm run validate:release",
+      "basePath": "/Learning-individual",
+      "exitCode": 0,
+      "log": "release-prefix.log"
+    }
+  ],
+  "boundaryTests": 30,
+  "progressRecoveryBrowserCases": 3,
+  "lessonsBrowserCheckedPerBuild": 82,
+  "rootBuildRestored": true,
+  "personalNoteSha256": "d779b8d4872ec7d573a096dc08587fd258d71a96e8a00624e9e4b4ee77bfe43c"
+}

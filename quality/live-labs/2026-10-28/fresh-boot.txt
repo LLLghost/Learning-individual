@@ -1,0 +1,11 @@
+Boot ID before: fb463997-9f88-478f-9ac3-524d56d8e160
+Boot ID after: 6a8b250f-0221-4053-97fc-fb132fca1ac2
+mayak-9200
+932cda8a5f73406f9f577874cc988501
+active
+multipath        v1.14.0
+striped          v1.6.0
+linear           v1.4.0
+error            v1.5.0
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             172.30.253.20/24 fe80::be24:11ff:fe20:ac59/64 

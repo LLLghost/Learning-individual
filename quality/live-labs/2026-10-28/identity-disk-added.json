@@ -1,0 +1,42 @@
+{
+  "blockdevices": [
+    {
+      "name": "sda",
+      "type": "disk",
+      "size": "40G",
+      "serial": "drive-scsi0",
+      "children": [
+        {
+          "name": "sda1",
+          "type": "part",
+          "size": "39.9G",
+          "serial": null
+        },
+        {
+          "name": "sda14",
+          "type": "part",
+          "size": "3M",
+          "serial": null
+        },
+        {
+          "name": "sda15",
+          "type": "part",
+          "size": "124M",
+          "serial": null
+        }
+      ]
+    },
+    {
+      "name": "sdb",
+      "type": "disk",
+      "size": "1G",
+      "serial": "MAYAK-LAB-EMPTY"
+    },
+    {
+      "name": "sr0",
+      "type": "rom",
+      "size": "4M",
+      "serial": "QM00003"
+    }
+  ]
+}

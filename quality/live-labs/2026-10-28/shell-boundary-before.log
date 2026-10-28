@@ -1,0 +1,28 @@
+test_operator_startup_file_does_not_run_in_a_recipe (__main__.ShellBoundary.test_operator_startup_file_does_not_run_in_a_recipe) ... FAIL
+test_ssh_session_does_not_source_interactive_profiles (__main__.ShellBoundary.test_ssh_session_does_not_source_interactive_profiles) ... FAIL
+
+======================================================================
+FAIL: test_operator_startup_file_does_not_run_in_a_recipe (__main__.ShellBoundary.test_operator_startup_file_does_not_run_in_a_recipe)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/Codex_projects/Learning/Learning-individual/scripts/practice/test_shell_boundary.py", line 30, in test_operator_startup_file_does_not_run_in_a_recipe
+    self.assertEqual(result.stdout, 'recipe result\n')
+AssertionError: 'operator profile\nrecipe result\n' != 'recipe result\n'
+- operator profile
+  recipe result
+
+
+======================================================================
+FAIL: test_ssh_session_does_not_source_interactive_profiles (__main__.ShellBoundary.test_ssh_session_does_not_source_interactive_profiles)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/d/Codex_projects/Learning/Learning-individual/scripts/practice/test_shell_boundary.py", line 37, in test_ssh_session_does_not_source_interactive_profiles
+    self.assertEqual(result.stderr, '')
+AssertionError: '/etc/bash.bashrc: line 7: PS1: unbound variable\n' != ''
+- /etc/bash.bashrc: line 7: PS1: unbound variable
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.013s
+
+FAILED (failures=2)
