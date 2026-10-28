@@ -92,6 +92,15 @@
  .ledger-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-sm); }
  .copy-command { min-height: 44px; }
 }
+.infrastructure-role, .infrastructure-transfer { border-left: 3px solid var(--color-rule); padding-left: var(--space-md); margin-block: var(--space-lg); }
+.infrastructure-role p, .infrastructure-transfer p { margin-block: var(--space-sm); }
+.infrastructure-role { color: var(--color-ink-2); font-size: var(--text-sm); }
+.unit-outcome { padding: var(--space-md) var(--space-lg); margin: 0; border-bottom: 1px solid var(--color-rule); }
+#laboratory-plan { max-width: 76ch; overflow-wrap: anywhere; }
+#laboratory-plan > section { margin-block: var(--space-xl); }
+#laboratory-plan .laboratory-milestone { border-top: 1px solid var(--color-rule); padding-top: var(--space-xl); scroll-margin-top: var(--space-xl); }
+#laboratory-plan h2 { font-size: var(--text-2xl); }
+#laboratory-plan nav { line-height: 2; }
 @media print {
  .session-header, .journey-pane .practice-tools { display: block !important; }
  #vm-practice, #local-experiment, #assessment, .legacy-practice { display: none !important; }

@@ -1,0 +1,8 @@
+
+> server-infrastructure-course@1.0.0 validate
+> node scripts/validate-site.mjs
+
+Editorial: 76 rewritten lessons match reviewed hashes; 1312 legacy anchors have explicit new targets and archive links. Human learning and live labs remain separate.
+Infrastructure curriculum: 82 reviewed roles/transfers, 10 milestones, full plan in printable book. Structural evidence only; integrated live/human acceptance remains separate.
+Курс: 82 урока; 34 главы, 37 модулей, 530 заданий и исходные разделы сохранены.
+Редакционная приёмка: осталось 0 уроков и 0 привязок. Это проверка структуры, а не готовности содержания.

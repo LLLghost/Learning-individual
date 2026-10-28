@@ -7,6 +7,7 @@ const bank=JSON.parse(await readFile('content/course/assessments.json','utf8'));
 const built=JSON.parse(await readFile('build/course-build.json','utf8'));
 const base=(process.env.BASE_PATH??'').replace(/\/+$/,'');
 if(manifest.editorialStatus==='accepted')await import('./check-editorial.mjs');
+await import('./check-infrastructure.mjs');
 const failures=[],seen=new Set(),anchors=new Map();
 const linkedFiles=new Map();
 const linkedBody=async file=>{if(!linkedFiles.has(file))linkedFiles.set(file,readFile(file,'utf8'));return linkedFiles.get(file);};

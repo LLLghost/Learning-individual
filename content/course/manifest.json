@@ -9,7 +9,7 @@
     },
     {
       "id": "first",
-      "title": "Первая страница"
+      "title": "Первый работающий сервис"
     },
     {
       "id": "linux",
@@ -41,7 +41,7 @@
     },
     {
       "id": "final",
-      "title": "Итоговая работа"
+      "title": "Самостоятельная инфраструктура"
     }
   ],
   "lessons": [
@@ -49,7 +49,7 @@
       "unit": "intro",
       "chapter": null,
       "id": "why",
-      "title": "Зачем разбираться в работе сайтов",
+      "title": "Зачем понимать серверную инфраструктуру",
       "environment": "reading",
       "order": 0,
       "prerequisites": [],
@@ -59,7 +59,8 @@
         "I-service",
         "I-service-alt"
       ],
-      "reviewed": true
+      "reviewed": true,
+      "baseRevision": "2026-10-28"
     },
     {
       "unit": "intro",
@@ -77,13 +78,14 @@
         "I-request",
         "I-request-alt"
       ],
-      "reviewed": true
+      "reviewed": true,
+      "baseRevision": "2026-10-28"
     },
     {
       "unit": "intro",
       "chapter": null,
       "id": "computer",
-      "title": "Чем программа отличается от компьютера",
+      "title": "Различать компьютер, ОС и работающую программу",
       "environment": "reading",
       "order": 2,
       "prerequisites": [
@@ -92,7 +94,8 @@
       "labIds": [],
       "file": "lessons/computer.html",
       "checks": [],
-      "reviewed": true
+      "reviewed": true,
+      "baseRevision": "2026-10-28"
     },
     {
       "unit": "intro",
@@ -110,13 +113,14 @@
         "I-file",
         "I-file-alt"
       ],
-      "reviewed": true
+      "reviewed": true,
+      "baseRevision": "2026-10-28"
     },
     {
       "unit": "first",
       "chapter": null,
       "id": "my-page",
-      "title": "Создать страницу с собственной заметкой",
+      "title": "Первый опыт: процесс, данные и перезапуск",
       "environment": "local",
       "order": 4,
       "prerequisites": [
@@ -125,13 +129,14 @@
       "labIds": [],
       "file": "lessons/my-page.html",
       "checks": [],
-      "reviewed": true
+      "reviewed": true,
+      "baseRevision": "2026-10-28"
     },
     {
       "unit": "first",
       "chapter": null,
       "id": "page-failure",
-      "title": "Отличить запущенную программу от доступной страницы",
+      "title": "Отличить живой процесс от доступной службы",
       "environment": "local",
       "order": 5,
       "prerequisites": [
@@ -140,7 +145,8 @@
       "labIds": [],
       "file": "lessons/page-failure.html",
       "checks": [],
-      "reviewed": true
+      "reviewed": true,
+      "baseRevision": "2026-10-28"
     },
     {
       "unit": "linux",
@@ -161,7 +167,7 @@
         "S3-1b"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -190,7 +196,7 @@
         "L00A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -209,7 +215,7 @@
         "R00"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -231,7 +237,7 @@
         "C00-1b"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -248,7 +254,7 @@
       "file": "lessons/lab-setup.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -283,7 +289,7 @@
         "L02A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -303,14 +309,14 @@
         "L03B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
       "unit": "linux",
       "chapter": 3,
       "id": "permissions",
-      "title": "Разобраться, кто может прочитать файл заметки",
+      "title": "Проверить доступ пользователя к файлу службы",
       "environment": "vm",
       "order": 13,
       "prerequisites": [
@@ -326,7 +332,7 @@
         "C03-1b"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -343,7 +349,7 @@
       "file": "lessons/packages.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -373,7 +379,7 @@
         "L04A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -392,7 +398,7 @@
         "M04-2"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -426,7 +432,7 @@
         "L05A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -443,7 +449,7 @@
       "file": "lessons/mount.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -472,7 +478,7 @@
         "L06A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -499,7 +505,7 @@
         "L06B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -519,7 +525,7 @@
         "L07A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -539,7 +545,7 @@
         "C07-0b"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -569,7 +575,7 @@
         "L07B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -586,7 +592,7 @@
       "file": "lessons/ipv6.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -614,7 +620,7 @@
         "L08A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -634,7 +640,7 @@
         "L08B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -666,7 +672,7 @@
         "L12B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -683,7 +689,7 @@
       "file": "lessons/disk-health.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -714,7 +720,7 @@
         "L13A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -741,7 +747,7 @@
         "S13:3"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -773,7 +779,7 @@
         "L14A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -793,7 +799,7 @@
         "C14-0b"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -812,7 +818,7 @@
         "M03-0"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -834,7 +840,7 @@
         "L15B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -860,7 +866,7 @@
         "L15A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -892,7 +898,7 @@
         "L16A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -920,7 +926,7 @@
         "L17B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -957,7 +963,7 @@
         "L18A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -978,7 +984,7 @@
         "R18"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1009,7 +1015,7 @@
         "L32B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1030,7 +1036,7 @@
         "R32"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1061,7 +1067,7 @@
         "L21B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1080,7 +1086,7 @@
         "M21-1"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1111,7 +1117,7 @@
         "L22A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1130,7 +1136,7 @@
         "M22-0"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1158,7 +1164,7 @@
         "L23B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1184,7 +1190,7 @@
         "C21-1"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1215,7 +1221,7 @@
         "L19B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1234,7 +1240,7 @@
         "M19-0"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1265,7 +1271,7 @@
         "L24B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1284,7 +1290,7 @@
         "M24-0"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1314,7 +1320,7 @@
         "L25B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1333,7 +1339,7 @@
         "M25-1"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1361,7 +1367,7 @@
         "L26A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1380,7 +1386,7 @@
         "M26-0"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1424,7 +1430,7 @@
         "L09A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1443,7 +1449,7 @@
         "M09-1"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1477,7 +1483,7 @@
         "L10A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1494,7 +1500,7 @@
       "file": "lessons/device-id.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1524,7 +1530,7 @@
         "L11B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1544,7 +1550,7 @@
         "R11"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1574,7 +1580,7 @@
         "L27A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1593,7 +1599,7 @@
         "M27-1"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1625,7 +1631,7 @@
         "L28B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1645,7 +1651,7 @@
         "M29-2"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1676,7 +1682,7 @@
         "L29A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1693,7 +1699,7 @@
       "file": "lessons/redfish.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1722,7 +1728,7 @@
         "L20B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1742,7 +1748,7 @@
         "M20-2"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1773,7 +1779,7 @@
         "L30A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1794,7 +1800,7 @@
         "M30-2"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1827,7 +1833,7 @@
         "L31B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1846,7 +1852,7 @@
         "M31-1"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1880,7 +1886,7 @@
         "L33B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1897,7 +1903,7 @@
       "file": "lessons/recovery-time.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1929,7 +1935,7 @@
         "L34B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1946,7 +1952,7 @@
       "file": "lessons/incident-close.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1977,7 +1983,7 @@
         "L35B#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
@@ -1996,14 +2002,14 @@
         "M35-1"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
       "unit": "final",
       "chapter": 33,
       "id": "baseline",
-      "title": "Подготовить проверяемую исходную систему",
+      "title": "Подготовить паспорт и воспроизводимую лабораторию",
       "environment": "stand",
       "order": 80,
       "prerequisites": [
@@ -2028,14 +2034,14 @@
         "L36A#why"
       ],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     },
     {
       "unit": "final",
       "chapter": 33,
       "id": "unknown-incident",
-      "title": "Самостоятельно разобрать незнакомую неисправность",
+      "title": "Восстановить инфраструктуру и доказать результат",
       "environment": "stand",
       "order": 81,
       "prerequisites": [
@@ -2045,10 +2051,12 @@
       "file": "lessons/unknown-incident.html",
       "checks": [],
       "reviewed": true,
-      "baseRevision": "2026-10-27",
+      "baseRevision": "2026-10-28",
       "depthRevision": "2026-10-27"
     }
   ],
   "assessmentFile": "assessments.json",
-  "editorialReviewMode": "author-self-review"
+  "editorialReviewMode": "author-self-review",
+  "purpose": "Понимать, собирать, обслуживать и восстанавливать серверную инфраструктуру.",
+  "curriculum": "infrastructure.json"
 }

@@ -1,0 +1,7 @@
+
+> server-infrastructure-course@1.0.0 validate:archive
+> node scripts/validate-legacy.mjs && node scripts/check-coverage.mjs --strict
+
+Coverage: 530/530 assessment points have existing chapter sections; editorial pending: 0.
+Validated 50 routes: links, anchors, 148 items, 37 scenarios.
+Coverage: 530/530 assessment points have existing chapter sections; editorial pending: 0.

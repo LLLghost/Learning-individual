@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Unit titles are clipped in the sidebar
+
+false !== true
+
+    at testInfrastructureUI (file:///D:/Codex_projects/Learning/Learning-individual/scripts/test-infrastructure-ui.mjs:18:12)
+    at async file:///D:/Codex_projects/Learning/Learning-individual/scripts/test-infrastructure-ui.mjs:66:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

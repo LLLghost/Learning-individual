@@ -1,0 +1,21 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /серверная инфраструктура/i. Input:
+
+'Понимай систему.\nПроверяй на практике.'
+
+    at testInfrastructureUI (file:///D:/Codex_projects/Learning/Learning-individual/scripts/test-infrastructure-ui.mjs:16:12)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:502:9)
+    at async file:///D:/Codex_projects/Learning/Learning-individual/scripts/test-infrastructure-ui.mjs:57:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'Понимай систему.\nПроверяй на практике.',
+  expected: /серверная инфраструктура/i,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

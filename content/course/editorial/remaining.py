@@ -3,7 +3,7 @@ LESSONS = {}
 
 
 def add(id, goal, explain, command, expected, guided, independent, reflection, source,
-        object='Страница заметок и выделенные ресурсы текущего опыта.'):
+        object=None):
     LESSONS[id] = dict(goal=goal, explain=explain, command=command,
                       expected=expected, guided=guided, independent=independent,
                       reflection=reflection, source=source, object=object,

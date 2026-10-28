@@ -1,0 +1,7 @@
+
+> server-infrastructure-course@1.0.0 test:practice
+> node scripts/practice/check-catalog.mjs && node scripts/practice/test-report.mjs && node scripts/check-calculations.mjs
+
+Practice registry: 46 outcomes, 45 guest recipes + native Proxmox restore; artifact hashes match.
+Reports: 13 acceptance, refusal and stale-attempt scenarios passed. Checksums are not attestations.
+Arithmetic: 37 reviewed problems, 68 fields match independent formulas and contracts. Tests do not replace semantic review.

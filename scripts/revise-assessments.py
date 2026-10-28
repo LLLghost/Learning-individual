@@ -110,6 +110,12 @@ for lesson in manifest['lessons']:
         if boundary < 0: boundary = text.rfind('</article>')
         text = text[:boundary]+block+text[boundary:]
     path.write_text(text,encoding='utf-8')
+foundation_reviews = read(COURSE / 'editorial/foundation-assessments.json')
+for item in bank['items']:
+    if item['id'] in foundation_reviews:
+        item.update({key: value for key, value in foundation_reviews[item['id']].items() if key != 'evidence'})
+for item in mapping.get('foundationAssessments', []):
+    item['evidence'] = foundation_reviews[item['id']]['evidence']
 write(COURSE / 'manifest.json',manifest)
 write(COURSE / 'assessments.json',bank)
 write(ROOT / 'quality/curriculum-map.json',mapping)

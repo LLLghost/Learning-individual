@@ -1,0 +1,62 @@
+
+> server-infrastructure-course@1.0.0 validate:release
+> npm run build && npm run validate && npm run test:practice && npm run test:boundaries && node scripts/validate-site.mjs --strict && node scripts/smoke-browser.mjs && npm run verify:live
+
+
+> server-infrastructure-course@1.0.0 build
+> node scripts/build-static.mjs
+
+Multipage site built: 50 routes, 34 chapters, 37 lab modules.
+Практический курс: 82 урока, 530 привязок; архив v6 сохранён. Редакционный статус: accepted.
+
+> server-infrastructure-course@1.0.0 validate
+> node scripts/validate-site.mjs
+
+Editorial: 76 rewritten lessons match reviewed hashes; 1312 legacy anchors have explicit new targets and archive links. Human learning and live labs remain separate.
+Infrastructure curriculum: 82 reviewed roles/transfers, 10 milestones, full plan in printable book. Structural evidence only; integrated live/human acceptance remains separate.
+Курс: 82 урока; 34 главы, 37 модулей, 530 заданий и исходные разделы сохранены.
+Редакционная приёмка: осталось 0 уроков и 0 привязок. Это проверка структуры, а не готовности содержания.
+
+> server-infrastructure-course@1.0.0 test:practice
+> node scripts/practice/check-catalog.mjs && node scripts/practice/test-report.mjs && node scripts/check-calculations.mjs
+
+Practice registry: 46 outcomes, 45 guest recipes + native Proxmox restore; artifact hashes match.
+Reports: 13 acceptance, refusal and stale-attempt scenarios passed. Checksums are not attestations.
+Arithmetic: 37 reviewed problems, 68 fields match independent formulas and contracts. Tests do not replace semantic review.
+
+> server-infrastructure-course@1.0.0 test:boundaries
+> node --test scripts/test-http-json.mjs scripts/test-progress-state.mjs scripts/test-workshop-http.mjs scripts/test-links.mjs scripts/test-evidence.mjs && node scripts/test-progress-boundary.mjs
+
+✔ evidence registry distinguishes normalized text from exact archive bytes (19.2334ms)
+✔ release verification rejects changed evidence even when report checks still pass (344.0506ms)
+✔ a complete object at the byte limit is accepted (2.221ms)
+✔ the byte limit applies across chunks and to multibyte text (0.9313ms)
+✔ a split UTF-8 letter is decoded after all bytes arrive (1.2856ms)
+✔ only JSON objects enter the action handler (0.7711ms)
+✔ malformed UTF-8 is rejected instead of saving replacement letters (0.2283ms)
+✔ link checking uses the current course and distinguishes unavailable responses (82.3593ms)
+✔ first visit and a saved valid journey retain their meaning (1.7429ms)
+✔ broken JSON and wrong top-level formats require a recovery copy (0.4743ms)
+✔ malformed collections and records do not erase usable notes (1.0656ms)
+✔ HTTP preserves a Russian name split inside a UTF-8 character (275.3432ms)
+✔ JSON null is a client error and does not change the saved name (60.4428ms)
+✔ oversized and malformed JSON requests are rejected (44.2635ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 631.036
+Corrupt progress: course opens, original backed up, valid notes retained, reload OK (3 cases).
+Editorial: 76 rewritten lessons match reviewed hashes; 1312 legacy anchors have explicit new targets and archive links. Human learning and live labs remain separate.
+Infrastructure curriculum: 82 reviewed roles/transfers, 10 milestones, full plan in printable book. Structural evidence only; integrated live/human acceptance remains separate.
+file:///D:/Codex_projects/Learning/Learning-individual/scripts/validate-site.mjs:66
+if(failures.length)throw Error(failures.slice(0,35).join('\n'));
+                         ^
+
+Error: Нет стендовой приёмки текущей версии содержания, сборщика и проверяющего кода.
+    at file:///D:/Codex_projects/Learning/Learning-individual/scripts/validate-site.mjs:66:26
+
+Node.js v24.19.0

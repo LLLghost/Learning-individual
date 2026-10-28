@@ -1,4 +1,5 @@
 import {testJourneyUI} from './test-journey-ui.mjs';
+import {testInfrastructureUI} from './test-infrastructure-ui.mjs';
 import {createServer}from'node:http';
 import {readFile,mkdir,mkdtemp,rm}from'node:fs/promises';
 import {resolve,extname,join,dirname,basename,sep}from'node:path';
@@ -24,6 +25,7 @@ try{
  for(const l of course.lessons){await page.goto(`${origin}${base}/learn/${l.id}/`);await page.waitForSelector('body[data-course-ready="true"]');assert.equal(await page.locator('[data-block="explain"]').count(),1,l.id);assert.equal(await page.locator('.practice-tools').count(),1,l.id);if(l.depthRevision){await page.locator('.lesson-resources > summary').click();const depth=page.locator('[data-block="depth"]');await depth.locator(':scope > summary').click();assert.ok(await page.locator(`#${l.id}-depth-case`).isVisible(),l.id);assert.ok(await page.locator(`#${l.id}-depth-transfer`).isVisible(),l.id);assert.equal(await depth.locator('[data-origin="v6"]').count(),0,l.id);}}
  console.log(`Chromium: пройдено ${course.lessons.length} урока.`);
  await testJourneyUI(browser,origin,base,course,output);
+ await testInfrastructureUI(browser,origin,base,course,output);
  {
  const vmLessons=course.lessons.filter(l=>['vm','stand'].includes(l.environment));
  assert.equal(vmLessons.length,46);

@@ -1,0 +1,24 @@
+
+> server-infrastructure-course@1.0.0 verify:live
+> node scripts/verify-live-reports.mjs
+
+Verified 40 evidence hashes (LF text / raw archives).
+L04A/0: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L04A/1: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L06B/0: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L06B/1: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L07B/0: 5/5 accepted; 5/5 alterations rejected; format/source OK
+L07B/1: 5/5 accepted; 5/5 alterations rejected; format/source OK
+L12A/0: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L12A/1: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L13B/0: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L13B/1: 6/6 accepted; 6/6 alterations rejected; format/source OK
+L14B/0: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L14B/1: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L16B/0: 10/10 accepted; 10/10 alterations rejected; format/source OK
+L16B/1: 10/10 accepted; 10/10 alterations rejected; format/source OK
+L30B/0: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L30B/1: 7/7 accepted; 7/7 alterations rejected; format/source OK
+L31A/0: 3/3 accepted; 3/3 alterations rejected; format/source OK
+L31A/1: 3/3 accepted; 3/3 alterations rejected; format/source OK
+Verified 18 current live reports with the published checker. Browser import is recorded separately.

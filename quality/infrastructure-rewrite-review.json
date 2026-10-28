@@ -1,0 +1,998 @@
+{
+  "schema": "infrastructure-rewrite-review-v1",
+  "date": "2026-10-28",
+  "mode": "author-self-review",
+  "humanLearning": false,
+  "integrationLiveAccepted": false,
+  "scope": "All 82 authored infrastructure roles, evidence and transfer tasks; six rewritten foundation lessons; two rewritten final lessons; lab-map example and permissions/method framing. Existing technical mechanisms and assessment answers retained.",
+  "curriculumSha256": "015dd05381b288298a1ce979b9cefe6e6d9f68ead7d596dd7d96aaf2d98fee81",
+  "lessons": {
+    "why": {
+      "previousSha256": "63c3646772a49cf2eca3ee5973bfea23512cefee0c1ba680e5d88a60ce67946d",
+      "sha256": "56c871e5b5bc24e60701d696ad8799c34d97cbc0cdeda19053259d0c2e835210",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    },
+    "request": {
+      "previousSha256": "7f55ea15f7e80d7fdc9f1c5eb4fb248e12afad7029219e29c6399331c475ecc6",
+      "sha256": "1b1db728b0af17a92575dd861993c9c06db95553bf8754784e74547bb408c3c5",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    },
+    "computer": {
+      "previousSha256": "4449f6218943307b4dea510c43c89c29cbfde1608a30010f018db2f2f011260d",
+      "sha256": "16d1fa8d95db5954ecdea5e3e7ba954541f2219601e2a8592903c3e104a99dbd",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    },
+    "files": {
+      "previousSha256": "a15b475de382cad631f60da85596245369ee34a188e2e1c5f24b71e46bd04a28",
+      "sha256": "4e7e8bc0a2424731a3de479d82cf7bbda54076cb685f05dcbcb258b6bc649f17",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    },
+    "my-page": {
+      "previousSha256": "3f6d041f92af8337081ad9ff4c8c9ff3a1a032674d21f1b280bc727971e93cdf",
+      "sha256": "4e48df7ca56c3b1164c1d96cd57ba4a7bc3d828a959c0826f4d40059867960f2",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    },
+    "page-failure": {
+      "previousSha256": "f7a9219d3a0bbb7e6b5557a05e7c6dbed44814d23cf58496044dddd5c35403f3",
+      "sha256": "229e779ca79adc285259d1775c80439822f66dc2e31717800bb732bfd68f38e3",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    },
+    "terminal": {
+      "previousSha256": "1ca6a251fdbb0955d82abfd2cecd4a79e81822b6e559b401be974f470f6791dc",
+      "sha256": "1086a01bd3521df7de9fb77eeb6b4fa97bda6927c33320e1dea814c52aeaea9a",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "one-change": {
+      "previousSha256": "00c031547ea1e849f635d6b9a2dec5a77821019a1636cd095f6b653571520141",
+      "sha256": "ed5dec73cc82f57d24db334d1be8c2291fd1d45251ffc4b222ffd45094fd387d",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "units": {
+      "previousSha256": "8cbde07571222a8c83d6eeb15b05e4324d799aa6a96e27c58e9f5f6354ae02cd",
+      "sha256": "7bd535b107c97760dab6c49956c29b2160c92b31b16a4b5cf9678879bfbbfe0a",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "lab-map": {
+      "previousSha256": "4d0debfce5193014183bc8178fc1b24768a256d12c70b02a296eb06dd3838dad",
+      "sha256": "c11dab65bc909e93e6dfab026a8de9297f7a748f1725a44ff9564afbe1218be3",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": [
+        "example"
+      ]
+    },
+    "lab-setup": {
+      "previousSha256": "b9c22c39078deeb71befe8aafd2d9c29fe67399879737316522238da6506918d",
+      "sha256": "280d674ad10909ee46bd677373ab7b51fa9a1ddd7f4cde11a30b57c51f7a4b36",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "process": {
+      "previousSha256": "c5c371fa6d90ee15c29270dc4b288c882f6b7d859a82927119b6f828fb5aa543",
+      "sha256": "73b35bdf8e360d047ad52c918890b53106c2fa8906c019d11a97da489740baae",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "memory": {
+      "previousSha256": "725be622c4c45000c0f1afbf50861033f9ebc269fcc3c83d223b71d72c90d12a",
+      "sha256": "73ba5e4a752ddc1f2cee25bfd419f975d5922c65b264ce60bc3859d6f5491bf5",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "permissions": {
+      "previousSha256": "ed1f4581e2f36139e331f96951b19cb5bfc46310a0f01f6e4a970075f8fd0a66",
+      "sha256": "1d5770d551a54b42b39ebd4d1170e6aa59e8414b43cfc7e29a76e2720791b503",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "packages": {
+      "previousSha256": "29fde7eac7654c5c31730aad9c7ad0011e597d39271353258507b2f1c5dddb30",
+      "sha256": "4b924618c885c191c15cf0bc0d0d5904cdafa7d812b1fbcf9be66ef6edf80cd8",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "systemd": {
+      "previousSha256": "0f2ee13134cef5dc07641e2b31aced1a18cc61dea830bc4fc01b235de4fc4ba9",
+      "sha256": "47212b8739686bb311b1c9f0d3aea412f6e785a9656c4831888ffad7f8bb06fe",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "logs": {
+      "previousSha256": "d2ada14ee14935acf3efd285c87830d0f3cb6eac62bc6d3cbc36c6db40635dfd",
+      "sha256": "5b882216734dfa80d0d712f4695cedfbb58e8ad537ab2aeb40f0a2875f614af8",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "boot": {
+      "previousSha256": "181ba059c1afa2fa93d3fa8a873d3a487790070b44e3f4ec7cfd0cba2d5a4307",
+      "sha256": "b363c1eac623bad5b61509596c6dd80a20176b90392967d551e5212ecc0a82ba",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "mount": {
+      "previousSha256": "7d265dd04848b05da70fc703b34a82b51ae84017ceda3680fea81f504533f78d",
+      "sha256": "504a967f23ede45a592441fe03cfb346327e0f61b71cc11ae30a71b3cf5fe96d",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "address": {
+      "previousSha256": "0cfb2842e5dca6329d6a159a4b2755535c003318fa2d79b7cb8958e8cacfafdc",
+      "sha256": "3ba12a4f44373a52e4c80f99e81859d44e7d98b013ee9d57f51a1bf140492770",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "prefix": {
+      "previousSha256": "556cda5e4c611615202735782a80b4c816a2056779f85eb1542f30900d6e3c19",
+      "sha256": "d67f86c2b5fcfa93d73975a362e5b14c89ec861d4f86e6d155d922096b6ae955",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "tcp": {
+      "previousSha256": "66b2e31ed42a00a2af6c2873b4c7273a2540cce866ed4f654f10e19cb7018c29",
+      "sha256": "84cebd174751c33f45f3c709266de30ca250a4a5bc0bc1830caade2faab33c48",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "dns": {
+      "previousSha256": "3f75c1aac45d1c358f465bb859c63a7db9eda9bf741f5c72dfad42509d8af84d",
+      "sha256": "1d0fea5ee9a06ef1add7c097413df157dcfc9c4d8105fb1a466b5a092322691f",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "mtu": {
+      "previousSha256": "5afea60f8c3337d407203d6154210f130f7f0d209317428be8b41f1c1b94f86a",
+      "sha256": "249c2efd5d5628db1a1fc8267e2aaccec06815c0ae1e10c68118d4586de1703f",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "ipv6": {
+      "previousSha256": "cf02c2f2618a1d6ccb7f1054aed0fa67940c3cfb338681288aac523524d7e95b",
+      "sha256": "0b71eb5fe9c32e1cc1ae5093609ff12c98fee6ba9b6abec4641be14e2505d8b8",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "segments": {
+      "previousSha256": "f648eb9698dc9f1c59fb93ee09b6cf1d05d5926900791cb9cdc41ec09b1b5e44",
+      "sha256": "a5484637ffaed9ad28674f6fe8cbe4bd07e5406fcf0358ff154fbb22cc09a12f",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "firewall": {
+      "previousSha256": "7ff38a00359386e139b41c1ea7d58f55228e0b79c6e3caa5816c8c33131e5da5",
+      "sha256": "3060773f5626a8720198fd02efe79912c1335f2d1ac2d73b9ca0edf012f80791",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "disk-identity": {
+      "previousSha256": "683c08a13840fe4de13929325cf9c127e66375ec6a9231f5179386f7ab1f1412",
+      "sha256": "5c42583fbde7aa4a797ac3b81a6d585cdcd1bab8455dff5ce35744f3935f40ff",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "disk-health": {
+      "previousSha256": "b1d58b406eb09ca49b933c1a693fc26afe05b5ef5ff080d5ed0b67253ccb4a22",
+      "sha256": "39e567ce0884e2e463d75c5692d8099224a84cdbed6973c2f8b174e12ad9903a",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "filesystem": {
+      "previousSha256": "83b774fcfb988e3cdff0312c26ed953c692da2b960267c1f9a986b2c78b858c9",
+      "sha256": "d30b0944304e707953540b4a110bf63b8495df011dbe193bd3b2efaa048283b9",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "lvm": {
+      "previousSha256": "c1bb3ee087eb6baa79008103f132a08fe91c1c34af4581208e6ed3c6cf714278",
+      "sha256": "6df51bad03afefa3c14ed3fcf14de6d8e5aff0f9a54064bd2a4dfe594320eafe",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "mirror": {
+      "previousSha256": "35c5945d5132af6be8722ba2fb307fafb4f47acf63d08467240dbbbc9f873662",
+      "sha256": "372cf9ecff0ee08958ce652f5997eb06430a15ede33aaace5d6195bc9181d99c",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "storage-path": {
+      "previousSha256": "894c13614ad5594ae48f1b53482ee0481cfa2a48339c9e89aa920143bca0de89",
+      "sha256": "99179cdb37a481668c6672b1bbb2c658aad56d453dfaa4cd4b3f3ad419d9b2ae",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "write-cache": {
+      "previousSha256": "02bc9d4f41a9497780ca66cc25fe1d7d4c27ebea2db1c8200b1ba91b613df27e",
+      "sha256": "a257e7460fbc89184c0968924bb5ba9b1ba10b13afd96e87b5068b388818659b",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "network-storage": {
+      "previousSha256": "02b9d675843157c671d63b83273fc5030937a6dc112d77e96ac228cfad8d7405",
+      "sha256": "3ed37ba96c6b01612f05a989003a713f3b06ec5ee907cd157187f426a3163730",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "multipath": {
+      "previousSha256": "d7b3bb92f9335e1ad15a8cdfa8f2be94904e2ba8cccb7e632875031c8018e491",
+      "sha256": "bd9aa982167c9849c637770da8c6270b122f33a54e23dcd47ab08eca5a2d79d1",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "zfs": {
+      "previousSha256": "d1d2465307d6578921add3cff4c24f42cc511d20381b786157df0897e768ae8c",
+      "sha256": "19ac64dc7794e4b83c20a1b3766a7534d53a8221d40955ba4052689b0f87f7e5",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "ceph": {
+      "previousSha256": "05e26c8f137f22a541efbcb32345f8c05d8ddda2dfe9cb2822fd3ac7f96ca1c8",
+      "sha256": "dca72e1cf7d3b3746cc5fa93188ac4ea454ce1836590693d0a5e233d592566a7",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "benchmark": {
+      "previousSha256": "28153ec2a2c51f8ca60eeafae12761ae04d5c95c031ed3c41a0b73bce9f20cda",
+      "sha256": "e4f4826bf6bfe01f279d7da939ad1a6e0a873dbbcc859d8760761923d4ed5ad5",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "latency": {
+      "previousSha256": "0a325279b898c44da0d78cf912b27ca36ebf542e53c04949b3f8c8fb7c5fa060",
+      "sha256": "ee814827348ac8973e651aff45167fb047fc96f61ca76ffb51582c876715b7b0",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "database-write": {
+      "previousSha256": "b1dc1decd4dcf419732d48636b1e8daac385253c6424a6cfda1694467be2ff3c",
+      "sha256": "1c237ada78d7ead1531353ae3a5ddd97977d0b818352a20ca8eb968118eacd92",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "restore-point": {
+      "previousSha256": "cc1471c8fab72794a21e5521b3b63856989059fdfd44cbb453df9756e060657d",
+      "sha256": "4ceb49540fbd34834ed0b26762565edaae3b0bd3ff94882683a14d4719b4ceb7",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "shell-data": {
+      "previousSha256": "683f5218195d4f78296f71f927f036021f2016fa9e901e57d1c8578ba88c2f84",
+      "sha256": "19165518c53091a1e62c75c5b8fe09f4389ece3eed1403bbbedc6dbad384b61d",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "shell-failure": {
+      "previousSha256": "73cd6189fb8f5e2583ed6d9416abbce722fb3fca8cf10f90ec1adb7ac386108d",
+      "sha256": "100743e264b6a425c0fb9f0866fb20befa51aaefaf6243610f184099cb8eb539",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "python-result": {
+      "previousSha256": "793b5f642e3b439c16815f39dc55db385fca4170fdd1de70a6242688ffe5eb6d",
+      "sha256": "281de6971498c17c8c3848e2ccb61bc3fa0d63c76e9018a977a8c043a5148b53",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "api-pages": {
+      "previousSha256": "5ba4ad7044c7ac5bbeb67efa352b5f32d32d50ceea65e7e6d1ee2485e6c884df",
+      "sha256": "7f897f926c6892c567e265b46eb9f33b0ad6614c2a54b07606fce90fd3ef078f",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "git-change": {
+      "previousSha256": "d11046f1c52078d0572a93d55b454cdaf946b130a7870e8ce83b1f38c054af55",
+      "sha256": "121e134675c7e6293482b0455817cff56f6e63a529127318d5d001f136d8fc0a",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "ansible-state": {
+      "previousSha256": "7694337f97ac060260fe51c08aca6d624574ec531213d7949d8663bea6d0adab",
+      "sha256": "9350e19002b3b2c5c474c0976062637f22ee7e757a1ba5ff3068902e8da290a7",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "vm-resources": {
+      "previousSha256": "0e6453aff56e872ffbfc6812e45013dce41f4e45760b357b9b86159e480e1634",
+      "sha256": "73c4a66480c1e178d0b604256993ec9ca332038af3e020427b79f0c4c9c257cb",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "vm-backup": {
+      "previousSha256": "15c099eccf24c26bb2b0d54e04e2cb57b30370fd57350fda598dbed1e85475f8",
+      "sha256": "580f32fbb29b829b679904dadd4a9b6672c02fb83b4a12e55f52175f199771d6",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "container": {
+      "previousSha256": "8406d6ea96bdb29299c3bc47499a777e701eebb80f973ca22ad87b7a9c10b7a9",
+      "sha256": "98da705444b16ee7316730cbd43ccdd1cbb5c4e7988dc0d00e3e03d4313f2eba",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "container-network": {
+      "previousSha256": "b0c77528cd0bb4b1b9c334236d582ba99df6ed3d5716679385429024e0217e90",
+      "sha256": "1292ffefca5f654b411dcb03a031a7502c774b0ce88f3405c4c65fa694488cdb",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "delivery": {
+      "previousSha256": "367f6b2d361f0f3efc18eda2f45b13e54e2c5d82fcd68c206613b25c566dec71",
+      "sha256": "37ac5c8beece84cf183bc64f35678f4bd53cbafe356ac70835d86c8aa21a0242",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "terraform": {
+      "previousSha256": "810b77876569e1099adf7c09085ebef81c30b98c2c226c922bfbf130db77be14",
+      "sha256": "dbb3e593f511e6880c906995d779464c2cd9d1af6aaf9cbc96248ea983ed4909",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "kubernetes": {
+      "previousSha256": "417dcd11a077a82fafc3a2c29011a0f3c33e8aca2a2168e05bcbd2acb0a26251",
+      "sha256": "8d29f3cd4a773a313b544e23563af5875048f447f6e0985e1e222fd683b827e3",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "service-selector": {
+      "previousSha256": "00f5e08043a73725d68d22971c34ddf97c77203b0f46696618450e6c3402fdc1",
+      "sha256": "6b9950f942d1bf09a545c171899738143d9026d9f123479614bb824f76db0d47",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "cpu-numa": {
+      "previousSha256": "dbdb2dc3c3d9974bd4d923931805add32d526aa188c3eae18c41a641684515a4",
+      "sha256": "5abd10d18f6f50cee8b0bce6e29b76d85b32925ae837bdb290039e7571d65403",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "ecc": {
+      "previousSha256": "932de51362517653a409e2e0f6a8a7459951378bb16a120941166fd6e4893ceb",
+      "sha256": "2c7904799a1bd4461b9976c0be2d590465c75ab22f0899bdb4b813c9b465022b",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "pcie": {
+      "previousSha256": "f68359c34fe6ee41b00dc2a3d6d81902e141e45a064259c30beb5b76e55413c9",
+      "sha256": "0a470fcbd67ba287e834ac6e3fbe10fe2a54726d5fd84f6a7bf3a82f034e7f4a",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "device-id": {
+      "previousSha256": "6e58eef3963c0cd39e7ab87f42b6030c8d57ff134806743957485c57b6681cc4",
+      "sha256": "99c1629df2e62fd965bb555939a8e6e59ecba307ba8e156146515f58d0fbd75c",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "bmc": {
+      "previousSha256": "d19c585014e0aff232dbf79ace7381838b4b863d30349d62c19fe5f9b5564a95",
+      "sha256": "b69121ed09f7c9c1f066ba6553e9fbd110405ccf1edd0473bc3ce18c5dcf15d2",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "power": {
+      "previousSha256": "0bbf4af1ffa8792356390cfa4f95b99c510399651f31583f777300ca655e7c8f",
+      "sha256": "f3703cc3fcb7b3584d05484da27d192998b3f87a681ed049722e31e67921897c",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "uefi": {
+      "previousSha256": "8a4fb70941ac93e564431d05b41d1a16411194320c1e1d1627d6ce2c20388e15",
+      "sha256": "f4b757a104c903b70255ecbcf563303988e97ed6dc7cc5b371501417593ff932",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "secure-boot": {
+      "previousSha256": "8a80582d62fd93a309f3eeb2f8deaa324ae430c0ceff6c63ca6b2c83014fb2b6",
+      "sha256": "7e7112d1125ae0e8d397a7e8f63d7d492b4b43b7b648b103e238980f520b3bd1",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "firmware-phases": {
+      "previousSha256": "213f56bc599ca89f212925c479bedf9f73e0f4a36be15b0435eb74ac6c0c8399",
+      "sha256": "c36960878e1f746aa81cb869685aafcaa86fe35ab1be032e39583f6406563cbe",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "acpi": {
+      "previousSha256": "52283c83ec47f31a810b813af332a236211d2009f2a067fe9eab013419586da7",
+      "sha256": "11d6866cbb4e40324c6a41f2a45aa0f9457a49849b5c6fefb33f28dd86d61891",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "firmware-update": {
+      "previousSha256": "e8ffbc890a97134b28fd0825efe0e45029582b785d3ce630de18bbcd2ac04863",
+      "sha256": "bc00be4dd56d1acd098bae467929f9405d0b4bb3c08c9b35867b422141eed52d",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "redfish": {
+      "previousSha256": "7629d2f2499349bfd457f7ac4c19daca79df03c6d01ce4c289501bbc21e0ab4b",
+      "sha256": "92decae3ee26cfbab0c57652c16b3bcd6be35936d520958c611be42f752bf1bb",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "monitor": {
+      "previousSha256": "9bf21e13c0fb60e70481449d0e8585213a6daf7e86eef481a8a3df113c04b02c",
+      "sha256": "13c9652bf0b058ec52db3343c52e55407918024692186628b356f5614061442a",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "alert": {
+      "previousSha256": "706039bf2ad69ad88a8ed8aa7ed6d1a7375b94b774888edb462cf68c7831e7b6",
+      "sha256": "07cb0c272dcd016606e5d96019c68255d92ce80178150875d09bc4a34ae4d9d7",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "access": {
+      "previousSha256": "d41046a9ac0fbcd0309d5daba65ec3c94cc59a9e4108e0e93829e998e8fac7ec",
+      "sha256": "15bb68f6b1817d462bd826001991fb4edab47a3601189b0a434a6ca1c6045227",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "tls": {
+      "previousSha256": "c17952a6c88c3e08d492797f4211f83e30424faa67a78ce955aad05df7b157e3",
+      "sha256": "9fdd3aabfef87923826cc87e82098b67b8013d253637bba54f727938249e4a89",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "time": {
+      "previousSha256": "6036b2cce57dfc0a63d0a9e292b3e65436405800118c8c440b8097dba92fbd36",
+      "sha256": "d112b5b34518511ba91a0719c7e1619c8e7ef432a1a08e645e1c60add50d74da",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "duration": {
+      "previousSha256": "867d2277a859857378667f4be5b223512e359cb9608095e2526095a1ab6f3ba8",
+      "sha256": "fdac0fd34312db19267290a7a2adacedfa461c5cc1f954205938f5691ae89520",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "availability": {
+      "previousSha256": "3112abdd37c6751432c44a35b5a5e7476c73a2d63078831a9defe89841897dc8",
+      "sha256": "c2e82d75c088ad043f48dfe8630315ff9eb8a0a9b86384c5243786696063b1ac",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "recovery-time": {
+      "previousSha256": "c1290390cf48050aa88d8e9b110e4c42ce2b9642f536f438876b7c9bb6cf24ee",
+      "sha256": "ccf5d214b59cfc100070051d50f1b684cef159526206dcb6c1e6073ab9f7384c",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "incident": {
+      "previousSha256": "c48e397bb3ecca06dd382d1f4988b9bdb53cb099e0a8a2beca83ad62c51bda27",
+      "sha256": "d1b8662f4b97501973f773f2c739999cfd3c23f0235878b5be5e30b6f41bba40",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "incident-close": {
+      "previousSha256": "a22e2bccd7a9f8d98a899b15c29b4eb49eca5e2d61e589c04e9a7ceda32e4797",
+      "sha256": "fbfe78fca2084c1daa99739f4c0fd03014264ef10d6d6bb56115552fe31d5450",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "migration": {
+      "previousSha256": "e6e18bc0a0c8e1472fd497c648f9c66a38c91006feda21308e5159a480e4c686",
+      "sha256": "d6a1f19c74b654e62ed900e27e126d461e850738aa096bea78897b327c025bae",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "decommission": {
+      "previousSha256": "ef8dd37993e07f5ad32f1f6f78a4eb641676d1926956be771a804f95644e5b17",
+      "sha256": "0d8088addcd1d1b9843e1b2f90c59f2e8d0dc52904cb2055778e784c588a407a",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ],
+      "rewrittenTechnicalBlocks": []
+    },
+    "baseline": {
+      "previousSha256": "36036412bc410abc0e26345959b28af005645f5263413036a5fdb1ae58d019c0",
+      "sha256": "6fd6869cad012efa8a53468f505ab5398de1b11198c5b0705bec4b29d3d7a0af",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    },
+    "unknown-incident": {
+      "previousSha256": "d7269971b7c5b01604516678683d0d3692ac164236d96581a638755287ed9b08",
+      "sha256": "a761a94fc0b0e4245550820d57880045e3075df452c17528e99c246d6600dd4f",
+      "reviewed": "Infrastructure role matches the taught mechanism; transfer task preserves the distinction between a fixed exercise and the whole laboratory.",
+      "preservedTechnicalBlocks": [],
+      "rewrittenTechnicalBlocks": [
+        "explain",
+        "example",
+        "guided",
+        "independent"
+      ]
+    }
+  },
+  "foundationAssessmentsSha256": "c4a488921cbc27d2cc5d159db86e8c969a1501b6e94fd32ed37ac7ae3f688ab2",
+  "foundationAssessments": "Six questions explicitly reviewed against the rewritten introductory explanations; IDs and answer indices preserved."
+}

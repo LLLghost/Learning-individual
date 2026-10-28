@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-28",
+  "baseline": "a68067b",
+  "goal": "Understand, build, operate, diagnose and recover server infrastructure. The notes page is an initial exercise only.",
+  "lessons": 82,
+  "milestones": 10,
+  "initialLessonsRewritten": 6,
+  "finalLessonsRewritten": 2,
+  "foundationQuestionsRevised": 6,
+  "preservedAssessmentItems": 530,
+  "preservedTechnicalPractice": {
+    "guestRecipes": 45,
+    "nativeProxmoxBackup": 1,
+    "runnerAndCatalogUnchanged": true
+  },
+  "checks": {
+    "curriculum": "passed",
+    "rootChromium": "passed",
+    "prefixChromium": "passed",
+    "initialEpisode": "passed",
+    "archive": "passed",
+    "boundaryTests": 14,
+    "corruptProgressBrowserCases": 3,
+    "assessmentCorrectCases": 536,
+    "assessmentIncorrectCases": 536,
+    "newInfrastructureUI": "passed",
+    "renderRepeat": "byte-identical"
+  },
+  "liveOrigin": "http://127.0.0.1:4180/",
+  "release": "blocked: current curriculum sourceSha256 has no fresh live acceptance",
+  "notAccepted": [
+    "integrated final laboratory",
+    "physical hardware skills",
+    "independent human learning"
+  ],
+  "knownExistingIssue": "Multi-tab note overwrite from ub-audit remains open; this content rewrite does not repair the progress storage model.",
+  "personalNoteSha256": "D779B8D4872EC7D573A096DC08587FD258D71A96E8A00624E9E4B4EE77BFE43C"
+}

@@ -1,0 +1,27 @@
+
+> server-infrastructure-course@1.0.0 test:boundaries
+> node --test scripts/test-http-json.mjs scripts/test-progress-state.mjs scripts/test-workshop-http.mjs scripts/test-links.mjs scripts/test-evidence.mjs && node scripts/test-progress-boundary.mjs
+
+✔ evidence registry distinguishes normalized text from exact archive bytes (27.8656ms)
+✔ release verification rejects changed evidence even when report checks still pass (383.4871ms)
+✔ a complete object at the byte limit is accepted (1.8347ms)
+✔ the byte limit applies across chunks and to multibyte text (1.0748ms)
+✔ a split UTF-8 letter is decoded after all bytes arrive (1.6107ms)
+✔ only JSON objects enter the action handler (0.9316ms)
+✔ malformed UTF-8 is rejected instead of saving replacement letters (0.675ms)
+✔ link checking uses the current course and distinguishes unavailable responses (97.6625ms)
+✔ first visit and a saved valid journey retain their meaning (2.6941ms)
+✔ broken JSON and wrong top-level formats require a recovery copy (0.9059ms)
+✔ malformed collections and records do not erase usable notes (1.5923ms)
+✔ HTTP preserves a Russian name split inside a UTF-8 character (210.6648ms)
+✔ JSON null is a client error and does not change the saved name (61.3202ms)
+✔ oversized and malformed JSON requests are rejected (44.9461ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 515.6103
+Corrupt progress: course opens, original backed up, valid notes retained, reload OK (3 cases).

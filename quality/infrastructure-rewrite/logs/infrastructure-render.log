@@ -1,0 +1,8 @@
+
+> server-infrastructure-course@1.0.0 editorial:render
+> python scripts/apply-editorial.py && python scripts/revise-assessments.py && python scripts/render-depth.py && python scripts/apply-course-context.py
+
+82 authored lesson chains rendered; legacy depth review flags were not changed.
+250 corrections; 530 explicitly reviewed items; 530 direct teaching links.
+76 authored depth replacements; 1312 explicit old-section concordance entries. Review flags unchanged.
+Infrastructure roles and transfer tasks rendered: 82 lessons, 10 milestones.
